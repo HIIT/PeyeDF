@@ -1,0 +1,427 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 47;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A9907E111B2B177B00189989 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A9EC214B1B2856560048151E /* Main.storyboard */; };
+		A9AB91FC1B29DBDF00BBB289 /* EyeFormulas.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9AB91FB1B29DBDF00BBB289 /* EyeFormulas.swift */; };
+		A9D36EE31B2A1079003D4745 /* MyPDF.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D36EE21B2A1079003D4745 /* MyPDF.swift */; };
+		A9EC21461B2856560048151E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EC21451B2856560048151E /* AppDelegate.swift */; };
+		A9EC21481B2856560048151E /* MyPDFController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EC21471B2856560048151E /* MyPDFController.swift */; };
+		A9EC214A1B2856560048151E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A9EC21491B2856560048151E /* Images.xcassets */; };
+		A9EC21591B2856560048151E /* PeyeDFTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EC21581B2856560048151E /* PeyeDFTests.swift */; };
+		A9EC21691B2893F80048151E /* ToolController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EC21681B2893F80048151E /* ToolController.swift */; };
+		A9EC216B1B289EE70048151E /* SplitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EC216A1B289EE70048151E /* SplitController.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A9EC21531B2856560048151E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A9EC21381B2856560048151E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A9EC213F1B2856560048151E;
+			remoteInfo = PeyeDF;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		A9AB91FB1B29DBDF00BBB289 /* EyeFormulas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EyeFormulas.swift; sourceTree = "<group>"; };
+		A9D36EE21B2A1079003D4745 /* MyPDF.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPDF.swift; sourceTree = "<group>"; };
+		A9EC21401B2856560048151E /* PeyeDF.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PeyeDF.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A9EC21441B2856560048151E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A9EC21451B2856560048151E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		A9EC21471B2856560048151E /* MyPDFController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPDFController.swift; sourceTree = "<group>"; };
+		A9EC21491B2856560048151E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		A9EC214C1B2856560048151E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		A9EC21521B2856560048151E /* PeyeDFTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PeyeDFTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A9EC21571B2856560048151E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A9EC21581B2856560048151E /* PeyeDFTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeyeDFTests.swift; sourceTree = "<group>"; };
+		A9EC21681B2893F80048151E /* ToolController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolController.swift; sourceTree = "<group>"; };
+		A9EC216A1B289EE70048151E /* SplitController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplitController.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A9EC213D1B2856560048151E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A9EC214F1B2856560048151E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A9EC21371B2856560048151E = {
+			isa = PBXGroup;
+			children = (
+				A9EC21421B2856560048151E /* PeyeDF */,
+				A9EC21551B2856560048151E /* PeyeDFTests */,
+				A9EC21411B2856560048151E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A9EC21411B2856560048151E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A9EC21401B2856560048151E /* PeyeDF.app */,
+				A9EC21521B2856560048151E /* PeyeDFTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A9EC21421B2856560048151E /* PeyeDF */ = {
+			isa = PBXGroup;
+			children = (
+				A9D36EE21B2A1079003D4745 /* MyPDF.swift */,
+				A9AB91FB1B29DBDF00BBB289 /* EyeFormulas.swift */,
+				A9EC21451B2856560048151E /* AppDelegate.swift */,
+				A9EC21471B2856560048151E /* MyPDFController.swift */,
+				A9EC21681B2893F80048151E /* ToolController.swift */,
+				A9EC21491B2856560048151E /* Images.xcassets */,
+				A9EC214B1B2856560048151E /* Main.storyboard */,
+				A9EC216A1B289EE70048151E /* SplitController.swift */,
+				A9EC21431B2856560048151E /* Supporting Files */,
+			);
+			path = PeyeDF;
+			sourceTree = SOURCE_ROOT;
+		};
+		A9EC21431B2856560048151E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				A9EC21441B2856560048151E /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		A9EC21551B2856560048151E /* PeyeDFTests */ = {
+			isa = PBXGroup;
+			children = (
+				A9EC21581B2856560048151E /* PeyeDFTests.swift */,
+				A9EC21561B2856560048151E /* Supporting Files */,
+			);
+			path = PeyeDFTests;
+			sourceTree = SOURCE_ROOT;
+		};
+		A9EC21561B2856560048151E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				A9EC21571B2856560048151E /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A9EC213F1B2856560048151E /* PeyeDF */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A9EC215C1B2856560048151E /* Build configuration list for PBXNativeTarget "PeyeDF" */;
+			buildPhases = (
+				A9EC213C1B2856560048151E /* Sources */,
+				A9EC213D1B2856560048151E /* Frameworks */,
+				A9EC213E1B2856560048151E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PeyeDF;
+			productName = PeyeDF;
+			productReference = A9EC21401B2856560048151E /* PeyeDF.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A9EC21511B2856560048151E /* PeyeDFTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A9EC215F1B2856560048151E /* Build configuration list for PBXNativeTarget "PeyeDFTests" */;
+			buildPhases = (
+				A9EC214E1B2856560048151E /* Sources */,
+				A9EC214F1B2856560048151E /* Frameworks */,
+				A9EC21501B2856560048151E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A9EC21541B2856560048151E /* PBXTargetDependency */,
+			);
+			name = PeyeDFTests;
+			productName = PeyeDFTests;
+			productReference = A9EC21521B2856560048151E /* PeyeDFTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A9EC21381B2856560048151E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0630;
+				ORGANIZATIONNAME = HIIT;
+				TargetAttributes = {
+					A9EC213F1B2856560048151E = {
+						CreatedOnToolsVersion = 6.3.2;
+					};
+					A9EC21511B2856560048151E = {
+						CreatedOnToolsVersion = 6.3.2;
+						TestTargetID = A9EC213F1B2856560048151E;
+					};
+				};
+			};
+			buildConfigurationList = A9EC213B1B2856560048151E /* Build configuration list for PBXProject "PeyeDF" */;
+			compatibilityVersion = "Xcode 6.3";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A9EC21371B2856560048151E;
+			productRefGroup = A9EC21411B2856560048151E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A9EC213F1B2856560048151E /* PeyeDF */,
+				A9EC21511B2856560048151E /* PeyeDFTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A9EC213E1B2856560048151E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A9907E111B2B177B00189989 /* Main.storyboard in Resources */,
+				A9EC214A1B2856560048151E /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A9EC21501B2856560048151E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A9EC213C1B2856560048151E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A9AB91FC1B29DBDF00BBB289 /* EyeFormulas.swift in Sources */,
+				A9EC21481B2856560048151E /* MyPDFController.swift in Sources */,
+				A9D36EE31B2A1079003D4745 /* MyPDF.swift in Sources */,
+				A9EC21691B2893F80048151E /* ToolController.swift in Sources */,
+				A9EC216B1B289EE70048151E /* SplitController.swift in Sources */,
+				A9EC21461B2856560048151E /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A9EC214E1B2856560048151E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A9EC21591B2856560048151E /* PeyeDFTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A9EC21541B2856560048151E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A9EC213F1B2856560048151E /* PeyeDF */;
+			targetProxy = A9EC21531B2856560048151E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		A9EC214B1B2856560048151E /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A9EC214C1B2856560048151E /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		A9EC215A1B2856560048151E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		A9EC215B1B2856560048151E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		A9EC215D1B2856560048151E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = PeyeDF/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_NAME = PeyeDF;
+			};
+			name = Debug;
+		};
+		A9EC215E1B2856560048151E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = PeyeDF/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_NAME = PeyeDF;
+			};
+			name = Release;
+		};
+		A9EC21601B2856560048151E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = PeyeDF/Info.plist;
+				PRODUCT_NAME = PeyeDFTests;
+			};
+			name = Debug;
+		};
+		A9EC21611B2856560048151E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = PeyeDF/Info.plist;
+				PRODUCT_NAME = PeyeDFTests;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A9EC213B1B2856560048151E /* Build configuration list for PBXProject "PeyeDF" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A9EC215A1B2856560048151E /* Debug */,
+				A9EC215B1B2856560048151E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A9EC215C1B2856560048151E /* Build configuration list for PBXNativeTarget "PeyeDF" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A9EC215D1B2856560048151E /* Debug */,
+				A9EC215E1B2856560048151E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A9EC215F1B2856560048151E /* Build configuration list for PBXNativeTarget "PeyeDFTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A9EC21601B2856560048151E /* Debug */,
+				A9EC21611B2856560048151E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A9EC21381B2856560048151E /* Project object */;
+}
