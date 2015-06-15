@@ -41,6 +41,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    @IBOutlet var pdfController: MyPDFController!
+    @IBOutlet var pdfController: PDFController!
 }
 

@@ -8,7 +8,7 @@
 
 import Cocoa
 
-class MyPDFController: NSViewController {
+class PDFController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()

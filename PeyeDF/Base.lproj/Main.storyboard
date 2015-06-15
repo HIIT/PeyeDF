@@ -832,7 +832,7 @@
         <!--MyPDFController-->
         <scene sceneID="hIz-AP-VOD">
             <objects>
-                <viewController storyboardIdentifier="MyPDFController" showSeguePresentationStyle="single" id="XfG-lQ-9wD" userLabel="MyPDFController" customClass="MyPDFController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MyPDFController" showSeguePresentationStyle="single" id="XfG-lQ-9wD" userLabel="MyPDFController" customClass="PDFController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="m2S-Jp-Qdl">
                         <rect key="frame" x="0.0" y="0.0" width="854" height="673"/>
                         <autoresizingMask key="autoresizingMask"/>

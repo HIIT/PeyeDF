@@ -11,7 +11,7 @@
 		A9AB91FC1B29DBDF00BBB289 /* EyeFormulas.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9AB91FB1B29DBDF00BBB289 /* EyeFormulas.swift */; };
 		A9D36EE31B2A1079003D4745 /* MyPDF.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D36EE21B2A1079003D4745 /* MyPDF.swift */; };
 		A9EC21461B2856560048151E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EC21451B2856560048151E /* AppDelegate.swift */; };
-		A9EC21481B2856560048151E /* MyPDFController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EC21471B2856560048151E /* MyPDFController.swift */; };
+		A9EC21481B2856560048151E /* PDFController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EC21471B2856560048151E /* PDFController.swift */; };
 		A9EC214A1B2856560048151E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A9EC21491B2856560048151E /* Images.xcassets */; };
 		A9EC21591B2856560048151E /* PeyeDFTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EC21581B2856560048151E /* PeyeDFTests.swift */; };
 		A9EC21691B2893F80048151E /* ToolController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EC21681B2893F80048151E /* ToolController.swift */; };
@@ -34,7 +34,7 @@
 		A9EC21401B2856560048151E /* PeyeDF.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PeyeDF.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9EC21441B2856560048151E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A9EC21451B2856560048151E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		A9EC21471B2856560048151E /* MyPDFController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPDFController.swift; sourceTree = "<group>"; };
+		A9EC21471B2856560048151E /* PDFController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFController.swift; sourceTree = "<group>"; };
 		A9EC21491B2856560048151E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		A9EC214C1B2856560048151E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A9EC21521B2856560048151E /* PeyeDFTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PeyeDFTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -86,7 +86,7 @@
 				A9D36EE21B2A1079003D4745 /* MyPDF.swift */,
 				A9AB91FB1B29DBDF00BBB289 /* EyeFormulas.swift */,
 				A9EC21451B2856560048151E /* AppDelegate.swift */,
-				A9EC21471B2856560048151E /* MyPDFController.swift */,
+				A9EC21471B2856560048151E /* PDFController.swift */,
 				A9EC21681B2893F80048151E /* ToolController.swift */,
 				A9EC21491B2856560048151E /* Images.xcassets */,
 				A9EC214B1B2856560048151E /* Main.storyboard */,
@@ -221,7 +221,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A9AB91FC1B29DBDF00BBB289 /* EyeFormulas.swift in Sources */,
-				A9EC21481B2856560048151E /* MyPDFController.swift in Sources */,
+				A9EC21481B2856560048151E /* PDFController.swift in Sources */,
 				A9D36EE31B2A1079003D4745 /* MyPDF.swift in Sources */,
 				A9EC21691B2893F80048151E /* ToolController.swift in Sources */,
 				A9EC216B1B289EE70048151E /* SplitController.swift in Sources */,

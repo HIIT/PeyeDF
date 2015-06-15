@@ -52,7 +52,7 @@ class ToolController: NSViewController, zoomDelegate {
     }
     
     @objc func windowChanged(notification: NSNotification) {
-        let nsv = notification.object as! NSWindow
-        winLabel.stringValue = "(px) View to screen: \(nsv.convertRectToScreen(pdfView!.frame))"
+        let nsv = notification.object as? NSWindow
+        winLabel.stringValue = "(px) View to screen: \(nsv?.convertRectToScreen(pdfView!.frame))"
     }
 }

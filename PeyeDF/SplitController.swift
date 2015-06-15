@@ -10,12 +10,12 @@ import Foundation
 import Cocoa
 
 class SplitController: NSSplitViewController {
-    weak var myPDFController: MyPDFController?
+    weak var myPDFController: PDFController?
     weak var myToolController: ToolController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        myPDFController = self.childViewControllers[0] as? MyPDFController
+        myPDFController = self.childViewControllers[0] as? PDFController
         myToolController = self.childViewControllers[1] as? ToolController
         
         myPDFController?.myPDF.delegateZoom = myToolController
