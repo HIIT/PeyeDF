@@ -11,21 +11,28 @@ import Cocoa
 
 class SplitController: NSSplitViewController {
     weak var myPDFController: PDFController?
-    weak var myToolController: ToolController?
+    var debugController: DebugController?
+    var debugWindowController: NSWindowController?
+    var debugWindow: NSWindow?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         myPDFController = self.childViewControllers[0] as? PDFController
-        myToolController = self.childViewControllers[1] as? ToolController
         
-        myPDFController?.myPDF.delegateZoom = myToolController
+        debugWindowController = self.storyboard?.instantiateControllerWithIdentifier("DebugWindow") as? NSWindowController
+        debugWindowController?.showWindow(self)
+        debugWindow = debugWindowController?.window
+        debugController = debugWindowController?.contentViewController as? DebugController
+        
+        
+        myPDFController?.myPDF.delegateZoom = debugController
     }
     
     override func viewDidAppear() {
-        println(self.view.window!)
-        myToolController?.pdfView = myPDFController!.myPDF as NSView
-        myToolController?.mainWin = self.view.window
-        myToolController?.setUpControllers()
+        super.viewDidAppear()
+        debugController?.pdfView = myPDFController!.myPDF as NSView
+        debugController?.mainWin = self.view.window
+        debugController?.setUpControllers()
     }
 
 }

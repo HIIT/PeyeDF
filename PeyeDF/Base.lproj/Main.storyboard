@@ -658,28 +658,44 @@
             <objects>
                 <splitViewController title="PeyeDF Prototype" showSeguePresentationStyle="single" id="upE-hu-sHW" customClass="SplitController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
                     <splitViewItems>
-                        <splitViewItem id="XTb-4h-OX9"/>
-                        <splitViewItem id="LGr-HM-5CP"/>
+                        <splitViewItem id="0Vv-vC-LYf"/>
                     </splitViewItems>
                     <splitView key="splitView" dividerStyle="thin" vertical="YES" id="7iA-Js-Cw6">
                         <rect key="frame" x="0.0" y="0.0" width="514" height="348"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </splitView>
                     <connections>
-                        <segue destination="XfG-lQ-9wD" kind="relationship" relationship="splitItems" id="TzV-84-VYd"/>
-                        <segue destination="Ye6-Vi-XrI" kind="relationship" relationship="splitItems" id="cbO-b5-ruh"/>
+                        <segue destination="XfG-lQ-9wD" kind="relationship" relationship="splitItems" id="kfp-Na-O0b"/>
                     </connections>
                 </splitViewController>
                 <customObject id="xjy-tE-HTD" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="112" y="268"/>
         </scene>
+        <!--Window Controller-->
+        <scene sceneID="v3B-6r-Vc2">
+            <objects>
+                <windowController storyboardIdentifier="DebugWindow" id="BkO-K2-Ie9" sceneMemberID="viewController">
+                    <window key="window" title="Debug Info" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" animationBehavior="default" id="RxI-Up-x4Y">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+                        <rect key="contentRect" x="425" y="461" width="714" height="270"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+                    </window>
+                    <connections>
+                        <segue destination="Ye6-Vi-XrI" kind="relationship" relationship="window.shadowedContentViewController" id="LcV-s2-7JB"/>
+                    </connections>
+                </windowController>
+                <customObject id="rlM-hZ-1LG" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="819" y="-30"/>
+        </scene>
         <!--ToolController-->
         <scene sceneID="tRf-D6-wW5">
             <objects>
-                <viewController title="ToolController" storyboardIdentifier="MyToolController" showSeguePresentationStyle="single" id="Ye6-Vi-XrI" customClass="ToolController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="ToolController" storyboardIdentifier="DebugController" showSeguePresentationStyle="single" id="Ye6-Vi-XrI" customClass="DebugController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" id="y3Q-Wa-bds" userLabel="ToolbarController">
-                        <rect key="frame" x="0.0" y="0.0" width="290" height="300"/>
+                        <rect key="frame" x="0.0" y="0.0" width="631" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rBe-Ac-zyB">
@@ -704,10 +720,10 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hR0-TP-nDN" userLabel="zoomLab">
-                                <rect key="frame" x="161" y="263" width="111" height="17"/>
+                            <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hR0-TP-nDN" userLabel="zoomLab1">
+                                <rect key="frame" x="161" y="263" width="452" height="17"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="107" id="gT3-BB-AaR"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="448" id="Rlr-eE-lDs"/>
                                 </constraints>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="N.D." id="EHj-VZ-4gw">
                                     <font key="font" metaFont="system"/>
@@ -715,11 +731,8 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="eHJ-PS-Zre" userLabel="zoomLab">
-                                <rect key="frame" x="161" y="238" width="111" height="17"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="107" id="oKP-C2-QR0"/>
-                                </constraints>
+                            <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="eHJ-PS-Zre" userLabel="zoomLab2">
+                                <rect key="frame" x="161" y="238" width="452" height="17"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="N.D." id="At1-h9-gZ3">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -737,11 +750,8 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="902-3y-Zof" userLabel="zoomLab">
-                                <rect key="frame" x="161" y="213" width="111" height="17"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="107" id="UGD-Pn-QGN"/>
-                                </constraints>
+                            <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="902-3y-Zof" userLabel="trackLab">
+                                <rect key="frame" x="161" y="213" width="452" height="17"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="N.D." id="WZk-Wu-Ni3">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -759,11 +769,8 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="v8N-qb-zd6" userLabel="zoomLab">
-                                <rect key="frame" x="161" y="188" width="111" height="17"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="107" id="ouy-1X-jMd"/>
-                                </constraints>
+                            <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="v8N-qb-zd6" userLabel="BoundsLab">
+                                <rect key="frame" x="161" y="188" width="452" height="17"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="N.D." id="qKI-xj-xHg">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -781,11 +788,8 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="W30-3n-rgF" userLabel="zoomLab">
-                                <rect key="frame" x="161" y="163" width="111" height="17"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="107" id="nm8-lA-Qyb"/>
-                                </constraints>
+                            <textField horizontalHuggingPriority="252" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="W30-3n-rgF" userLabel="posLab">
+                                <rect key="frame" x="161" y="163" width="452" height="17"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="N.D." id="rcJ-lO-uOG">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -794,16 +798,20 @@
                             </textField>
                         </subviews>
                         <constraints>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="hR0-TP-nDN" secondAttribute="trailing" constant="20" id="2Yb-uQ-9xT"/>
                             <constraint firstItem="902-3y-Zof" firstAttribute="leading" secondItem="bJF-St-Wxg" secondAttribute="trailing" constant="10" id="3gP-5H-4Mu"/>
+                            <constraint firstItem="hR0-TP-nDN" firstAttribute="width" secondItem="v8N-qb-zd6" secondAttribute="width" id="Bo1-9I-fZX"/>
+                            <constraint firstItem="hR0-TP-nDN" firstAttribute="width" secondItem="W30-3n-rgF" secondAttribute="width" id="DDC-7r-tUg"/>
+                            <constraint firstItem="902-3y-Zof" firstAttribute="width" secondItem="eHJ-PS-Zre" secondAttribute="width" id="DV2-nV-lMa"/>
                             <constraint firstItem="N9m-ge-o3Q" firstAttribute="leading" secondItem="y3Q-Wa-bds" secondAttribute="leading" constant="68" id="G9P-o9-GwV"/>
                             <constraint firstItem="902-3y-Zof" firstAttribute="centerY" secondItem="bJF-St-Wxg" secondAttribute="centerY" id="HQR-2w-Ltf"/>
                             <constraint firstItem="W30-3n-rgF" firstAttribute="leading" secondItem="010-Jb-G8q" secondAttribute="trailing" constant="10" id="ISw-4Q-EoB"/>
                             <constraint firstItem="v8N-qb-zd6" firstAttribute="leading" secondItem="hDx-Je-5Tf" secondAttribute="trailing" constant="10" id="Jgw-bn-4HE"/>
                             <constraint firstItem="hR0-TP-nDN" firstAttribute="leading" secondItem="rBe-Ac-zyB" secondAttribute="trailing" constant="10" id="MWx-eF-RcZ"/>
                             <constraint firstItem="W30-3n-rgF" firstAttribute="centerY" secondItem="010-Jb-G8q" secondAttribute="centerY" id="QBD-Bc-MEu"/>
+                            <constraint firstItem="hR0-TP-nDN" firstAttribute="width" secondItem="eHJ-PS-Zre" secondAttribute="width" id="RpM-C9-Hug"/>
                             <constraint firstItem="hDx-Je-5Tf" firstAttribute="top" secondItem="bJF-St-Wxg" secondAttribute="bottom" constant="8" id="Rps-2m-a5n"/>
                             <constraint firstItem="N9m-ge-o3Q" firstAttribute="top" secondItem="rBe-Ac-zyB" secondAttribute="bottom" constant="8" id="bOW-PZ-kGy"/>
-                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="hR0-TP-nDN" secondAttribute="trailing" constant="20" id="coH-VO-ni0"/>
                             <constraint firstItem="bJF-St-Wxg" firstAttribute="leading" secondItem="y3Q-Wa-bds" secondAttribute="leading" constant="68" id="gtd-Dy-x9m"/>
                             <constraint firstItem="hR0-TP-nDN" firstAttribute="top" secondItem="y3Q-Wa-bds" secondAttribute="top" constant="20" id="gzX-tL-dk5"/>
                             <constraint firstItem="rBe-Ac-zyB" firstAttribute="leading" secondItem="y3Q-Wa-bds" secondAttribute="leading" constant="68" id="m9f-f7-oBV"/>
@@ -827,7 +835,7 @@
                 </viewController>
                 <customObject id="BNT-9h-9GO" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="666" y="268"/>
+            <point key="canvasLocation" x="938.5" y="389"/>
         </scene>
         <!--MyPDFController-->
         <scene sceneID="hIz-AP-VOD">

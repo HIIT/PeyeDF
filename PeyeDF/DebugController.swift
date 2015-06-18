@@ -10,7 +10,7 @@ import Foundation
 import Cocoa
 import Quartz.PDFKit.PDFView
 
-class ToolController: NSViewController, zoomDelegate {
+class DebugController: NSViewController, zoomDelegate {
     weak var pdfView: NSView?
     weak var mainWin: NSWindow?
 

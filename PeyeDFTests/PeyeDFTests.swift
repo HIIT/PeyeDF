@@ -1,3 +1,11 @@
+//
+//  PeyeDFTests.swift
+//  PeyeDFTests
+//
+//  Created by Marco Filetti on 18/06/2015.
+//  Copyright (c) 2015 HIIT. All rights reserved.
+//
+
 import Cocoa
 import XCTest
 
