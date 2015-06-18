@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/marco/git/marcofiletti-all/xcode/PeyeDF/PeyeDF.xcodeproj">
+      location = "self:">
    </FileRef>
 </Workspace>
