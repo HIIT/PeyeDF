@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="upE-hu-sHW">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="sy6-nO-Tdf">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7706"/>
         <plugIn identifier="com.apple.pdfkit.ibplugin" version="7706"/>
@@ -651,31 +651,114 @@
                 <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="PeyeDF" customModuleProvider="target"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="0.0"/>
+            <point key="canvasLocation" x="-957.5" y="-1200"/>
         </scene>
-        <!--PeyeDF Prototype-->
-        <scene sceneID="q6Y-JH-RBD">
+        <!--Window Controller-->
+        <scene sceneID="f6R-Kc-PFL">
             <objects>
-                <splitViewController title="PeyeDF Prototype" showSeguePresentationStyle="single" id="upE-hu-sHW" customClass="SplitController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
+                <windowController id="sy6-nO-Tdf" sceneMemberID="viewController">
+                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="Ezf-2B-VUj">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+                        <rect key="contentRect" x="67" y="666" width="600" height="300"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+                        <toolbar key="toolbar" implicitIdentifier="536DCB0E-4411-47B2-BE21-AD4B2EDCCC8A" autosavesConfiguration="NO" displayMode="iconAndLabel" sizeMode="regular" id="lWe-1p-qV3">
+                            <allowedToolbarItems>
+                                <toolbarItem implicitItemIdentifier="NSToolbarPrintItem" id="aNh-Te-Qhf"/>
+                                <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="Ojd-M4-Zl7"/>
+                                <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="10c-J9-dPD"/>
+                            </allowedToolbarItems>
+                            <defaultToolbarItems>
+                                <toolbarItem reference="10c-J9-dPD"/>
+                                <toolbarItem reference="aNh-Te-Qhf"/>
+                            </defaultToolbarItems>
+                        </toolbar>
+                    </window>
+                    <connections>
+                        <segue destination="f9L-GU-eYT" kind="relationship" relationship="window.shadowedContentViewController" id="t30-fj-7gb"/>
+                    </connections>
+                </windowController>
+                <customObject id="H3y-Bk-Ofi" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1080" y="-844"/>
+        </scene>
+        <!--Main Controller-->
+        <scene sceneID="MBz-GY-gCZ">
+            <objects>
+                <splitViewController title="Main Controller" id="f9L-GU-eYT" sceneMemberID="viewController">
                     <splitViewItems>
-                        <splitViewItem id="0Vv-vC-LYf"/>
+                        <splitViewItem holdingPriority="252" id="8W1-Ac-SG8"/>
+                        <splitViewItem id="hS7-nY-Y6y"/>
                     </splitViewItems>
-                    <splitView key="splitView" dividerStyle="thin" vertical="YES" id="7iA-Js-Cw6">
-                        <rect key="frame" x="0.0" y="0.0" width="514" height="348"/>
+                    <splitView key="splitView" dividerStyle="thin" id="JxJ-iL-XPO">
+                        <rect key="frame" x="0.0" y="0.0" width="631" height="490"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </splitView>
                     <connections>
-                        <segue destination="XfG-lQ-9wD" kind="relationship" relationship="splitItems" id="kfp-Na-O0b"/>
+                        <segue destination="DPg-yb-Bd5" kind="relationship" relationship="splitItems" id="feg-1g-l0j"/>
+                        <segue destination="upE-hu-sHW" kind="relationship" relationship="splitItems" id="1Pn-VL-Ug6"/>
+                    </connections>
+                </splitViewController>
+                <customObject id="uxT-HG-COE" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1079.5" y="-281"/>
+        </scene>
+        <!--Document History-->
+        <scene sceneID="zvA-5W-rrb">
+            <objects>
+                <viewController title="Document History" showSeguePresentationStyle="single" id="DPg-yb-Bd5" sceneMemberID="viewController">
+                    <view key="view" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" id="mp4-z4-96E">
+                        <rect key="frame" x="0.0" y="0.0" width="669" height="136"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4lM-ir-pUB">
+                                <rect key="frame" x="195" y="58" width="279" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="275" id="dWJ-GM-Iaw"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="16" id="xAy-U5-ic5"/>
+                                </constraints>
+                                <sliderCell key="cell" alignment="left" maxValue="100" doubleValue="33.306080426356587" tickMarkPosition="above" sliderType="linear" id="oaC-TM-Rqn"/>
+                            </slider>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="4lM-ir-pUB" firstAttribute="top" relation="lessThanOrEqual" secondItem="mp4-z4-96E" secondAttribute="top" constant="60" id="7jn-Kz-Pk0"/>
+                            <constraint firstAttribute="centerX" secondItem="4lM-ir-pUB" secondAttribute="centerX" id="M8J-ZQ-sLN"/>
+                            <constraint firstAttribute="centerY" secondItem="4lM-ir-pUB" secondAttribute="centerY" id="SfT-dN-pTJ"/>
+                            <constraint firstAttribute="bottom" relation="lessThanOrEqual" secondItem="4lM-ir-pUB" secondAttribute="bottom" constant="60" id="lOT-06-3se"/>
+                            <constraint firstAttribute="trailing" secondItem="4lM-ir-pUB" secondAttribute="trailing" constant="197" id="qdd-9A-9jv"/>
+                            <constraint firstItem="4lM-ir-pUB" firstAttribute="leading" secondItem="mp4-z4-96E" secondAttribute="leading" constant="197" id="xjX-k7-V0N"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <customObject id="yRf-AT-czT" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-273.5" y="-541"/>
+        </scene>
+        <!--Document split-->
+        <scene sceneID="q6Y-JH-RBD">
+            <objects>
+                <splitViewController title="PeyeDF Document" id="upE-hu-sHW" userLabel="Document split" customClass="SplitController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
+                    <splitViewItems>
+                        <splitViewItem holdingPriority="249" id="6iq-Xm-XGP"/>
+                        <splitViewItem holdingPriority="248" id="CKe-Mb-mD5"/>
+                    </splitViewItems>
+                    <splitView key="splitView" dividerStyle="thin" vertical="YES" id="7iA-Js-Cw6">
+                        <rect key="frame" x="0.0" y="0.0" width="734" height="348"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </splitView>
+                    <connections>
+                        <segue destination="NDG-Mr-8zT" kind="relationship" relationship="splitItems" id="nIf-Co-0Mr"/>
+                        <segue destination="XfG-lQ-9wD" kind="relationship" relationship="splitItems" id="FGR-nI-lj2"/>
                     </connections>
                 </splitViewController>
                 <customObject id="xjy-tE-HTD" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="112" y="268"/>
+            <point key="canvasLocation" x="-257" y="-181"/>
         </scene>
-        <!--Window Controller-->
+        <!--DebugWindow-->
         <scene sceneID="v3B-6r-Vc2">
             <objects>
-                <windowController storyboardIdentifier="DebugWindow" id="BkO-K2-Ie9" sceneMemberID="viewController">
+                <windowController storyboardIdentifier="DebugWindow" showSeguePresentationStyle="single" id="BkO-K2-Ie9" userLabel="DebugWindow" sceneMemberID="viewController">
                     <window key="window" title="Debug Info" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" animationBehavior="default" id="RxI-Up-x4Y">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
@@ -688,7 +771,7 @@
                 </windowController>
                 <customObject id="rlM-hZ-1LG" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="819" y="-30"/>
+            <point key="canvasLocation" x="-173" y="-1034"/>
         </scene>
         <!--ToolController-->
         <scene sceneID="tRf-D6-wW5">
@@ -835,26 +918,55 @@
                 </viewController>
                 <customObject id="BNT-9h-9GO" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="938.5" y="389"/>
+            <point key="canvasLocation" x="694.5" y="-1019"/>
+        </scene>
+        <!--Thumbnail Controller-->
+        <scene sceneID="M41-pB-2BI">
+            <objects>
+                <viewController title="Thumbnail Controller" id="NDG-Mr-8zT" sceneMemberID="viewController">
+                    <view key="view" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" id="Xcj-vT-c4k">
+                        <rect key="frame" x="0.0" y="0.0" width="340" height="144"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <pdfThumbnailView horizontalHuggingPriority="248" verticalHuggingPriority="248" horizontalCompressionResistancePriority="748" verticalCompressionResistancePriority="748" translatesAutoresizingMaskIntoConstraints="NO" id="67W-LG-b20">
+                                <rect key="frame" x="20" y="20" width="300" height="104"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="104" id="Hkx-92-wIT"/>
+                                    <constraint firstAttribute="width" relation="lessThanOrEqual" constant="300" id="cr3-Zp-R0O"/>
+                                </constraints>
+                                <size key="thumbnailSize" width="64" height="64"/>
+                            </pdfThumbnailView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="trailing" relation="lessThanOrEqual" secondItem="67W-LG-b20" secondAttribute="trailing" constant="20" id="75m-sb-zEz"/>
+                            <constraint firstItem="67W-LG-b20" firstAttribute="leading" relation="lessThanOrEqual" secondItem="Xcj-vT-c4k" secondAttribute="leading" constant="20" id="H86-rS-Wrj"/>
+                            <constraint firstAttribute="bottom" secondItem="67W-LG-b20" secondAttribute="bottom" constant="20" id="dth-1C-qE3"/>
+                            <constraint firstItem="67W-LG-b20" firstAttribute="top" secondItem="Xcj-vT-c4k" secondAttribute="top" constant="20" id="gXL-mn-gnC"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <customObject id="G8b-Rw-WNj" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-636" y="336"/>
         </scene>
         <!--MyPDFController-->
         <scene sceneID="hIz-AP-VOD">
             <objects>
-                <viewController storyboardIdentifier="MyPDFController" showSeguePresentationStyle="single" id="XfG-lQ-9wD" userLabel="MyPDFController" customClass="PDFController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="m2S-Jp-Qdl">
-                        <rect key="frame" x="0.0" y="0.0" width="854" height="673"/>
+                <viewController title="PDFView Controller" storyboardIdentifier="MyPDFController" id="XfG-lQ-9wD" userLabel="MyPDFController" customClass="PDFController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" horizontalHuggingPriority="253" verticalHuggingPriority="253" horizontalCompressionResistancePriority="746" verticalCompressionResistancePriority="746" id="m2S-Jp-Qdl">
+                        <rect key="frame" x="0.0" y="0.0" width="574" height="360"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <pdfView autoresizesSubviews="NO" wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0Dp-rz-UVv" customClass="MyPDF" customModule="PeyeDF" customModuleProvider="target">
-                                <rect key="frame" x="20" y="20" width="814" height="633"/>
+                                <rect key="frame" x="20" y="20" width="534" height="320"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="814" id="Pvk-mM-WMf"/>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="633" id="fcR-Tr-haJ"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="534" id="gIf-Ik-hwW"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="320" id="uZL-UY-4Xd"/>
                                 </constraints>
                             </pdfView>
                         </subviews>
                         <constraints>
-                            <constraint firstAttribute="bottom" secondItem="0Dp-rz-UVv" secondAttribute="bottom" constant="20" id="ITa-p4-kDG"/>
+                            <constraint firstAttribute="bottom" secondItem="0Dp-rz-UVv" secondAttribute="bottom" constant="20" id="FNT-dP-jjn"/>
                             <constraint firstItem="0Dp-rz-UVv" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" id="JIS-vU-jhI"/>
                             <constraint firstAttribute="trailing" secondItem="0Dp-rz-UVv" secondAttribute="trailing" constant="20" id="JXP-62-y9I"/>
                             <constraint firstItem="0Dp-rz-UVv" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" id="nQw-AX-LeT"/>
@@ -866,7 +978,7 @@
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="124" y="920.5"/>
+            <point key="canvasLocation" x="-45" y="364"/>
         </scene>
     </scenes>
 </document>

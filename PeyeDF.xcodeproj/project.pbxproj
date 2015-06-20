@@ -32,7 +32,7 @@
 /* Begin PBXFileReference section */
 		A91CB9441B332EDB00671868 /* PeyeDF.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PeyeDF.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A91CB9481B332EDB00671868 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A91CB9491B332EDB00671868 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		A91CB9491B332EDB00671868 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = PeyeDF/AppDelegate.swift; sourceTree = "<group>"; };
 		A91CB94F1B332EDB00671868 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		A91CB9521B332EDB00671868 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A91CB9581B332EDB00671868 /* PeyeDFTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PeyeDFTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -64,15 +64,41 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A9000C5B1B358B7F00E59C7B /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				A91CB9511B332EDB00671868 /* Main.storyboard */,
+				A91CB9681B332FB700671868 /* DebugController.swift */,
+				A91CB96A1B332FB700671868 /* MyPDF.swift */,
+				A91CB96B1B332FB700671868 /* PDFController.swift */,
+				A91CB96D1B332FB700671868 /* SplitController.swift */,
+			);
+			name = UI;
+			sourceTree = "<group>";
+		};
+		A9000C5C1B358B8E00E59C7B /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				A91CB9691B332FB700671868 /* EyeFormulas.swift */,
+			);
+			name = Utility;
+			sourceTree = "<group>";
+		};
+		A9000C5D1B358BBC00E59C7B /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				A91CB96C1B332FB700671868 /* PeyeDocument.swift */,
+				A91CB9491B332EDB00671868 /* AppDelegate.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
 		A91CB93B1B332EDB00671868 = {
 			isa = PBXGroup;
 			children = (
-				A91CB9681B332FB700671868 /* DebugController.swift */,
-				A91CB9691B332FB700671868 /* EyeFormulas.swift */,
-				A91CB96A1B332FB700671868 /* MyPDF.swift */,
-				A91CB96B1B332FB700671868 /* PDFController.swift */,
-				A91CB96C1B332FB700671868 /* PeyeDocument.swift */,
-				A91CB96D1B332FB700671868 /* SplitController.swift */,
+				A9000C5D1B358BBC00E59C7B /* Model */,
+				A9000C5C1B358B8E00E59C7B /* Utility */,
+				A9000C5B1B358B7F00E59C7B /* UI */,
 				A91CB9461B332EDB00671868 /* PeyeDF */,
 				A91CB95B1B332EDB00671868 /* PeyeDFTests */,
 				A91CB9451B332EDB00671868 /* Products */,
@@ -91,9 +117,7 @@
 		A91CB9461B332EDB00671868 /* PeyeDF */ = {
 			isa = PBXGroup;
 			children = (
-				A91CB9491B332EDB00671868 /* AppDelegate.swift */,
 				A91CB94F1B332EDB00671868 /* Images.xcassets */,
-				A91CB9511B332EDB00671868 /* Main.storyboard */,
 				A91CB9471B332EDB00671868 /* Supporting Files */,
 			);
 			path = PeyeDF;
@@ -258,6 +282,7 @@
 				A91CB9521B332EDB00671868 /* Base */,
 			);
 			name = Main.storyboard;
+			path = PeyeDF;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

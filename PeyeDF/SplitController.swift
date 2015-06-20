@@ -17,7 +17,7 @@ class SplitController: NSSplitViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        myPDFController = self.childViewControllers[0] as? PDFController
+        myPDFController = self.childViewControllers[1] as? PDFController
         
         debugWindowController = self.storyboard?.instantiateControllerWithIdentifier("DebugWindow") as? NSWindowController
         debugWindowController?.showWindow(self)
