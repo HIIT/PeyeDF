@@ -16,7 +16,8 @@
 		A91CB9701B332FB700671868 /* MyPDF.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91CB96A1B332FB700671868 /* MyPDF.swift */; };
 		A91CB9711B332FB700671868 /* PDFController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91CB96B1B332FB700671868 /* PDFController.swift */; };
 		A91CB9721B332FB700671868 /* PeyeDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91CB96C1B332FB700671868 /* PeyeDocument.swift */; };
-		A91CB9731B332FB700671868 /* SplitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91CB96D1B332FB700671868 /* SplitController.swift */; };
+		A91CB9731B332FB700671868 /* DocumentSplitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91CB96D1B332FB700671868 /* DocumentSplitController.swift */; };
+		A9418FA81B386D11000119F8 /* DocumentWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9418FA71B386D11000119F8 /* DocumentWindowController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,7 +44,8 @@
 		A91CB96A1B332FB700671868 /* MyPDF.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MyPDF.swift; path = PeyeDF/MyPDF.swift; sourceTree = "<group>"; };
 		A91CB96B1B332FB700671868 /* PDFController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PDFController.swift; path = PeyeDF/PDFController.swift; sourceTree = "<group>"; };
 		A91CB96C1B332FB700671868 /* PeyeDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PeyeDocument.swift; path = PeyeDF/PeyeDocument.swift; sourceTree = "<group>"; };
-		A91CB96D1B332FB700671868 /* SplitController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SplitController.swift; path = PeyeDF/SplitController.swift; sourceTree = "<group>"; };
+		A91CB96D1B332FB700671868 /* DocumentSplitController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DocumentSplitController.swift; path = PeyeDF/DocumentSplitController.swift; sourceTree = "<group>"; };
+		A9418FA71B386D11000119F8 /* DocumentWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DocumentWindowController.swift; path = PeyeDF/DocumentWindowController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,9 +71,10 @@
 			children = (
 				A91CB9511B332EDB00671868 /* Main.storyboard */,
 				A91CB9681B332FB700671868 /* DebugController.swift */,
+				A9418FA71B386D11000119F8 /* DocumentWindowController.swift */,
 				A91CB96A1B332FB700671868 /* MyPDF.swift */,
 				A91CB96B1B332FB700671868 /* PDFController.swift */,
-				A91CB96D1B332FB700671868 /* SplitController.swift */,
+				A91CB96D1B332FB700671868 /* DocumentSplitController.swift */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -251,7 +254,8 @@
 				A91CB9721B332FB700671868 /* PeyeDocument.swift in Sources */,
 				A91CB94A1B332EDB00671868 /* AppDelegate.swift in Sources */,
 				A91CB9711B332FB700671868 /* PDFController.swift in Sources */,
-				A91CB9731B332FB700671868 /* SplitController.swift in Sources */,
+				A9418FA81B386D11000119F8 /* DocumentWindowController.swift in Sources */,
+				A91CB9731B332FB700671868 /* DocumentSplitController.swift in Sources */,
 				A91CB9701B332FB700671868 /* MyPDF.swift in Sources */,
 				A91CB96E1B332FB700671868 /* DebugController.swift in Sources */,
 			);

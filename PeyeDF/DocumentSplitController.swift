@@ -1,5 +1,5 @@
 //
-//  SplitController.swift
+//  DocumentSplitController.swift
 //  PeyeDF
 //
 //  Created by Marco Filetti on 10/06/2015.
@@ -9,7 +9,7 @@
 import Foundation
 import Cocoa
 
-class SplitController: NSSplitViewController {
+class DocumentSplitController: NSSplitViewController {
     weak var myPDFController: PDFController?
     var debugController: DebugController?
     var debugWindowController: NSWindowController?

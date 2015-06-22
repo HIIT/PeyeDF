@@ -656,11 +656,11 @@
         <!--Window Controller-->
         <scene sceneID="f6R-Kc-PFL">
             <objects>
-                <windowController id="sy6-nO-Tdf" sceneMemberID="viewController">
+                <windowController storyboardIdentifier="Document Window Controller" id="sy6-nO-Tdf" customClass="DocumentWindowController" customModule="PeyeDF" sceneMemberID="viewController">
                     <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="Ezf-2B-VUj">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-                        <rect key="contentRect" x="67" y="666" width="600" height="300"/>
+                        <rect key="contentRect" x="212" y="538" width="600" height="300"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
                         <toolbar key="toolbar" implicitIdentifier="536DCB0E-4411-47B2-BE21-AD4B2EDCCC8A" autosavesConfiguration="NO" displayMode="iconAndLabel" sizeMode="regular" id="lWe-1p-qV3">
                             <allowedToolbarItems>
@@ -737,7 +737,7 @@
         <!--Document split-->
         <scene sceneID="q6Y-JH-RBD">
             <objects>
-                <splitViewController title="PeyeDF Document" id="upE-hu-sHW" userLabel="Document split" customClass="SplitController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
+                <splitViewController title="PeyeDF Document" id="upE-hu-sHW" userLabel="Document split" customClass="DocumentSplitController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
                     <splitViewItems>
                         <splitViewItem holdingPriority="249" id="6iq-Xm-XGP"/>
                         <splitViewItem holdingPriority="248" id="CKe-Mb-mD5"/>

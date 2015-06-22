@@ -86,6 +86,10 @@ class MyPDF:PDFView {
         self.setCurrentSelection(pdfSel, animate: true)
     }
     
+    func saveDocumentAs(sender: AnyObject) {
+        let b = 5
+    }
+    
     override func drawPage(page: PDFPage!) {
         super.drawPage(page)
         delegateZoom?.updateZoom(self.rowSizeForPage(page))
