@@ -12,8 +12,6 @@ class PDFController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let appDelegate:AppDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.pdfController = self
     }
 
     override var representedObject: AnyObject? {

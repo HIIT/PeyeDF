@@ -33,6 +33,9 @@ class DocumentSplitController: NSSplitViewController {
         debugController?.pdfView = myPDFController!.myPDF as NSView
         debugController?.mainWin = self.view.window
         debugController?.setUpControllers()
+        // TODO: This is just a stub, remove later
+        let tw: NSSplitView = self.splitView as NSSplitView
+        tw.setPosition(CGFloat(250), ofDividerAtIndex: 0)
     }
 
 }

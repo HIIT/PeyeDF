@@ -12,10 +12,6 @@ import Quartz.PDFKit.PDFView
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
-    func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {
-        return true
-    }
-
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         // Insert code here to initialize your application
     }
@@ -28,23 +24,5 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return false
     }
 
-    @IBAction func openPDFrequest(sender: AnyObject) {
-        var openPanel = NSOpenPanel()
-        openPanel.allowsMultipleSelection = false
-        openPanel.canChooseDirectories = false
-        openPanel.canCreateDirectories = false
-        openPanel.canChooseFiles = true
-        openPanel.allowedFileTypes = ["pdf"]
-        openPanel.beginWithCompletionHandler { (result) -> Void in
-            if result == NSFileHandlingPanelOKButton {
-                if let url = openPanel.URL {
-                    let doc:PDFDocument = PDFDocument(URL: url)
-                    self.pdfController.myPDF.setDocument(doc)
-                }
-            }
-        }
-    }
-    
-    @IBOutlet var pdfController: PDFController!
 }
 

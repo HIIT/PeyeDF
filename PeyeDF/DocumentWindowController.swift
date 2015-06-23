@@ -8,14 +8,25 @@
 
 import Cocoa
 import Foundation
-import Quartz.PDFKit
+import Quartz
 
 class DocumentWindowController: NSWindowController {
+    weak var myPdf: MyPDF?
 
     override func windowDidLoad() {
         super.windowDidLoad()
     
-        // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
+        // Set reference to myPdf for convenience by using references to children of this window
+        let splV: NSSplitViewController = self.window?.contentViewController as! NSSplitViewController
+        let splV2: DocumentSplitController = splV.childViewControllers[1] as! DocumentSplitController
+        myPdf = splV2.myPDFController?.myPDF
+        myPdf?.setAutoScales(true)
+        
+    }
+    
+    func loadDocument() {
+
+        // Load document and display it
         var pdfDoc: PDFDocument
         
         if let document: NSDocument = self.document as? NSDocument {
@@ -23,8 +34,7 @@ class DocumentWindowController: NSWindowController {
             let doc:PDFDocument = PDFDocument(URL: url)
             
             pdfDoc = PDFDocument(URL: url)
-            println(pdfDoc.description)
+            myPdf?.setDocument(pdfDoc)
         }
     }
-
 }
