@@ -8,11 +8,22 @@
 
 import Foundation
 import Cocoa
-import Quartz.PDFKit.PDFView
+import Quartz
 
+/// Controller for the stuff within the Debug Window
 class DebugController: NSViewController, zoomDelegate {
     weak var pdfView: NSView?
     weak var mainWin: NSWindow?
+    
+    override func viewDidLoad() {
+        debugTable.addTableColumn(NSTableColumn(identifier: "ciao"))
+        debugTable.setDataSource(AppSingleton.debugState)
+    }
+    
+    override func viewDidAppear() {
+        debugTable.reloadData()
+        println(debugTable)
+    }
 
     func setUpControllers() {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "zoomChanged:", name: PDFViewScaleChangedNotification, object: pdfView)
@@ -26,6 +37,7 @@ class DebugController: NSViewController, zoomDelegate {
     @IBOutlet weak var trackALabel: NSTextField!
     @IBOutlet weak var boundsLabel: NSTextField!
     @IBOutlet weak var winLabel: NSTextField!
+    @IBOutlet weak var debugTable: NSTableView!
     
     func updateZoom(rowSize: NSSize) {
         let hS = rowSize.height.description

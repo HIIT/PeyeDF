@@ -8,6 +8,7 @@
 
 import Cocoa
 
+/// Controller for the PDF-side Document split view
 class PDFController: NSViewController {
 
     override func viewDidLoad() {

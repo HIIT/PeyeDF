@@ -10,6 +10,7 @@ import Cocoa
 import Foundation
 import Quartz
 
+/// Manages the "Document Window", which comprises two split views, one inside the other
 class DocumentWindowController: NSWindowController {
     weak var myPdf: MyPDF?
 

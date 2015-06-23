@@ -9,6 +9,7 @@
 import Foundation
 import Cocoa
 
+/// The Document split controller contains a PDF preview (left side, index 0) and the PDFView (right side, index 1)
 class DocumentSplitController: NSSplitViewController {
     weak var myPDFController: PDFController?
     var debugController: DebugController?
