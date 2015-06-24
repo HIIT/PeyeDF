@@ -702,11 +702,11 @@
             <objects>
                 <viewController title="Document History" showSeguePresentationStyle="single" id="DPg-yb-Bd5" sceneMemberID="viewController">
                     <view key="view" horizontalHuggingPriority="248" verticalHuggingPriority="248" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" id="mp4-z4-96E">
-                        <rect key="frame" x="0.0" y="0.0" width="669" height="136"/>
+                        <rect key="frame" x="0.0" y="0.0" width="669" height="135"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4lM-ir-pUB">
-                                <rect key="frame" x="195" y="58" width="279" height="21"/>
+                                <rect key="frame" x="195" y="58" width="279" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="275" id="dWJ-GM-Iaw"/>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="16" id="xAy-U5-ic5"/>
@@ -851,7 +851,7 @@
         <!--Thumbnail Controller-->
         <scene sceneID="M41-pB-2BI">
             <objects>
-                <viewController title="Thumbnail Controller" id="NDG-Mr-8zT" sceneMemberID="viewController">
+                <viewController title="Thumbnail Controller" id="NDG-Mr-8zT" customClass="ThumbSideController" customModule="PeyeDF" sceneMemberID="viewController">
                     <view key="view" horizontalHuggingPriority="240" verticalHuggingPriority="240" id="Xcj-vT-c4k">
                         <rect key="frame" x="0.0" y="0.0" width="340" height="144"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -872,6 +872,9 @@
                             <constraint firstItem="67W-LG-b20" firstAttribute="top" secondItem="Xcj-vT-c4k" secondAttribute="top" constant="20" id="gXL-mn-gnC"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="myThumb" destination="67W-LG-b20" id="WrB-ob-fWS"/>
+                    </connections>
                 </viewController>
                 <customObject id="G8b-Rw-WNj" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>

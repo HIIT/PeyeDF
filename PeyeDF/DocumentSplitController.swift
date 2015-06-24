@@ -13,12 +13,15 @@ import Cocoa
 class DocumentSplitController: NSSplitViewController {
     
     weak var myPDFSideController: PDFSideController?
+    weak var myThumbController: ThumbSideController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        myThumbController = self.childViewControllers[0] as? ThumbSideController
         myPDFSideController = self.childViewControllers[1] as? PDFSideController
         
         myPDFSideController?.myPDF.delegateZoom = AppSingleton.debugData
+        myThumbController?.myThumb.setPDFView(myPDFSideController?.myPDF)
     }
     
     override func viewDidAppear() {
