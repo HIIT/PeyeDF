@@ -12,6 +12,7 @@ import Quartz
 
 /// Manages the "Document Window", which comprises two split views, one inside the other
 class DocumentWindowController: NSWindowController {
+    
     weak var myPdf: MyPDF?
 
     override func windowDidLoad() {
@@ -20,7 +21,7 @@ class DocumentWindowController: NSWindowController {
         // Set reference to myPdf for convenience by using references to children of this window
         let splV: NSSplitViewController = self.window?.contentViewController as! NSSplitViewController
         let splV2: DocumentSplitController = splV.childViewControllers[1] as! DocumentSplitController
-        myPdf = splV2.myPDFController?.myPDF
+        myPdf = splV2.myPDFSideController?.myPDF
         myPdf?.setAutoScales(true)
         
     }

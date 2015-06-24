@@ -14,10 +14,11 @@
 		A91CB96E1B332FB700671868 /* DebugController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91CB9681B332FB700671868 /* DebugController.swift */; };
 		A91CB96F1B332FB700671868 /* EyeFormulas.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91CB9691B332FB700671868 /* EyeFormulas.swift */; };
 		A91CB9701B332FB700671868 /* MyPDF.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91CB96A1B332FB700671868 /* MyPDF.swift */; };
-		A91CB9711B332FB700671868 /* PDFController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91CB96B1B332FB700671868 /* PDFController.swift */; };
+		A91CB9711B332FB700671868 /* PDFSideController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91CB96B1B332FB700671868 /* PDFSideController.swift */; };
 		A91CB9721B332FB700671868 /* PeyeDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91CB96C1B332FB700671868 /* PeyeDocument.swift */; };
 		A91CB9731B332FB700671868 /* DocumentSplitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91CB96D1B332FB700671868 /* DocumentSplitController.swift */; };
 		A9418FA81B386D11000119F8 /* DocumentWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9418FA71B386D11000119F8 /* DocumentWindowController.swift */; };
+		A9CDB2E91B3AC49800347398 /* PeyeConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CDB2E81B3AC49800347398 /* PeyeConstants.swift */; };
 		A9F335731B3ABC090042BFB3 /* AppSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F335721B3ABC090042BFB3 /* AppSingleton.swift */; };
 /* End PBXBuildFile section */
 
@@ -43,10 +44,11 @@
 		A91CB9681B332FB700671868 /* DebugController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DebugController.swift; path = PeyeDF/DebugController.swift; sourceTree = "<group>"; };
 		A91CB9691B332FB700671868 /* EyeFormulas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EyeFormulas.swift; path = PeyeDF/EyeFormulas.swift; sourceTree = "<group>"; };
 		A91CB96A1B332FB700671868 /* MyPDF.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MyPDF.swift; path = PeyeDF/MyPDF.swift; sourceTree = "<group>"; };
-		A91CB96B1B332FB700671868 /* PDFController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PDFController.swift; path = PeyeDF/PDFController.swift; sourceTree = "<group>"; };
+		A91CB96B1B332FB700671868 /* PDFSideController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PDFSideController.swift; path = PeyeDF/PDFSideController.swift; sourceTree = "<group>"; };
 		A91CB96C1B332FB700671868 /* PeyeDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PeyeDocument.swift; path = PeyeDF/PeyeDocument.swift; sourceTree = "<group>"; };
 		A91CB96D1B332FB700671868 /* DocumentSplitController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DocumentSplitController.swift; path = PeyeDF/DocumentSplitController.swift; sourceTree = "<group>"; };
 		A9418FA71B386D11000119F8 /* DocumentWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DocumentWindowController.swift; path = PeyeDF/DocumentWindowController.swift; sourceTree = "<group>"; };
+		A9CDB2E81B3AC49800347398 /* PeyeConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PeyeConstants.swift; path = PeyeDF/PeyeConstants.swift; sourceTree = "<group>"; };
 		A9F335721B3ABC090042BFB3 /* AppSingleton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppSingleton.swift; path = PeyeDF/AppSingleton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -75,7 +77,7 @@
 				A91CB9681B332FB700671868 /* DebugController.swift */,
 				A9418FA71B386D11000119F8 /* DocumentWindowController.swift */,
 				A91CB96A1B332FB700671868 /* MyPDF.swift */,
-				A91CB96B1B332FB700671868 /* PDFController.swift */,
+				A91CB96B1B332FB700671868 /* PDFSideController.swift */,
 				A91CB96D1B332FB700671868 /* DocumentSplitController.swift */,
 			);
 			name = UI;
@@ -84,6 +86,7 @@
 		A9000C5C1B358B8E00E59C7B /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				A9CDB2E81B3AC49800347398 /* PeyeConstants.swift */,
 				A91CB9691B332FB700671868 /* EyeFormulas.swift */,
 			);
 			name = Utility;
@@ -256,7 +259,8 @@
 				A91CB96F1B332FB700671868 /* EyeFormulas.swift in Sources */,
 				A91CB9721B332FB700671868 /* PeyeDocument.swift in Sources */,
 				A91CB94A1B332EDB00671868 /* AppDelegate.swift in Sources */,
-				A91CB9711B332FB700671868 /* PDFController.swift in Sources */,
+				A91CB9711B332FB700671868 /* PDFSideController.swift in Sources */,
+				A9CDB2E91B3AC49800347398 /* PeyeConstants.swift in Sources */,
 				A9F335731B3ABC090042BFB3 /* AppSingleton.swift in Sources */,
 				A9418FA81B386D11000119F8 /* DocumentWindowController.swift in Sources */,
 				A91CB9731B332FB700671868 /* DocumentSplitController.swift in Sources */,

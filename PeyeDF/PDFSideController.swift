@@ -9,8 +9,10 @@
 import Cocoa
 
 /// Controller for the PDF-side Document split view
-class PDFController: NSViewController {
-
+class PDFSideController: NSViewController {
+    
+    @IBOutlet weak var myPDF: MyPDF!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -21,8 +23,5 @@ class PDFController: NSViewController {
         }
     }
 
-
-    @IBOutlet weak var testLab: NSTextField!
-    @IBOutlet weak var myPDF: MyPDF!
 }
 

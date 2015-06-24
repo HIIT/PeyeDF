@@ -9,7 +9,7 @@
 import Foundation
 import Cocoa
 
-/// Implementation of a (PDF) Document following NSDocument's guidelines
+/// Implementation of a (PDF) Document (partially?) following NSDocument's guidelines
 class PeyeDocument: NSDocument {
 
     override init() {

@@ -21,6 +21,7 @@ let extraLineAmount = 3 // 1/this number is the amount of extra lines that we wa
 /// Implementation of a custom PDFView class, used to implement additional function related to
 /// psychophysiology and user activity tracking
 class MyPDF:PDFView {
+    
     weak var delegateZoom: zoomDelegate?
     
     override func mouseDown(theEvent: NSEvent) {

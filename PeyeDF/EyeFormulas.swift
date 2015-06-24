@@ -15,12 +15,12 @@ let pointsForVSeg: CGFloat = 10  // how many points are needed before inserting 
 /// current idea: we select 7 lines at zoom 1, 5 lines at zoom 2 and 3 lines at zoom 3
 /// corresponding (in one doc) to 7cm, 4cm, 2cm (2.76, 1.57, 0.79)
 /// corresponding to (at 72dpi) 198, 113, 57 points
-/// formula (29*x^2-257*x+624)/2}
-/// divide everything by 3 instead of two
+/// formula (29*x^2-257*x+624)/CONSTANT}
+/// the CONSTANT is defined in PeyeConstants, at the moment is updated manually
 func zoomToPoints(zoomLevel: CGFloat) -> CGFloat {
     let a = 29*(pow(zoomLevel, 2))
     let b = 257*zoomLevel
-    return CGFloat(round((a-b+624)/3))
+    return CGFloat(round((a-b+624) / PeyeConstants.vSpanDenom ))
 }
 
 /// Given a selection and a zoom level, return an array of points spanning through
@@ -41,5 +41,6 @@ func multiVPoint(point: NSPoint, zoomLevel: CGFloat) -> [NSPoint] {
         ++i
     }
     assert(i>=count(pointArray), "Index is less than array length")
+    
     return pointArray
 }
