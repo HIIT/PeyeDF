@@ -13,7 +13,12 @@ import Quartz.PDFKit.PDFView
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(aNotification: NSNotification) {
-        // Insert code here to initialize your application
+        let storyboard = NSStoryboard(name: "Main", bundle: nil)!
+        let debugWindowController = storyboard.instantiateControllerWithIdentifier("DebugWindow") as? NSWindowController
+        debugWindowController?.showWindow(nil)
+        
+        AppSingleton.debugWinInfo.windowController = debugWindowController
+        AppSingleton.debugWinInfo.debugController = debugWindowController?.contentViewController as? DebugController
     }
 
     func applicationWillTerminate(aNotification: NSNotification) {

@@ -25,8 +25,8 @@ class DocumentWindowController: NSWindowController {
         
     }
     
+    /// Loads the PDF document. Must be called after setting current document's URL.
     func loadDocument() {
-
         // Load document and display it
         var pdfDoc: PDFDocument
         

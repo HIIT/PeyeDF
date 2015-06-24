@@ -29,6 +29,7 @@ class PeyeDocument: NSDocument {
     override func makeWindowControllers() {
         // Returns the Storyboard that contains your Document window.
         let storyboard = NSStoryboard(name: "Main", bundle: nil)!
+        
         let windowController = storyboard.instantiateControllerWithIdentifier("Document Window Controller") as! DocumentWindowController
         self.addWindowController(windowController)
         windowController.loadDocument()

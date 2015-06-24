@@ -12,28 +12,17 @@ import Cocoa
 /// The Document split controller contains a PDF preview (left side, index 0) and the PDFView (right side, index 1)
 class DocumentSplitController: NSSplitViewController {
     weak var myPDFController: PDFController?
-    var debugController: DebugController?
-    var debugWindowController: NSWindowController?
-    var debugWindow: NSWindow?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         myPDFController = self.childViewControllers[1] as? PDFController
         
-        debugWindowController = self.storyboard?.instantiateControllerWithIdentifier("DebugWindow") as? NSWindowController
-        debugWindowController?.showWindow(self)
-        debugWindow = debugWindowController?.window
-        debugController = debugWindowController?.contentViewController as? DebugController
-        
-        
-        myPDFController?.myPDF.delegateZoom = debugController
+        myPDFController?.myPDF.delegateZoom = AppSingleton.debugData
     }
     
     override func viewDidAppear() {
         super.viewDidAppear()
-        debugController?.pdfView = myPDFController!.myPDF as NSView
-        debugController?.mainWin = self.view.window
-        debugController?.setUpControllers()
+        AppSingleton.debugData.setUpMonitors(myPDFController!.myPDF, docWindow: self.view.window!)
         // TODO: This is just a stub, remove later
         let tw: NSSplitView = self.splitView as NSSplitView
         tw.setPosition(CGFloat(250), ofDividerAtIndex: 0)
