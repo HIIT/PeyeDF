@@ -53,6 +53,7 @@ class DebugData: NSObject, NSTableViewDataSource, zoomDelegate {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "trackChanged:", name: NSViewFrameDidChangeNotification, object: pdfView)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "boundsChanged:", name: NSViewBoundsDidChangeNotification, object: pdfView)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowChanged:", name: NSWindowDidMoveNotification, object: docWindow)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "documentChanged:", name: PeyeConstants.documentChangeNotification, object: nil)
     }
     
     // MARK: Notification callbacks
@@ -63,6 +64,11 @@ class DebugData: NSObject, NSTableViewDataSource, zoomDelegate {
         let wS = rowSize.width.description
         let desc = "Height: \(hS), Width: \(wS)"
         updateDesc("Changed zoom (row size)", desc: desc)
+    }
+    
+    @objc func documentChanged(notification: NSNotification) {
+        let obj = notification.object as! NSDocument
+        updateDesc("Document changed", desc: obj.fileURL!.description)
     }
     
     @objc func zoomChanged(notification: NSNotification) {

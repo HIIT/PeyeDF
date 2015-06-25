@@ -30,4 +30,7 @@ class PeyeConstants {
     
     /// Default size of thumbain side view (set when pressing button)
     static let defaultThumbSideViewWidth = CGFloat(200)
+    
+    /// String identifying the notification sent when a new document is opened / switched to
+    static let documentChangeNotification = "hiit.PeyeDF.documentChangeNotification"
 }

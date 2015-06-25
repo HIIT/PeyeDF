@@ -35,6 +35,7 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
     
     override func windowDidLoad() {
         super.windowDidLoad()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowIsMain:", name: NSWindowDidBecomeMainNotification, object: self.window)
     
         // Set reference to myPdf for convenience by using references to children of this window
         let splV: NSSplitViewController = self.window?.contentViewController as! NSSplitViewController
@@ -45,7 +46,14 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
         
     }
     
+    @objc func windowIsMain(notification: NSNotification) {
+        dispatch_async(dispatch_get_main_queue()) {
+            NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.documentChangeNotification, object: self.document)
+        }
+    }
+    
     /// Loads the PDF document. Must be called after setting current document's URL.
+    /// Sends a notification that the document has been loaded, with the document as object
     func loadDocument() {
         // Load document and display it
         var pdfDoc: PDFDocument
@@ -56,6 +64,9 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
             
             pdfDoc = PDFDocument(URL: url)
             myPdf?.setDocument(pdfDoc)
+            dispatch_async(dispatch_get_main_queue()) {
+                NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.documentChangeNotification, object: self.document)
+            }
         }
     }
 }

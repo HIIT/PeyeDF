@@ -35,6 +35,10 @@ class DocumentSplitController: NSSplitViewController {
     override func viewDidAppear() {
         super.viewDidAppear()
         AppSingleton.debugData.setUpMonitors(myPDFSideController!.myPDF, docWindow: self.view.window!)
+        dispatch_async(dispatch_get_main_queue()) {
+            NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.documentChangeNotification, object: self.view.window?.windowController()?.document)
+            println("not posted")
+        }
     }
     
     // MARK: Thumbnail side collapse / uncollapse
