@@ -90,7 +90,7 @@ class MyPDF:PDFView {
     }
     
     func saveDocumentAs(sender: AnyObject) {
-        let b = 5
+        // TODO: empty stub
     }
     
     override func drawPage(page: PDFPage!) {

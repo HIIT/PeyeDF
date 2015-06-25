@@ -16,10 +16,11 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
     weak var myPdf: MyPDF?
     weak var docSplitController: DocumentSplitController?
 
+    // MARK: Thumbnail side expand / reduce
+    
     @IBOutlet weak var thumbTB: NSToolbarItem!
     @IBAction func showSide(sender: NSToolbarItem) {
-        sender.image = NSImage(named: PeyeConstants.thumbButton_DOWN)
-        docSplitController?.showSide()
+        docSplitController?.toggleThumbSide()
     }
     
     func sideCollapseAction(wasCollapsed: Bool) {
@@ -29,6 +30,8 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
             thumbTB.image = NSImage(named: PeyeConstants.thumbButton_DOWN)
         }
     }
+    
+    // MARK: Initialization
     
     override func windowDidLoad() {
         super.windowDidLoad()

@@ -21,6 +21,8 @@ class DocumentSplitController: NSSplitViewController {
     weak var myThumbController: ThumbSideController?
     weak var sideCollapseDelegate: SideCollapseToggleDelegate?
     
+    // MARK: Initialisation
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         myThumbController = self.childViewControllers[0] as? ThumbSideController
@@ -34,10 +36,13 @@ class DocumentSplitController: NSSplitViewController {
         super.viewDidAppear()
         AppSingleton.debugData.setUpMonitors(myPDFSideController!.myPDF, docWindow: self.view.window!)
     }
+    
+    // MARK: Thumbnail side collapse / uncollapse
 
-    func showSide() {
+    func toggleThumbSide() {
         let tw: NSSplitView = self.splitView as NSSplitView
         let collState = checkCollapseStatus(tw)
+        // let the delegate know what happened
         sideCollapseDelegate?.sideCollapseAction(collState)
         if collState {
             tw.setPosition(PeyeConstants.defaultThumbSideViewWidth, ofDividerAtIndex: 0)
@@ -46,11 +51,13 @@ class DocumentSplitController: NSSplitViewController {
         }
     }
     
+    /// Overriding this method to include delegate communication
     override func splitView(splitView: NSSplitView, shouldCollapseSubview subview: NSView, forDoubleClickOnDividerAtIndex dividerIndex: Int) -> Bool {
         sideCollapseDelegate?.sideCollapseAction(true)
         return super.splitView(splitView, shouldCollapseSubview: subview, forDoubleClickOnDividerAtIndex: dividerIndex)
     }
     
+    /// Overriding this method to include delegate communication
     override func splitViewDidResizeSubviews(notification: NSNotification) {
         let tw = notification.object as! NSSplitView
         let collState = checkCollapseStatus(tw)
