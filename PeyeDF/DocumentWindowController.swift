@@ -11,17 +11,33 @@ import Foundation
 import Quartz
 
 /// Manages the "Document Window", which comprises two split views, one inside the other
-class DocumentWindowController: NSWindowController {
+class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
     
     weak var myPdf: MyPDF?
+    weak var docSplitController: DocumentSplitController?
 
+    @IBOutlet weak var thumbTB: NSToolbarItem!
+    @IBAction func showSide(sender: NSToolbarItem) {
+        sender.image = NSImage(named: PeyeConstants.thumbButton_DOWN)
+        docSplitController?.showSide()
+    }
+    
+    func sideCollapseAction(wasCollapsed: Bool) {
+        if wasCollapsed {
+            thumbTB.image = NSImage(named: PeyeConstants.thumbButton_UP)
+        } else {
+            thumbTB.image = NSImage(named: PeyeConstants.thumbButton_DOWN)
+        }
+    }
+    
     override func windowDidLoad() {
         super.windowDidLoad()
     
         // Set reference to myPdf for convenience by using references to children of this window
         let splV: NSSplitViewController = self.window?.contentViewController as! NSSplitViewController
-        let splV2: DocumentSplitController = splV.childViewControllers[1] as! DocumentSplitController
-        myPdf = splV2.myPDFSideController?.myPDF
+        docSplitController = splV.childViewControllers[1] as? DocumentSplitController
+        docSplitController?.sideCollapseDelegate = self
+        myPdf = docSplitController?.myPDFSideController?.myPDF
         myPdf?.setAutoScales(true)
         
     }

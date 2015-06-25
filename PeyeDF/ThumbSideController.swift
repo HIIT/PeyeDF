@@ -18,6 +18,10 @@ class ThumbSideController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
     }
+    
+    override func awakeFromNib() {
+        //constr.constant = CGFloat(0)
+    }
 
     override var representedObject: AnyObject? {
         didSet {

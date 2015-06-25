@@ -661,14 +661,23 @@
                                 <toolbarItem implicitItemIdentifier="NSToolbarPrintItem" id="aNh-Te-Qhf"/>
                                 <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="Ojd-M4-Zl7"/>
                                 <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="10c-J9-dPD"/>
+                                <toolbarItem implicitItemIdentifier="3B4FFFC1-3CAD-4007-A603-14C7FDF2B0A0" label="Thumbnails" paletteLabel="Thumbnails" tag="-1" image="TB_ThumbU" autovalidates="NO" id="8zr-Hg-gf0">
+                                    <size key="minSize" width="32" height="32"/>
+                                    <size key="maxSize" width="32" height="32"/>
+                                    <connections>
+                                        <action selector="showSide:" target="sy6-nO-Tdf" id="Ad8-47-SsZ"/>
+                                    </connections>
+                                </toolbarItem>
                             </allowedToolbarItems>
                             <defaultToolbarItems>
+                                <toolbarItem reference="8zr-Hg-gf0"/>
                                 <toolbarItem reference="10c-J9-dPD"/>
                                 <toolbarItem reference="aNh-Te-Qhf"/>
                             </defaultToolbarItems>
                         </toolbar>
                     </window>
                     <connections>
+                        <outlet property="thumbTB" destination="8zr-Hg-gf0" id="kBi-3Q-0wK"/>
                         <segue destination="f9L-GU-eYT" kind="relationship" relationship="window.shadowedContentViewController" id="t30-fj-7gb"/>
                     </connections>
                 </windowController>
@@ -706,21 +715,16 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4lM-ir-pUB">
-                                <rect key="frame" x="195" y="58" width="279" height="20"/>
+                                <rect key="frame" x="195" y="58" width="279" height="21"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="275" id="dWJ-GM-Iaw"/>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="16" id="xAy-U5-ic5"/>
+                                    <constraint firstAttribute="width" constant="275" id="GUa-7U-OkY"/>
                                 </constraints>
                                 <sliderCell key="cell" alignment="left" maxValue="100" doubleValue="33.306080426356587" tickMarkPosition="above" sliderType="linear" id="oaC-TM-Rqn"/>
                             </slider>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="4lM-ir-pUB" firstAttribute="top" relation="lessThanOrEqual" secondItem="mp4-z4-96E" secondAttribute="top" constant="60" id="7jn-Kz-Pk0"/>
-                            <constraint firstAttribute="centerX" secondItem="4lM-ir-pUB" secondAttribute="centerX" id="M8J-ZQ-sLN"/>
-                            <constraint firstAttribute="centerY" secondItem="4lM-ir-pUB" secondAttribute="centerY" id="SfT-dN-pTJ"/>
-                            <constraint firstAttribute="bottom" relation="lessThanOrEqual" secondItem="4lM-ir-pUB" secondAttribute="bottom" constant="60" id="lOT-06-3se"/>
-                            <constraint firstAttribute="trailing" secondItem="4lM-ir-pUB" secondAttribute="trailing" constant="197" id="qdd-9A-9jv"/>
-                            <constraint firstItem="4lM-ir-pUB" firstAttribute="leading" secondItem="mp4-z4-96E" secondAttribute="leading" constant="197" id="xjX-k7-V0N"/>
+                            <constraint firstAttribute="centerX" secondItem="4lM-ir-pUB" secondAttribute="centerX" id="qAb-Ny-sYu"/>
+                            <constraint firstAttribute="centerY" secondItem="4lM-ir-pUB" secondAttribute="centerY" constant="1" id="tuZ-xJ-7i3"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -733,12 +737,15 @@
             <objects>
                 <splitViewController title="PeyeDF Document" id="upE-hu-sHW" userLabel="Document split" customClass="DocumentSplitController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
                     <splitViewItems>
-                        <splitViewItem holdingPriority="247" id="6iq-Xm-XGP"/>
-                        <splitViewItem canCollapse="YES" holdingPriority="248" id="CKe-Mb-mD5"/>
+                        <splitViewItem canCollapse="YES" id="6iq-Xm-XGP"/>
+                        <splitViewItem holdingPriority="248" id="CKe-Mb-mD5"/>
                     </splitViewItems>
                     <splitView key="splitView" dividerStyle="thin" vertical="YES" id="7iA-Js-Cw6">
                         <rect key="frame" x="0.0" y="0.0" width="734" height="348"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <connections>
+                            <outlet property="delegate" destination="upE-hu-sHW" id="G66-D4-2x2"/>
+                        </connections>
                     </splitView>
                     <connections>
                         <segue destination="NDG-Mr-8zT" kind="relationship" relationship="splitItems" id="nIf-Co-0Mr"/>
@@ -871,6 +878,7 @@
                             <constraint firstAttribute="bottom" secondItem="67W-LG-b20" secondAttribute="bottom" constant="20" id="dth-1C-qE3"/>
                             <constraint firstItem="67W-LG-b20" firstAttribute="top" secondItem="Xcj-vT-c4k" secondAttribute="top" constant="20" id="gXL-mn-gnC"/>
                         </constraints>
+                        <animations/>
                     </view>
                     <connections>
                         <outlet property="myThumb" destination="67W-LG-b20" id="WrB-ob-fWS"/>
@@ -912,4 +920,7 @@
             <point key="canvasLocation" x="-45" y="364"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="TB_ThumbU" width="32" height="32"/>
+    </resources>
 </document>
