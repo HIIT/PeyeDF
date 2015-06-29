@@ -31,6 +31,23 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
         }
     }
     
+    func saveDocument(sender: AnyObject) {
+        saveDocumentAs(sender)
+    }
+    
+    
+    func saveDocumentAs(sender: AnyObject) {
+        let panel = NSSavePanel()
+        panel.allowedFileTypes = ["pdf", "PDF"]
+        if panel.runModal() == NSFileHandlingPanelOKButton {
+            myPdf?.document().writeToURL(panel.URL)
+            let documentController = NSDocumentController.sharedDocumentController() as! NSDocumentController
+            documentController.openDocumentWithContentsOfURL(panel.URL!, display: true) { _ in
+                // empty, nothing else to do
+            }
+        }
+    }
+    
     // MARK: Initialization
     
     override func windowDidLoad() {

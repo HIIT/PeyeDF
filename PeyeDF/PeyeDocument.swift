@@ -23,7 +23,7 @@ class PeyeDocument: NSDocument {
     }
 
     override class func autosavesInPlace() -> Bool {
-        return true
+        return false
     }
 
     override func makeWindowControllers() {
@@ -35,16 +35,14 @@ class PeyeDocument: NSDocument {
         windowController.loadDocument()
     }
     
-    /**
-    Always returns true, assumes we can only select allowed documents (PDFs)
-    */
     override func dataOfType(typeName: String, error outError: NSErrorPointer) -> NSData? {
         // Insert code here to write your document to data of the specified type. If outError != nil, ensure that you create and set an appropriate error when returning nil.
         // You can also choose to override fileWrapperOfType:error:, writeToURL:ofType:error:, or writeToURL:ofType:forSaveOperation:originalContentsURL:error: instead.
         outError.memory = NSError(domain: NSOSStatusErrorDomain, code: unimpErr, userInfo: nil)
         return nil
     }
-
+    
+    /// Always returns true, assumes we can only select allowed documents (PDFs)
     override func readFromURL(url: NSURL, ofType typeName: String, error outError: NSErrorPointer) -> Bool {
         return true
     }
