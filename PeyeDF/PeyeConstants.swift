@@ -16,6 +16,9 @@ class PeyeConstants {
     /// Column name for debug table. Make sure this identifier matches the table view id in the storyboard
     static let debugDescColName = "DebugDescriptionColumn"
     
+    /// Column name for debug table. Make sure this identifier matches the table view id in the storyboard
+    static let debugTimeColName = "DebugTimeColumn"
+    
     /// Defines how large is the vertical span of columns being looked at, depending on the zoom level
     static let vSpanDenom = CGFloat(3)
     

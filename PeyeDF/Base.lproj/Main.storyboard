@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7706"/>
         <plugIn identifier="com.apple.pdfkit.ibplugin" version="7706"/>
@@ -714,18 +714,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="669" height="135"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4lM-ir-pUB">
-                                <rect key="frame" x="195" y="58" width="279" height="21"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="275" id="GUa-7U-OkY"/>
-                                </constraints>
-                                <sliderCell key="cell" alignment="left" maxValue="100" doubleValue="33.306080426356587" tickMarkPosition="above" sliderType="linear" id="oaC-TM-Rqn"/>
+                            <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4lM-ir-pUB">
+                                <rect key="frame" x="206" y="57" width="283" height="20"/>
+                                <sliderCell key="cell" state="on" alignment="left" maxValue="100" doubleValue="31.153100775193799" tickMarkPosition="above" sliderType="linear" id="oaC-TM-Rqn"/>
                             </slider>
                         </subviews>
-                        <constraints>
-                            <constraint firstAttribute="centerX" secondItem="4lM-ir-pUB" secondAttribute="centerX" id="qAb-Ny-sYu"/>
-                            <constraint firstAttribute="centerY" secondItem="4lM-ir-pUB" secondAttribute="centerY" constant="1" id="tuZ-xJ-7i3"/>
-                        </constraints>
                     </view>
                 </viewController>
                 <customObject id="yRf-AT-czT" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -789,7 +782,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView identifier="DebugTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="edg-qR-Mnf" viewBased="YES" id="mfl-11-WH2">
-                                            <rect key="frame" x="0.0" y="0.0" width="589" height="0.0"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="489" height="0.0"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -808,13 +801,26 @@
                                                     </textFieldCell>
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                 </tableColumn>
-                                                <tableColumn identifier="DebugDescriptionColumn" width="467" minWidth="40" maxWidth="1000" id="j7W-Ps-aEt">
+                                                <tableColumn identifier="DebugDescriptionColumn" width="300" minWidth="40" maxWidth="1000" id="j7W-Ps-aEt">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Description">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                     </tableHeaderCell>
                                                     <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="kqI-y0-0bW">
+                                                        <font key="font" metaFont="system"/>
+                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                    </textFieldCell>
+                                                    <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                </tableColumn>
+                                                <tableColumn identifier="DebugTimeColumn" width="164" minWidth="10" maxWidth="3.4028234663852886e+38" id="WDE-U5-VnI">
+                                                    <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Time">
+                                                        <font key="font" metaFont="smallSystem"/>
+                                                        <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                        <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                                    </tableHeaderCell>
+                                                    <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="xOa-oG-c6z">
                                                         <font key="font" metaFont="system"/>
                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>

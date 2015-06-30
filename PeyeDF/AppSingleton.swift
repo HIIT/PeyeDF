@@ -40,6 +40,8 @@ class DebugData: NSObject, NSTableViewDataSource, zoomDelegate {
     func tableView(tableView: NSTableView, objectValueForTableColumn tableColumn: NSTableColumn?, row: Int) -> AnyObject? {
         if tableColumn!.identifier == PeyeConstants.debugTitleColName {
             return debugTabIdxs[row]
+        } else if tableColumn!.identifier == PeyeConstants.debugTimeColName {
+            return GetCurrentTimeShort()
         } else {
             let tit = debugTabIdxs[row]
             return debugDescs[tit!]
