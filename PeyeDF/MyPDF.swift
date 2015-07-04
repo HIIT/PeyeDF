@@ -14,15 +14,16 @@ import Quartz.PDFKit
 let extraLineAmount = 3 // 1/this number is the amount of extra lines that we want to discard
                         // if we are at beginning or end of paragraph
 
-@objc protocol zoomDelegate {
+@objc protocol pageRefreshDelegate {
     func updateZoom(newSize: NSSize)
+    func drawedPage(newSize: NSSize)
 }
 
 /// Implementation of a custom PDFView class, used to implement additional function related to
 /// psychophysiology and user activity tracking
 class MyPDF:PDFView {
     
-    weak var delegateZoom: zoomDelegate?
+    weak var delegateZoom: pageRefreshDelegate?
     
     override func mouseDown(theEvent: NSEvent) {
         // Mouse in display view coordinates.
@@ -49,43 +50,44 @@ class MyPDF:PDFView {
         // detect this by using new lines
         
         // get selection line by line
-        let selLines = pdfSel.selectionsByLine()
-        let nOfExtraLines: Int = Int(floor(CGFloat(count(selLines)) / CGFloat(extraLineAmount)))
-        
-        // split selection into beginning / end separating by new line
-        
-        // only proceed if there are extra lines
-        if nOfExtraLines > 0 {
-            var lineStartIndex = 0
-            // check if part before new line is included in any of the extra beginning lines,
-            // if so skip them
-            for i in 0..<nOfExtraLines {
-                let currentLineSel = selLines[i] as! PDFSelection
-                let cLString = currentLineSel.string() + "\r"
-                if let cutRange = activePage.string().rangeOfString(cLString) {
-                    lineStartIndex = i+1
-                    break
+        if let selLines = pdfSel.selectionsByLine() {
+            let nOfExtraLines: Int = Int(floor(CGFloat(count(selLines)) / CGFloat(extraLineAmount)))
+            
+            // split selection into beginning / end separating by new line
+            
+            // only proceed if there are extra lines
+            if nOfExtraLines > 0 {
+                var lineStartIndex = 0
+                // check if part before new line is included in any of the extra beginning lines,
+                // if so skip them
+                for i in 0..<nOfExtraLines {
+                    let currentLineSel = selLines[i] as! PDFSelection
+                    let cLString = currentLineSel.string() + "\r"
+                    if let cutRange = activePage.string().rangeOfString(cLString) {
+                        lineStartIndex = i+1
+                        break
+                    }
                 }
-            }
-            
-            // do the same for the ending part
-            var lineEndIndex = count(selLines)-1
-            for i in reverse(count(selLines)-1-nOfExtraLines..<count(selLines)) {
-                let currentLineSel = selLines[i] as! PDFSelection
-                let cLString = currentLineSel.string() + "\r"
-                if let cutRange = activePage.string().rangeOfString(cLString) {
-                    lineEndIndex = i
-                    break
+                
+                // do the same for the ending part
+                var lineEndIndex = count(selLines)-1
+                for i in reverse(count(selLines)-1-nOfExtraLines..<count(selLines)) {
+                    let currentLineSel = selLines[i] as! PDFSelection
+                    let cLString = currentLineSel.string() + "\r"
+                    if let cutRange = activePage.string().rangeOfString(cLString) {
+                        lineEndIndex = i
+                        break
+                    }
                 }
-            }
-            
-            // generate new selection not taking into account excluded parts
-            pdfSel = PDFSelection(document: self.document())
-            for i in lineStartIndex...lineEndIndex {
-                pdfSel.addSelection(selLines[i] as! PDFSelection)
-            }
-            
-        } // end of check for split, if no need just return selection as-was //
+                
+                // generate new selection not taking into account excluded parts
+                pdfSel = PDFSelection(document: self.document())
+                for i in lineStartIndex...lineEndIndex {
+                    pdfSel.addSelection(selLines[i] as! PDFSelection)
+                }
+                
+            } // end of check for split, if no need just return selection as-was //
+        }
         self.setCurrentSelection(pdfSel, animate: true)
     }
     
@@ -95,6 +97,6 @@ class MyPDF:PDFView {
     
     override func drawPage(page: PDFPage!) {
         super.drawPage(page)
-        delegateZoom?.updateZoom(self.rowSizeForPage(page))
+        delegateZoom?.drawedPage(self.rowSizeForPage(page))
     }
 }

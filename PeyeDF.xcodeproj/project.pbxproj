@@ -19,6 +19,7 @@
 		A91CB9731B332FB700671868 /* DocumentSplitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91CB96D1B332FB700671868 /* DocumentSplitController.swift */; };
 		A927CD8F1B3B399B00471CC8 /* ThumbSideController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927CD8E1B3B399B00471CC8 /* ThumbSideController.swift */; };
 		A9418FA81B386D11000119F8 /* DocumentWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9418FA71B386D11000119F8 /* DocumentWindowController.swift */; };
+		A9427D241B458E730025E094 /* DocHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9427D231B458E730025E094 /* DocHistory.swift */; };
 		A981F69D1B42FC4C00E7E9BD /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A981F69C1B42FC4C00E7E9BD /* Utils.swift */; };
 		A9CDB2E91B3AC49800347398 /* PeyeConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CDB2E81B3AC49800347398 /* PeyeConstants.swift */; };
 		A9F335731B3ABC090042BFB3 /* AppSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F335721B3ABC090042BFB3 /* AppSingleton.swift */; };
@@ -51,6 +52,7 @@
 		A91CB96D1B332FB700671868 /* DocumentSplitController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DocumentSplitController.swift; path = PeyeDF/DocumentSplitController.swift; sourceTree = "<group>"; };
 		A927CD8E1B3B399B00471CC8 /* ThumbSideController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ThumbSideController.swift; path = PeyeDF/ThumbSideController.swift; sourceTree = "<group>"; };
 		A9418FA71B386D11000119F8 /* DocumentWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DocumentWindowController.swift; path = PeyeDF/DocumentWindowController.swift; sourceTree = "<group>"; };
+		A9427D231B458E730025E094 /* DocHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DocHistory.swift; path = PeyeDF/DocHistory.swift; sourceTree = "<group>"; };
 		A981F69C1B42FC4C00E7E9BD /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Utils.swift; path = PeyeDF/Utils.swift; sourceTree = "<group>"; };
 		A9CDB2E81B3AC49800347398 /* PeyeConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PeyeConstants.swift; path = PeyeDF/PeyeConstants.swift; sourceTree = "<group>"; };
 		A9F335721B3ABC090042BFB3 /* AppSingleton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppSingleton.swift; path = PeyeDF/AppSingleton.swift; sourceTree = "<group>"; };
@@ -101,6 +103,7 @@
 		A9000C5D1B358BBC00E59C7B /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				A9427D231B458E730025E094 /* DocHistory.swift */,
 				A9F335721B3ABC090042BFB3 /* AppSingleton.swift */,
 				A91CB96C1B332FB700671868 /* PeyeDocument.swift */,
 				A91CB9491B332EDB00671868 /* AppDelegate.swift */,
@@ -269,6 +272,7 @@
 				A9CDB2E91B3AC49800347398 /* PeyeConstants.swift in Sources */,
 				A9F335731B3ABC090042BFB3 /* AppSingleton.swift in Sources */,
 				A9418FA81B386D11000119F8 /* DocumentWindowController.swift in Sources */,
+				A9427D241B458E730025E094 /* DocHistory.swift in Sources */,
 				A91CB9731B332FB700671868 /* DocumentSplitController.swift in Sources */,
 				A91CB9701B332FB700671868 /* MyPDF.swift in Sources */,
 				A927CD8F1B3B399B00471CC8 /* ThumbSideController.swift in Sources */,

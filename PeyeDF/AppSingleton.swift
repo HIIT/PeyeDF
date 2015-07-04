@@ -20,9 +20,10 @@ class AppSingleton {
 }
 
 /// Data source for debug table, including methods to check for notifications
-class DebugData: NSObject, NSTableViewDataSource, zoomDelegate {
+class DebugData: NSObject, NSTableViewDataSource, pageRefreshDelegate {
     
     var debugDescs: [String: String]
+    var debugTimes: [String: String]
     var debugTabIdxs: [Int: String]
     
     weak var pdfView: NSView?
@@ -30,6 +31,7 @@ class DebugData: NSObject, NSTableViewDataSource, zoomDelegate {
     
     override init() {
         self.debugDescs = [String: String]()
+        self.debugTimes = [String: String]()
         self.debugTabIdxs = [Int: String]()
     }
     
@@ -41,7 +43,8 @@ class DebugData: NSObject, NSTableViewDataSource, zoomDelegate {
         if tableColumn!.identifier == PeyeConstants.debugTitleColName {
             return debugTabIdxs[row]
         } else if tableColumn!.identifier == PeyeConstants.debugTimeColName {
-            return GetCurrentTimeShort()
+            let tit = debugTabIdxs[row]
+            return debugTimes[tit!]
         } else {
             let tit = debugTabIdxs[row]
             return debugDescs[tit!]
@@ -52,14 +55,50 @@ class DebugData: NSObject, NSTableViewDataSource, zoomDelegate {
         self.pdfView = pdfView
         self.docWindow = docWindow
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "zoomChanged:", name: PDFViewScaleChangedNotification, object: pdfView)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "boxChanged:", name: PDFViewDisplayBoxChangedNotification, object: pdfView)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "trackChanged:", name: NSViewFrameDidChangeNotification, object: pdfView)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "boundsChanged:", name: NSViewBoundsDidChangeNotification, object: pdfView)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowChanged:", name: NSWindowDidMoveNotification, object: docWindow)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "documentChanged:", name: PeyeConstants.documentChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "scrolled2:", name:
+            NSViewBoundsDidChangeNotification, object: pdfView.subviews[0].subviews[0] as! NSClipView)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "scrolled:", name:
+            NSScrollViewDidEndLiveScrollNotification, object: pdfView.subviews[0] as! NSScrollView)
     }
     
     // MARK: Notification callbacks
     // note: this code is a bit messy
+    
+    func drawedPage(rowSize: NSSize) {
+        let hS = rowSize.height.description
+        let wS = rowSize.width.description
+        let desc = "Height: \(hS), Width: \(wS)"
+        updateDesc("Redrawn page (row size)", desc: desc)
+        if let pdfw = self.pdfView as? PDFView {
+            let cPage = pdfw.currentPage()
+            let vg = pdfw.subviews
+            let cgg: NSScrollView = vg[0] as! NSScrollView
+            updateDesc("Destination", desc: "\(pdfw.currentDestination())")
+            updateDesc("Bounds", desc: "\(pdfw.bounds)")
+            updateDesc("Doc view bounds (pdfw)", desc: "\(pdfw.documentView().bounds)")
+            updateDesc("Doc view bounds (scroll view)", desc: "\(cgg.documentVisibleRect)")
+            updateDesc("Current page", desc: "\(pdfw.currentPage())")
+        }
+    }
+    
+    @objc func scrolled2(notification: NSNotification) {
+        if let pdfw = self.pdfView as? PDFView { // THIS!
+            let obj = notification.object as! NSClipView
+            updateDesc("Doc view bounds (clip view)", desc: "\(obj.documentVisibleRect)")
+        }
+    }
+    
+    @objc func scrolled(notification: NSNotification) {
+        if let pdfw = self.pdfView as? PDFView {
+            let obj = notification.object as! NSScrollView
+            updateDesc("Doc view bounds (scroll view, own not)", desc: "\(obj.documentVisibleRect)")
+        }
+    }
     
     func updateZoom(rowSize: NSSize) {
         let hS = rowSize.height.description
@@ -71,6 +110,14 @@ class DebugData: NSObject, NSTableViewDataSource, zoomDelegate {
     @objc func documentChanged(notification: NSNotification) {
         let obj = notification.object as! NSDocument
         updateDesc("Document changed", desc: obj.fileURL!.description)
+    }
+    
+    @objc func boxChanged(notification: NSNotification) {
+        let obj = notification.object as! PDFView
+        let boxi = obj.displayBox()
+        let boxb = obj.currentPage().boundsForBox(boxi)
+        let desc = "Bounds for box(\(boxi): \(boxb))"
+        updateDesc("Box changed", desc: desc)
     }
     
     @objc func zoomChanged(notification: NSNotification) {
@@ -113,8 +160,10 @@ class DebugData: NSObject, NSTableViewDataSource, zoomDelegate {
     func updateDesc(title: String, desc: String) {
         if let k = debugDescs.indexForKey(title) {
             debugDescs[title] = desc
+            debugTimes[title] = GetCurrentTimeShort()
         } else {
             debugDescs[title] = desc
+            debugTimes[title] = GetCurrentTimeShort()
             let rowi = count(debugDescs) - 1
             debugTabIdxs[rowi] = title
         }
