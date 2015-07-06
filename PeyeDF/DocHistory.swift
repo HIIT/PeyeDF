@@ -10,11 +10,12 @@
 // Data stored (for each entry):
 //
 // - Document name
-// - Whether 1 one multiple pages are being seen (bool, multipage)
-// - Page number (if multiple pages are seen, first page being seen)
-// - Pages list (array of page numbers being seen, if >1)
+// - Whether 1 one multiple pages are being seen (Number, 1 for true, 0 for false)
+// - Min page number (if multiple pages are seen, first page being seen.)
+// - Max page number (last page if multiple pages, otherwise same as min page number)
 // - Visible proportion of page (if <1 page being seen) OR
 // - Visible proportion of document (if >1 page being seen)
+// - The above is called proportion (min: Number, max: Number)
 // - Start time
 // - End time (must be >1s from start time)
 // - Duration
