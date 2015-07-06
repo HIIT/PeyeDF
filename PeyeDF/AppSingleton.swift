@@ -10,29 +10,33 @@ import Foundation
 import Cocoa
 import Quartz
 
-/// Used to share states across the whole application. Contains:
+/// Used to share states across the whole application, including posting history notifications to store. Contains:
 ///
 /// - debugData: used to store and update debugging information
 /// - debugWinInfo: window controller and debug controller for debug info window
+/// - storyboard: the "Main" storyboard
 class AppSingleton {
     static let debugData = DebugData()
     static let debugWinInfo = DebugWindowInfo()
+    static let storyboard = NSStoryboard(name: "Main", bundle: nil)!
 }
 
 /// Data source for debug table, including methods to check for notifications
-class DebugData: NSObject, NSTableViewDataSource, pageRefreshDelegate {
+class DebugData: NSObject, NSTableViewDataSource {
     
     var debugDescs: [String: String]
     var debugTimes: [String: String]
     var debugTabIdxs: [Int: String]
     
-    weak var pdfView: NSView?
-    weak var docWindow: NSWindow?
+    weak private var pdfView: MyPDF?
+    weak private var docWindow: NSWindow?
     
     override init() {
         self.debugDescs = [String: String]()
         self.debugTimes = [String: String]()
         self.debugTabIdxs = [Int: String]()
+        super.init()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "documentChanged:", name: PeyeConstants.documentChangeNotification, object: nil)
     }
     
     func numberOfRowsInTableView(aTableView: NSTableView) -> Int {
@@ -51,60 +55,48 @@ class DebugData: NSObject, NSTableViewDataSource, pageRefreshDelegate {
         }
     }
     
-    func setUpMonitors(pdfView: NSView, docWindow: NSWindow) {
-        self.pdfView = pdfView
-        self.docWindow = docWindow
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "zoomChanged:", name: PDFViewScaleChangedNotification, object: pdfView)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "boxChanged:", name: PDFViewDisplayBoxChangedNotification, object: pdfView)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "trackChanged:", name: NSViewFrameDidChangeNotification, object: pdfView)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "boundsChanged:", name: NSViewBoundsDidChangeNotification, object: pdfView)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowChanged:", name: NSWindowDidMoveNotification, object: docWindow)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "documentChanged:", name: PeyeConstants.documentChangeNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "scrolled2:", name:
-            NSViewBoundsDidChangeNotification, object: pdfView.subviews[0].subviews[0] as! NSClipView)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "scrolled:", name:
-            NSScrollViewDidEndLiveScrollNotification, object: pdfView.subviews[0] as! NSScrollView)
+    // MARK: Monitor (notification) management
+    
+    func updateRefs(newView: MyPDF, newWindow: NSWindow) {
+        self.pdfView = newView
+        self.docWindow = newWindow
     }
+    
+    /// Observes all notifications due to document change / navigation. Should be set once during document loading.
+    /// Must call unSetMonitors when a document window closes / unloads.
+    func setUpMonitors(pdfView: NSView, docWindow: NSWindow) {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "zoomChanged:", name: PDFViewScaleChangedNotification, object: pdfView)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "frameChanged:", name: NSViewFrameDidChangeNotification, object: pdfView)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowChanged:", name: NSWindowDidMoveNotification, object: docWindow)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "occlusionChanged:", name: NSWindowDidChangeOcclusionStateNotification, object: docWindow)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "scrolled:", name:
+            NSViewBoundsDidChangeNotification, object: pdfView.subviews[0].subviews[0] as! NSClipView)
+        
+    }
+    
+    /// Unload all notifications due to document change / navigation. Should be set once during document unloading.
+    func unSetMonitors(pdfView: NSView, docWindow: NSWindow) {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: PDFViewScaleChangedNotification, object: pdfView)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSViewFrameDidChangeNotification, object: pdfView)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowDidMoveNotification, object: docWindow)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowDidChangeOcclusionStateNotification, object: docWindow)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name:
+            NSViewBoundsDidChangeNotification, object: pdfView.subviews[0].subviews[0] as! NSClipView)
+    }
+    
     
     // MARK: Notification callbacks
-    // note: this code is a bit messy
     
-    func drawedPage(rowSize: NSSize) {
-        let hS = rowSize.height.description
-        let wS = rowSize.width.description
-        let desc = "Height: \(hS), Width: \(wS)"
-        updateDesc("Redrawn page (row size)", desc: desc)
-        if let pdfw = self.pdfView as? PDFView {
-            let cPage = pdfw.currentPage()
-            let vg = pdfw.subviews
-            let cgg: NSScrollView = vg[0] as! NSScrollView
-            updateDesc("Destination", desc: "\(pdfw.currentDestination())")
-            updateDesc("Bounds", desc: "\(pdfw.bounds)")
-            updateDesc("Doc view bounds (pdfw)", desc: "\(pdfw.documentView().bounds)")
-            updateDesc("Doc view bounds (scroll view)", desc: "\(cgg.documentVisibleRect)")
-            updateDesc("Current page", desc: "\(pdfw.currentPage())")
-        }
-    }
-    
-    @objc func scrolled2(notification: NSNotification) {
-        if let pdfw = self.pdfView as? PDFView { // THIS!
-            let obj = notification.object as! NSClipView
-            updateDesc("Doc view bounds (clip view)", desc: "\(obj.documentVisibleRect)")
-        }
+    @objc func occlusionChanged(notification: NSNotification) {
+        let obj = notification.object as! NSWindow
+        let title = "Window is visible: \(obj.occlusionState & NSWindowOcclusionState.Visible != nil)"
+        let desc = "Occlusion raw: \(obj.occlusionState.rawValue), occlusion const: \(NSWindowOcclusionState.Visible.rawValue)"
+        updateDesc(title, desc: desc)
     }
     
     @objc func scrolled(notification: NSNotification) {
-        if let pdfw = self.pdfView as? PDFView {
-            let obj = notification.object as! NSScrollView
-            updateDesc("Doc view bounds (scroll view, own not)", desc: "\(obj.documentVisibleRect)")
-        }
-    }
-    
-    func updateZoom(rowSize: NSSize) {
-        let hS = rowSize.height.description
-        let wS = rowSize.width.description
-        let desc = "Height: \(hS), Width: \(wS)"
-        updateDesc("Changed zoom (row size)", desc: desc)
+        let obj = notification.object as! NSClipView
+        updateDesc("Doc view bounds (clip view)", desc: "\(obj.documentVisibleRect)")
     }
     
     @objc func documentChanged(notification: NSNotification) {
@@ -112,47 +104,20 @@ class DebugData: NSObject, NSTableViewDataSource, pageRefreshDelegate {
         updateDesc("Document changed", desc: obj.fileURL!.description)
     }
     
-    @objc func boxChanged(notification: NSNotification) {
-        let obj = notification.object as! PDFView
-        let boxi = obj.displayBox()
-        let boxb = obj.currentPage().boundsForBox(boxi)
-        let desc = "Bounds for box(\(boxi): \(boxb))"
-        updateDesc("Box changed", desc: desc)
-    }
-    
     @objc func zoomChanged(notification: NSNotification) {
         let obji = notification.object as! PDFView
         let desc1 = "Zoom: \(obji.scaleFactor())"
-        let desc2 = "(px) View to screen: \(docWindow?.convertRectToScreen(pdfView!.frame))"
+        let desc2 = "row size: \(pdfView?.pageSize().width) x \(pdfView?.pageSize().height)"
         let desc = desc1 + ", " + desc2
         updateDesc("Changed zoom (level)", desc: desc)
     }
     
-    @objc func trackChanged(notification: NSNotification) {
-        let nsv = notification.object as! NSView
-        let desc1 = "Track: \(nsv.frame)"
-        let desc2 = "(px) View to screen: \(docWindow?.convertRectToScreen(pdfView!.frame))"
-        let desc = desc1 + ", " + desc2
-        updateDesc("Changed track area", desc: desc)
+    @objc func frameChanged(notification: NSNotification) {
+        updateWinState()
     }
-    
-    @objc func boundsChanged(notification: NSNotification) {
-        let nsv = notification.object as! NSView
-        let desc1 = "Bounds: \(nsv.bounds)"
-        let desc2 = "(px) View to screen: \(docWindow?.convertRectToScreen(pdfView!.frame))"
-        let desc = desc1 + ", " + desc2
-        updateDesc("Changed bounds", desc: desc)
-    }
-    
+   
     @objc func windowChanged(notification: NSNotification) {
-        let nsv = notification.object as? NSWindow
-        let desc1 = "(px) View to screen:"
-        // get a rectangle representing the pdfview frame, relative to its superview and convert to the window's view
-        let r1:NSRect? = pdfView!.superview!.convertRect(pdfView!.frame, toView: nsv?.contentView as? NSView)
-        // get screen coordinates corresponding to the rectangle got in the previous line
-        let desc2 = "\(nsv?.convertRectToScreen(r1!))"
-        let desc = desc1 + ", " + desc2
-        updateDesc("Changed window", desc: desc)
+        updateWinState()
     }
     
     /// Updates (adding, if necessary) an event and its description to the list of titles and descriptions
@@ -170,6 +135,21 @@ class DebugData: NSObject, NSTableViewDataSource, pageRefreshDelegate {
         
         // not so clean code to refresh the table view
         AppSingleton.debugWinInfo.debugController?.debugTable.reloadData()
+    }
+    
+    // MARK: Convenience
+    
+    /// Updates data regarding the window (frame size, location)
+    private func updateWinState() {
+        if let pdfView = self.pdfView {
+            let desc1 = "(px) View to screen:"
+            // get a rectangle representing the pdfview frame, relative to its superview and convert to the window's view
+            let r1:NSRect? = pdfView.superview!.convertRect(pdfView.frame, toView: docWindow!.contentView as? NSView)
+            // get screen coordinates corresponding to the rectangle got in the previous line
+            let desc2 = "\(docWindow!.convertRectToScreen(r1!))"
+            let desc = desc1 + ", " + desc2
+            updateDesc("Changed window", desc: desc)
+        }
     }
 }
 

@@ -27,12 +27,12 @@ class PeyeDocument: NSDocument {
     }
 
     override func makeWindowControllers() {
-        // Returns the Storyboard that contains your Document window.
-        let storyboard = NSStoryboard(name: "Main", bundle: nil)!
+        let storyboard = AppSingleton.storyboard
         
         let windowController = storyboard.instantiateControllerWithIdentifier("Document Window Controller") as! DocumentWindowController
         self.addWindowController(windowController)
         windowController.loadDocument()
+        windowController.shouldCloseDocument = true // tell to automaticall close document when closing
     }
     
     override func dataOfType(typeName: String, error outError: NSErrorPointer) -> NSData? {

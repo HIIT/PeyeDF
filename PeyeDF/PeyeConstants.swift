@@ -35,5 +35,8 @@ class PeyeConstants {
     static let defaultThumbSideViewWidth = CGFloat(200)
     
     /// String identifying the notification sent when a new document is opened / switched to
+    static let occlusionChangeNotification = "hiit.PeyeDF.occlusionChangeNotification"
+    
+    /// String identifying the notification sent when a new document is opened / switched to
     static let documentChangeNotification = "hiit.PeyeDF.documentChangeNotification"
 }

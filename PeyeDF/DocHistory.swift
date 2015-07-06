@@ -37,6 +37,9 @@
 // use saveStatus bool when a new timer gets created to check if we need to save status and put in duration, etc
 // use NSWindowDidChangeOcclusionStateNotification as an enter/exit event
 
+// remember to start logging if sending window is still key window
+
+// when calculating proportion of pages, remember there are 10 HDPI pixels (5 points) separating pages at size 100%
 import Foundation
 
 class DocHistory {

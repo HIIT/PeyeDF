@@ -28,17 +28,7 @@ class DocumentSplitController: NSSplitViewController {
         myThumbController = self.childViewControllers[0] as? ThumbSideController
         myPDFSideController = self.childViewControllers[1] as? PDFSideController
         
-        myPDFSideController?.myPDF.delegateZoom = AppSingleton.debugData
         myThumbController?.myThumb.setPDFView(myPDFSideController?.myPDF)
-    }
-    
-    override func viewDidAppear() {
-        super.viewDidAppear()
-        AppSingleton.debugData.setUpMonitors(myPDFSideController!.myPDF, docWindow: self.view.window!)
-        dispatch_async(dispatch_get_main_queue()) {
-            NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.documentChangeNotification, object: self.view.window?.windowController()?.document)
-            println("not posted")
-        }
     }
     
     // MARK: Thumbnail side collapse / uncollapse

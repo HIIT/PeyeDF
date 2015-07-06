@@ -10,7 +10,6 @@ import Foundation
 
 let pointsForVSeg: CGFloat = 10  // how many points are needed before inserting an additional selection point
 
-// TODO: current implementation temporary
 /// Given a zoom level, return how many points should that zoom level span
 /// current idea: we select 7 lines at zoom 1, 5 lines at zoom 2 and 3 lines at zoom 3
 /// corresponding (in one doc) to 7cm, 4cm, 2cm (2.76, 1.57, 0.79)

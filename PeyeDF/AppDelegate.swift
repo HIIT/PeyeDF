@@ -14,8 +14,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         // Instantiate and create debug window
-        let storyboard = NSStoryboard(name: "Main", bundle: nil)!
-        let debugWindowController = storyboard.instantiateControllerWithIdentifier("DebugWindow") as? NSWindowController
+        let debugWindowController = AppSingleton.storyboard.instantiateControllerWithIdentifier("DebugWindow") as? NSWindowController
         debugWindowController?.showWindow(nil)
         
         // Initialize singleton with debug pointers

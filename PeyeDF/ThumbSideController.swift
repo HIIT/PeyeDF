@@ -12,7 +12,6 @@ import Quartz
 /// Controller for the Thumbnail side Document split view
 class ThumbSideController: NSViewController {
     
-    
     @IBOutlet weak var myThumb: PDFThumbnailView!
     
     override func viewDidLoad() {

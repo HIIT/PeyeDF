@@ -14,16 +14,9 @@ import Quartz.PDFKit
 let extraLineAmount = 3 // 1/this number is the amount of extra lines that we want to discard
                         // if we are at beginning or end of paragraph
 
-@objc protocol pageRefreshDelegate {
-    func updateZoom(newSize: NSSize)
-    func drawedPage(newSize: NSSize)
-}
-
 /// Implementation of a custom PDFView class, used to implement additional function related to
 /// psychophysiology and user activity tracking
 class MyPDF:PDFView {
-    
-    weak var delegateZoom: pageRefreshDelegate?
     
     override func mouseDown(theEvent: NSEvent) {
         // Mouse in display view coordinates.
@@ -91,12 +84,8 @@ class MyPDF:PDFView {
         self.setCurrentSelection(pdfSel, animate: true)
     }
     
-    func saveDocumentAs(sender: AnyObject) {
-        // TODO: empty stub
-    }
-    
-    override func drawPage(page: PDFPage!) {
-        super.drawPage(page)
-        delegateZoom?.drawedPage(self.rowSizeForPage(page))
+    /// Return size of a page (the current page).
+    func pageSize() -> NSSize {
+        return self.rowSizeForPage(self.currentPage())
     }
 }
