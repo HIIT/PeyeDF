@@ -11,10 +11,13 @@ import Cocoa
 
 /// Implementation of a (PDF) Document (partially?) following NSDocument's guidelines
 class PeyeDocument: NSDocument {
+    
+    var someName: String?
 
     override init() {
         super.init()
         // Add your subclass-specific initialization here.
+        someName = self.description + NSDate().description
     }
 
     override func windowControllerDidLoadNib(aController: NSWindowController) {
