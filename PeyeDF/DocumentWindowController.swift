@@ -84,6 +84,25 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
             //dispatch_async(dispatch_get_main_queue()) {
             //    NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.documentChangeNotification, object: self.document)
             //}
+        
+            // Put metadata into NSDocument subclass for convenience
+            let peyeDoc = self.document as! PeyeDocument
+            let docAttrib = pdfDoc.documentAttributes()
+            if let title: AnyObject = docAttrib[PDFDocumentTitleAttribute] {
+                peyeDoc.title = title as! String
+            }
+            if let auth: AnyObject = docAttrib[PDFDocumentAuthorAttribute] {
+                peyeDoc.authors = auth as! String
+            }
+            var trimmedText = pdfDoc.string()
+            trimmedText = trimmedText.stringByReplacingOccurrencesOfString("\u{fffc}", withString: "")
+            trimmedText = trimmedText.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) // get trimmed version of all text
+            trimmedText = trimmedText.stringByTrimmingCharactersInSet(NSCharacterSet.newlineCharacterSet()) // trim newlines
+            trimmedText = trimmedText.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) // trim again
+            if count(trimmedText) > 5 {  // we assume the document does contain useful text if there are more than 5 characters remaining
+                peyeDoc.trimmedText = trimmedText
+                myPdf?.containsRawString = true
+            }
         }
     }
     

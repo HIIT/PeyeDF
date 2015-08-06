@@ -12,12 +12,17 @@ import Cocoa
 /// Implementation of a (PDF) Document (partially?) following NSDocument's guidelines
 class PeyeDocument: NSDocument {
     
-    var someName: String?
+    var title: String
+    var authors: String
+    var filename: String
+    var trimmedText: String?
 
     override init() {
+        title = "N/A"
+        authors = "N/A"
+        filename = "N/A"
+        
         super.init()
-        // Add your subclass-specific initialization here.
-        someName = self.description + NSDate().description
     }
 
     override func windowControllerDidLoadNib(aController: NSWindowController) {
@@ -45,8 +50,9 @@ class PeyeDocument: NSDocument {
         return nil
     }
     
-    /// Always returns true, assumes we can only select allowed documents (PDFs)
+    /// Always returns true, assumes we can only open allowed documents (PDFs) in the first place
     override func readFromURL(url: NSURL, ofType typeName: String, error outError: NSErrorPointer) -> Bool {
+        filename = url.lastPathComponent!
         return true
     }
 }

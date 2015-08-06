@@ -5,22 +5,9 @@
 //  Created by Marco Filetti on 02/07/2015.
 //  Copyright (c) 2015 HIIT. All rights reserved.
 //
-// Tracking and saving document history (relative to all documents; this is hence similar to AppSingleton)
-// We save all data corresponding to an instance of a document read for > 1 second
-// Data stored (for each entry):
-//
-// - Document name
-// - Whether 1 one multiple pages are being seen (Number, 1 for true, 0 for false)
-// - Min page number (if multiple pages are seen, first page being seen.)
-// - Max page number (last page if multiple pages, otherwise same as min page number)
-// - Visible proportion of page (if <1 page being seen) OR
-// - Visible proportion of document (if >1 page being seen)
-// - The above is called proportion (min: Number, max: Number)
-// - Start time
-// - End time (must be >1s from start time)
-// - Duration
-//
-
+// Tracking and saving document history (relative to one documents; every document has its own history)
+// We save all data corresponding to an instance of a document read for > 10 seconds
+// refer to https://github.com/HIIT/PeyeDF/wiki/Data-Format
 
 // implementation:
 // any "entry" event (key window made, scrolling done) starts a timer

@@ -10,6 +10,9 @@ import Foundation
 
 /// All constants used are put here for convenience.
 class PeyeConstants {
+    
+    // MARK: Global Constants
+    
     /// Column name for debug table. Make sure this identifier matches the table view id in the storyboard
     static let debugTitleColName = "DebugTitleColumn"
     
@@ -39,4 +42,8 @@ class PeyeConstants {
     
     /// String identifying the notification sent when a new document is opened / switched to
     static let documentChangeNotification = "hiit.PeyeDF.documentChangeNotification"
+    
+    // MARK: History-specific constants
+    
+    
 }

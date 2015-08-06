@@ -82,6 +82,18 @@
                                                 </items>
                                             </menu>
                                         </menuItem>
+                                        <menuItem title="This doc metadata..." id="GCK-AT-nyU">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="thisDocMdata:" target="Voe-Tx-rLC" id="9Ct-2T-R6s"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="All docs metadata..." id="bys-Bz-7v1">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="allDocMetadata:" target="Voe-Tx-rLC" id="P3G-bw-ppT"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem isSeparatorItem="YES" id="m54-Is-iLE"/>
                                         <menuItem title="Close" keyEquivalent="w" id="DVo-aG-piG">
                                             <connections>
@@ -715,7 +727,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4lM-ir-pUB">
-                                <rect key="frame" x="206" y="57" width="283" height="20"/>
+                                <rect key="frame" x="206" y="57" width="283" height="21"/>
                                 <sliderCell key="cell" state="on" alignment="left" maxValue="100" doubleValue="31.153100775193799" tickMarkPosition="above" sliderType="linear" id="oaC-TM-Rqn"/>
                             </slider>
                         </subviews>
@@ -782,7 +794,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView identifier="DebugTableView" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="edg-qR-Mnf" viewBased="YES" id="mfl-11-WH2">
-                                            <rect key="frame" x="0.0" y="0.0" width="489" height="0.0"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="589" height="0.0"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
