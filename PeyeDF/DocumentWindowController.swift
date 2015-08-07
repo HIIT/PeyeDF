@@ -15,6 +15,8 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
     
     weak var myPdf: MyPDF?
     weak var docSplitController: DocumentSplitController?
+    var debugController: DebugController?
+    var debugWindowController: NSWindowController?
 
     // MARK: Thumbnail side expand / reduce
     
@@ -31,12 +33,30 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
         }
     }
     
+    // MARK: Debug functions
+    
+    @IBAction func thisDocMdata(sender: AnyObject) {
+        if let mainWin = NSApplication.sharedApplication().mainWindow {
+            let peyeDoc: PeyeDocument = NSDocumentController.sharedDocumentController().documentForWindow(mainWin) as! PeyeDocument
+            let myAl = NSAlert()
+            
+            
+            var allTextHead = "No text found"
+            if let aText = peyeDoc.trimmedText {  // we assume no text if this is nil
+                let ei = advance(aText.startIndex, 500)
+                allTextHead = aText.substringToIndex(ei)
+            }
+            myAl.messageText = "Filename: \(peyeDoc.filename)\nTitle: \(peyeDoc.title)\nAuthor(s):\(peyeDoc.authors)\nAll Text (first 500 chars): \(allTextHead)"
+            myAl.beginSheetModalForWindow(mainWin, completionHandler: nil)
+        }
+    }
+    
+    
     // MARK: Saving
     
     func saveDocument(sender: AnyObject) {
         saveDocumentAs(sender)
     }
-    
     
     func saveDocumentAs(sender: AnyObject) {
         let panel = NSSavePanel()
@@ -63,7 +83,13 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
         
         myPdf?.setAutoScales(true)
         
-        AppSingleton.debugData.setUpMonitors(myPdf!, docWindow: self.window!)
+        // Create debug window
+        debugWindowController = AppSingleton.storyboard.instantiateControllerWithIdentifier("DebugWindow") as? NSWindowController
+        debugWindowController?.showWindow(self)
+        debugController = (debugWindowController?.contentViewController as! DebugController)
+        
+        // Get notifications from managed window (to be later dispatched to singleton)
+        debugController?.setUpMonitors(myPdf!, docWindow: self.window!)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowWantsMain:", name: NSWindowDidBecomeMainNotification, object: self.window)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowWantsClose:", name: NSWindowWillCloseNotification, object: self.window)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowOcclusionChange:", name: NSWindowDidChangeOcclusionStateNotification, object: self.window)
@@ -110,7 +136,6 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
     
     @objc func windowWantsMain(notification: NSNotification) {
         NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.documentChangeNotification, object: self.document)
-        AppSingleton.debugData.updateRefs(self.myPdf!, newWindow: self.window!)
     }
     
     @objc func windowOcclusionChange(notification: NSNotification) {
@@ -121,7 +146,8 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowDidBecomeMainNotification, object: self.window)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowWillCloseNotification, object: self.window)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowDidChangeOcclusionStateNotification, object: self.window)
-        AppSingleton.debugData.unSetMonitors(myPdf!, docWindow: self.window!)
+        debugController?.unSetMonitors(myPdf!, docWindow: self.window!)
+        debugController?.view.window?.close()
         myPdf?.setDocument(nil)
     }
 }

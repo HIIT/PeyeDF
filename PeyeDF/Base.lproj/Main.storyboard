@@ -85,7 +85,7 @@
                                         <menuItem title="This doc metadata..." id="GCK-AT-nyU">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="thisDocMdata:" target="Voe-Tx-rLC" id="9Ct-2T-R6s"/>
+                                                <action selector="thisDocMdata:" target="Ady-hI-5gd" id="vQQ-dW-ov0"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="All docs metadata..." id="bys-Bz-7v1">
@@ -680,9 +680,11 @@
                                         <action selector="showSide:" target="sy6-nO-Tdf" id="Ad8-47-SsZ"/>
                                     </connections>
                                 </toolbarItem>
+                                <toolbarItem implicitItemIdentifier="89601E0B-9CA8-4616-9840-802B86612D69" label="Beta1" paletteLabel="Beta1" tag="-1" image="Beta" id="1lR-l5-PLy"/>
                             </allowedToolbarItems>
                             <defaultToolbarItems>
                                 <toolbarItem reference="8zr-Hg-gf0"/>
+                                <toolbarItem reference="1lR-l5-PLy"/>
                                 <toolbarItem reference="10c-J9-dPD"/>
                                 <toolbarItem reference="aNh-Te-Qhf"/>
                             </defaultToolbarItems>
@@ -764,8 +766,8 @@
         <!--DebugWindow-->
         <scene sceneID="v3B-6r-Vc2">
             <objects>
-                <windowController storyboardIdentifier="DebugWindow" showSeguePresentationStyle="single" id="BkO-K2-Ie9" userLabel="DebugWindow" sceneMemberID="viewController">
-                    <window key="window" title="Debug Info" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" animationBehavior="default" id="RxI-Up-x4Y">
+                <windowController storyboardIdentifier="DebugWindow" id="BkO-K2-Ie9" userLabel="DebugWindow" sceneMemberID="viewController">
+                    <window key="window" title="Debug Info" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" oneShot="NO" showsToolbarButton="NO" animationBehavior="default" id="RxI-Up-x4Y">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="425" y="461" width="714" height="270"/>
@@ -782,13 +784,13 @@
         <!--DebugController-->
         <scene sceneID="tRf-D6-wW5">
             <objects>
-                <viewController storyboardIdentifier="DebugController" showSeguePresentationStyle="single" id="Ye6-Vi-XrI" userLabel="DebugController" customClass="DebugController" customModule="PeyeDF" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="DebugController" id="Ye6-Vi-XrI" userLabel="DebugController" customClass="DebugController" customModule="PeyeDF" sceneMemberID="viewController">
                     <view key="view" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" id="y3Q-Wa-bds" userLabel="ToolbarController">
                         <rect key="frame" x="0.0" y="0.0" width="631" height="507"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h0Q-1M-dtH">
-                                <rect key="frame" x="20" y="21" width="591" height="466"/>
+                                <rect key="frame" x="20" y="21" width="591" height="441"/>
                                 <clipView key="contentView" id="Nad-Xe-Yhq">
                                     <rect key="frame" x="1" y="17" width="238" height="117"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -857,16 +859,28 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableHeaderView>
                             </scrollView>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4AO-0B-gP0">
+                                <rect key="frame" x="18" y="476" width="595" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Document name" usesSingleLineMode="YES" id="6lz-vx-Gsg">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="4AO-0B-gP0" firstAttribute="top" secondItem="y3Q-Wa-bds" secondAttribute="top" constant="14" id="B8O-gB-u0K"/>
                             <constraint firstItem="h0Q-1M-dtH" firstAttribute="leading" secondItem="y3Q-Wa-bds" secondAttribute="leading" constant="20" id="DdO-wL-73a"/>
                             <constraint firstAttribute="bottom" secondItem="h0Q-1M-dtH" secondAttribute="bottom" constant="21" id="Npq-b1-Kgc"/>
-                            <constraint firstItem="h0Q-1M-dtH" firstAttribute="top" secondItem="y3Q-Wa-bds" secondAttribute="top" constant="20" id="TNY-nQ-yuQ"/>
+                            <constraint firstItem="h0Q-1M-dtH" firstAttribute="top" secondItem="4AO-0B-gP0" secondAttribute="bottom" constant="14" id="eQL-gn-hrR"/>
+                            <constraint firstAttribute="trailing" secondItem="4AO-0B-gP0" secondAttribute="trailing" constant="20" id="kg9-yq-OwY"/>
+                            <constraint firstItem="4AO-0B-gP0" firstAttribute="leading" secondItem="y3Q-Wa-bds" secondAttribute="leading" constant="20" id="t0E-4X-rt2"/>
                             <constraint firstAttribute="trailing" secondItem="h0Q-1M-dtH" secondAttribute="trailing" constant="20" id="zRw-mg-1Gp"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="debugTable" destination="mfl-11-WH2" id="2tN-1M-siI"/>
+                        <outlet property="titleLabel" destination="4AO-0B-gP0" id="uy9-uw-7DE"/>
                     </connections>
                 </viewController>
                 <customObject id="BNT-9h-9GO" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -939,6 +953,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="Beta" width="64" height="64"/>
         <image name="TB_ThumbU" width="32" height="32"/>
     </resources>
 </document>

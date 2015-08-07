@@ -15,6 +15,8 @@ class PeyeDocument: NSDocument {
     var title: String
     var authors: String
     var filename: String
+    
+    /// Contains all plain text from PDF, with extra characters (such as whitespace) trimmed
     var trimmedText: String?
 
     override init() {
@@ -40,7 +42,7 @@ class PeyeDocument: NSDocument {
         let windowController = storyboard.instantiateControllerWithIdentifier("Document Window Controller") as! DocumentWindowController
         self.addWindowController(windowController)
         windowController.loadDocument()
-        windowController.shouldCloseDocument = true // tell to automaticall close document when closing
+        windowController.shouldCloseDocument = true // tell to automaticall close document when closing window
     }
     
     override func dataOfType(typeName: String, error outError: NSErrorPointer) -> NSData? {
