@@ -17,6 +17,7 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
     weak var docSplitController: DocumentSplitController?
     var debugController: DebugController?
     var debugWindowController: NSWindowController?
+    @IBOutlet weak var docStatus: NSToolbarItem!
 
     // MARK: Thumbnail side expand / reduce
     
@@ -41,12 +42,13 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
             let myAl = NSAlert()
             
             
-            var allTextHead = "No text found"
+            var allTextHead = "** NO TEXT FOUND **"
             if let aText = peyeDoc.trimmedText {  // we assume no text if this is nil
                 let ei = advance(aText.startIndex, 500)
                 allTextHead = aText.substringToIndex(ei)
             }
-            myAl.messageText = "Filename: \(peyeDoc.filename)\nTitle: \(peyeDoc.title)\nAuthor(s):\(peyeDoc.authors)\nAll Text (first 500 chars): \(allTextHead)"
+            myAl.messageText = "Filename: \(peyeDoc.filename)\nTitle: \(peyeDoc.title)\nAuthor(s):\(peyeDoc.authors)"
+            myAl.informativeText = "All text (first 500 chars):\n" + allTextHead
             myAl.beginSheetModalForWindow(mainWin, completionHandler: nil)
         }
     }
@@ -128,6 +130,9 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
             if count(trimmedText) > 5 {  // we assume the document does contain useful text if there are more than 5 characters remaining
                 peyeDoc.trimmedText = trimmedText
                 myPdf?.containsRawString = true
+                docStatus.image = NSImage(named: "NSStatusAvailable")
+            } else {
+                docStatus.image = NSImage(named: "NSStatusPartiallyAvailable")
             }
         }
     }

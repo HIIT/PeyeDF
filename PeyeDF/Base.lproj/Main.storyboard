@@ -681,16 +681,23 @@
                                     </connections>
                                 </toolbarItem>
                                 <toolbarItem implicitItemIdentifier="89601E0B-9CA8-4616-9840-802B86612D69" label="Beta1" paletteLabel="Beta1" tag="-1" image="Beta" id="1lR-l5-PLy"/>
+                                <toolbarItem implicitItemIdentifier="CC7FE61C-736A-48C6-AF6F-F7575AB673D8" label="Document Status" paletteLabel="Document Status" tag="-1" image="NSStatusNone" id="l3s-5e-m3r">
+                                    <connections>
+                                        <action selector="thisDocMdata:" target="H3y-Bk-Ofi" id="prl-UE-k7l"/>
+                                    </connections>
+                                </toolbarItem>
                             </allowedToolbarItems>
                             <defaultToolbarItems>
                                 <toolbarItem reference="8zr-Hg-gf0"/>
                                 <toolbarItem reference="1lR-l5-PLy"/>
+                                <toolbarItem reference="l3s-5e-m3r"/>
                                 <toolbarItem reference="10c-J9-dPD"/>
                                 <toolbarItem reference="aNh-Te-Qhf"/>
                             </defaultToolbarItems>
                         </toolbar>
                     </window>
                     <connections>
+                        <outlet property="docStatus" destination="l3s-5e-m3r" id="NbI-4o-i7d"/>
                         <outlet property="thumbTB" destination="8zr-Hg-gf0" id="kBi-3Q-0wK"/>
                         <segue destination="f9L-GU-eYT" kind="relationship" relationship="window.shadowedContentViewController" id="t30-fj-7gb"/>
                     </connections>
@@ -954,6 +961,7 @@
     </scenes>
     <resources>
         <image name="Beta" width="64" height="64"/>
+        <image name="NSStatusNone" width="16" height="16"/>
         <image name="TB_ThumbU" width="32" height="32"/>
     </resources>
 </document>
