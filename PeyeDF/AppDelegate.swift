@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import Quartz.PDFKit.PDFView
+import Quartz
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {

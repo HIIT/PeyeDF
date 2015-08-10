@@ -8,7 +8,7 @@
 
 import Foundation
 import Cocoa
-import Quartz.PDFKit
+import Quartz
 
 // Constants
 let extraLineAmount = 3 // 1/this number is the amount of extra lines that we want to discard
