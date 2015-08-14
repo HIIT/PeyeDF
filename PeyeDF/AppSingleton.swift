@@ -12,9 +12,25 @@ import Quartz
 
 /// Used to share states across the whole application, including posting history notifications to store. Contains:
 ///
-/// - debugData: used to store and update debugging information
-/// - debugWinInfo: window controller and debug controller for debug info window
 /// - storyboard: the "Main" storyboard
+/// - log: XCGLogger instance to log information to console and file
 class AppSingleton {
     static let storyboard = NSStoryboard(name: "Main", bundle: nil)!
+    
+    static let log = AppSingleton.createLog()
+    
+    static func createLog() -> XCGLogger {
+        var error: NSError? = nil
+        var firstLine: String = "Log directory succesfully created / present"
+        let tempDirBase = NSTemporaryDirectory().stringByAppendingPathComponent("hiit.PeyeDF")
+            if !NSFileManager.defaultManager().createDirectoryAtPath(tempDirBase, withIntermediateDirectories: true, attributes: nil, error: &error) {
+                firstLine = "Error creating log directory: " + error!.description
+            }
+        let logFilePath = tempDirBase.stringByAppendingPathComponent("XCGLog.log")
+        let newLog = XCGLogger.defaultInstance()
+        newLog.setup(logLevel: .Debug, showThreadName: true, showLogLevel: true, showFileNames: true, showLineNumbers: true, writeToFile: logFilePath, fileLogLevel: .Debug)
+        newLog.debug(firstLine)
+        return newLog
+    }
+    
 }

@@ -54,6 +54,7 @@ class PeyeDocument: NSDocument {
     
     /// Always returns true, assumes we can only open allowed documents (PDFs) in the first place
     override func readFromURL(url: NSURL, ofType typeName: String, error outError: NSErrorPointer) -> Bool {
+        AppSingleton.log.debug("Opening " + url.description)
         filename = url.lastPathComponent!
         return true
     }
