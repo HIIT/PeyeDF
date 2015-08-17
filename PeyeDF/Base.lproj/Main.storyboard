@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7706"/>
         <plugIn identifier="com.apple.pdfkit.ibplugin" version="7706"/>
@@ -681,7 +681,7 @@
                                     </connections>
                                 </toolbarItem>
                                 <toolbarItem implicitItemIdentifier="89601E0B-9CA8-4616-9840-802B86612D69" label="Beta1" paletteLabel="Beta1" tag="-1" image="Beta" id="1lR-l5-PLy"/>
-                                <toolbarItem implicitItemIdentifier="CC7FE61C-736A-48C6-AF6F-F7575AB673D8" label="Document Status" paletteLabel="Document Status" tag="-1" image="NSStatusNone" id="l3s-5e-m3r">
+                                <toolbarItem implicitItemIdentifier="CC7FE61C-736A-48C6-AF6F-F7575AB673D8" label="Metadata" paletteLabel="Metadata" tag="-1" image="NSStatusNone" id="l3s-5e-m3r">
                                     <connections>
                                         <action selector="thisDocMdata:" target="H3y-Bk-Ofi" id="prl-UE-k7l"/>
                                     </connections>
@@ -775,7 +775,7 @@
             <objects>
                 <windowController storyboardIdentifier="DebugWindow" id="BkO-K2-Ie9" userLabel="DebugWindow" sceneMemberID="viewController">
                     <window key="window" title="Debug Info" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" oneShot="NO" showsToolbarButton="NO" animationBehavior="default" id="RxI-Up-x4Y">
-                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+                        <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="425" y="461" width="714" height="270"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>

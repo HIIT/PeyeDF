@@ -26,7 +26,6 @@ class DebugController: NSViewController, NSTableViewDataSource {
     override func viewDidLoad() {
         debugTable.setDataSource(self)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "documentChanged:", name: PeyeConstants.documentChangeNotification, object: nil)
     }
     
     /// MARK: data source for debug table, including methods to check for notifications
@@ -53,6 +52,7 @@ class DebugController: NSViewController, NSTableViewDataSource {
     func setUpMonitors(pdfView: MyPDF, docWindow: NSWindow) {
         self.pdfView = pdfView
         self.docWindow = docWindow
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "documentChanged:", name: PeyeConstants.documentChangeNotification, object: docWindow)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "zoomChanged:", name: PDFViewScaleChangedNotification, object: pdfView)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "frameChanged:", name: NSViewFrameDidChangeNotification, object: pdfView)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowChanged:", name: NSWindowDidMoveNotification, object: docWindow)
@@ -66,6 +66,7 @@ class DebugController: NSViewController, NSTableViewDataSource {
     func unSetMonitors(pdfView: NSView, docWindow: NSWindow) {
         self.pdfView = nil
         self.docWindow = nil
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: PeyeConstants.documentChangeNotification, object: docWindow)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: PDFViewScaleChangedNotification, object: pdfView)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSViewFrameDidChangeNotification, object: pdfView)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowDidMoveNotification, object: docWindow)
@@ -115,10 +116,10 @@ class DebugController: NSViewController, NSTableViewDataSource {
     func updateDesc(title: String, desc: String) {
         if let k = debugDescs.indexForKey(title) {
             debugDescs[title] = desc
-            debugTimes[title] = GetCurrentTimeShort()
+            debugTimes[title] = NSDate.shortTime()
         } else {
             debugDescs[title] = desc
-            debugTimes[title] = GetCurrentTimeShort()
+            debugTimes[title] = NSDate.shortTime()
             let rowi = count(debugDescs) - 1
             debugTabIdxs[rowi] = title
         }

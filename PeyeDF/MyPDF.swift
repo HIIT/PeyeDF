@@ -91,4 +91,11 @@ class MyPDF:PDFView {
     func pageSize() -> NSSize {
         return self.rowSizeForPage(self.currentPage())
     }
+    
+    /// Get media box for page, representing coordinates which take into account if 
+    /// page has been cropped (in Preview, for example). By default returns
+    /// media box instead if crop box is not present, which is what we want
+    func getPageRect(page: PDFPage) -> NSRect {
+        return page.boundsForBox(kPDFDisplayBoxCropBox)
+    }
 }

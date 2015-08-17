@@ -132,7 +132,7 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
                 myPdf?.containsRawString = true
                 docStatus.image = NSImage(named: "NSStatusAvailable")
             } else {
-                docStatus.image = NSImage(named: "NSStatusPartiallyAvailable")
+                docStatus.image = NSImage(named: "NSStatusUnavailable")
             }
         }
     }

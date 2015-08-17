@@ -22,7 +22,7 @@ class AppSingleton {
     static func createLog() -> XCGLogger {
         var error: NSError? = nil
         var firstLine: String = "Log directory succesfully created / present"
-        let tempDirBase = NSTemporaryDirectory().stringByAppendingPathComponent("hiit.PeyeDF")
+        let tempDirBase = NSTemporaryDirectory().stringByAppendingPathComponent(NSBundle.mainBundle().bundleIdentifier!)
             if !NSFileManager.defaultManager().createDirectoryAtPath(tempDirBase, withIntermediateDirectories: true, attributes: nil, error: &error) {
                 firstLine = "Error creating log directory: " + error!.description
             }
