@@ -1,5 +1,7 @@
 Under heavy development, only able to open PDFs and select paragraphs (to debug future eye tracking detection) for now.
 
+Data passed to DiMe in the wiki: https://github.com/HIIT/PeyeDF/wiki/Data-Format 
+
 # Addional software
 
 The following GitHub project is incorporated into JustUsed (no additional download needed). It was released under the MIT license.
