@@ -52,7 +52,7 @@ class DebugController: NSViewController, NSTableViewDataSource {
     func setUpMonitors(pdfView: MyPDF, docWindow: NSWindow) {
         self.pdfView = pdfView
         self.docWindow = docWindow
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "documentChanged:", name: PeyeConstants.documentChangeNotification, object: docWindow)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "documentChanged:", name: PeyeConstants.documentChangeNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "zoomChanged:", name: PDFViewScaleChangedNotification, object: pdfView)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "frameChanged:", name: NSViewFrameDidChangeNotification, object: pdfView)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowChanged:", name: NSWindowDidMoveNotification, object: docWindow)
@@ -66,7 +66,7 @@ class DebugController: NSViewController, NSTableViewDataSource {
     func unSetMonitors(pdfView: NSView, docWindow: NSWindow) {
         self.pdfView = nil
         self.docWindow = nil
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: PeyeConstants.documentChangeNotification, object: docWindow)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: PeyeConstants.documentChangeNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: PDFViewScaleChangedNotification, object: pdfView)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSViewFrameDidChangeNotification, object: pdfView)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowDidMoveNotification, object: docWindow)

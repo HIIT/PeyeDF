@@ -19,6 +19,8 @@ class PeyeDocument: NSDocument {
     /// Contains all plain text from PDF, with extra characters (such as whitespace) trimmed
     var trimmedText: String?
 
+    // MARK: NSDocument overrides
+    
     override init() {
         title = "N/A"
         authors = "N/A"

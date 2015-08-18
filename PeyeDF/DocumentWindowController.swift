@@ -109,9 +109,9 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
             
             pdfDoc = PDFDocument(URL: url)
             myPdf?.setDocument(pdfDoc)
-            //dispatch_async(dispatch_get_main_queue()) {
-            //    NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.documentChangeNotification, object: self.document)
-            //}
+            dispatch_async(dispatch_get_main_queue()) {
+                NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.documentChangeNotification, object: self.document)
+            }
         
             // Put metadata into NSDocument subclass for convenience
             let peyeDoc = self.document as! PeyeDocument
@@ -134,6 +134,9 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
             } else {
                 docStatus.image = NSImage(named: "NSStatusUnavailable")
             }
+            
+            // Update debug controller with metadata
+            debugController?.titleLabel.stringValue = peyeDoc.title
         }
     }
     

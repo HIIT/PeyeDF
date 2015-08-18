@@ -28,3 +28,8 @@ extension NSDate {
     }
 
 }
+
+/// Founds a number to the amount of decimal places specified
+func roundToX(number: CGFloat, places: CGFloat) -> CGFloat {
+    return round(number * (pow(10,places))) / pow(10,places)
+}

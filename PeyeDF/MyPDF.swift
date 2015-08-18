@@ -16,7 +16,7 @@ let extraLineAmount = 3 // 1/this number is the amount of extra lines that we wa
 
 /// Implementation of a custom PDFView class, used to implement additional function related to
 /// psychophysiology and user activity tracking
-class MyPDF:PDFView {
+class MyPDF: PDFView {
     
     var containsRawString = false  // this stores whether the document actually contains scanned text
     
@@ -84,6 +84,8 @@ class MyPDF:PDFView {
                 } // end of check for split, if no need just return selection as-was //
             }
             self.setCurrentSelection(pdfSel, animate: true)
+        } else {
+            super.mouseDown(theEvent)
         }
     }
     
@@ -98,4 +100,33 @@ class MyPDF:PDFView {
     func getPageRect(page: PDFPage) -> NSRect {
         return page.boundsForBox(kPDFDisplayBoxCropBox)
     }
+   
+    /// Debug function to test "seen text"
+    @IBAction func selectVisibleText(sender: AnyObject?) {
+        // Only proceed if there is actually text to select
+        if containsRawString {
+            let mspace = PeyeConstants.extraMargin
+            let visiblePages = self.visiblePages()
+            let generatedSelection = PDFSelection(document: self.document())
+            var visibleRects = [NSRect]()  // rects in page coordinates, one for each page, representing visible portion
+            
+            for visiblePage in visiblePages as! [PDFPage] {
+                
+                // Get page's rectangle coordinates
+                var pageRect = getPageRect(visiblePage)
+                
+                // Get viewport rect and apply margin
+                var visibleRect = NSRect(origin: CGPoint(x: 0, y: 0), size: self.frame.size)
+                visibleRect.inset(dx: PeyeConstants.extraMargin, dy: PeyeConstants.extraMargin)
+                
+                visibleRect = self.convertRect(visibleRect, toPage: visiblePage)  // Convert rect to page coordinates
+                visibleRect.intersect(pageRect)  // Intersect to get seen portion
+                
+                generatedSelection.addSelection(visiblePage.selectionForRect(visibleRect))
+            }
+            
+            self.setCurrentSelection(generatedSelection, animate: true)
+        }
+    }
+    
 }

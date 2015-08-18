@@ -680,7 +680,11 @@
                                         <action selector="showSide:" target="sy6-nO-Tdf" id="Ad8-47-SsZ"/>
                                     </connections>
                                 </toolbarItem>
-                                <toolbarItem implicitItemIdentifier="89601E0B-9CA8-4616-9840-802B86612D69" label="Beta1" paletteLabel="Beta1" tag="-1" image="Beta" id="1lR-l5-PLy"/>
+                                <toolbarItem implicitItemIdentifier="89601E0B-9CA8-4616-9840-802B86612D69" label="Select visible text" paletteLabel="Select visible text" tag="-1" image="Beta" id="1lR-l5-PLy">
+                                    <connections>
+                                        <action selector="selectVisibleText:" target="H3y-Bk-Ofi" id="f60-cs-OKe"/>
+                                    </connections>
+                                </toolbarItem>
                                 <toolbarItem implicitItemIdentifier="CC7FE61C-736A-48C6-AF6F-F7575AB673D8" label="Metadata" paletteLabel="Metadata" tag="-1" image="NSStatusNone" id="l3s-5e-m3r">
                                     <connections>
                                         <action selector="thisDocMdata:" target="H3y-Bk-Ofi" id="prl-UE-k7l"/>

@@ -10,6 +10,8 @@ import Foundation
 
 let pointsForVSeg: CGFloat = 10  // how many points are needed before inserting an additional selection point
 
+let _roundPrecision: CGFloat = 2.0  // This is used in the "hack" below to prevent the loop below from overlowing because of precision errors
+
 /// Given a zoom level, return how many points should that zoom level span
 /// current idea: we select 7 lines at zoom 1, 5 lines at zoom 2 and 3 lines at zoom 3
 /// corresponding (in one doc) to 7cm, 4cm, 2cm (2.76, 1.57, 0.79)
@@ -31,11 +33,12 @@ func multiVPoint(point: NSPoint, zoomLevel: CGFloat) -> [NSPoint] {
     
     pointSpan = CGFloat(nOfPoints) * pointsForVSeg
     
-    let startY = point.y + pointSpan / 2
-    let endY = point.y - pointSpan / 2
+    // "hack" because the loop below would overflow because of precision errors (when newY and endY should be equal an unequality would show up instead, causing the loop to continue)
+    let startY = roundToX(point.y + pointSpan / 2, _roundPrecision)
+    let endY = roundToX(point.y - pointSpan / 2, _roundPrecision)
     // (remember origin is at bottom left)
     var i = 0
-    for var newY = startY ; newY > endY; newY -= pointsForVSeg {
+    for var newY = startY - 10 / (_roundPrecision + 1) ; newY > endY; newY -= pointsForVSeg {
         pointArray[i].y = newY
         ++i
     }
