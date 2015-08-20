@@ -1,0 +1,3 @@
+[submodule "wiki_submodule"]
+	path = wiki_submodule
+	url = ../PeyeDF.wiki.git
