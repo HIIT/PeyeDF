@@ -32,7 +32,7 @@
 import Cocoa
 import Foundation
 
-struct ReadingEvent: JSONable {
+struct ReadingEvent: JSONable, Equatable {
     /// yes if > 1 page is currently being displayed
     var multiPage: Bool
     /// vector of pages specifying the pages currently being displayed, starting from 0 (length should be > 1 if multiPage == true)
@@ -65,10 +65,19 @@ struct ReadingEvent: JSONable {
         retDict["proportion"] = proportion.JSONize()
         return .Dictionary(retDict)
     }
+    
+    
+}
+
+func == (lhs: ReadingEvent, rhs: ReadingEvent) -> Bool {
+    return lhs.multiPage == rhs.multiPage &&
+        lhs.visiblePages == rhs.visiblePages &&
+        lhs.pageRects == rhs.pageRects &&
+        lhs.proportion == rhs.proportion
 }
 
 /// Represents a simple range with a start and end value
-struct DiMeRange: JSONable {
+struct DiMeRange: JSONable, Equatable {
     var min: NSNumber
     var max: NSNumber
     
@@ -79,6 +88,11 @@ struct DiMeRange: JSONable {
         retDict["max"] = JSONableItem.Number(max)
         return .Dictionary(retDict)
     }
+}
+
+func == (lhs: DiMeRange, rhs: DiMeRange) -> Bool {
+    return lhs.max == rhs.max &&
+        lhs.min == rhs.min
 }
 
 extension NSRect: JSONable {
