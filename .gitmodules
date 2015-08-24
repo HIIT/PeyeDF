@@ -1,3 +1,6 @@
 [submodule "wiki_submodule"]
 	path = wiki_submodule
 	url = ../PeyeDF.wiki.git
+[submodule "Alamofire"]
+	path = Alamofire
+	url = ../../Alamofire/Alamofire.git
