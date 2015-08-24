@@ -690,10 +690,16 @@
                                         <action selector="thisDocMdata:" target="H3y-Bk-Ofi" id="prl-UE-k7l"/>
                                     </connections>
                                 </toolbarItem>
+                                <toolbarItem implicitItemIdentifier="1046FDB0-1EE7-4C1B-BF93-CDAE75908811" label="Send to DiMe" paletteLabel="Send to DiMe" tag="-1" image="Beta" id="W5X-tm-Xbn">
+                                    <connections>
+                                        <action selector="sendToDiMe:" target="H3y-Bk-Ofi" id="yfv-Dg-ebE"/>
+                                    </connections>
+                                </toolbarItem>
                             </allowedToolbarItems>
                             <defaultToolbarItems>
                                 <toolbarItem reference="8zr-Hg-gf0"/>
                                 <toolbarItem reference="1lR-l5-PLy"/>
+                                <toolbarItem reference="W5X-tm-Xbn"/>
                                 <toolbarItem reference="l3s-5e-m3r"/>
                                 <toolbarItem reference="10c-J9-dPD"/>
                                 <toolbarItem reference="aNh-Te-Qhf"/>
@@ -702,6 +708,7 @@
                     </window>
                     <connections>
                         <outlet property="docStatus" destination="l3s-5e-m3r" id="NbI-4o-i7d"/>
+                        <outlet property="selectButton" destination="1lR-l5-PLy" id="ZLG-j2-q30"/>
                         <outlet property="thumbTB" destination="8zr-Hg-gf0" id="kBi-3Q-0wK"/>
                         <segue destination="f9L-GU-eYT" kind="relationship" relationship="window.shadowedContentViewController" id="t30-fj-7gb"/>
                     </connections>

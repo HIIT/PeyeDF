@@ -7,12 +7,14 @@
 //
 
 import Cocoa
+import Alamofire
 import Foundation
 import Quartz
 
 /// Manages the "Document Window", which comprises two split views, one inside the other
 class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
     
+    @IBOutlet weak var selectButton: NSToolbarItem!
     weak var myPdf: MyPDF?
     weak var docSplitController: DocumentSplitController?
     var debugController: DebugController?
@@ -35,6 +37,34 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
     }
     
     // MARK: Debug functions
+    
+    @IBAction func sendToDiMe(sender: AnyObject?) {
+        let b:ReadingEvent = myPdf!.getStatus()
+        
+        let server_url = "http://localhost:8080/api"
+        
+        let user = "Test1"
+        let password = "123456"
+        
+        let credentialData = "\(user):\(password)".dataUsingEncoding(NSUTF8StringEncoding)!
+        let base64Credentials = credentialData.base64EncodedStringWithOptions(nil)
+        
+        let headers = ["Authorization": "Basic \(base64Credentials)"]
+        
+        var error = NSErrorPointer()
+        let options = NSJSONWritingOptions.PrettyPrinted
+
+        let jsonData = NSJSONSerialization.dataWithJSONObject(b.JSONize().recurseIntoAny(), options: options, error: error)
+        
+        let x = Alamofire.request(Alamofire.Method.POST, server_url + "/data/event", parameters: (b.JSONize().recurseIntoAny() as! [String : AnyObject]), encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON { _, _, JSON, _ in
+            AppSingleton.log.debug("Request sent and received: \n" + JSON!.description)
+        }
+
+    }
+    
+    @IBAction func selectVisibleText(sender: AnyObject?) {
+        myPdf?.selectVisibleText(sender)
+    }
     
     @IBAction func thisDocMdata(sender: AnyObject) {
         if let mainWin = NSApplication.sharedApplication().mainWindow {

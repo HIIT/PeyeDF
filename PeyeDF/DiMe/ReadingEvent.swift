@@ -37,11 +37,14 @@ struct ReadingEvent: JSONable, Equatable {
     var multiPage: Bool
     /// vector of pages specifying the pages currently being displayed, starting from 0 (length should be > 1 if multiPage == true)
     var visiblePages: [Int]
-    // A list of rectangles representing where the viewport is placed for each page. All the rects should fit within the page. Rect dimensions refer to points in a 72 dpi space where the bottom left is the origin, as in Apple's PDFKit. A page in US Letter format (often used for papers) translates to approx 594 x 792 points.
+    /// A list of rectangles representing where the viewport is placed for each page. All the rects should fit within the page. Rect dimensions refer to points in a 72 dpi space where the bottom left is the origin, as in Apple's PDFKit. A page in US Letter format (often used for papers) translates to approx 594 x 792 points.
     var pageRects: [NSRect]
     
-    // Proportion of the page being looked at. Note: this is biased to excess, it gives the very max and min of the proportion of the page beeing looked at. If there is a part currently not being seen in 2-page continuous, it is ignored.
+    /// Proportion of the page being looked at. Note: this is biased to excess, it gives the very max and min of the proportion of the page beeing looked at. If there is a part currently not being seen in 2-page continuous, it is ignored.
     var proportion: DiMeRange
+    
+    /// Plain text visible on-screen
+    var plainTextContent: NSString
     
     /// Converts this individual reading event into a dict containing Json-compatible representations for all fields.
     func JSONize() -> JSONableItem {
@@ -61,6 +64,17 @@ struct ReadingEvent: JSONable, Equatable {
         }
         retDict["visiblePages"] = JSONableItem.Array(retPageArray)
         retDict["pageRects"] = JSONableItem.Array(retPageRectsArray)
+        retDict["plainTextContent"] = JSONableItem.String(plainTextContent)
+        retDict["@type"] = JSONableItem.String("ReadingEvent")
+        
+        var tdict = [NSString: JSONableItem]()
+        tdict["id"] = JSONableItem.String("55db3e60da08f459c1e1e23c")
+        tdict["@type"] = JSONableItem.String("InformationElement")
+        retDict["targettedResource"] = JSONableItem.Dictionary(tdict)
+        
+        retDict["type"] = JSONableItem.String("http://www.hiit.fi/ontologies/dime/#ReadingEvent")
+        retDict["actor"] = JSONableItem.String("PeyeDF")
+        retDict["origin"] = JSONableItem.String("xcode")
         
         retDict["proportion"] = proportion.JSONize()
         return .Dictionary(retDict)

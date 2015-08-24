@@ -101,8 +101,82 @@ class MyPDF: PDFView {
         return page.boundsForBox(kPDFDisplayBoxCropBox)
     }
    
+    /// Get proportion of document currently being seen, as a pair of numbers from
+    /// 0 to 1 (e.g. 0, 0.25 means that we are observing the first quarter of a document, or whole page 1 out of 4).
+    /// Note: this is biased in excess (for example if we are seeing two pages side-by-side it returns the smallest min and the highest max possible).
+    func getProportion() -> DiMeRange {
+        let clipView = self.subviews[0].subviews[0] as! NSClipView  // forced assumption on the clipview tree
+        let yMin = clipView.visibleRect.origin.y
+        let yMax = yMin + clipView.visibleRect.height
+        let docY = clipView.documentRect.height
+        return DiMeRange(min: 1 - yMax / docY, max: 1 - yMin / docY)
+    }
+    
+    /// Get the number of visible pages, starting from zero
+    func getVisiblePageNums() -> [Int] {
+        var visibleArray = [Int]()
+        for visiblePage in self.visiblePages() as! [PDFPage] {
+            visibleArray.append(visiblePage.label().toInt()!)
+        }
+        return visibleArray
+    }
+    
+    /// Returns the list of rects corresponding to portion of pages being seen
+    func getVisibleRects() -> [NSRect] {
+        let mspace = PeyeConstants.extraMargin
+        let visiblePages = self.visiblePages()
+        var visibleRects = [NSRect]()  // rects in page coordinates, one for each page, representing visible portion
+        
+        for visiblePage in visiblePages as! [PDFPage] {
+            
+            // Get page's rectangle coordinates
+            var pageRect = getPageRect(visiblePage)
+            
+            // Get viewport rect and apply margin
+            var visibleRect = NSRect(origin: CGPoint(x: 0, y: 0), size: self.frame.size)
+            visibleRect.inset(dx: PeyeConstants.extraMargin, dy: PeyeConstants.extraMargin)
+            
+            visibleRect = self.convertRect(visibleRect, toPage: visiblePage)  // Convert rect to page coordinates
+            visibleRect.intersect(pageRect)  // Intersect to get seen portion
+            visibleRects.append(visibleRect)
+            
+        }
+        return visibleRects
+    }
+    
+    /// Returns the visible text as a string, or nil if no text can be fetched.
+    func getVisibleString() -> NSString? {
+        // Only proceed if there is actually text to select
+        if containsRawString {
+            let mspace = PeyeConstants.extraMargin
+            let visiblePages = self.visiblePages()
+            let generatedSelection = PDFSelection(document: self.document())
+            var visibleRects = [NSRect]()  // rects in page coordinates, one for each page, representing visible portion
+            
+            for visiblePage in visiblePages as! [PDFPage] {
+                
+                // Get page's rectangle coordinates
+                var pageRect = getPageRect(visiblePage)
+                
+                // Get viewport rect and apply margin
+                var visibleRect = NSRect(origin: CGPoint(x: 0, y: 0), size: self.frame.size)
+                visibleRect.inset(dx: PeyeConstants.extraMargin, dy: PeyeConstants.extraMargin)
+                
+                visibleRect = self.convertRect(visibleRect, toPage: visiblePage)  // Convert rect to page coordinates
+                visibleRect.intersect(pageRect)  // Intersect to get seen portion
+                
+                generatedSelection.addSelection(visiblePage.selectionForRect(visibleRect))
+            }
+            
+            return generatedSelection.string()
+        }
+        return nil
+    }
+    
+    // MARK: Debug functions
+    
     /// Debug function to test "seen text"
-    @IBAction func selectVisibleText(sender: AnyObject?) {
+    func selectVisibleText(sender: AnyObject?) {
         // Only proceed if there is actually text to select
         if containsRawString {
             let mspace = PeyeConstants.extraMargin
@@ -127,6 +201,16 @@ class MyPDF: PDFView {
             
             self.setCurrentSelection(generatedSelection, animate: true)
         }
+    }
+    
+    func getStatus() -> ReadingEvent {
+        let multiPage: Bool = (count(self.visiblePages())) > 1
+        let visiblePages: [Int] = getVisiblePageNums()
+        let pageRects: [NSRect] = getVisibleRects()
+        let proportion: DiMeRange = getProportion()
+        let plainTextContent: NSString = getVisibleString()!
+        
+        return ReadingEvent(multiPage: multiPage, visiblePages: visiblePages, pageRects: pageRects, proportion: proportion, plainTextContent: plainTextContent)
     }
     
 }

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A912D8A41B8B5C3A006F0657 /* InformationElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A912D8A21B8B5C3A006F0657 /* InformationElement.swift */; };
+		A912D8A51B8B5C3A006F0657 /* ReadingEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A912D8A31B8B5C3A006F0657 /* ReadingEvent.swift */; };
 		A91CB94A1B332EDB00671868 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91CB9491B332EDB00671868 /* AppDelegate.swift */; };
 		A91CB9501B332EDB00671868 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A91CB94F1B332EDB00671868 /* Images.xcassets */; };
 		A91CB9531B332EDB00671868 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A91CB9511B332EDB00671868 /* Main.storyboard */; };
@@ -19,10 +21,10 @@
 		A91CB9731B332FB700671868 /* DocumentSplitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91CB96D1B332FB700671868 /* DocumentSplitController.swift */; };
 		A927CD8F1B3B399B00471CC8 /* ThumbSideController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927CD8E1B3B399B00471CC8 /* ThumbSideController.swift */; };
 		A9418FA81B386D11000119F8 /* DocumentWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9418FA71B386D11000119F8 /* DocumentWindowController.swift */; };
-		A9427D241B458E730025E094 /* ReadingEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9427D231B458E730025E094 /* ReadingEvent.swift */; };
 		A95FE9801B8B3C1D0010E813 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FE97F1B8B3C1D0010E813 /* SwiftyJSON.swift */; };
 		A95FE9901B8B3F7D0010E813 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A95FE98B1B8B3EC60010E813 /* Alamofire.framework */; };
 		A95FE9911B8B3F7D0010E813 /* Alamofire.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A95FE98B1B8B3EC60010E813 /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		A97230761B8B60C8005D29E0 /* DiMeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97230751B8B60C8005D29E0 /* DiMeData.swift */; };
 		A981F69D1B42FC4C00E7E9BD /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A981F69C1B42FC4C00E7E9BD /* Utils.swift */; };
 		A9CDB2E91B3AC49800347398 /* PeyeConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CDB2E81B3AC49800347398 /* PeyeConstants.swift */; };
 		A9DFF1721B7E3D1A008CFF0C /* XCGLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DFF1711B7E3D1A008CFF0C /* XCGLogger.swift */; };
@@ -89,29 +91,31 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A912D8A21B8B5C3A006F0657 /* InformationElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InformationElement.swift; sourceTree = "<group>"; };
+		A912D8A31B8B5C3A006F0657 /* ReadingEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadingEvent.swift; sourceTree = "<group>"; };
 		A91CB9441B332EDB00671868 /* PeyeDF.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PeyeDF.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A91CB9481B332EDB00671868 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A91CB9491B332EDB00671868 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = PeyeDF/AppDelegate.swift; sourceTree = "<group>"; };
+		A91CB9491B332EDB00671868 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A91CB94F1B332EDB00671868 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		A91CB9521B332EDB00671868 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A91CB9581B332EDB00671868 /* PeyeDFTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PeyeDFTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A91CB95D1B332EDB00671868 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A91CB95E1B332EDB00671868 /* PeyeDFTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeyeDFTests.swift; sourceTree = "<group>"; };
-		A91CB9681B332FB700671868 /* DebugController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DebugController.swift; path = PeyeDF/DebugController.swift; sourceTree = "<group>"; };
-		A91CB9691B332FB700671868 /* EyeFormulas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EyeFormulas.swift; path = PeyeDF/EyeFormulas.swift; sourceTree = "<group>"; };
-		A91CB96A1B332FB700671868 /* MyPDF.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MyPDF.swift; path = PeyeDF/MyPDF.swift; sourceTree = "<group>"; };
-		A91CB96B1B332FB700671868 /* PDFSideController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PDFSideController.swift; path = PeyeDF/PDFSideController.swift; sourceTree = "<group>"; };
-		A91CB96C1B332FB700671868 /* PeyeDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PeyeDocument.swift; path = PeyeDF/PeyeDocument.swift; sourceTree = "<group>"; };
-		A91CB96D1B332FB700671868 /* DocumentSplitController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DocumentSplitController.swift; path = PeyeDF/DocumentSplitController.swift; sourceTree = "<group>"; };
-		A927CD8E1B3B399B00471CC8 /* ThumbSideController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ThumbSideController.swift; path = PeyeDF/ThumbSideController.swift; sourceTree = "<group>"; };
-		A9418FA71B386D11000119F8 /* DocumentWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DocumentWindowController.swift; path = PeyeDF/DocumentWindowController.swift; sourceTree = "<group>"; };
-		A9427D231B458E730025E094 /* ReadingEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ReadingEvent.swift; path = PeyeDF/ReadingEvent.swift; sourceTree = "<group>"; };
-		A95FE97F1B8B3C1D0010E813 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftyJSON.swift; path = PeyeDF/SwiftyJSON.swift; sourceTree = "<group>"; };
+		A91CB9681B332FB700671868 /* DebugController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugController.swift; sourceTree = "<group>"; };
+		A91CB9691B332FB700671868 /* EyeFormulas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EyeFormulas.swift; sourceTree = "<group>"; };
+		A91CB96A1B332FB700671868 /* MyPDF.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPDF.swift; sourceTree = "<group>"; };
+		A91CB96B1B332FB700671868 /* PDFSideController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFSideController.swift; sourceTree = "<group>"; };
+		A91CB96C1B332FB700671868 /* PeyeDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeyeDocument.swift; sourceTree = "<group>"; };
+		A91CB96D1B332FB700671868 /* DocumentSplitController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentSplitController.swift; sourceTree = "<group>"; };
+		A927CD8E1B3B399B00471CC8 /* ThumbSideController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThumbSideController.swift; sourceTree = "<group>"; };
+		A9418FA71B386D11000119F8 /* DocumentWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentWindowController.swift; sourceTree = "<group>"; };
+		A95FE97F1B8B3C1D0010E813 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
 		A95FE9811B8B3EC60010E813 /* Alamofire.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Alamofire.xcodeproj; path = Alamofire/Alamofire.xcodeproj; sourceTree = "<group>"; };
-		A981F69C1B42FC4C00E7E9BD /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Utils.swift; path = PeyeDF/Utils.swift; sourceTree = "<group>"; };
-		A9CDB2E81B3AC49800347398 /* PeyeConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PeyeConstants.swift; path = PeyeDF/PeyeConstants.swift; sourceTree = "<group>"; };
-		A9DFF1711B7E3D1A008CFF0C /* XCGLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = XCGLogger.swift; path = ../JustUsed/JustUsed/XCGLogger.swift; sourceTree = "<group>"; };
-		A9F335721B3ABC090042BFB3 /* AppSingleton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppSingleton.swift; path = PeyeDF/AppSingleton.swift; sourceTree = "<group>"; };
+		A97230751B8B60C8005D29E0 /* DiMeData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiMeData.swift; sourceTree = "<group>"; };
+		A981F69C1B42FC4C00E7E9BD /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		A9CDB2E81B3AC49800347398 /* PeyeConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeyeConstants.swift; sourceTree = "<group>"; };
+		A9DFF1711B7E3D1A008CFF0C /* XCGLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCGLogger.swift; sourceTree = "<group>"; };
+		A9F335721B3ABC090042BFB3 /* AppSingleton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSingleton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,7 +149,8 @@
 				A927CD8E1B3B399B00471CC8 /* ThumbSideController.swift */,
 			);
 			name = UI;
-			sourceTree = "<group>";
+			path = PeyeDF/UI;
+			sourceTree = SOURCE_ROOT;
 		};
 		A9000C5C1B358B8E00E59C7B /* Utility */ = {
 			isa = PBXGroup;
@@ -157,22 +162,24 @@
 				A91CB9691B332FB700671868 /* EyeFormulas.swift */,
 			);
 			name = Utility;
-			sourceTree = "<group>";
+			path = PeyeDF/Utility;
+			sourceTree = SOURCE_ROOT;
 		};
 		A9000C5D1B358BBC00E59C7B /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				A9427D231B458E730025E094 /* ReadingEvent.swift */,
 				A9F335721B3ABC090042BFB3 /* AppSingleton.swift */,
 				A91CB96C1B332FB700671868 /* PeyeDocument.swift */,
 				A91CB9491B332EDB00671868 /* AppDelegate.swift */,
 			);
 			name = Model;
-			sourceTree = "<group>";
+			path = PeyeDF/Model;
+			sourceTree = SOURCE_ROOT;
 		};
 		A91CB93B1B332EDB00671868 = {
 			isa = PBXGroup;
 			children = (
+				A9D9545F1B8B59DD007A34BF /* DiMe */,
 				A9000C5D1B358BBC00E59C7B /* Model */,
 				A9000C5C1B358B8E00E59C7B /* Utility */,
 				A9000C5B1B358B7F00E59C7B /* UI */,
@@ -236,6 +243,17 @@
 			);
 			name = Products;
 			sourceTree = "<group>";
+		};
+		A9D9545F1B8B59DD007A34BF /* DiMe */ = {
+			isa = PBXGroup;
+			children = (
+				A912D8A21B8B5C3A006F0657 /* InformationElement.swift */,
+				A912D8A31B8B5C3A006F0657 /* ReadingEvent.swift */,
+				A97230751B8B60C8005D29E0 /* DiMeData.swift */,
+			);
+			name = DiMe;
+			path = PeyeDF/DiMe;
+			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXGroup section */
 
@@ -376,6 +394,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A91CB96F1B332FB700671868 /* EyeFormulas.swift in Sources */,
+				A912D8A41B8B5C3A006F0657 /* InformationElement.swift in Sources */,
 				A91CB9721B332FB700671868 /* PeyeDocument.swift in Sources */,
 				A91CB94A1B332EDB00671868 /* AppDelegate.swift in Sources */,
 				A95FE9801B8B3C1D0010E813 /* SwiftyJSON.swift in Sources */,
@@ -383,13 +402,14 @@
 				A9CDB2E91B3AC49800347398 /* PeyeConstants.swift in Sources */,
 				A9F335731B3ABC090042BFB3 /* AppSingleton.swift in Sources */,
 				A9418FA81B386D11000119F8 /* DocumentWindowController.swift in Sources */,
-				A9427D241B458E730025E094 /* ReadingEvent.swift in Sources */,
+				A912D8A51B8B5C3A006F0657 /* ReadingEvent.swift in Sources */,
 				A9DFF1721B7E3D1A008CFF0C /* XCGLogger.swift in Sources */,
 				A91CB9731B332FB700671868 /* DocumentSplitController.swift in Sources */,
 				A91CB9701B332FB700671868 /* MyPDF.swift in Sources */,
 				A927CD8F1B3B399B00471CC8 /* ThumbSideController.swift in Sources */,
 				A91CB96E1B332FB700671868 /* DebugController.swift in Sources */,
 				A981F69D1B42FC4C00E7E9BD /* Utils.swift in Sources */,
+				A97230761B8B60C8005D29E0 /* DiMeData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -423,7 +443,6 @@
 				A91CB9521B332EDB00671868 /* Base */,
 			);
 			name = Main.storyboard;
-			path = PeyeDF;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
