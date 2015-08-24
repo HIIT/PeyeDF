@@ -9,7 +9,8 @@ Data passed to DiMe in the wiki: https://github.com/HIIT/PeyeDF/wiki/Data-Format
 The following GitHub projects are incorporated into JustUsed (no additional download needed). They were released under the MIT license.
 
 [XCGLogger version 2.2](https://github.com/DaveWoodCom/XCGLogger/releases/tag/Version_2.2) - To output logs to terminal and files.
-[Swifty JSON version 2.2.0](https://github.com/SwiftyJSON/SwiftyJSON/releases/tag/2.2.0) - To easily parse JSON **from** DiMe 
+
+[Swifty JSON version 2.2.0](https://github.com/SwiftyJSON/SwiftyJSON/releases/tag/2.2.0) - To easily parse JSON **from** DiMe.
 
 ## Git submodules
 
