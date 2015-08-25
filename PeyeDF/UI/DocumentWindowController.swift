@@ -41,10 +41,9 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
     @IBAction func sendToDiMe(sender: AnyObject?) {
         let b:ReadingEvent = myPdf!.getStatus()
         
-        let server_url = "http://localhost:8080/api"
-        
-        let user = "Test1"
-        let password = "123456"
+        let server_url: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefServerURL) as! String
+        let user: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefServerUserName) as! String
+        let password: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefServerPassword) as! String
         
         let credentialData = "\(user):\(password)".dataUsingEncoding(NSUTF8StringEncoding)!
         let base64Credentials = credentialData.base64EncodedStringWithOptions(nil)

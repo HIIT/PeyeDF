@@ -14,6 +14,15 @@ struct PeyeConstants {
     // MARK: History-specific constants
     // (For DiMe)
     
+    /// URL of the DiMe server (bound in the preferences window)
+    static let prefServerURL = "serverinfo.url"
+    
+    /// Username of the DiMe server (bound in the preferences window)
+    static let prefServerUserName = "serverinfo.userName"
+    
+    /// Password of the DiMe server (bound in the preferences window)
+    static let prefServerPassword = "serverinfo.password"
+    
     /// Amount of seconds that are needed before we start recording the current event.
     static let minReadTime: CGFloat = 5
     

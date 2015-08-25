@@ -12,8 +12,14 @@ import Quartz
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
+    /// Creates default preferences
     func applicationDidFinishLaunching(aNotification: NSNotification) {
-        // Instantiate and create debug window
+        var defaultPrefs = [String: String]()
+        defaultPrefs[PeyeConstants.prefServerURL] = "http://localhost:8080/api"
+        defaultPrefs[PeyeConstants.prefServerUserName] = "Test1"
+        defaultPrefs[PeyeConstants.prefServerPassword] = "123456"
+        NSUserDefaults.standardUserDefaults().registerDefaults(defaultPrefs)
+        NSUserDefaults.standardUserDefaults().synchronize()
     }
 
     @IBAction func allDocMetadata(sender: AnyObject) {

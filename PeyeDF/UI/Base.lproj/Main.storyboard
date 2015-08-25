@@ -5,6 +5,126 @@
         <plugIn identifier="com.apple.pdfkit.ibplugin" version="7706"/>
     </dependencies>
     <scenes>
+        <!--Window Controller-->
+        <scene sceneID="Y5a-2n-2Fw">
+            <objects>
+                <windowController showSeguePresentationStyle="single" id="wX1-wt-O0y" sceneMemberID="viewController">
+                    <window key="window" title="PeyeDF Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="5Wr-n7-ggT">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" resizable="YES"/>
+                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+                        <rect key="contentRect" x="425" y="461" width="480" height="270"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+                    </window>
+                    <connections>
+                        <segue destination="cA3-Nk-NKg" kind="relationship" relationship="window.shadowedContentViewController" id="p6j-My-8AW"/>
+                    </connections>
+                </windowController>
+                <customObject id="amd-xG-nRM" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-515" y="-1464"/>
+        </scene>
+        <!--Preferences View Controller-->
+        <scene sceneID="JFC-Eo-9Mb">
+            <objects>
+                <viewController showSeguePresentationStyle="single" id="cA3-Nk-NKg" customClass="PreferencesViewController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="wSP-gb-Ssy">
+                        <rect key="frame" x="0.0" y="0.0" width="480" height="149"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="HcU-gD-cdI">
+                                <rect key="frame" x="18" y="112" width="109" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="DiMe server URL" id="Wfx-z2-WBV">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="EFT-H4-FP1">
+                                <rect key="frame" x="18" y="68" width="143" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="DiMe server username" id="9A9-oM-Sxn">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uc7-dK-lB8">
+                                <rect key="frame" x="19" y="25" width="142" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="DiMe server password" id="bsz-lU-VcN">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="SkK-0O-xgW">
+                                <rect key="frame" x="145" y="107" width="315" height="22"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="281" id="HRG-65-ua9"/>
+                                </constraints>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="wJe-2w-xxz">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fGh-xA-kPi">
+                                <rect key="frame" x="179" y="63" width="281" height="22"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="281" id="okn-y5-bly"/>
+                                </constraints>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="kQo-mW-BeT">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="78S-mB-TeW">
+                                <rect key="frame" x="179" y="20" width="281" height="22"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="281" id="bK8-Rb-w8g"/>
+                                </constraints>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="NRp-6s-TuZ">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="78S-mB-TeW" firstAttribute="leading" secondItem="uc7-dK-lB8" secondAttribute="trailing" constant="20" id="0Gy-TM-Srr"/>
+                            <constraint firstAttribute="trailing" secondItem="78S-mB-TeW" secondAttribute="trailing" constant="20" id="1qZ-jD-jho"/>
+                            <constraint firstItem="SkK-0O-xgW" firstAttribute="top" secondItem="wSP-gb-Ssy" secondAttribute="top" constant="20" id="DIe-1A-DTY"/>
+                            <constraint firstItem="fGh-xA-kPi" firstAttribute="top" secondItem="SkK-0O-xgW" secondAttribute="bottom" constant="22" id="GO5-Ys-5tK"/>
+                            <constraint firstItem="uc7-dK-lB8" firstAttribute="top" secondItem="EFT-H4-FP1" secondAttribute="bottom" constant="26" id="Jt1-be-zpd"/>
+                            <constraint firstItem="78S-mB-TeW" firstAttribute="top" secondItem="fGh-xA-kPi" secondAttribute="bottom" constant="21" id="LwK-9u-WPa"/>
+                            <constraint firstItem="EFT-H4-FP1" firstAttribute="leading" secondItem="wSP-gb-Ssy" secondAttribute="leading" constant="20" id="MES-Fy-sx5"/>
+                            <constraint firstAttribute="bottom" secondItem="78S-mB-TeW" secondAttribute="bottom" constant="20" id="PsZ-C2-56e"/>
+                            <constraint firstAttribute="trailing" secondItem="fGh-xA-kPi" secondAttribute="trailing" constant="20" id="UJd-kb-xg7"/>
+                            <constraint firstAttribute="bottom" secondItem="uc7-dK-lB8" secondAttribute="bottom" constant="25" id="Um2-Vo-0t8"/>
+                            <constraint firstItem="HcU-gD-cdI" firstAttribute="top" secondItem="wSP-gb-Ssy" secondAttribute="top" constant="20" id="Wb7-nF-HDt"/>
+                            <constraint firstItem="EFT-H4-FP1" firstAttribute="top" secondItem="HcU-gD-cdI" secondAttribute="bottom" constant="27" id="Wlg-pA-OHj"/>
+                            <constraint firstItem="fGh-xA-kPi" firstAttribute="top" secondItem="SkK-0O-xgW" secondAttribute="bottom" constant="22" id="Y1N-CX-yju"/>
+                            <constraint firstItem="SkK-0O-xgW" firstAttribute="leading" secondItem="HcU-gD-cdI" secondAttribute="trailing" constant="20" id="ZYz-io-1Sz"/>
+                            <constraint firstItem="fGh-xA-kPi" firstAttribute="leading" secondItem="EFT-H4-FP1" secondAttribute="trailing" constant="20" id="d8X-6p-5FH"/>
+                            <constraint firstItem="fGh-xA-kPi" firstAttribute="leading" secondItem="EFT-H4-FP1" secondAttribute="trailing" constant="20" id="eag-Ec-bUB"/>
+                            <constraint firstItem="HcU-gD-cdI" firstAttribute="leading" secondItem="wSP-gb-Ssy" secondAttribute="leading" constant="20" id="gPf-dH-yyL"/>
+                            <constraint firstItem="78S-mB-TeW" firstAttribute="leading" secondItem="uc7-dK-lB8" secondAttribute="trailing" constant="20" id="gdy-uy-aJx"/>
+                            <constraint firstItem="78S-mB-TeW" firstAttribute="top" secondItem="fGh-xA-kPi" secondAttribute="bottom" constant="21" id="hHL-Kn-D3U"/>
+                            <constraint firstItem="uc7-dK-lB8" firstAttribute="top" secondItem="EFT-H4-FP1" secondAttribute="bottom" constant="26" id="nYM-7Q-zAH"/>
+                            <constraint firstItem="uc7-dK-lB8" firstAttribute="leading" secondItem="wSP-gb-Ssy" secondAttribute="leading" constant="21" id="rLM-ci-ldz"/>
+                            <constraint firstItem="EFT-H4-FP1" firstAttribute="top" secondItem="HcU-gD-cdI" secondAttribute="bottom" constant="27" id="sD2-Sk-Rcy"/>
+                            <constraint firstAttribute="trailing" secondItem="SkK-0O-xgW" secondAttribute="trailing" constant="20" id="yQ6-f2-ruN"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="passwordField" destination="78S-mB-TeW" id="unt-ew-SGt"/>
+                        <outlet property="urlField" destination="SkK-0O-xgW" id="Efa-dX-5M1"/>
+                        <outlet property="usernameField" destination="fGh-xA-kPi" id="STb-WL-4in"/>
+                    </connections>
+                </viewController>
+                <customObject id="Xpl-sd-9MF" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="75" y="-1524.5"/>
+        </scene>
         <!--Application-->
         <scene sceneID="JPo-4y-FX3">
             <objects>
@@ -22,7 +142,11 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="VOq-y0-SEH"/>
-                                        <menuItem title="Preferences…" keyEquivalent="," id="BOF-NM-1cW"/>
+                                        <menuItem title="Preferences…" keyEquivalent="," id="BOF-NM-1cW">
+                                            <connections>
+                                                <segue destination="wX1-wt-O0y" kind="show" id="zKF-jq-Ats"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem isSeparatorItem="YES" id="wFC-TO-SCJ"/>
                                         <menuItem title="Services" id="NMo-om-nkz">
                                             <modifierMask key="keyEquivalentModifierMask"/>
