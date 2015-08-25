@@ -46,6 +46,9 @@ struct ReadingEvent: JSONable, Equatable {
     /// Plain text visible on-screen
     var plainTextContent: NSString
     
+    /// id of the information element (document pointer) related to this event
+    var infoElemId: NSString
+    
     /// Converts this individual reading event into a dict containing Json-compatible representations for all fields.
     func JSONize() -> JSONableItem {
         var retDict = [NSString: JSONableItem]()
@@ -67,16 +70,17 @@ struct ReadingEvent: JSONable, Equatable {
         retDict["plainTextContent"] = JSONableItem.String(plainTextContent)
         retDict["@type"] = JSONableItem.String("ReadingEvent")
         
-        var tdict = [NSString: JSONableItem]()
-        tdict["id"] = JSONableItem.String("55db3e60da08f459c1e1e23c")
-        tdict["@type"] = JSONableItem.String("InformationElement")
-        retDict["targettedResource"] = JSONableItem.Dictionary(tdict)
-        
         retDict["type"] = JSONableItem.String("http://www.hiit.fi/ontologies/dime/#ReadingEvent")
         retDict["actor"] = JSONableItem.String("PeyeDF")
         retDict["origin"] = JSONableItem.String("xcode")
         
         retDict["proportion"] = proportion.JSONize()
+        
+        var infoElemDict = [NSString: JSONableItem]()
+        infoElemDict["@type"] = JSONableItem.String("InformationElement")
+        infoElemDict["id"] = JSONableItem.String(infoElemId)
+        retDict["targettedResource"] = JSONableItem.Dictionary(infoElemDict)
+        
         return .Dictionary(retDict)
     }
     

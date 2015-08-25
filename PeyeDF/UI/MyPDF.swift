@@ -20,6 +20,10 @@ class MyPDF: PDFView {
     
     var containsRawString = false  // this stores whether the document actually contains scanned text
     
+    /// Stores the information element for the current document.
+    /// Set by DocumentWindowController.loadDocument()
+    var infoElem: DocumentInformationElement?
+    
     override func mouseDown(theEvent: NSEvent) {
         // Only proceed if there is actually text to select
         if containsRawString {
@@ -210,7 +214,7 @@ class MyPDF: PDFView {
         let proportion: DiMeRange = getProportion()
         let plainTextContent: NSString = getVisibleString()!
         
-        return ReadingEvent(multiPage: multiPage, visiblePages: visiblePages, pageRects: pageRects, proportion: proportion, plainTextContent: plainTextContent)
+        return ReadingEvent(multiPage: multiPage, visiblePages: visiblePages, pageRects: pageRects, proportion: proportion, plainTextContent: plainTextContent, infoElemId: infoElem!.id)
     }
     
 }

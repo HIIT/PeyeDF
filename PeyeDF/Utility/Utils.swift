@@ -29,7 +29,20 @@ extension NSDate {
 
 }
 
-/// Founds a number to the amount of decimal places specified
+/// Rounds a number to the amount of decimal places specified
 func roundToX(number: CGFloat, places: CGFloat) -> CGFloat {
     return round(number * (pow(10,places))) / pow(10,places)
+}
+
+/// Allows returning a sha1 string from another string
+extension String {
+    
+    /// Returns SHA1 digest for this string
+    func sha1() -> String {
+        let data = self.dataUsingEncoding(NSUTF8StringEncoding)!
+        var digest = [UInt8](count:Int(CC_SHA1_DIGEST_LENGTH), repeatedValue: 0)
+        CC_SHA1(data.bytes, CC_LONG(data.length), &digest)
+        let hexBytes = map(digest) { String(format: "%02hhx", $0) }
+        return "".join(hexBytes)
+    }
 }

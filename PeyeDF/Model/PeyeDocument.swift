@@ -16,9 +16,14 @@ class PeyeDocument: NSDocument {
     var authors: String
     var filename: String
     
+    /// Initially is set to a hash of the url. After loading the document, it is set to the hash of the whole file plain text content (if any)
+    var sha1: String?
+    
     /// Contains all plain text from PDF, with extra characters (such as whitespace) trimmed
     var trimmedText: String?
-
+    
+    // MARK: DiMe related
+    
     // MARK: NSDocument overrides
     
     override init() {
@@ -58,6 +63,7 @@ class PeyeDocument: NSDocument {
     override func readFromURL(url: NSURL, ofType typeName: String, error outError: NSErrorPointer) -> Bool {
         AppSingleton.log.debug("Opening " + url.description)
         filename = url.lastPathComponent!
+        sha1 = url.path!.sha1()
         return true
     }
 }

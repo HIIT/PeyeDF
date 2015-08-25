@@ -37,6 +37,28 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
     }
     
     // MARK: Debug functions
+    @IBAction func sendInfoElem(sender: AnyObject) {
+        let infoElem = myPdf!.infoElem!
+        let deskEvent = DesktopEvent(infoElem: infoElem)
+        
+        let server_url: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefServerURL) as! String
+        let user: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefServerUserName) as! String
+        let password: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefServerPassword) as! String
+        
+        let credentialData = "\(user):\(password)".dataUsingEncoding(NSUTF8StringEncoding)!
+        let base64Credentials = credentialData.base64EncodedStringWithOptions(nil)
+        
+        let headers = ["Authorization": "Basic \(base64Credentials)"]
+        
+        var error = NSErrorPointer()
+        let options = NSJSONWritingOptions.PrettyPrinted
+        
+        let jsonData = NSJSONSerialization.dataWithJSONObject(infoElem.JSONize().recurseIntoAny(), options: options, error: error)
+        
+        let x = Alamofire.request(Alamofire.Method.POST, server_url + "/data/event", parameters: (deskEvent.JSONize().recurseIntoAny() as! [String : AnyObject]), encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON { _, _, JSON, _ in
+            AppSingleton.log.debug("Request sent and received: \n" + JSON!.description)
+        }
+    }
     
     @IBAction func sendToDiMe(sender: AnyObject?) {
         let b:ReadingEvent = myPdf!.getStatus()
@@ -126,8 +148,8 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowOcclusionChange:", name: NSWindowDidChangeOcclusionStateNotification, object: self.window)
     }
     
-    /// Loads the PDF document. Must be called after setting current document's URL.
-    /// Sends a notification that the document has been loaded, with the document as object
+    /// Loads the PDF document and stores metadata inside it. Must be called after setting current document's URL.
+    /// Sends a notification that the document has been loaded, with the document as object.
     func loadDocument() {
         // Load document and display it
         var pdfDoc: PDFDocument
@@ -158,11 +180,20 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
             trimmedText = trimmedText.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) // trim again
             if count(trimmedText) > 5 {  // we assume the document does contain useful text if there are more than 5 characters remaining
                 peyeDoc.trimmedText = trimmedText
+                peyeDoc.sha1 = trimmedText.sha1()
                 myPdf?.containsRawString = true
                 docStatus.image = NSImage(named: "NSStatusAvailable")
             } else {
                 docStatus.image = NSImage(named: "NSStatusUnavailable")
             }
+            
+            // Associate PDF view to info element
+            var plainText = "** No text **"
+            if let inputText = peyeDoc.trimmedText {
+                plainText = inputText
+            }
+            let infoElem = DocumentInformationElement(uri: url.path!, id: peyeDoc.sha1!, plainTextContent: plainText, title: peyeDoc.title)
+            myPdf?.infoElem = infoElem
             
             // Update debug controller with metadata
             debugController?.titleLabel.stringValue = peyeDoc.title

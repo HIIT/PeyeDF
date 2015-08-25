@@ -819,10 +819,16 @@
                                         <action selector="sendToDiMe:" target="H3y-Bk-Ofi" id="yfv-Dg-ebE"/>
                                     </connections>
                                 </toolbarItem>
+                                <toolbarItem implicitItemIdentifier="756333F4-AD40-420A-80FC-8E4F1F39536C" label="Send InfoElem" paletteLabel="Send InfoElem" tag="-1" image="Beta" id="0I9-le-DU2">
+                                    <connections>
+                                        <action selector="sendInfoElem:" target="sy6-nO-Tdf" id="c5a-O8-yOF"/>
+                                    </connections>
+                                </toolbarItem>
                             </allowedToolbarItems>
                             <defaultToolbarItems>
                                 <toolbarItem reference="8zr-Hg-gf0"/>
                                 <toolbarItem reference="1lR-l5-PLy"/>
+                                <toolbarItem reference="0I9-le-DU2"/>
                                 <toolbarItem reference="W5X-tm-Xbn"/>
                                 <toolbarItem reference="l3s-5e-m3r"/>
                                 <toolbarItem reference="10c-J9-dPD"/>
