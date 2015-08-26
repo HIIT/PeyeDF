@@ -52,6 +52,9 @@ struct PeyeConstants {
     /// Defines how large is the vertical span of text being looked at, depending on the zoom level
     static let vSpanDenom: CGFloat = 3
     
+    /// Defines tolerance proportion for line sizes when creating selections (sizes bigger than this fraction will be discarded)
+    static let lineAutoSelectionTolerance: CGFloat = 0.1
+    
     /// Name of thumbnail button down (pressed) image
     static let thumbButton_DOWN = "TB_ThumbD"
     
@@ -72,4 +75,7 @@ struct PeyeConstants {
     /// String identifying the notification sent when a new document is opened / switched to
     static let documentChangeNotification = "hiit.PeyeDF.documentChangeNotification"
     
+    /// TODO: remove this
+    /// Debug string for testing selection rects
+    static let selectionNotification = "hiit.PeyeDF.selectionNotification"
 }

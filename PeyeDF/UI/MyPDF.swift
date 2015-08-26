@@ -38,12 +38,33 @@ class MyPDF: PDFView {
             
             let pointArray = multiVPoint(pagePoint, self.scaleFactor())
             
-            var pdfSel = PDFSelection(document: self.document())
+            // if using columns, selection can "bleed" into footers and headers
+            // solution: check the median height and median width of each selection, and discard
+            // everything which is lineAutoSelectionTolerance bigger than that
+            var selections = [PDFSelection]()
             for point in pointArray {
-                pdfSel.addSelection(activePage.selectionForLineAtPoint(point))
+                selections.append(activePage.selectionForLineAtPoint(point))
             }
-            // TODO: if using columns, selection can "bleed" into footers and headers
-            // solution: check which width the majority of lines have, and don't go away from this
+            
+            let medI = selections.count / 2  // median point for selection array
+            
+            // sort selections by height and get median height
+            selections.sort({$0.boundsForPage(activePage).height > $1.boundsForPage(activePage).height})
+            let medianHeight = selections[medI].boundsForPage(activePage).height
+            
+            // sort selections by width and get median width
+            selections.sort({$0.boundsForPage(activePage).width > $1.boundsForPage(activePage).width})
+            let medianWidth = selections[medI].boundsForPage(activePage).width
+            
+            let medianSize = NSSize(width: medianWidth, height: medianHeight)
+            
+            // reject selections which are too big
+            let filteredSelections = selections.filter({$0.boundsForPage(activePage).size.withinMaxTolerance(medianSize, tolerance: PeyeConstants.lineAutoSelectionTolerance)})
+            
+            var pdfSel = PDFSelection(document: self.document())
+            for selection in filteredSelections {
+                pdfSel.addSelection(selection)
+            }
             
             // if top / bottom third of the lines comprise a part of another paragraph, leave them out
             // detect this by using new lines
@@ -88,6 +109,10 @@ class MyPDF: PDFView {
                 } // end of check for split, if no need just return selection as-was //
             }
             self.setCurrentSelection(pdfSel, animate: true)
+            // TODO: Remove this
+            if !(CGRectIsEmpty(pdfSel.boundsForPage(activePage))) {
+                NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.selectionNotification, object: self)
+            }
         } else {
             super.mouseDown(theEvent)
         }
