@@ -23,6 +23,9 @@ struct PeyeConstants {
     /// Password of the DiMe server (bound in the preferences window)
     static let prefServerPassword = "serverinfo.password"
     
+    /// Wheter we want to push an event at every window focus event (bound in the preferences window)
+    static let prefSendEventOnFocusSwitch = "preferences.sendEventOnFocusSwitch"
+    
     /// Amount of seconds that are needed before we start recording the current event.
     static let minReadTime: CGFloat = 5
     

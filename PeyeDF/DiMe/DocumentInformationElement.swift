@@ -29,7 +29,6 @@ struct DocumentInformationElement: JSONable, Equatable {
         retDict["@type"] = JSONableItem.String("Document")
         retDict["id"] = JSONableItem.String(id)
         retDict["plainTextContent"] = JSONableItem.String(plainTextContent)
-        retDict["type"] = JSONableItem.String("I'm a PDF!")
         retDict["uri"] = JSONableItem.String(uri)
         retDict["mimeType"] = JSONableItem.String(mimeType)
         retDict["title"] = JSONableItem.String(title)

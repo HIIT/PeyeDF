@@ -14,10 +14,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     /// Creates default preferences
     func applicationDidFinishLaunching(aNotification: NSNotification) {
-        var defaultPrefs = [String: String]()
+        var defaultPrefs = [String: AnyObject]()
         defaultPrefs[PeyeConstants.prefServerURL] = "http://localhost:8080/api"
         defaultPrefs[PeyeConstants.prefServerUserName] = "Test1"
         defaultPrefs[PeyeConstants.prefServerPassword] = "123456"
+        defaultPrefs[PeyeConstants.prefSendEventOnFocusSwitch] = 0
         NSUserDefaults.standardUserDefaults().registerDefaults(defaultPrefs)
         NSUserDefaults.standardUserDefaults().synchronize()
     }

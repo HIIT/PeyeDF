@@ -19,7 +19,8 @@ class AppSingleton {
     
     static let log = AppSingleton.createLog()
     
-    static func createLog() -> XCGLogger {
+    /// Set up console and file log
+    private static func createLog() -> XCGLogger {
         var error: NSError? = nil
         var firstLine: String = "Log directory succesfully created / present"
         let tempDirBase = NSTemporaryDirectory().stringByAppendingPathComponent(NSBundle.mainBundle().bundleIdentifier!)

@@ -9,6 +9,8 @@
 
 import Foundation
 
+// MARK: Extensions to standard types
+
 extension NSDate {
     
     /// Number of ms since 1/1/1970. Read-only computed property.
@@ -29,12 +31,6 @@ extension NSDate {
 
 }
 
-/// Rounds a number to the amount of decimal places specified
-func roundToX(number: CGFloat, places: CGFloat) -> CGFloat {
-    return round(number * (pow(10,places))) / pow(10,places)
-}
-
-/// Allows returning a sha1 string from another string
 extension String {
     
     /// Returns SHA1 digest for this string
@@ -45,4 +41,12 @@ extension String {
         let hexBytes = map(digest) { String(format: "%02hhx", $0) }
         return "".join(hexBytes)
     }
+}
+
+// MARK: Other functions
+
+/// Rounds a number to the amount of decimal places specified.
+/// Might not be actually represented as such because computers.
+func roundToX(number: CGFloat, places: CGFloat) -> CGFloat {
+    return round(number * (pow(10,places))) / pow(10,places)
 }

@@ -43,6 +43,7 @@ class PeyeDocument: NSDocument {
         return false
     }
 
+    /// Creates window controllers and automatically calls loadDocument()
     override func makeWindowControllers() {
         let storyboard = AppSingleton.storyboard
         

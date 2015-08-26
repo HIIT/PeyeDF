@@ -22,6 +22,7 @@
 		A927CD8F1B3B399B00471CC8 /* ThumbSideController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A927CD8E1B3B399B00471CC8 /* ThumbSideController.swift */; };
 		A935F0C61B8CC5FD00587C99 /* DesktopEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A935F0C51B8CC5FD00587C99 /* DesktopEvent.swift */; };
 		A939B3251B8CA2AD00A4CBCA /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A939B3241B8CA2AD00A4CBCA /* PreferencesViewController.swift */; };
+		A93C53DC1B8DCEFB00179C72 /* HistoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93C53DB1B8DCEFB00179C72 /* HistoryManager.swift */; };
 		A9418FA81B386D11000119F8 /* DocumentWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9418FA71B386D11000119F8 /* DocumentWindowController.swift */; };
 		A95FE9801B8B3C1D0010E813 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FE97F1B8B3C1D0010E813 /* SwiftyJSON.swift */; };
 		A95FE9901B8B3F7D0010E813 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A95FE98B1B8B3EC60010E813 /* Alamofire.framework */; };
@@ -112,6 +113,7 @@
 		A927CD8E1B3B399B00471CC8 /* ThumbSideController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThumbSideController.swift; sourceTree = "<group>"; };
 		A935F0C51B8CC5FD00587C99 /* DesktopEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DesktopEvent.swift; sourceTree = "<group>"; };
 		A939B3241B8CA2AD00A4CBCA /* PreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesViewController.swift; sourceTree = "<group>"; };
+		A93C53DB1B8DCEFB00179C72 /* HistoryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryManager.swift; sourceTree = "<group>"; };
 		A9418FA71B386D11000119F8 /* DocumentWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentWindowController.swift; sourceTree = "<group>"; };
 		A95FE97F1B8B3C1D0010E813 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
 		A95FE9811B8B3EC60010E813 /* Alamofire.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Alamofire.xcodeproj; path = Alamofire/Alamofire.xcodeproj; sourceTree = "<group>"; };
@@ -178,6 +180,7 @@
 				A9F335721B3ABC090042BFB3 /* AppSingleton.swift */,
 				A91CB96C1B332FB700671868 /* PeyeDocument.swift */,
 				A91CB9491B332EDB00671868 /* AppDelegate.swift */,
+				A93C53DB1B8DCEFB00179C72 /* HistoryManager.swift */,
 			);
 			name = Model;
 			path = PeyeDF/Model;
@@ -405,6 +408,7 @@
 				A91CB96F1B332FB700671868 /* EyeFormulas.swift in Sources */,
 				A912D8A41B8B5C3A006F0657 /* DocumentInformationElement.swift in Sources */,
 				A91CB9721B332FB700671868 /* PeyeDocument.swift in Sources */,
+				A93C53DC1B8DCEFB00179C72 /* HistoryManager.swift in Sources */,
 				A91CB94A1B332EDB00671868 /* AppDelegate.swift in Sources */,
 				A95FE9801B8B3C1D0010E813 /* SwiftyJSON.swift in Sources */,
 				A91CB9711B332FB700671868 /* PDFSideController.swift in Sources */,

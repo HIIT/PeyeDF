@@ -14,6 +14,7 @@ class PreferencesViewController: NSViewController {
     @IBOutlet weak var urlField: NSTextField!
     @IBOutlet weak var usernameField: NSTextField!
     @IBOutlet weak var passwordField: NSTextField!
+    @IBOutlet weak var documentEventSwitchCell: NSButtonCell!
     
     /// Create view and programmatically set-up bindings
     override func viewDidLoad() {
@@ -25,5 +26,11 @@ class PreferencesViewController: NSViewController {
         usernameField.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefServerUserName, options: options)
         
         passwordField.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefServerPassword, options: options)
+        
+        // the following will set
+        // (PeyeConstants.prefSendEventOnFocusSwitch)
+        // to optional int 0 when off and nonzero (1) when on
+        documentEventSwitchCell.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefSendEventOnFocusSwitch, options: options)
+        
     }
 }
