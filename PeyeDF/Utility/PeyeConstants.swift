@@ -33,6 +33,12 @@ struct PeyeConstants {
     /// (It is assumed the user went away from keyboard).
     static let maxReadTime: CGFloat = 600
     
+    /// Date formatter shared in DiMe submissions (uses date format below)
+    static let diMeDateFormatter = PeyeConstants.makeDateFormatter()
+    
+    /// Date format used for DiMe submission
+    static let diMeDateFormat = "Y'-'MM'-'d'T'HH':'mm':'ssZ"
+    
     // MARK: Debug
     
     /// Column name for debug table. Make sure this identifier matches the table view id in the storyboard
@@ -78,4 +84,10 @@ struct PeyeConstants {
     /// TODO: remove this
     /// Debug string for testing selection rects
     static let selectionNotification = "hiit.PeyeDF.selectionNotification"
+    
+    private static func makeDateFormatter() -> NSDateFormatter {
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = PeyeConstants.diMeDateFormat
+        return dateFormatter
+    }
 }

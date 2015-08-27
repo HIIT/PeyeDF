@@ -8,35 +8,38 @@
 
 import Foundation
 
-struct DocumentInformationElement: JSONable, Equatable {
-    /// Path on file or web
-    var uri: String
+class DocumentInformationElement: NSObject, DiMeAble, Dictionariable {
     
-    /// Id (hash of plaintext or url)
+    var json: JSON
     var id: String
     
-    /// Contents of whole file
-    var plainTextContent: String
-    
-    /// Title of the PDF
-    var title: String
-    
-    /// Mime type (forcing pdf)
-    let mimeType: String = "application/pdf"
-    
-    func JSONize() -> JSONableItem {
-        var retDict = [NSString: JSONableItem]()
-        retDict["@type"] = JSONableItem.String("Document")
-        retDict["id"] = JSONableItem.String(id)
-        retDict["plainTextContent"] = JSONableItem.String(plainTextContent)
-        retDict["uri"] = JSONableItem.String(uri)
-        retDict["mimeType"] = JSONableItem.String(mimeType)
-        retDict["title"] = JSONableItem.String(title)
-        return .Dictionary(retDict)
+    /** Creates this information element
+        
+        :param: uri Path on file or web
+        :param: id Id (hash of plaintext or url)
+        :param: plainTextContent Contents of whole file
+        :param: title Title of the PDF
+    */
+    init(uri: String, id: String, plainTextContent: String, title: String) {
+        var retDict = [String: AnyObject]()
+        self.json = JSON(retDict)
+        self.id = id
+        super.init()
+        setDiMeDict()
+        
+        json["uri"] = JSON(uri)
+        json["id"] = JSON(id)
+        json["plainTextContent"] = JSON(plainTextContent)
+        json["title"] = JSON(title)
+        json["mimeType"] = "application/pdf"  // forcing pdf for mime type
     }
-}
-
-/// Assumes two elements are the same if id is the same
-func == (lhs: DocumentInformationElement, rhs: DocumentInformationElement) -> Bool {
-    return (lhs.id == rhs.id)
+    
+    func setDiMeDict() {
+        json["@type"] = JSON("Document")
+        json["type"] = JSON("http://www.hiit.fi/ontologies/dime/#Document")
+    }
+    
+    func getDict() -> [String : AnyObject] {
+        return json.dictionaryObject!
+    }
 }

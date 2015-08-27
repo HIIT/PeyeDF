@@ -9,19 +9,21 @@
 import Foundation
 
 /// Used to send the first-time file opening event
-struct DesktopEvent: JSONable {
+class DesktopEvent: Event, DiMeAble, Dictionariable {
     
-    var infoElem: DocumentInformationElement
-    
-    func JSONize() -> JSONableItem {
-        var retDict = [NSString: JSONableItem]()
-        retDict["targettedResource"] = infoElem.JSONize()
-        retDict["@type"] = JSONableItem.String("DesktopEvent")
-        
-        retDict["type"] = JSONableItem.String("http://www.hiit.fi/ontologies/dime/#DesktopEvent")
-        retDict["actor"] = JSONableItem.String("PeyeDF")
-        retDict["origin"] = JSONableItem.String("xcode")
-        
-        return .Dictionary(retDict)
+    init(infoElem: DocumentInformationElement) {
+        super.init()
+        self.json["targettedResource"] = JSON(infoElem.getDict())
+        setDiMeDict()
     }
+    
+    func setDiMeDict() {
+        self.json["@type"] = JSON("DesktopEvent")
+        self.json["type"] = JSON("http://www.hiit.fi/ontologies/dime/#DesktopEvent")
+    }
+    
+    func getDict() -> [String : AnyObject] {
+        return json.dictionaryObject!
+    }
+    
 }

@@ -42,3 +42,11 @@ class HistoryManager {
     }
     
 }
+
+/// This class is a wrapper around structs passed to the history manager. Used because
+/// timers can retrieve anyobject references in their callbacks.
+/// Stores the "current history element" such as viewport position within the pdf, and everything
+/// else which is then passed to the DiMe (i.e. ReadingEvent).
+class HistoryElement: NSObject {
+    
+}

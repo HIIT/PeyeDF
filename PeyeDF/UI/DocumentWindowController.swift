@@ -53,9 +53,9 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
         var error = NSErrorPointer()
         let options = NSJSONWritingOptions.PrettyPrinted
         
-        let jsonData = NSJSONSerialization.dataWithJSONObject(infoElem.JSONize().recurseIntoAny(), options: options, error: error)
+        let jsonData = NSJSONSerialization.dataWithJSONObject(infoElem.json.dictionaryObject!, options: options, error: error)
         
-        let x = Alamofire.request(Alamofire.Method.POST, server_url + "/data/event", parameters: (deskEvent.JSONize().recurseIntoAny() as! [String : AnyObject]), encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON { _, _, JSON, _ in
+        let x = Alamofire.request(Alamofire.Method.POST, server_url + "/data/event", parameters: deskEvent.getDict(), encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON { _, _, JSON, _ in
             AppSingleton.log.debug("Request sent and received: \n" + JSON!.description)
         }
     }
@@ -75,9 +75,9 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
         var error = NSErrorPointer()
         let options = NSJSONWritingOptions.PrettyPrinted
 
-        let jsonData = NSJSONSerialization.dataWithJSONObject(b.JSONize().recurseIntoAny(), options: options, error: error)
+        let jsonData = NSJSONSerialization.dataWithJSONObject(b.json.dictionaryObject!, options: options, error: error)
         
-        let x = Alamofire.request(Alamofire.Method.POST, server_url + "/data/event", parameters: (b.JSONize().recurseIntoAny() as! [String : AnyObject]), encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON { _, _, JSON, _ in
+        let x = Alamofire.request(Alamofire.Method.POST, server_url + "/data/event", parameters: (b.json.dictionaryObject), encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON { _, _, JSON, _ in
             AppSingleton.log.debug("Request sent and received: \n" + JSON!.description)
         }
 
