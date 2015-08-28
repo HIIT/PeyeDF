@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Cocoa
 
 /// All constants used are put here for convenience.
 struct PeyeConstants {
@@ -50,6 +51,14 @@ struct PeyeConstants {
     /// Column name for debug table. Make sure this identifier matches the table view id in the storyboard
     static let debugTimeColName = "DebugTimeColumn"
     
+    // MARK: Annotations
+    
+    /// Space between the "selection" (seen paragraph) rectangle and its line (in page points)
+    static let annotationLineDistance: CGFloat = 7
+    
+    /// Default color of the annotation lines
+    static let annotationLineColour: NSColor = NSColor(red: 0.90, green: 0.70, blue: 0.45, alpha: 0.75)
+    
     // MARK: Other globals
     
     /// How much space do we leave between margins of the window and text we consider visible. In points.
@@ -80,10 +89,6 @@ struct PeyeConstants {
     
     /// String identifying the notification sent when a new document is opened / switched to
     static let documentChangeNotification = "hiit.PeyeDF.documentChangeNotification"
-    
-    /// TODO: remove this
-    /// Debug string for testing selection rects
-    static let selectionNotification = "hiit.PeyeDF.selectionNotification"
     
     private static func makeDateFormatter() -> NSDateFormatter {
         let dateFormatter = NSDateFormatter()

@@ -108,11 +108,17 @@ class MyPDF: PDFView {
                     
                 } // end of check for split, if no need just return selection as-was //
             }
-            self.setCurrentSelection(pdfSel, animate: true)
-            // TODO: Remove this
-            if !(CGRectIsEmpty(pdfSel.boundsForPage(activePage))) {
-                NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.selectionNotification, object: self)
-            }
+            //self.setCurrentSelection(pdfSel, animate: true)
+            let selRect = pdfSel.boundsForPage(activePage)
+            let newRect_x = selRect.origin.x - PeyeConstants.annotationLineDistance
+            let newRect_y = selRect.origin.y
+            let newRect_height = selRect.height
+            let newRect_width: CGFloat = 1.0
+            let newRect = NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
+            let annotation = PDFAnnotationLine(bounds: newRect)
+            annotation.setColor(PeyeConstants.annotationLineColour)
+            setNeedsDisplayInRect(convertRect(newRect, fromPage: activePage))
+            activePage.addAnnotation(annotation)
         } else {
             super.mouseDown(theEvent)
         }

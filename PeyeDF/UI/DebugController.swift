@@ -59,9 +59,6 @@ class DebugController: NSViewController, NSTableViewDataSource {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "occlusionChanged:", name: NSWindowDidChangeOcclusionStateNotification, object: docWindow)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "scrolled:", name:
             NSViewBoundsDidChangeNotification, object: pdfView.subviews[0].subviews[0] as! NSClipView)
-        
-        // TODO: delete me
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "newSelection:", name: PeyeConstants.selectionNotification, object: pdfView)
     }
     
     /// Unload all notifications due to document change / navigation. Should be set once during document unloading.
@@ -75,20 +72,10 @@ class DebugController: NSViewController, NSTableViewDataSource {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowDidChangeOcclusionStateNotification, object: docWindow)
         NSNotificationCenter.defaultCenter().removeObserver(self, name:
             NSViewBoundsDidChangeNotification, object: pdfView.subviews[0].subviews[0] as! NSClipView)
-        // TODO: delete me
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: PeyeConstants.selectionNotification, object: pdfView)
     }
     
     
     // MARK: Notification callbacks
-    
-    //TODO: delete me
-    @objc func newSelection(notification: NSNotification) {
-        let pdfView = notification.object as! PDFView
-        let title = "Selection done, rect:"
-        let desc = "\(pdfView.currentSelection().boundsForPage(pdfView.currentPage()))"
-        updateDesc(title, desc: desc)
-    }
     
     @objc func occlusionChanged(notification: NSNotification) {
         let obj = notification.object as! NSWindow
