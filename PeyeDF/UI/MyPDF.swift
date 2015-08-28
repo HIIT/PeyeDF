@@ -141,11 +141,20 @@ class MyPDF: PDFView {
         return DiMeRange(min: 1 - yMax / docY, max: 1 - yMin / docY)
     }
     
-    /// Get the number of visible pages, starting from zero
+    /// Get the number of visible page numbers (starting from 0)
     func getVisiblePageNums() -> [Int] {
         var visibleArray = [Int]()
         for visiblePage in self.visiblePages() as! [PDFPage] {
-            visibleArray.append(visiblePage.label().toInt()!)
+            visibleArray.append(document().indexForPage(visiblePage))
+        }
+        return visibleArray
+    }
+    
+    /// Get the number of visible page labels (as embedded in the PDF)
+    func getVisiblePageLabels() -> [String] {
+        var visibleArray = [String]()
+        for visiblePage in self.visiblePages() as! [PDFPage] {
+            visibleArray.append(visiblePage.label())
         }
         return visibleArray
     }
@@ -234,12 +243,13 @@ class MyPDF: PDFView {
     
     func getStatus() -> ReadingEvent {
         let multiPage: Bool = (count(self.visiblePages())) > 1
-        let visiblePages: [Int] = getVisiblePageNums()
+        let visiblePageLabels: [String] = getVisiblePageLabels()
+        let visiblePageNums: [Int] = getVisiblePageNums()
         let pageRects: [NSRect] = getVisibleRects()
         let proportion: DiMeRange = getProportion()
         let plainTextContent: NSString = getVisibleString()!
         
-        return ReadingEvent(multiPage: multiPage, visiblePages: visiblePages, pageRects: pageRects, proportion: proportion, plainTextContent: plainTextContent, infoElemId: infoElem!.id)
+        return ReadingEvent(multiPage: multiPage, visiblePageNumbers: visiblePageNums, visiblePageLabels: visiblePageLabels, pageRects: pageRects, proportion: proportion, plainTextContent: plainTextContent, infoElemId: infoElem!.id)
     }
     
 }
