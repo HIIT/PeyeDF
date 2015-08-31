@@ -114,12 +114,11 @@ extension NSRect {
     /// is returned in the array if the lhs was not entirely enclosed by this element.
     /// Returns a array with the original rectangle if the two don't intersect (or are away
     /// a certain tolerance (PeyeConstants.rectHorizontalTolerance) on the x axis.
-    /// An empty rectangle if the subtrahend completely encloses this rect.
+    /// An empty array if the subtrahend completely encloses this rect.
     func subtractRect(rhs: NSRect) -> [NSRect] {
         let constant: CGFloat = PeyeConstants.rectHorizontalTolerance
         var ary = [NSRect]()
         if NSContainsRect(rhs, self) {
-            ary.append(NSRect())
             return ary
         }
         if withinRange(self.origin.x, rhs.origin.x, constant) {
@@ -127,8 +126,7 @@ extension NSRect {
                 var slice = NSRect()
                 var remainder = NSRect()
                 if rhs.minY < self.minY && rhs.maxY > self.maxY {
-                    // the other rectangle encloses this, return an empty rect
-                    ary.append(NSRect())
+                    // the other rectangle encloses this, return an empty array
                     return ary
                 }
                 if self.minY < rhs.minY {

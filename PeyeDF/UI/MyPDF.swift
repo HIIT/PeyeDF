@@ -31,13 +31,16 @@ class MyPDF: PDFView {
     var infoElem: DocumentInformationElement?
     
     func autoAnnotate() {
+        // TODO: MUST SIMPLIFY THIS SECTION
         for page in interestingRects.keys {
             let unitedRects = uniteCollidingRects(interestingRects[page]!)
             interestingRects[page]! = unitedRects
             // remove old annotations
-            for annotation in page.annotations() as! [PDFAnnotation] {
-                if annotation.color().practicallyEqual(PeyeConstants.annotationColourInteresting) {
-                    page.removeAnnotation(annotation)
+            for annotation in page.annotations() {
+                if let annotation = annotation as? PDFAnnotationLine {
+                    if annotation.color().practicallyEqual(PeyeConstants.annotationColourInteresting) {
+                        page.removeAnnotation(annotation)
+                    }
                 }
             }
             for rect in unitedRects {
@@ -61,32 +64,37 @@ class MyPDF: PDFView {
                 setNeedsDisplayInRect(convertRect(newRect, fromPage: page))
             }
         }
+        // TODO: MUST SIMPLIFY THIS SECTION
         for page in readRects.keys {
-            let unitedRects = uniteCollidingRects(readRects[page]!)
+            var unitedRects = uniteCollidingRects(readRects[page]!)
             // remove old annotations
-            for annotation in page.annotations() as! [PDFAnnotation] {
-                if annotation.color().practicallyEqual(PeyeConstants.annotationColourRead) {
-                    page.removeAnnotation(annotation)
-                }
-            }
-            var subtractedRects = [NSRect]()
-            if let iRects = interestingRects[page] {
-                for rRect in unitedRects {
-                    for iRect in iRects {
-                        let newRects = rRect.subtractRect(iRect)
-                        for newRect in newRects {
-                            if !(NSIsEmptyRect(newRect)) {
-                                subtractedRects.append(newRect)
-                            }
-                        }
+            for annotation in page.annotations() {
+                if let annotation = annotation as? PDFAnnotationLine {
+                    if annotation.color().practicallyEqual(PeyeConstants.annotationColourRead) {
+                        page.removeAnnotation(annotation)
                     }
                 }
-                subtractedRects = uniteCollidingRects(subtractedRects)
-            } else {
-                subtractedRects = unitedRects
             }
-            readRects[page]! = subtractedRects
-            for rect in subtractedRects {
+            var collidingRects: [(rRect: NSRect, iRect: NSRect)] = [] // tuple with read rects and interesting rects which intersect
+            if let iRects = interestingRects[page] {
+                var i = 0
+                while i < count(unitedRects) {
+                    let rRect = unitedRects[i]
+                    for iRect in iRects {
+                        if NSIntersectsRect(rRect, iRect) {
+                            collidingRects.append((rRect: rRect, iRect: iRect))
+                            unitedRects.removeAtIndex(i)
+                            continue
+                        }
+                    }
+                    ++i
+                }
+            }
+            for (rRect, iRect) in collidingRects {
+                unitedRects.extend(rRect.subtractRect(iRect))
+            }
+            readRects[page]! = unitedRects
+            for rect in unitedRects {
                 var newRect: NSRect
                 let newRect_x = rect.origin.x - PeyeConstants.annotationLineDistance
                 let newRect_y = rect.origin.y
