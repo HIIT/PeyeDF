@@ -18,8 +18,11 @@ let extraLineAmount = 3 // 1/this number is the amount of extra lines that we wa
 /// psychophysiology and user activity tracking
 class MyPDF: PDFView {
     
+    /// Stores all rectangles marked as "interesting"
+    var interestingRects = [PDFPage: [NSRect]]()
+    
     /// Stores all rectangles marked as "read"
-    var readRects = [NSRect]()
+    var readRects = [PDFPage: [NSRect]]()
     
     var containsRawString = false  // this stores whether the document actually contains scanned text
     
@@ -28,6 +31,82 @@ class MyPDF: PDFView {
     var infoElem: DocumentInformationElement?
     
     func autoAnnotate() {
+        for page in interestingRects.keys {
+            let unitedRects = uniteCollidingRects(interestingRects[page]!)
+            interestingRects[page]! = unitedRects
+            // remove old annotations
+            for annotation in page.annotations() as! [PDFAnnotation] {
+                if annotation.color().practicallyEqual(PeyeConstants.annotationColourInteresting) {
+                    page.removeAnnotation(annotation)
+                }
+            }
+            for rect in unitedRects {
+                var newRect: NSRect
+                let newRect_x = rect.origin.x - PeyeConstants.annotationLineDistance
+                let newRect_y = rect.origin.y
+                let newRect_height = rect.height
+                let newRect_width: CGFloat = 1.0
+                newRect = NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
+                // FOR VERTICAL LINES
+        //        } else {
+        //            let newRect_y = rect.origin.y + rect.height + PeyeConstants.annotationLineDistance
+        //            let newRect_x = rect.origin.x
+        //            let newRect_width = rect.width
+        //            let newRect_height: CGFloat = 1.0
+        //            newRect = NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
+        //        }
+                let annotation = PDFAnnotationLine(bounds: newRect)
+                annotation.setColor(PeyeConstants.annotationColourInteresting)
+                page.addAnnotation(annotation)
+                setNeedsDisplayInRect(convertRect(newRect, fromPage: page))
+            }
+        }
+        for page in readRects.keys {
+            let unitedRects = uniteCollidingRects(readRects[page]!)
+            // remove old annotations
+            for annotation in page.annotations() as! [PDFAnnotation] {
+                if annotation.color().practicallyEqual(PeyeConstants.annotationColourRead) {
+                    page.removeAnnotation(annotation)
+                }
+            }
+            var subtractedRects = [NSRect]()
+            if let iRects = interestingRects[page] {
+                for rRect in unitedRects {
+                    for iRect in iRects {
+                        let newRects = rRect.subtractRect(iRect)
+                        for newRect in newRects {
+                            if !(NSIsEmptyRect(newRect)) {
+                                subtractedRects.append(newRect)
+                            }
+                        }
+                    }
+                }
+                subtractedRects = uniteCollidingRects(subtractedRects)
+            } else {
+                subtractedRects = unitedRects
+            }
+            readRects[page]! = subtractedRects
+            for rect in subtractedRects {
+                var newRect: NSRect
+                let newRect_x = rect.origin.x - PeyeConstants.annotationLineDistance
+                let newRect_y = rect.origin.y
+                let newRect_height = rect.height
+                let newRect_width: CGFloat = 1.0
+                newRect = NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
+                // FOR VERTICAL LINES
+        //        } else {
+        //            let newRect_y = rect.origin.y + rect.height + PeyeConstants.annotationLineDistance
+        //            let newRect_x = rect.origin.x
+        //            let newRect_width = rect.width
+        //            let newRect_height: CGFloat = 1.0
+        //            newRect = NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
+        //        }
+                let annotation = PDFAnnotationLine(bounds: newRect)
+                annotation.setColor(PeyeConstants.annotationColourRead)
+                page.addAnnotation(annotation)
+                setNeedsDisplayInRect(convertRect(newRect, fromPage: page))
+            }
+        }
         // Placeholder for a better way to enable this
         NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "autoAnnotateCallback", userInfo: nil, repeats: false)
     }
@@ -122,30 +201,17 @@ class MyPDF: PDFView {
                     
                 } // end of check for split, if no need just return selection as-was //
             }
-            // self.setCurrentSelection(pdfSel, animate: true)
-            let selRect = pdfSel.boundsForPage(activePage)
-            var newRect: NSRect
-            if isHorizontalLine {
-                let newRect_x = selRect.origin.x - PeyeConstants.annotationLineDistance
-                let newRect_y = selRect.origin.y
-                let newRect_height = selRect.height
-                let newRect_width: CGFloat = 1.0
-                newRect = NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
-            } else {
-                let newRect_y = selRect.origin.y + selRect.height + PeyeConstants.annotationLineDistance
-                let newRect_x = selRect.origin.x
-                let newRect_width = selRect.width
-                let newRect_height: CGFloat = 1.0
-                newRect = NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
-            }
-            let annotation = PDFAnnotationLine(bounds: newRect)
             if theEvent.clickCount == 1 {
-                annotation.setColor(PeyeConstants.annotationColourRead)
+                if readRects[activePage] == nil {
+                    readRects[activePage] = [NSRect]()
+                }
+                readRects[activePage]!.append(pdfSel.boundsForPage(activePage))
             } else if theEvent.clickCount == 2 {
-                annotation.setColor(PeyeConstants.annotationColourInteresting)
+                if interestingRects[activePage] == nil {
+                    interestingRects[activePage] = [NSRect]()
+                }
+                interestingRects[activePage]!.append(pdfSel.boundsForPage(activePage))
             }
-            setNeedsDisplayInRect(convertRect(newRect, fromPage: activePage))
-            activePage.addAnnotation(annotation)
         } else {
             super.mouseDown(theEvent)
         }

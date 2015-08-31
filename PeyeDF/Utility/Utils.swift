@@ -8,6 +8,7 @@
 // Contains various functions and utilities not otherwise classified
 
 import Foundation
+import Cocoa
 
 // MARK: Extensions to standard types
 
@@ -66,6 +67,22 @@ extension NSSize {
     }
 }
 
+extension NSColor {
+    
+    /// Returns true if all the components of the colour (rgb and alpha) are the same as the other color,
+    /// ignoring the color space
+    ///
+    /// :param: lhs The color to compare to
+    /// :returns: True if they are "practically equal"
+    func practicallyEqual(lhs: NSColor) -> Bool {
+        var components1 = [CGFloat](count: 4, repeatedValue: -1.0)
+        var components2 = [CGFloat](count: 4, repeatedValue: -2.0)
+        self.getComponents(&components1)
+        lhs.getComponents(&components2)
+        return components1 == components2
+    }
+}
+
 extension NSRect: Comparable { } // Make NSRects comparable using their public == and < functions
 
 /// Two rects are equal if all their properties are equal
@@ -90,6 +107,52 @@ public func < (lhs: NSRect, rhs: NSRect) -> Bool {
     }
 }
 
+extension NSRect {
+    
+    /// Subtracts another rectangle **from** this rectangle. That is,
+    /// returns this rectangle as a (possibly disjoint) array. Only one element
+    /// is returned in the array if the lhs was not entirely enclosed by this element.
+    /// Returns a array with the original rectangle if the two don't intersect (or are away
+    /// a certain tolerance (PeyeConstants.rectHorizontalTolerance) on the x axis.
+    /// An empty rectangle if the subtrahend completely encloses this rect.
+    func subtractRect(rhs: NSRect) -> [NSRect] {
+        let constant: CGFloat = PeyeConstants.rectHorizontalTolerance
+        var ary = [NSRect]()
+        if NSContainsRect(rhs, self) {
+            ary.append(NSRect())
+            return ary
+        }
+        if withinRange(self.origin.x, rhs.origin.x, constant) {
+            if NSIntersectsRect(self, rhs) {
+                var slice = NSRect()
+                var remainder = NSRect()
+                if rhs.minY < self.minY && rhs.maxY > self.maxY {
+                    // the other rectangle encloses this, return an empty rect
+                    ary.append(NSRect())
+                    return ary
+                }
+                if self.minY < rhs.minY {
+                    // this rectangle extends below the other
+                    // slce the bottom from below
+                    let sliceFromBottom = rhs.minY - self.minY
+                    NSDivideRect(self, &slice, &remainder, sliceFromBottom, NSMinYEdge)
+                    ary.append(slice)
+                }
+                if self.maxY > rhs.maxY {
+                    // this rectangle extends above the other
+                    // slice the top from above
+                    let sliceFromTop = self.maxY - rhs.maxY
+                    NSDivideRect(self, &slice, &remainder, sliceFromTop, NSMaxYEdge)
+                    ary.append(slice)
+                }
+                return ary
+            }
+        }
+        ary.append(self)
+        return ary
+    }
+}
+
 // MARK: Other functions
 
 /// Rounds a number to the amount of decimal places specified.
@@ -106,4 +169,22 @@ func roundToX(number: CGFloat, places: CGFloat) -> CGFloat {
 /// :returns: True if lhs is within ± abs(range) of rhs
 public func withinRange(lhs: CGFloat, rhs: CGFloat, range: CGFloat) -> Bool {
     return (lhs + abs(range)) >= rhs && (lhs - abs(range)) <= rhs
+}
+
+/// Given an array of rectangles, return a sorted version of the array
+/// (sorted so that elements coming first should have been read first in western order)
+/// with the colliding rectangles united (two rects collide when their intersection is not zero).
+public func uniteCollidingRects(inputArray: [NSRect]) -> [NSRect] {
+    var ary = inputArray
+    sort(&ary)
+    var i = 0
+    while i + 1 < count(ary) {
+        if NSIntersectsRect(ary[i], ary[i+1]) {
+            ary[i] = NSUnionRect(ary[i], ary[i+1])
+            ary.removeAtIndex(i+1)
+        } else {
+            ++i
+        }
+    }
+    return ary
 }
