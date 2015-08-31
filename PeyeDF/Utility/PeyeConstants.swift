@@ -56,10 +56,19 @@ struct PeyeConstants {
     /// Space between the "selection" (seen paragraph) rectangle and its line (in page points)
     static let annotationLineDistance: CGFloat = 7
     
-    /// Default color of the annotation lines
-    static let annotationLineColour: NSColor = NSColor(red: 0.90, green: 0.70, blue: 0.45, alpha: 0.75)
+    /// Default color of the read annotation lines
+    static let annotationColourRead: NSColor = NSColor(red: 0.24, green: 0.74, blue: 0.97, alpha: 0.75)
+    
+    /// Default color of the "interesting" annotation lines
+    static let annotationColourInteresting: NSColor = NSColor(red: 0.92, green: 0.71, blue: 0.43, alpha: 0.75)
+    
+    /// Default color of the "critical" annotation lines
+    static let annotationColourCritical: NSColor = NSColor(red: 0.99, green: 0.24, blue: 0.26, alpha: 0.75)
     
     // MARK: Other globals
+    
+    /// When comparing rectangles, they are at the same horizontal positions if they are separated by less than this amount of points.
+    static let rectHorizontalTolerance: CGFloat = 2.0
     
     /// How much space do we leave between margins of the window and text we consider visible. In points.
     static let extraMargin: CGFloat = 2
@@ -67,7 +76,7 @@ struct PeyeConstants {
     /// Defines how large is the vertical span of text being looked at, depending on the zoom level
     static let vSpanDenom: CGFloat = 3
     
-    /// Defines tolerance proportion for line sizes when creating selections (sizes bigger than this fraction will be discarded)
+    /// Defines tolerance proportion for line sizes when creating selections (lines **bigger** than this fraction - when compared to other lines - will be discarded)
     static let lineAutoSelectionTolerance: CGFloat = 0.1
     
     /// Name of thumbnail button down (pressed) image
@@ -83,6 +92,9 @@ struct PeyeConstants {
     static let defaultThumbSideViewWidth: CGFloat = 200
     
     // MARK: Notifications
+    
+    /// String identifying the notification sent when auto anootation is complete
+    static let autoAnnotationComplete = "hiit.PeyeDF.autoAnnotationComplete"
     
     /// String identifying the notification sent when a new document is opened / switched to
     static let occlusionChangeNotification = "hiit.PeyeDF.occlusionChangeNotification"

@@ -66,10 +66,44 @@ extension NSSize {
     }
 }
 
+extension NSRect: Comparable { } // Make NSRects comparable using their public == and < functions
+
+/// Two rects are equal if all their properties are equal
+public func == (lhs: NSRect, rhs: NSRect) -> Bool {
+    return lhs.origin.x == rhs.origin.x &&
+        lhs.origin.y == rhs.origin.y &&
+        lhs.size.height == rhs.size.height &&
+        lhs.size.width == rhs.size.width
+}
+
+/// Check if the left hand side rect comes before the right hand side rect.
+/// Most important is x position. The rect with a lower x (left most) comes
+/// before the rect with a higher x. If the x are within a specified range
+/// checked using withinRange(_,_,constant) then rects with higher y
+/// come before rects with lower y.
+public func < (lhs: NSRect, rhs: NSRect) -> Bool {
+    let constant: CGFloat = PeyeConstants.rectHorizontalTolerance
+    if withinRange(lhs.origin.x, rhs.origin.x, constant) {
+        return lhs.origin.y > rhs.origin.y
+    } else {
+        return lhs.origin.x < rhs.origin.x
+    }
+}
+
 // MARK: Other functions
 
 /// Rounds a number to the amount of decimal places specified.
-/// Might not be actually represented as such because computers.
+/// Might not be actually be represented as such because computers.
 func roundToX(number: CGFloat, places: CGFloat) -> CGFloat {
     return round(number * (pow(10,places))) / pow(10,places)
+}
+
+/// Check if a value is within a specified range of another value
+///
+/// :param: lhs The first value
+/// :param: rhs The second value
+/// :param: range The allowance
+/// :returns: True if lhs is within ± abs(range) of rhs
+public func withinRange(lhs: CGFloat, rhs: CGFloat, range: CGFloat) -> Bool {
+    return (lhs + abs(range)) >= rhs && (lhs - abs(range)) <= rhs
 }

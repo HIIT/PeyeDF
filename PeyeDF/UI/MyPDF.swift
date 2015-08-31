@@ -18,11 +18,23 @@ let extraLineAmount = 3 // 1/this number is the amount of extra lines that we wa
 /// psychophysiology and user activity tracking
 class MyPDF: PDFView {
     
+    /// Stores all rectangles marked as "read"
+    var readRects = [NSRect]()
+    
     var containsRawString = false  // this stores whether the document actually contains scanned text
     
     /// Stores the information element for the current document.
     /// Set by DocumentWindowController.loadDocument()
     var infoElem: DocumentInformationElement?
+    
+    func autoAnnotate() {
+        // Placeholder for a better way to enable this
+        NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "autoAnnotateCallback", userInfo: nil, repeats: false)
+    }
+    
+    @objc func autoAnnotateCallback() {
+        NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.autoAnnotationComplete, object: self)
+    }
     
     override func mouseDown(theEvent: NSEvent) {
         // Only proceed if there is actually text to select
@@ -55,6 +67,8 @@ class MyPDF: PDFView {
             // sort selections by width and get median width
             selections.sort({$0.boundsForPage(activePage).width > $1.boundsForPage(activePage).width})
             let medianWidth = selections[medI].boundsForPage(activePage).width
+            
+            let isHorizontalLine = medianHeight < medianWidth
             
             let medianSize = NSSize(width: medianWidth, height: medianHeight)
             
@@ -108,15 +122,28 @@ class MyPDF: PDFView {
                     
                 } // end of check for split, if no need just return selection as-was //
             }
-            //self.setCurrentSelection(pdfSel, animate: true)
+            // self.setCurrentSelection(pdfSel, animate: true)
             let selRect = pdfSel.boundsForPage(activePage)
-            let newRect_x = selRect.origin.x - PeyeConstants.annotationLineDistance
-            let newRect_y = selRect.origin.y
-            let newRect_height = selRect.height
-            let newRect_width: CGFloat = 1.0
-            let newRect = NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
+            var newRect: NSRect
+            if isHorizontalLine {
+                let newRect_x = selRect.origin.x - PeyeConstants.annotationLineDistance
+                let newRect_y = selRect.origin.y
+                let newRect_height = selRect.height
+                let newRect_width: CGFloat = 1.0
+                newRect = NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
+            } else {
+                let newRect_y = selRect.origin.y + selRect.height + PeyeConstants.annotationLineDistance
+                let newRect_x = selRect.origin.x
+                let newRect_width = selRect.width
+                let newRect_height: CGFloat = 1.0
+                newRect = NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
+            }
             let annotation = PDFAnnotationLine(bounds: newRect)
-            annotation.setColor(PeyeConstants.annotationLineColour)
+            if theEvent.clickCount == 1 {
+                annotation.setColor(PeyeConstants.annotationColourRead)
+            } else if theEvent.clickCount == 2 {
+                annotation.setColor(PeyeConstants.annotationColourInteresting)
+            }
             setNeedsDisplayInRect(convertRect(newRect, fromPage: activePage))
             activePage.addAnnotation(annotation)
         } else {

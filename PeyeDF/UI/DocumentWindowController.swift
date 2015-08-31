@@ -20,7 +20,8 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
     var debugController: DebugController?
     var debugWindowController: NSWindowController?
     @IBOutlet weak var docStatus: NSToolbarItem!
-
+    @IBOutlet weak var tbAnnotate: NSToolbarItem!
+    
     // MARK: Thumbnail side expand / reduce
     
     @IBOutlet weak var thumbTB: NSToolbarItem!
@@ -34,6 +35,13 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
         } else {
             thumbTB.image = NSImage(named: PeyeConstants.thumbButton_DOWN)
         }
+    }
+    
+    // MARK: Annotations
+    
+    @IBAction func autoAnnotate(sender: AnyObject?) {
+        myPdf?.autoAnnotate()
+        tbAnnotate.enabled = false
     }
     
     // MARK: Debug functions
@@ -141,6 +149,10 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
         debugWindowController?.showWindow(self)
         debugController = (debugWindowController?.contentViewController as! DebugController)
         
+        // Get notifications from pdfview
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "autoAnnotateComplete:", name: PeyeConstants.autoAnnotationComplete, object: self.myPdf!)
+        
         // Get notifications from managed window (to be later dispatched to singleton)
         debugController?.setUpMonitors(myPdf!, docWindow: self.window!)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowWantsMain:", name: NSWindowDidBecomeMainNotification, object: self.window)
@@ -202,6 +214,10 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
     
     // MARK: Receving and dispatching notifications from managed window
     
+    @objc func autoAnnotateComplete(notification: NSNotification) {
+        tbAnnotate.enabled = true
+    }
+    
     @objc func windowWantsMain(notification: NSNotification) {
         NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.documentChangeNotification, object: self.document)
     }
@@ -211,6 +227,7 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
     }
     
     @objc func windowWantsClose(notification: NSNotification) {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: PeyeConstants.autoAnnotationComplete, object: self.myPdf!)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowDidBecomeMainNotification, object: self.window)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowWillCloseNotification, object: self.window)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowDidChangeOcclusionStateNotification, object: self.window)

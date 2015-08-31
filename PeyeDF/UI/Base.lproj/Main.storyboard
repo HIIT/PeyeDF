@@ -795,10 +795,10 @@
             </objects>
             <point key="canvasLocation" x="-957.5" y="-1200"/>
         </scene>
-        <!--Window Controller-->
+        <!--Document Window Controller-->
         <scene sceneID="f6R-Kc-PFL">
             <objects>
-                <windowController storyboardIdentifier="Document Window Controller" id="sy6-nO-Tdf" customClass="DocumentWindowController" customModule="PeyeDF" sceneMemberID="viewController">
+                <windowController storyboardIdentifier="Document Window Controller" id="sy6-nO-Tdf" userLabel="Document Window Controller" customClass="DocumentWindowController" customModule="PeyeDF" sceneMemberID="viewController">
                     <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="Ezf-2B-VUj">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
@@ -836,9 +836,15 @@
                                         <action selector="sendInfoElem:" target="sy6-nO-Tdf" id="c5a-O8-yOF"/>
                                     </connections>
                                 </toolbarItem>
+                                <toolbarItem implicitItemIdentifier="D39BF8F4-E8F8-4708-82CC-5506275CE680" label="Annotate" paletteLabel="Annotate" tag="-1" image="Annotate" autovalidates="NO" id="GDs-fF-Uav">
+                                    <connections>
+                                        <action selector="autoAnnotate:" target="H3y-Bk-Ofi" id="vwb-Nk-t5M"/>
+                                    </connections>
+                                </toolbarItem>
                             </allowedToolbarItems>
                             <defaultToolbarItems>
                                 <toolbarItem reference="8zr-Hg-gf0"/>
+                                <toolbarItem reference="GDs-fF-Uav"/>
                                 <toolbarItem reference="1lR-l5-PLy"/>
                                 <toolbarItem reference="0I9-le-DU2"/>
                                 <toolbarItem reference="W5X-tm-Xbn"/>
@@ -851,6 +857,7 @@
                     <connections>
                         <outlet property="docStatus" destination="l3s-5e-m3r" id="NbI-4o-i7d"/>
                         <outlet property="selectButton" destination="1lR-l5-PLy" id="ZLG-j2-q30"/>
+                        <outlet property="tbAnnotate" destination="GDs-fF-Uav" id="Dn7-Uk-RBy"/>
                         <outlet property="thumbTB" destination="8zr-Hg-gf0" id="kBi-3Q-0wK"/>
                         <segue destination="f9L-GU-eYT" kind="relationship" relationship="window.shadowedContentViewController" id="t30-fj-7gb"/>
                     </connections>
@@ -1113,6 +1120,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="Annotate" width="64" height="64"/>
         <image name="Beta" width="64" height="64"/>
         <image name="NSStatusNone" width="16" height="16"/>
         <image name="TB_ThumbU" width="32" height="32"/>
