@@ -31,7 +31,7 @@ class DocumentSplitController: NSSplitViewController {
         myThumbController?.myThumb.setPDFView(myPDFSideController?.myPDF)
     }
     
-    // MARK: Thumbnail side collapse / uncollapse
+    // MARK: - Thumbnail side collapse / uncollapse
 
     func toggleThumbSide() {
         let tw: NSSplitView = self.splitView as NSSplitView

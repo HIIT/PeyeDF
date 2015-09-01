@@ -22,9 +22,9 @@ class PeyeDocument: NSDocument {
     /// Contains all plain text from PDF, with extra characters (such as whitespace) trimmed
     var trimmedText: String?
     
-    // MARK: DiMe related
+    // MARK: - DiMe related
     
-    // MARK: NSDocument overrides
+    // MARK: - NSDocument overrides
     
     override init() {
         title = "N/A"

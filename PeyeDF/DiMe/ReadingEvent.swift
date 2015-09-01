@@ -23,7 +23,7 @@ class ReadingEvent: Event, DiMeAble {
         :plainTextContent: plain text visible on screen
         :infoElemId: id referring to the info element referenced by this event (document id)
     */
-    init(multiPage: Bool, visiblePageNumbers: [Int], visiblePageLabels: [String], pageRects: [NSRect], proportion: DiMeRange, plainTextContent: NSString, infoElemId: NSString) {
+    init(multiPage: Bool, visiblePageNumbers: [Int], visiblePageLabels: [String], pageRects: [ReadingRect], proportion: DiMeRange, plainTextContent: NSString, infoElemId: NSString) {
         super.init()
         self.setDiMeDict()
         json["multiPage"] = JSON(multiPage)

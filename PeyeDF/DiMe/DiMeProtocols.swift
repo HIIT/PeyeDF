@@ -27,16 +27,6 @@ protocol DiMeAble {
     func setDiMeDict()
 }
 
-extension NSRect: Dictionariable {
-    /// Returns origin and size in a dict.
-    func getDict() -> [String : AnyObject] {
-        var retDict = [String: AnyObject]()
-        retDict["origin"] = self.origin.getDict()
-        retDict["size"] = self.size.getDict()
-        return retDict
-    }
-}
-
 extension CGSize: Dictionariable {
     /// Returns width and height in a dictionary with their values as
     /// numbers (both as JSONableItem enums).

@@ -10,7 +10,7 @@
 import Foundation
 import Cocoa
 
-// MARK: Extensions to standard types
+// MARK: - Extensions to standard types
 
 extension NSDate {
     
@@ -151,7 +151,7 @@ extension NSRect {
     }
 }
 
-// MARK: Other functions
+// MARK: - Other functions
 
 /// Rounds a number to the amount of decimal places specified.
 /// Might not be actually be represented as such because computers.

@@ -12,7 +12,7 @@ import Cocoa
 /// All constants used are put here for convenience.
 struct PeyeConstants {
     
-    // MARK: History-specific constants
+    // MARK: - History-specific constants
     // (For DiMe)
     
     /// URL of the DiMe server (bound in the preferences window)
@@ -40,7 +40,7 @@ struct PeyeConstants {
     /// Date format used for DiMe submission
     static let diMeDateFormat = "Y'-'MM'-'d'T'HH':'mm':'ssZ"
     
-    // MARK: Debug
+    // MARK: - Debug
     
     /// Column name for debug table. Make sure this identifier matches the table view id in the storyboard
     static let debugTitleColName = "DebugTitleColumn"
@@ -51,7 +51,24 @@ struct PeyeConstants {
     /// Column name for debug table. Make sure this identifier matches the table view id in the storyboard
     static let debugTimeColName = "DebugTimeColumn"
     
-    // MARK: Annotations
+    // MARK: - Rectangle reading classes
+    
+    /// Unspecified reading class
+    static let CLASS_UNSET = 0
+    
+    /// Class for viewport (simple read without eye tracking) text
+    static let CLASS_VIEWPORT = 10
+    
+    /// Class for eye tracking read text.
+    static let CLASS_READ = 20
+    
+    /// Class for eye tracking "interesting" rectangles.
+    static let CLASS_INTERESTING = 25
+    
+    /// Class for eye tracking "critical" rectangles.
+    static let CLASS_CRITICAL = 30
+    
+    // MARK: - Annotations
     
     /// Space between the "selection" (seen paragraph) rectangle and its line (in page points)
     static let annotationLineDistance: CGFloat = 7
@@ -65,7 +82,12 @@ struct PeyeConstants {
     /// Default color of the "critical" annotation lines
     static let annotationColourCritical: NSColor = NSColor(red: 0.99, green: 0.24, blue: 0.26, alpha: 0.75)
     
-    // MARK: Other globals
+    /// Array of all annotation colours, in ascending order of importance
+    static let annotationAllColours = [PeyeConstants.annotationColourRead,
+                                       PeyeConstants.annotationColourInteresting,
+                                       PeyeConstants.annotationColourCritical]
+    
+    // MARK: - Other globals
     
     /// When comparing rectangles, they are at the same horizontal positions if they are separated by less than this amount of points.
     static let rectHorizontalTolerance: CGFloat = 2.0
@@ -91,7 +113,7 @@ struct PeyeConstants {
     /// Default size of thumbnail side view (set when pressing button)
     static let defaultThumbSideViewWidth: CGFloat = 200
     
-    // MARK: Notifications
+    // MARK: - Notifications
     
     /// String identifying the notification sent when auto anootation is complete
     static let autoAnnotationComplete = "hiit.PeyeDF.autoAnnotationComplete"

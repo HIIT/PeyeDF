@@ -29,100 +29,7 @@ class MyPDF: PDFView {
     /// Stores the information element for the current document.
     /// Set by DocumentWindowController.loadDocument()
     var infoElem: DocumentInformationElement?
-    
-    func autoAnnotate() {
-        // TODO: MUST SIMPLIFY THIS SECTION
-        for page in interestingRects.keys {
-            let unitedRects = uniteCollidingRects(interestingRects[page]!)
-            interestingRects[page]! = unitedRects
-            // remove old annotations
-            for annotation in page.annotations() {
-                if let annotation = annotation as? PDFAnnotationLine {
-                    if annotation.color().practicallyEqual(PeyeConstants.annotationColourInteresting) {
-                        page.removeAnnotation(annotation)
-                    }
-                }
-            }
-            for rect in unitedRects {
-                var newRect: NSRect
-                let newRect_x = rect.origin.x - PeyeConstants.annotationLineDistance
-                let newRect_y = rect.origin.y
-                let newRect_height = rect.height
-                let newRect_width: CGFloat = 1.0
-                newRect = NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
-                // FOR VERTICAL LINES
-        //        } else {
-        //            let newRect_y = rect.origin.y + rect.height + PeyeConstants.annotationLineDistance
-        //            let newRect_x = rect.origin.x
-        //            let newRect_width = rect.width
-        //            let newRect_height: CGFloat = 1.0
-        //            newRect = NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
-        //        }
-                let annotation = PDFAnnotationLine(bounds: newRect)
-                annotation.setColor(PeyeConstants.annotationColourInteresting)
-                page.addAnnotation(annotation)
-                setNeedsDisplayInRect(convertRect(newRect, fromPage: page))
-            }
-        }
-        // TODO: MUST SIMPLIFY THIS SECTION
-        for page in readRects.keys {
-            var unitedRects = uniteCollidingRects(readRects[page]!)
-            // remove old annotations
-            for annotation in page.annotations() {
-                if let annotation = annotation as? PDFAnnotationLine {
-                    if annotation.color().practicallyEqual(PeyeConstants.annotationColourRead) {
-                        page.removeAnnotation(annotation)
-                    }
-                }
-            }
-            var collidingRects: [(rRect: NSRect, iRect: NSRect)] = [] // tuple with read rects and interesting rects which intersect
-            if let iRects = interestingRects[page] {
-                var i = 0
-                while i < count(unitedRects) {
-                    let rRect = unitedRects[i]
-                    for iRect in iRects {
-                        if NSIntersectsRect(rRect, iRect) {
-                            collidingRects.append((rRect: rRect, iRect: iRect))
-                            unitedRects.removeAtIndex(i)
-                            continue
-                        }
-                    }
-                    ++i
-                }
-            }
-            for (rRect, iRect) in collidingRects {
-                unitedRects.extend(rRect.subtractRect(iRect))
-            }
-            readRects[page]! = unitedRects
-            for rect in unitedRects {
-                var newRect: NSRect
-                let newRect_x = rect.origin.x - PeyeConstants.annotationLineDistance
-                let newRect_y = rect.origin.y
-                let newRect_height = rect.height
-                let newRect_width: CGFloat = 1.0
-                newRect = NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
-                // FOR VERTICAL LINES
-        //        } else {
-        //            let newRect_y = rect.origin.y + rect.height + PeyeConstants.annotationLineDistance
-        //            let newRect_x = rect.origin.x
-        //            let newRect_width = rect.width
-        //            let newRect_height: CGFloat = 1.0
-        //            newRect = NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
-        //        }
-                let annotation = PDFAnnotationLine(bounds: newRect)
-                annotation.setColor(PeyeConstants.annotationColourRead)
-                page.addAnnotation(annotation)
-                setNeedsDisplayInRect(convertRect(newRect, fromPage: page))
-            }
-        }
-        // Placeholder for a better way to enable this
-        NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "autoAnnotateCallback", userInfo: nil, repeats: false)
-    }
-    
-    @objc func autoAnnotateCallback() {
-        NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.autoAnnotationComplete, object: self)
-    }
-    
+
     override func mouseDown(theEvent: NSEvent) {
         // Only proceed if there is actually text to select
         if containsRawString {
@@ -156,6 +63,12 @@ class MyPDF: PDFView {
             let medianWidth = selections[medI].boundsForPage(activePage).width
             
             let isHorizontalLine = medianHeight < medianWidth
+            
+            // If the line is vertical, skip
+            if !isHorizontalLine {
+                super.mouseDown(theEvent)
+                return
+            }
             
             let medianSize = NSSize(width: medianWidth, height: medianHeight)
             
@@ -209,6 +122,8 @@ class MyPDF: PDFView {
                     
                 } // end of check for split, if no need just return selection as-was //
             }
+            
+            // Single click adds a read rect, double click an interesting rect
             if theEvent.clickCount == 1 {
                 if readRects[activePage] == nil {
                     readRects[activePage] = [NSRect]()
@@ -224,6 +139,109 @@ class MyPDF: PDFView {
             super.mouseDown(theEvent)
         }
     }
+    
+    // MARK: - Annotations
+    
+    func autoAnnotate() {
+        // TODO: MUST SIMPLIFY THIS SECTION
+        for page in interestingRects.keys {
+            let unitedRects = uniteCollidingRects(interestingRects[page]!)
+            interestingRects[page]! = unitedRects
+            // remove old annotations
+            for annotation in page.annotations() {
+                if let annotation = annotation as? PDFAnnotationLine {
+                    if annotation.color().practicallyEqual(PeyeConstants.annotationColourInteresting) {
+                        page.removeAnnotation(annotation)
+                    }
+                }
+            }
+            for rect in unitedRects {
+                var newRect: NSRect
+                let newRect_x = rect.origin.x - PeyeConstants.annotationLineDistance
+                let newRect_y = rect.origin.y
+                let newRect_height = rect.height
+                let newRect_width: CGFloat = 1.0
+                newRect = NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
+                // FOR VERTICAL LINES
+                //        } else {
+                //            let newRect_y = rect.origin.y + rect.height + PeyeConstants.annotationLineDistance
+                //            let newRect_x = rect.origin.x
+                //            let newRect_width = rect.width
+                //            let newRect_height: CGFloat = 1.0
+                //            newRect = NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
+                //        }
+                let annotation = PDFAnnotationLine(bounds: newRect)
+                annotation.setColor(PeyeConstants.annotationColourInteresting)
+                page.addAnnotation(annotation)
+                setNeedsDisplayInRect(convertRect(newRect, fromPage: page))
+            }
+        }
+        // TODO: MUST SIMPLIFY THIS SECTION
+        for page in readRects.keys {
+            var unitedRects = uniteCollidingRects(readRects[page]!)
+            // remove old annotations
+            for annotation in page.annotations() {
+                if let annotation = annotation as? PDFAnnotationLine {
+                    if annotation.color().practicallyEqual(PeyeConstants.annotationColourRead) {
+                        page.removeAnnotation(annotation)
+                    }
+                }
+            }
+            var collidingRects: [(rRect: NSRect, iRect: NSRect)] = [] // tuple with read rects and interesting rects which intersect
+            if let iRects = interestingRects[page] {
+                var i = 0
+                while i < count(unitedRects) {
+                    let rRect = unitedRects[i]
+                    for iRect in iRects {
+                        if NSIntersectsRect(rRect, iRect) {
+                            collidingRects.append((rRect: rRect, iRect: iRect))
+                            unitedRects.removeAtIndex(i)
+                            continue
+                        }
+                    }
+                    ++i
+                }
+            }
+            for (rRect, iRect) in collidingRects {
+                unitedRects.extend(rRect.subtractRect(iRect))
+            }
+            readRects[page]! = unitedRects
+            for rect in unitedRects {
+                var newRect: NSRect
+                let newRect_x = rect.origin.x - PeyeConstants.annotationLineDistance
+                let newRect_y = rect.origin.y
+                let newRect_height = rect.height
+                let newRect_width: CGFloat = 1.0
+                newRect = NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
+                // FOR VERTICAL LINES
+                //        } else {
+                //            let newRect_y = rect.origin.y + rect.height + PeyeConstants.annotationLineDistance
+                //            let newRect_x = rect.origin.x
+                //            let newRect_width = rect.width
+                //            let newRect_height: CGFloat = 1.0
+                //            newRect = NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
+                //        }
+                let annotation = PDFAnnotationLine(bounds: newRect)
+                annotation.setColor(PeyeConstants.annotationColourRead)
+                page.addAnnotation(annotation)
+                setNeedsDisplayInRect(convertRect(newRect, fromPage: page))
+            }
+        }
+        // Placeholder for a better way to enable this
+        NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "autoAnnotateCallback", userInfo: nil, repeats: false)
+    }
+    
+    /// Delete all annotations that are a line and are coloured with the annotation colours
+    func removeAllAnnotations() {
+        
+    }
+    
+    @objc func autoAnnotateCallback() {
+        NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.autoAnnotationComplete, object: self)
+    }
+    
+    
+    // MARK: - General accessor methods
     
     /// Return size of a page (the current page).
     func pageSize() -> NSSize {
@@ -318,7 +336,7 @@ class MyPDF: PDFView {
         return nil
     }
     
-    // MARK: Debug functions
+    // MARK: - Debug functions
     
     /// Debug function to test "seen text"
     func selectVisibleText(sender: AnyObject?) {
@@ -356,7 +374,14 @@ class MyPDF: PDFView {
         let proportion: DiMeRange = getProportion()
         let plainTextContent: NSString = getVisibleString()!
         
-        return ReadingEvent(multiPage: multiPage, visiblePageNumbers: visiblePageNums, visiblePageLabels: visiblePageLabels, pageRects: pageRects, proportion: proportion, plainTextContent: plainTextContent, infoElemId: infoElem!.id)
+        var readingRects = [ReadingRect]()
+        for rect in pageRects {
+            var newRect = ReadingRect(rect: rect)
+            newRect.setClass(PeyeConstants.CLASS_VIEWPORT)
+            readingRects.append(newRect)
+        }
+        
+        return ReadingEvent(multiPage: multiPage, visiblePageNumbers: visiblePageNums, visiblePageLabels: visiblePageLabels, pageRects: readingRects, proportion: proportion, plainTextContent: plainTextContent, infoElemId: infoElem!.id)
     }
     
 }

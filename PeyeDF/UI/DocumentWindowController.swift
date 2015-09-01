@@ -22,7 +22,7 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
     @IBOutlet weak var docStatus: NSToolbarItem!
     @IBOutlet weak var tbAnnotate: NSToolbarItem!
     
-    // MARK: Thumbnail side expand / reduce
+    // MARK: - Thumbnail side expand / reduce
     
     @IBOutlet weak var thumbTB: NSToolbarItem!
     @IBAction func showSide(sender: NSToolbarItem) {
@@ -37,14 +37,14 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
         }
     }
     
-    // MARK: Annotations
+    // MARK: - Annotations
     
     @IBAction func autoAnnotate(sender: AnyObject?) {
         myPdf?.autoAnnotate()
         tbAnnotate.enabled = false
     }
     
-    // MARK: Debug functions
+    // MARK: - Debug functions
     @IBAction func sendInfoElem(sender: AnyObject) {
         let infoElem = myPdf!.infoElem!
         let deskEvent = DesktopEvent(infoElem: infoElem)
@@ -113,7 +113,7 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
     }
     
     
-    // MARK: Saving
+    // MARK: - Saving
     
     func saveDocument(sender: AnyObject) {
         saveDocumentAs(sender)
@@ -131,7 +131,7 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
         }
     }
     
-    // MARK: Initialization
+    // MARK: - Initialization
     
     override func windowDidLoad() {
         super.windowDidLoad()
@@ -212,7 +212,7 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
         }
     }
     
-    // MARK: Receving and dispatching notifications from managed window
+    // MARK: - Receving and dispatching notifications from managed window
     
     @objc func autoAnnotateComplete(notification: NSNotification) {
         tbAnnotate.enabled = true

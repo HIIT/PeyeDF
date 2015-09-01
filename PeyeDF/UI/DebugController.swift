@@ -28,7 +28,7 @@ class DebugController: NSViewController, NSTableViewDataSource {
         
     }
     
-    /// MARK: data source for debug table, including methods to check for notifications
+    // MARK: - Data source for debug table, including methods to check for notifications
     func numberOfRowsInTableView(aTableView: NSTableView) -> Int {
         return count(debugDescs)
     }
@@ -45,7 +45,7 @@ class DebugController: NSViewController, NSTableViewDataSource {
         }
     }
     
-    // MARK: Monitor (notification) management
+    // MARK: - Monitor (notification) management
     
     /// Observes all notifications due to document change / navigation. Should be set once during document loading.
     /// Must call unSetMonitors when a document window closes / unloads.
@@ -75,7 +75,7 @@ class DebugController: NSViewController, NSTableViewDataSource {
     }
     
     
-    // MARK: Notification callbacks
+    // MARK: - Notification callbacks
     
     @objc func occlusionChanged(notification: NSNotification) {
         let obj = notification.object as! NSWindow
@@ -127,7 +127,7 @@ class DebugController: NSViewController, NSTableViewDataSource {
         self.debugTable.reloadData()
     }
     
-    // MARK: Convenience
+    // MARK: - Convenience
     
     /// Updates data regarding the window (frame size, location)
     private func updateWinState() {
