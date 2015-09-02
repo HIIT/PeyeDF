@@ -19,9 +19,16 @@ public struct ReadingRect: Equatable, Dictionariable {
         size = NSSize(width: 0, height: 0)
     }
     
-    init(origin: NSPoint, size: NSSize) {
+    init(origin: NSPoint, size: NSSize, readingClass: Int) {
         self.origin = origin
         self.size = size
+        self.readingClass = readingClass
+    }
+    
+    init(rect: NSRect, readingClass: Int) {
+        self.origin = rect.origin
+        self.size = rect.size
+        self.readingClass = readingClass
     }
     
     init(rect: NSRect) {

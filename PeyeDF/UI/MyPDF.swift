@@ -142,19 +142,33 @@ class MyPDF: PDFView {
     
     // MARK: - Annotations
     
-    func autoAnnotate() {
-        // TODO: MUST SIMPLIFY THIS SECTION
+    /// Remove all annotations which are a line and match the annotations colours
+    /// defined in PeyeConstants
+    func removeAllAnnotations() {
         for page in interestingRects.keys {
-            let unitedRects = uniteCollidingRects(interestingRects[page]!)
-            interestingRects[page]! = unitedRects
-            // remove old annotations
-            for annotation in page.annotations() {
-                if let annotation = annotation as? PDFAnnotationLine {
-                    if annotation.color().practicallyEqual(PeyeConstants.annotationColourInteresting) {
-                        page.removeAnnotation(annotation)
+            for annColour in PeyeConstants.annotationAllColours {
+                for annotation in page.annotations() {
+                    if let annotation = annotation as? PDFAnnotationLine {
+                        if annotation.color().practicallyEqual(annColour) {
+                            page.removeAnnotation(annotation)
+                        }
                     }
                 }
             }
+        }
+    }
+    
+    /// Create PDFAnnotationLines related to the specified rectangle dictionary
+    /// (whieh contains locations of "interesting or read rectangles") on all pages
+    ///
+    /// :param: rectDict The rectangle dictionary
+    /// :param: colour The color to use, generally defined in PeyeConstants
+    /// :returns: A copy of the updated dictionary, after union/intersection
+    func outputAnnotations(rectDict: [PDFPage: [NSRect]], colour: NSColor) -> [PDFPage: [NSRect]] {
+        var returnDictionary = rectDict
+        for page in rectDict.keys {
+            let unitedRects = uniteCollidingRects(rectDict[page]!)
+            returnDictionary[page]! = unitedRects
             for rect in unitedRects {
                 var newRect: NSRect
                 let newRect_x = rect.origin.x - PeyeConstants.annotationLineDistance
@@ -162,31 +176,21 @@ class MyPDF: PDFView {
                 let newRect_height = rect.height
                 let newRect_width: CGFloat = 1.0
                 newRect = NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
-                // FOR VERTICAL LINES
-                //        } else {
-                //            let newRect_y = rect.origin.y + rect.height + PeyeConstants.annotationLineDistance
-                //            let newRect_x = rect.origin.x
-                //            let newRect_width = rect.width
-                //            let newRect_height: CGFloat = 1.0
-                //            newRect = NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
-                //        }
                 let annotation = PDFAnnotationLine(bounds: newRect)
-                annotation.setColor(PeyeConstants.annotationColourInteresting)
+                annotation.setColor(colour)
                 page.addAnnotation(annotation)
                 setNeedsDisplayInRect(convertRect(newRect, fromPage: page))
             }
         }
-        // TODO: MUST SIMPLIFY THIS SECTION
+        return returnDictionary
+    }
+    
+    func autoAnnotate() {
+        removeAllAnnotations()
+        interestingRects = outputAnnotations(interestingRects, colour: PeyeConstants.annotationColourInteresting)
+        // Subtract interesting rects from read rects first
         for page in readRects.keys {
             var unitedRects = uniteCollidingRects(readRects[page]!)
-            // remove old annotations
-            for annotation in page.annotations() {
-                if let annotation = annotation as? PDFAnnotationLine {
-                    if annotation.color().practicallyEqual(PeyeConstants.annotationColourRead) {
-                        page.removeAnnotation(annotation)
-                    }
-                }
-            }
             var collidingRects: [(rRect: NSRect, iRect: NSRect)] = [] // tuple with read rects and interesting rects which intersect
             if let iRects = interestingRects[page] {
                 var i = 0
@@ -206,34 +210,10 @@ class MyPDF: PDFView {
                 unitedRects.extend(rRect.subtractRect(iRect))
             }
             readRects[page]! = unitedRects
-            for rect in unitedRects {
-                var newRect: NSRect
-                let newRect_x = rect.origin.x - PeyeConstants.annotationLineDistance
-                let newRect_y = rect.origin.y
-                let newRect_height = rect.height
-                let newRect_width: CGFloat = 1.0
-                newRect = NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
-                // FOR VERTICAL LINES
-                //        } else {
-                //            let newRect_y = rect.origin.y + rect.height + PeyeConstants.annotationLineDistance
-                //            let newRect_x = rect.origin.x
-                //            let newRect_width = rect.width
-                //            let newRect_height: CGFloat = 1.0
-                //            newRect = NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
-                //        }
-                let annotation = PDFAnnotationLine(bounds: newRect)
-                annotation.setColor(PeyeConstants.annotationColourRead)
-                page.addAnnotation(annotation)
-                setNeedsDisplayInRect(convertRect(newRect, fromPage: page))
-            }
         }
+        readRects = outputAnnotations(readRects, colour: PeyeConstants.annotationColourRead)
         // Placeholder for a better way to enable this
         NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "autoAnnotateCallback", userInfo: nil, repeats: false)
-    }
-    
-    /// Delete all annotations that are a line and are coloured with the annotation colours
-    func removeAllAnnotations() {
-        
     }
     
     @objc func autoAnnotateCallback() {
@@ -376,12 +356,22 @@ class MyPDF: PDFView {
         
         var readingRects = [ReadingRect]()
         for rect in pageRects {
-            var newRect = ReadingRect(rect: rect)
-            newRect.setClass(PeyeConstants.CLASS_VIEWPORT)
+            var newRect = ReadingRect(rect: rect, readingClass: PeyeConstants.CLASS_VIEWPORT)
             readingRects.append(newRect)
         }
         
         return ReadingEvent(multiPage: multiPage, visiblePageNumbers: visiblePageNums, visiblePageLabels: visiblePageLabels, pageRects: readingRects, proportion: proportion, plainTextContent: plainTextContent, infoElemId: infoElem!.id)
     }
+    
+    // MARK: - No longer used
+    
+    // ROTATING ANNOTATION LINES FOR VERTICAL TEXT LINES
+    //        } else {
+    //            let newRect_y = rect.origin.y + rect.height + PeyeConstants.annotationLineDistance
+    //            let newRect_x = rect.origin.x
+    //            let newRect_width = rect.width
+    //            let newRect_height: CGFloat = 1.0
+    //            newRect = NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
+    //        }
     
 }
