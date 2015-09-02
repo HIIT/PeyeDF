@@ -7,7 +7,6 @@
 //
 
 import Cocoa
-import Alamofire
 import Foundation
 import Quartz
 
@@ -48,47 +47,12 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
     @IBAction func sendInfoElem(sender: AnyObject) {
         let infoElem = myPdf!.infoElem!
         let deskEvent = DesktopEvent(infoElem: infoElem)
-        
-        let server_url: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefServerURL) as! String
-        let user: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefServerUserName) as! String
-        let password: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefServerPassword) as! String
-        
-        let credentialData = "\(user):\(password)".dataUsingEncoding(NSUTF8StringEncoding)!
-        let base64Credentials = credentialData.base64EncodedStringWithOptions(nil)
-        
-        let headers = ["Authorization": "Basic \(base64Credentials)"]
-        
-        var error = NSErrorPointer()
-        let options = NSJSONWritingOptions.PrettyPrinted
-        
-        let jsonData = NSJSONSerialization.dataWithJSONObject(infoElem.json.dictionaryObject!, options: options, error: error)
-        
-        let x = Alamofire.request(Alamofire.Method.POST, server_url + "/data/event", parameters: deskEvent.getDict(), encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON { _, _, JSON, _ in
-            AppSingleton.log.debug("Request sent and received: \n" + JSON!.description)
-        }
+        HistoryManager.sharedManager.sendToDiMe(deskEvent as Event)
     }
     
     @IBAction func sendToDiMe(sender: AnyObject?) {
-        let b:ReadingEvent = myPdf!.getStatus()
-        
-        let server_url: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefServerURL) as! String
-        let user: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefServerUserName) as! String
-        let password: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefServerPassword) as! String
-        
-        let credentialData = "\(user):\(password)".dataUsingEncoding(NSUTF8StringEncoding)!
-        let base64Credentials = credentialData.base64EncodedStringWithOptions(nil)
-        
-        let headers = ["Authorization": "Basic \(base64Credentials)"]
-        
-        var error = NSErrorPointer()
-        let options = NSJSONWritingOptions.PrettyPrinted
-
-        let jsonData = NSJSONSerialization.dataWithJSONObject(b.json.dictionaryObject!, options: options, error: error)
-        
-        let x = Alamofire.request(Alamofire.Method.POST, server_url + "/data/event", parameters: (b.json.dictionaryObject), encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON { _, _, JSON, _ in
-            AppSingleton.log.debug("Request sent and received: \n" + JSON!.description)
-        }
-
+        let readingEvent:ReadingEvent = myPdf!.getStatus()
+        HistoryManager.sharedManager.sendToDiMe(readingEvent as Event)
     }
     
     @IBAction func selectVisibleText(sender: AnyObject?) {

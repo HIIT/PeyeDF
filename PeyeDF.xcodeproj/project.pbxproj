@@ -267,9 +267,9 @@
 				A9E771101B96091F0005A4B3 /* ReadingRect.swift */,
 				A9038F751B8F5EE500A7D183 /* Event.swift */,
 				A912D8A31B8B5C3A006F0657 /* ReadingEvent.swift */,
+				A935F0C51B8CC5FD00587C99 /* DesktopEvent.swift */,
 				A9038F7A1B8F634200A7D183 /* DiMeProtocols.swift */,
 				A97230751B8B60C8005D29E0 /* DiMeData.swift */,
-				A935F0C51B8CC5FD00587C99 /* DesktopEvent.swift */,
 			);
 			name = DiMe;
 			path = PeyeDF/DiMe;

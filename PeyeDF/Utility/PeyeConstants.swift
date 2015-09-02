@@ -28,7 +28,7 @@ struct PeyeConstants {
     static let prefSendEventOnFocusSwitch = "preferences.sendEventOnFocusSwitch"
     
     /// Amount of seconds that are needed before we start recording the current event.
-    static let minReadTime: CGFloat = 5
+    static let minReadTime: NSTimeInterval = 5
     
     /// Amount of seconds after which we always close a reading event.
     /// (It is assumed the user went away from keyboard).
