@@ -15,6 +15,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// Creates default preferences
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         var defaultPrefs = [String: AnyObject]()
+        defaultPrefs[PeyeConstants.prefAnnotationLineThickness] = 1.0
         defaultPrefs[PeyeConstants.prefServerURL] = "http://localhost:8080/api"
         defaultPrefs[PeyeConstants.prefServerUserName] = "Test1"
         defaultPrefs[PeyeConstants.prefServerPassword] = "123456"

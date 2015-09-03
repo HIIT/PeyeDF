@@ -12,8 +12,11 @@ import Cocoa
 /// All constants used are put here for convenience.
 struct PeyeConstants {
     
-    // MARK: - History-specific constants
-    // (For DiMe)
+    // MARK: - Preferences
+    // Remember to set some default values in the appdelegate for each preference
+    
+    /// Annotation line thickness
+    static let prefAnnotationLineThickness = "annotations.lineThickness"
     
     /// URL of the DiMe server (bound in the preferences window)
     static let prefServerURL = "serverinfo.url"
@@ -26,6 +29,8 @@ struct PeyeConstants {
     
     /// Wheter we want to push an event at every window focus event (bound in the preferences window)
     static let prefSendEventOnFocusSwitch = "preferences.sendEventOnFocusSwitch"
+    
+    /// MARK: - History-specific constants
     
     /// Amount of seconds that are needed before we start recording the current event.
     static let minReadTime: NSTimeInterval = 5

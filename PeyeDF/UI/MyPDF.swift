@@ -145,7 +145,8 @@ class MyPDF: PDFView {
     /// Remove all annotations which are a line and match the annotations colours
     /// defined in PeyeConstants
     func removeAllAnnotations() {
-        for page in interestingRects.keys {
+        for i in 0..<document()!.pageCount() {
+            let page = document()!.pageAtIndex(i)
             for annColour in PeyeConstants.annotationAllColours {
                 for annotation in page.annotations() {
                     if let annotation = annotation as? PDFAnnotationLine {
@@ -165,6 +166,10 @@ class MyPDF: PDFView {
     /// :param: colour The color to use, generally defined in PeyeConstants
     /// :returns: A copy of the updated dictionary, after union/intersection
     func outputAnnotations(rectDict: [PDFPage: [NSRect]], colour: NSColor) -> [PDFPage: [NSRect]] {
+        let lineThickness: CGFloat = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefAnnotationLineThickness) as! CGFloat
+        let myBord = PDFBorder()
+        myBord.setLineWidth(lineThickness)
+        
         var returnDictionary = rectDict
         for page in rectDict.keys {
             let unitedRects = uniteCollidingRects(rectDict[page]!)
@@ -178,8 +183,15 @@ class MyPDF: PDFView {
                 newRect = NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
                 let annotation = PDFAnnotationLine(bounds: newRect)
                 annotation.setColor(colour)
+                annotation.setBorder(myBord)
                 page.addAnnotation(annotation)
-                setNeedsDisplayInRect(convertRect(newRect, fromPage: page))
+                
+                // tell the view to immediately refresh itself in an area which includes the
+                // line's "border"
+                var rectIncludingThickness = newRect
+                rectIncludingThickness.origin.x -= lineThickness / 2
+                rectIncludingThickness.size.width = lineThickness
+                setNeedsDisplayInRect(convertRect(rectIncludingThickness, fromPage: page))
             }
         }
         return returnDictionary

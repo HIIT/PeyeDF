@@ -64,16 +64,17 @@ class HistoryManager {
         let jsonData = NSJSONSerialization.dataWithJSONObject(dictionaryObject, options: options, error: error)
         
         if jsonData == nil {
-            let exception = NSException(
-                name: "Error while serializing JSON data",
-                reason: error.debugDescription,
-                userInfo: nil)
-            exception.raise()
+            AppSingleton.log.error("Error while deserializing json! This should never happen. \(error)")
+            return
         }
         
         Alamofire.request(Alamofire.Method.POST, server_url + "/data/event", parameters: dictionaryObject, encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON {
-            _, _, JSON, _ in
-            AppSingleton.log.debug("Request sent and received: \n" + JSON!.description)
+            _, _, JSON, requestError in
+            if let error = requestError {
+                AppSingleton.log.error("Error while reading json response from DiMe: \(requestError)")
+            } else {
+                AppSingleton.log.debug("Request sent and received: \n" + JSON!.description)
+            }
         }
     }
     

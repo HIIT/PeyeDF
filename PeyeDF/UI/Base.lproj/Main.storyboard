@@ -5,10 +5,10 @@
         <plugIn identifier="com.apple.pdfkit.ibplugin" version="7706"/>
     </dependencies>
     <scenes>
-        <!--Window Controller-->
+        <!--Preferences Window-->
         <scene sceneID="Y5a-2n-2Fw">
             <objects>
-                <windowController showSeguePresentationStyle="single" id="wX1-wt-O0y" sceneMemberID="viewController">
+                <windowController showSeguePresentationStyle="single" id="wX1-wt-O0y" userLabel="Preferences Window" sceneMemberID="viewController">
                     <window key="window" title="PeyeDF Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="5Wr-n7-ggT">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
@@ -16,17 +16,106 @@
                         <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
                     </window>
                     <connections>
-                        <segue destination="cA3-Nk-NKg" kind="relationship" relationship="window.shadowedContentViewController" id="p6j-My-8AW"/>
+                        <segue destination="7rx-t8-LhM" kind="relationship" relationship="window.shadowedContentViewController" id="1tv-tj-U0A"/>
                     </connections>
                 </windowController>
                 <customObject id="amd-xG-nRM" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-515" y="-1464"/>
+            <point key="canvasLocation" x="-734" y="-1548"/>
         </scene>
-        <!--Preferences View Controller-->
+        <!--Preferences Tab View-->
+        <scene sceneID="CTz-BZ-2aM">
+            <objects>
+                <tabViewController selectedTabViewItemIndex="0" tabStyle="toolbar" id="7rx-t8-LhM" userLabel="Preferences Tab View" sceneMemberID="viewController">
+                    <tabViewItems>
+                        <tabViewItem identifier="" image="NSAdvanced" id="p1V-xa-mNS"/>
+                        <tabViewItem image="DiMeSettings" id="l63-82-4pB"/>
+                    </tabViewItems>
+                    <tabView key="tabView" type="noTabsNoBorder" id="DAg-Nl-ODD">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <font key="font" metaFont="message"/>
+                        <tabViewItems/>
+                    </tabView>
+                    <connections>
+                        <segue destination="62w-oK-rf7" kind="relationship" relationship="tabItems" id="Ng1-Mu-hfH"/>
+                        <segue destination="cA3-Nk-NKg" kind="relationship" relationship="tabItems" id="zA3-RV-bWG"/>
+                    </connections>
+                </tabViewController>
+                <customObject id="lPz-h3-CrG" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-107" y="-1554"/>
+        </scene>
+        <!--General Settings-->
+        <scene sceneID="0Hy-ct-NUa">
+            <objects>
+                <viewController title="General Settings" showSeguePresentationStyle="single" id="62w-oK-rf7" customClass="GeneralSettingsController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="WGw-LJ-0lD">
+                        <rect key="frame" x="0.0" y="0.0" width="459" height="199"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <box title="Annotation line thickness" borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="UC7-V4-Wrp">
+                                <rect key="frame" x="17" y="113" width="425" height="66"/>
+                                <view key="contentView">
+                                    <rect key="frame" x="1" y="1" width="423" height="47"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="E15-lK-fvD">
+                                            <rect key="frame" x="16" y="9" width="339" height="26"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="335" id="dtF-MU-gHK"/>
+                                            </constraints>
+                                            <sliderCell key="cell" continuous="YES" state="on" alignment="left" minValue="0.25" maxValue="5" doubleValue="1" tickMarkPosition="above" numberOfTickMarks="20" allowsTickMarkValuesOnly="YES" sliderType="linear" id="OMQ-CR-fp2"/>
+                                            <connections>
+                                                <action selector="thicknessSlided:" target="62w-oK-rf7" id="Re0-xj-aMp"/>
+                                            </connections>
+                                        </slider>
+                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uRt-4J-vlE">
+                                            <rect key="frame" x="359" y="13" width="53" height="22"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="53" id="N2Q-Hu-YTx"/>
+                                            </constraints>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" usesSingleLineMode="YES" id="Bqn-z5-WOK">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                    </subviews>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="uRt-4J-vlE" secondAttribute="trailing" constant="9" id="0Ba-Co-SbP"/>
+                                    <constraint firstItem="E15-lK-fvD" firstAttribute="leading" secondItem="UC7-V4-Wrp" secondAttribute="leading" constant="16" id="4c8-t4-6L9"/>
+                                    <constraint firstItem="uRt-4J-vlE" firstAttribute="centerY" secondItem="E15-lK-fvD" secondAttribute="centerY" constant="-1" id="NTl-wO-wGV"/>
+                                    <constraint firstItem="uRt-4J-vlE" firstAttribute="leading" secondItem="E15-lK-fvD" secondAttribute="trailing" constant="6" id="pWv-Kk-d9V"/>
+                                    <constraint firstItem="E15-lK-fvD" firstAttribute="top" secondItem="UC7-V4-Wrp" secondAttribute="top" constant="30" id="sy5-It-ax7"/>
+                                    <constraint firstAttribute="height" constant="62" id="yrF-Ac-hSa"/>
+                                </constraints>
+                                <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <font key="titleFont" metaFont="system"/>
+                            </box>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="UC7-V4-Wrp" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" id="GDs-Qo-G4q"/>
+                            <constraint firstAttribute="trailing" secondItem="UC7-V4-Wrp" secondAttribute="trailing" constant="20" id="rwf-WJ-HtQ"/>
+                            <constraint firstItem="UC7-V4-Wrp" firstAttribute="top" secondItem="WGw-LJ-0lD" secondAttribute="top" constant="20" id="t7m-Po-T3i"/>
+                            <constraint firstAttribute="bottom" secondItem="UC7-V4-Wrp" secondAttribute="bottom" constant="117" id="yvm-Fx-nkI"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="thicknessField" destination="uRt-4J-vlE" id="X4Y-Zs-osl"/>
+                        <outlet property="thicknessSlider" destination="E15-lK-fvD" id="Zdy-es-hyr"/>
+                    </connections>
+                </viewController>
+                <customObject id="ThY-Hh-P4H" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="508.5" y="-1855.5"/>
+        </scene>
+        <!--DiMe Preferences-->
         <scene sceneID="JFC-Eo-9Mb">
             <objects>
-                <viewController showSeguePresentationStyle="single" id="cA3-Nk-NKg" customClass="PreferencesViewController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="DiMe Preferences" showSeguePresentationStyle="single" id="cA3-Nk-NKg" customClass="PreferencesViewController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="wSP-gb-Ssy">
                         <rect key="frame" x="0.0" y="0.0" width="480" height="196"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -135,7 +224,7 @@
                 </viewController>
                 <customObject id="Xpl-sd-9MF" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="-1501"/>
+            <point key="canvasLocation" x="519" y="-1477"/>
         </scene>
         <!--Application-->
         <scene sceneID="JPo-4y-FX3">
@@ -1122,6 +1211,8 @@
     <resources>
         <image name="Annotate" width="64" height="64"/>
         <image name="Beta" width="64" height="64"/>
+        <image name="DiMeSettings" width="64" height="64"/>
+        <image name="NSAdvanced" width="32" height="32"/>
         <image name="NSStatusNone" width="16" height="16"/>
         <image name="TB_ThumbU" width="32" height="32"/>
     </resources>

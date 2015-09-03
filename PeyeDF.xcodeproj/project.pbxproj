@@ -35,6 +35,7 @@
 		A9DFF1721B7E3D1A008CFF0C /* XCGLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DFF1711B7E3D1A008CFF0C /* XCGLogger.swift */; };
 		A9E771111B96091F0005A4B3 /* ReadingRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E771101B96091F0005A4B3 /* ReadingRect.swift */; };
 		A9F335731B3ABC090042BFB3 /* AppSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F335721B3ABC090042BFB3 /* AppSingleton.swift */; };
+		A9FE38A81B98497400680F31 /* GeneralSettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9FE38A71B98497400680F31 /* GeneralSettingsController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -129,6 +130,7 @@
 		A9DFF1711B7E3D1A008CFF0C /* XCGLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCGLogger.swift; sourceTree = "<group>"; };
 		A9E771101B96091F0005A4B3 /* ReadingRect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadingRect.swift; sourceTree = "<group>"; };
 		A9F335721B3ABC090042BFB3 /* AppSingleton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSingleton.swift; sourceTree = "<group>"; };
+		A9FE38A71B98497400680F31 /* GeneralSettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneralSettingsController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,6 +157,7 @@
 			children = (
 				A91CB9511B332EDB00671868 /* Main.storyboard */,
 				A95A8CEB1B94407D0093119E /* DebugController.swift */,
+				A9FE38A71B98497400680F31 /* GeneralSettingsController.swift */,
 				A95A8CEC1B94407D0093119E /* DocumentSplitController.swift */,
 				A95A8CED1B94407D0093119E /* DocumentWindowController.swift */,
 				A95A8CEE1B94407D0093119E /* MyPDF.swift */,
@@ -418,6 +421,7 @@
 				A912D8A41B8B5C3A006F0657 /* DocumentInformationElement.swift in Sources */,
 				A91CB9721B332FB700671868 /* PeyeDocument.swift in Sources */,
 				A95A8CF51B94407D0093119E /* MyPDF.swift in Sources */,
+				A9FE38A81B98497400680F31 /* GeneralSettingsController.swift in Sources */,
 				A95A8CF71B94407D0093119E /* PreferencesViewController.swift in Sources */,
 				A95A8CF61B94407D0093119E /* PDFSideController.swift in Sources */,
 				A9E771111B96091F0005A4B3 /* ReadingRect.swift in Sources */,
