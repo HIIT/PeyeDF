@@ -21,7 +21,6 @@ class Event: NSObject {
         self.json = JSON(retDict)
         // Make creation date
         json["start"] = JSON(PeyeConstants.diMeDateFormatter.stringFromDate(NSDate()))
-        println(PeyeConstants.diMeDateFormatter.stringFromDate(NSDate()))
         json["actor"] = JSON("PeyeDF")
         json["origin"] = JSON("ORIGIN")
         

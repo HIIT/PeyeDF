@@ -70,8 +70,7 @@ class DebugController: NSViewController, NSTableViewDataSource {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSViewFrameDidChangeNotification, object: pdfView)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowDidMoveNotification, object: docWindow)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowDidChangeOcclusionStateNotification, object: docWindow)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name:
-            NSViewBoundsDidChangeNotification, object: pdfView.subviews[0].subviews[0] as! NSClipView)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name:             NSViewBoundsDidChangeNotification, object: pdfView.subviews[0].subviews[0] as! NSClipView)
     }
     
     

@@ -25,15 +25,35 @@ class HistoryManager {
     /// The timer that fires after a certain amount of time passed, and generates an "exit event"
     private var exitTimer: NSTimer?
     
+    /// The reading event that will be sent at an exit event
+    private var currentReadingEvent: ReadingEvent?
     
-    /// The GDC queue in which all timers are created / destroyed (to prevent potential memory leaks, the all run here)
+    /// The GDC queue in which all timers are created / destroyed (to prevent potential memory leaks, they all run here)
     private let timerQueue = dispatch_queue_create("hiit.PeyeDF.HistoryManager.timerQueue", DISPATCH_QUEUE_SERIAL)
     
     private init() {
         
     }
     
-    // MARK: - External functions
+    // MARK: - External functions - entry / exit events
+    
+    /// Tells the history manager that something new is happened. The history manager check if the sender is a window in front (main window)
+    ///
+    /// :param: documentWindow The window controller that is sending the message
+    func entry(documentWindow: DocumentWindowController) {
+        if let window = documentWindow.window {
+            if window.mainWindow {
+                preparation(documentWindow)
+            }
+        }
+    }
+    
+    /// Tells the history manager to close the current event (we switched focus, or something similar)
+    func exit(documentWindow: DocumentWindowController) {
+        exitEvent(nil)
+    }
+    
+    // MARK: - External functions - direct sending
     
     /// Send an "Event" to DiMe
     func sendToDiMe(event: Event) {
@@ -47,6 +67,7 @@ class HistoryManager {
     
     // MARK: - Internal functions
     
+    /// Send the given dictionary to DiMe (assumed to be in correct form due to the use of public callers of this method)
     private func sendDictToDime(dictionaryObject: [String: AnyObject]) {
         
         let server_url: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefServerURL) as! String
@@ -73,40 +94,61 @@ class HistoryManager {
             if let error = requestError {
                 AppSingleton.log.error("Error while reading json response from DiMe: \(requestError)")
             } else {
-                AppSingleton.log.debug("Request sent and received: \n" + JSON!.description)
+                AppSingleton.log.debug("Data pushed to DiMe")
+                // JSON!.description to see what dime replied
             }
         }
     }
     
+    /// Starts the "entry timer" and sets up references to the current window
     private func preparation(documentWindow: DocumentWindowController) {
-        let exception = NSException(
-            name: "Not implemented!",
-            reason: "Just an example",
-            userInfo: nil
-        )
-        exception.raise()
-        exitEvent()
+        exitEvent(nil)
         dispatch_sync(timerQueue) {
             self.entryTimer = NSTimer(timeInterval: PeyeConstants.minReadTime, target: self, selector: "entryTimerFire:", userInfo: documentWindow, repeats: false)
             NSRunLoop.currentRunLoop().addTimer(self.entryTimer!, forMode: NSRunLoopCommonModes)
         }
     }
     
+    /// The document has been "seen" long enough, request information and prepare second (exit) timer
+    @objc private func entryTimerFire(entryTimer: NSTimer) {
+        let docWindow = entryTimer.userInfo as! DocumentWindowController
+        self.entryTimer = nil
+        
+        // retrieve status
+        self.currentReadingEvent = docWindow.getCurrentStatus()
+        
+        // TODO: remove this debugging trap
+        if let exitTimer = self.exitTimer {
+            let exception = NSException(name: "This should never happen!", reason: nil, userInfo: nil)
+            exception.raise()
+        }
+        
+        // prepare exit timer, which will fire when the user is inactive long enough (or will be canceled if there is another exit event)
+        dispatch_sync(timerQueue) {
+            self.exitTimer = NSTimer(timeInterval: PeyeConstants.maxReadTime, target: self, selector: "exitEvent:", userInfo: nil, repeats: false)
+            NSRunLoop.currentRunLoop().addTimer(self.exitTimer!, forMode: NSRunLoopCommonModes)
+        }
+    }
+    
     /// The user has moved away, send current status (if any) and invalidate timer
-    private func exitEvent() {
+    @objc private func exitEvent(exitTimer: NSTimer?) {
         if let timer = self.entryTimer {
             dispatch_sync(timerQueue) {
                     timer.invalidate()
                }
             self.entryTimer = nil
         }
-    }
-    
-    /// The document has been "seen" long enough, request information
-    @objc private func entryTimerFire(entryTimer: NSTimer) {
-        let docWindow = entryTimer.userInfo as! DocumentWindowController
-        
-        // retrieve status here
+        if let timer = self.exitTimer {
+            dispatch_sync(timerQueue) {
+                    timer.invalidate()
+               }
+            self.exitTimer = nil
+        }
+        if let currentStatus = self.currentReadingEvent {
+            currentStatus.setEnd(NSDate())
+            sendToDiMe(currentStatus as Event)
+            self.currentReadingEvent = nil
+        }
     }
     
 }

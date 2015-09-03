@@ -43,12 +43,21 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
         tbAnnotate.enabled = false
     }
     
-    // MARK: - Debug functions
-    @IBAction func sendInfoElem(sender: AnyObject) {
+    // MARK: - DiMe communication
+    
+    /// Sends a desktop event directly (which includes doc metadata) for the currently displayed pdf
+    func sendDeskEvent() {
         let infoElem = myPdf!.infoElem!
         let deskEvent = DesktopEvent(infoElem: infoElem)
         HistoryManager.sharedManager.sendToDiMe(deskEvent as Event)
     }
+    
+    /// Retrieves current ReadingEvent (for HistoryManager)
+    func getCurrentStatus() -> ReadingEvent {
+        return myPdf!.getStatus() as ReadingEvent
+    }
+    
+    // MARK: - Debug functions
     
     @IBAction func sendToDiMe(sender: AnyObject?) {
         let readingEvent:ReadingEvent = myPdf!.getStatus()
@@ -112,16 +121,11 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
         debugWindowController = AppSingleton.storyboard.instantiateControllerWithIdentifier("DebugWindow") as? NSWindowController
         debugWindowController?.showWindow(self)
         debugController = (debugWindowController?.contentViewController as! DebugController)
-        
-        // Get notifications from pdfview
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "autoAnnotateComplete:", name: PeyeConstants.autoAnnotationComplete, object: self.myPdf!)
-        
-        // Get notifications from managed window (to be later dispatched to singleton)
         debugController?.setUpMonitors(myPdf!, docWindow: self.window!)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowWantsMain:", name: NSWindowDidBecomeMainNotification, object: self.window)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowWantsClose:", name: NSWindowWillCloseNotification, object: self.window)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowOcclusionChange:", name: NSWindowDidChangeOcclusionStateNotification, object: self.window)
+        self.showWindow(self)
+        
+        // Prepare to receive events
+        setUpObservers()
     }
     
     /// Loads the PDF document and stores metadata inside it. Must be called after setting current document's URL.
@@ -173,28 +177,111 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
             
             // Update debug controller with metadata
             debugController?.titleLabel.stringValue = peyeDoc.title
+            
+            // Send event regardig opening of file
+            sendDeskEvent()
         }
     }
     
-    // MARK: - Receving and dispatching notifications from managed window
     
-    @objc func autoAnnotateComplete(notification: NSNotification) {
-        tbAnnotate.enabled = true
+    /// Prepares all the notification centre observers (will have to be removed when the window wants to close). See unSetObservers, these two methods should load / unload the same observers.
+    private func setUpObservers() {
+        
+        // Get notifications from pdfview for window
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "autoAnnotateComplete:", name: PeyeConstants.autoAnnotationComplete, object: self.myPdf!)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "zoomChanged:", name: PDFViewScaleChangedNotification, object: self.myPdf!)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "frameChanged:", name: NSViewFrameDidChangeNotification, object: self.myPdf!)
+        // Note: forced downcast below relies on "undocumented" view tree
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "scrollingChanged:", name: NSViewBoundsDidChangeNotification, object: self.myPdf!.subviews[0].subviews[0] as! NSClipView)
+        
+        // Get notifications from managed window
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowMoved:", name: NSWindowDidMoveNotification, object: self.window)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowWillSwitchAway:", name: NSWindowDidResignMainNotification, object: self.window)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowWantsMain:", name: NSWindowDidBecomeMainNotification, object: self.window)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowWantsClose:", name: NSWindowWillCloseNotification, object: self.window)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowOcclusionChange:", name: NSWindowDidChangeOcclusionStateNotification, object: self.window)
     }
     
-    @objc func windowWantsMain(notification: NSNotification) {
-        NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.documentChangeNotification, object: self.document)
-    }
+    // MARK: - Unloading
     
-    @objc func windowOcclusionChange(notification: NSNotification) {
-        NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.occlusionChangeNotification, object: self.window)
-    }
-    
-    @objc func windowWantsClose(notification: NSNotification) {
+    /// Removes all the observers created in setUpObservers()
+    private func unSetObservers() {
+        
+        // Remove notifications from pdfView
+        
         NSNotificationCenter.defaultCenter().removeObserver(self, name: PeyeConstants.autoAnnotationComplete, object: self.myPdf!)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: PDFViewScaleChangedNotification, object: self.myPdf!)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSViewFrameDidChangeNotification, object: self.myPdf!)
+        // Note: forced downcast, etc.
+        NSNotificationCenter.defaultCenter().removeObserver(self, name:             NSViewBoundsDidChangeNotification, object: self.myPdf!.subviews[0].subviews[0] as! NSClipView)
+        
+        // Remove notifications from managed window
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowDidMoveNotification, object: self.window)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowDidResignMainNotification, object: self.window)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowDidBecomeMainNotification, object: self.window)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowWillCloseNotification, object: self.window)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowDidChangeOcclusionStateNotification, object: self.window)
+    }
+    
+    // MARK: - Notification callbacks from managed pdf view
+    
+    @objc private func zoomChanged(notification: NSNotification) {
+        // Tell the history manager to "start recording"
+        HistoryManager.sharedManager.entry(self)
+    }
+    
+    @objc private func frameChanged(notification: NSNotification) {
+        // Tell the history manager to "start recording"
+        HistoryManager.sharedManager.entry(self)
+    }
+    
+    @objc private func scrollingChanged(notification: NSNotification) {
+        // Tell the history manager to "start recording"
+        HistoryManager.sharedManager.entry(self)
+    }
+    
+    // MARK: - Notification callbacks from window
+    
+    @objc private func windowMoved(notification: NSNotification) {
+        // Tell the history manager to "start recording"
+        HistoryManager.sharedManager.entry(self)
+    }
+    
+    /// Enables the annotate toolbar button when auto annotation is complete
+    @objc private func autoAnnotateComplete(notification: NSNotification) {
+        tbAnnotate.enabled = true
+    }
+    
+    /// This method is called when the managed window wants to become main window
+    @objc private func windowWantsMain(notification: NSNotification) {
+        NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.documentChangeNotification, object: self.document)
+        
+        // If the relevant preference is set, send a DesktopEvent for the current document
+        if (NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefSendEventOnFocusSwitch) as! Bool) {
+            sendDeskEvent()
+        }
+        
+        // Tell the history manager to "start recording"
+        HistoryManager.sharedManager.entry(self)
+    }
+    
+    /// Unused yet (probably not really needed as we already know when windowWillSwitchAway)
+    @objc private func windowOcclusionChange(notification: NSNotification) {
+        NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.occlusionChangeNotification, object: self.window)
+    }
+    
+    /// The managed window will stop being main window
+    @objc private func windowWillSwitchAway(notification: NSNotification) {
+        // Tell the history manager to "stop recording"
+        HistoryManager.sharedManager.exit(self)
+    }
+    
+    /// This window is going to close, release all references (importantly, remove notification observers)
+    @objc private func windowWantsClose(notification: NSNotification) {
+        unSetObservers()
         debugController?.unSetMonitors(myPdf!, docWindow: self.window!)
         debugController?.view.window?.close()
         myPdf?.setDocument(nil)

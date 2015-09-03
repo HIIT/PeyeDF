@@ -37,7 +37,7 @@ struct PeyeConstants {
     
     /// Amount of seconds after which we always close a reading event.
     /// (It is assumed the user went away from keyboard).
-    static let maxReadTime: CGFloat = 600
+    static let maxReadTime: NSTimeInterval = 600
     
     /// Date formatter shared in DiMe submissions (uses date format below)
     static let diMeDateFormatter = PeyeConstants.makeDateFormatter()

@@ -888,7 +888,7 @@
         <scene sceneID="f6R-Kc-PFL">
             <objects>
                 <windowController storyboardIdentifier="Document Window Controller" id="sy6-nO-Tdf" userLabel="Document Window Controller" customClass="DocumentWindowController" customModule="PeyeDF" sceneMemberID="viewController">
-                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="Ezf-2B-VUj">
+                    <window key="window" title="Window for &lt;&lt;Filename&gt;&gt;" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="Ezf-2B-VUj">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="212" y="538" width="600" height="300"/>
@@ -920,11 +920,6 @@
                                         <action selector="sendToDiMe:" target="H3y-Bk-Ofi" id="yfv-Dg-ebE"/>
                                     </connections>
                                 </toolbarItem>
-                                <toolbarItem implicitItemIdentifier="756333F4-AD40-420A-80FC-8E4F1F39536C" label="Send InfoElem" paletteLabel="Send InfoElem" tag="-1" image="Beta" id="0I9-le-DU2">
-                                    <connections>
-                                        <action selector="sendInfoElem:" target="sy6-nO-Tdf" id="c5a-O8-yOF"/>
-                                    </connections>
-                                </toolbarItem>
                                 <toolbarItem implicitItemIdentifier="D39BF8F4-E8F8-4708-82CC-5506275CE680" label="Annotate" paletteLabel="Annotate" tag="-1" image="Annotate" autovalidates="NO" id="GDs-fF-Uav">
                                     <connections>
                                         <action selector="autoAnnotate:" target="H3y-Bk-Ofi" id="vwb-Nk-t5M"/>
@@ -935,7 +930,6 @@
                                 <toolbarItem reference="8zr-Hg-gf0"/>
                                 <toolbarItem reference="GDs-fF-Uav"/>
                                 <toolbarItem reference="1lR-l5-PLy"/>
-                                <toolbarItem reference="0I9-le-DU2"/>
                                 <toolbarItem reference="W5X-tm-Xbn"/>
                                 <toolbarItem reference="l3s-5e-m3r"/>
                                 <toolbarItem reference="10c-J9-dPD"/>
