@@ -1184,6 +1184,13 @@
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="534" id="gIf-Ik-hwW"/>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="320" id="uZL-UY-4Xd"/>
                                 </constraints>
+                                <gestureRecognizers>
+                                    <clickGestureRecognizer delaysPrimaryMouseButtonEvents="YES" numberOfClicksRequired="2" id="ifg-Tf-3YL" userLabel="Double click recognizer">
+                                        <connections>
+                                            <action selector="doubleClick:" target="XfG-lQ-9wD" id="XsX-eT-2bS"/>
+                                        </connections>
+                                    </clickGestureRecognizer>
+                                </gestureRecognizers>
                             </pdfView>
                         </subviews>
                         <constraints>

@@ -14,6 +14,13 @@ import Quartz
 let extraLineAmount = 3 // 1/this number is the amount of extra lines that we want to discard
                         // if we are at beginning or end of paragraph
 
+/// How important is a paragraph
+public enum Importance {
+    case Read
+    case Important
+    case Critical
+}
+
 /// Implementation of a custom PDFView class, used to implement additional function related to
 /// psychophysiology and user activity tracking
 class MyPDF: PDFView {
@@ -30,117 +37,136 @@ class MyPDF: PDFView {
     /// Set by DocumentWindowController.loadDocument()
     var infoElem: DocumentInformationElement?
 
+    // MARK: - Event callbacks
+    
+    /// To receive single click actions
     override func mouseDown(theEvent: NSEvent) {
         // Only proceed if there is actually text to select
         if containsRawString {
             // Mouse in display view coordinates.
             var mouseDownLoc = self.convertPoint(theEvent.locationInWindow, fromView: nil)
-            
-            // Page we're on.
-            var activePage = self.pageForPoint(mouseDownLoc, nearest: true)
-            
-            // Get mouse in "page space".
-            let pagePoint = self.convertPoint(mouseDownLoc, toPage: activePage)
-            
-            let pointArray = multiVPoint(pagePoint, self.scaleFactor())
-            
-            // if using columns, selection can "bleed" into footers and headers
-            // solution: check the median height and median width of each selection, and discard
-            // everything which is lineAutoSelectionTolerance bigger than that
-            var selections = [PDFSelection]()
-            for point in pointArray {
-                selections.append(activePage.selectionForLineAtPoint(point))
-            }
-            
-            let medI = selections.count / 2  // median point for selection array
-            
-            // sort selections by height and get median height
-            selections.sort({$0.boundsForPage(activePage).height > $1.boundsForPage(activePage).height})
-            let medianHeight = selections[medI].boundsForPage(activePage).height
-            
-            // sort selections by width and get median width
-            selections.sort({$0.boundsForPage(activePage).width > $1.boundsForPage(activePage).width})
-            let medianWidth = selections[medI].boundsForPage(activePage).width
-            
-            let isHorizontalLine = medianHeight < medianWidth
-            
-            // If the line is vertical, skip
-            if !isHorizontalLine {
-                super.mouseDown(theEvent)
-                return
-            }
-            
-            let medianSize = NSSize(width: medianWidth, height: medianHeight)
-            
-            // reject selections which are too big
-            let filteredSelections = selections.filter({$0.boundsForPage(activePage).size.withinMaxTolerance(medianSize, tolerance: PeyeConstants.lineAutoSelectionTolerance)})
-            
-            var pdfSel = PDFSelection(document: self.document())
-            for selection in filteredSelections {
-                pdfSel.addSelection(selection)
-            }
-            
-            // if top / bottom third of the lines comprise a part of another paragraph, leave them out
-            // detect this by using new lines
-            
-            // get selection line by line
-            if let selLines = pdfSel.selectionsByLine() {
-                let nOfExtraLines: Int = Int(floor(CGFloat(count(selLines)) / CGFloat(extraLineAmount)))
-                
-                // split selection into beginning / end separating by new line
-                
-                // only proceed if there are extra lines
-                if nOfExtraLines > 0 {
-                    var lineStartIndex = 0
-                    // check if part before new line is included in any of the extra beginning lines,
-                    // if so skip them
-                    for i in 0..<nOfExtraLines {
-                        let currentLineSel = selLines[i] as! PDFSelection
-                        let cLString = currentLineSel.string() + "\r"
-                        if let cutRange = activePage.string().rangeOfString(cLString) {
-                            lineStartIndex = i+1
-                            break
-                        }
-                    }
-                    
-                    // do the same for the ending part
-                    var lineEndIndex = count(selLines)-1
-                    for i in reverse(count(selLines)-1-nOfExtraLines..<count(selLines)) {
-                        let currentLineSel = selLines[i] as! PDFSelection
-                        let cLString = currentLineSel.string() + "\r"
-                        if let cutRange = activePage.string().rangeOfString(cLString) {
-                            lineEndIndex = i
-                            break
-                        }
-                    }
-                    
-                    // generate new selection not taking into account excluded parts
-                    pdfSel = PDFSelection(document: self.document())
-                    for i in lineStartIndex...lineEndIndex {
-                        pdfSel.addSelection(selLines[i] as! PDFSelection)
-                    }
-                    
-                } // end of check for split, if no need just return selection as-was //
-            }
-            
-            // Single click adds a read rect, double click an interesting rect
-            if theEvent.clickCount == 1 {
-                if readRects[activePage] == nil {
-                    readRects[activePage] = [NSRect]()
-                }
-                readRects[activePage]!.append(pdfSel.boundsForPage(activePage))
-            } else if theEvent.clickCount == 2 {
-                if interestingRects[activePage] == nil {
-                    interestingRects[activePage] = [NSRect]()
-                }
-                interestingRects[activePage]!.append(pdfSel.boundsForPage(activePage))
-            }
+            annotate(mouseDownLoc, importance: Importance.Read)
         } else {
             super.mouseDown(theEvent)
         }
     }
     
+    /// To receive double click actions from the recognizer
+    func doubleClick(location: NSPoint) {
+        // Only proceed if there is actually text to select
+        if containsRawString {
+            annotate(location, importance: Importance.Important)
+        }
+    }
+    
     // MARK: - Annotations
+    
+    /// Manually tell that a point (and hence the paragraph/subparagraph related to it
+    /// should be marked as somehow important
+    func annotate(locationInView: NSPoint, importance: Importance) {
+        
+        // Page we're on.
+        var activePage = self.pageForPoint(locationInView, nearest: true)
+        
+        // Get mouse in "page space".
+        let pagePoint = self.convertPoint(locationInView, toPage: activePage)
+        
+        let pointArray = multiVPoint(pagePoint, self.scaleFactor())
+        
+        // if using columns, selection can "bleed" into footers and headers
+        // solution: check the median height and median width of each selection, and discard
+        // everything which is lineAutoSelectionTolerance bigger than that
+        var selections = [PDFSelection]()
+        for point in pointArray {
+            selections.append(activePage.selectionForLineAtPoint(point))
+        }
+        
+        let medI = selections.count / 2  // median point for selection array
+        
+        // sort selections by height and get median height
+        selections.sort({$0.boundsForPage(activePage).height > $1.boundsForPage(activePage).height})
+        let medianHeight = selections[medI].boundsForPage(activePage).height
+        
+        // sort selections by width and get median width
+        selections.sort({$0.boundsForPage(activePage).width > $1.boundsForPage(activePage).width})
+        let medianWidth = selections[medI].boundsForPage(activePage).width
+        
+        let isHorizontalLine = medianHeight < medianWidth
+        
+        // If the line is vertical, skip
+        if !isHorizontalLine {
+            return
+        }
+        
+        let medianSize = NSSize(width: medianWidth, height: medianHeight)
+        
+        // reject selections which are too big
+        let filteredSelections = selections.filter({$0.boundsForPage(activePage).size.withinMaxTolerance(medianSize, tolerance: PeyeConstants.lineAutoSelectionTolerance)})
+        
+        var pdfSel = PDFSelection(document: self.document())
+        for selection in filteredSelections {
+            pdfSel.addSelection(selection)
+        }
+        
+        // if top / bottom third of the lines comprise a part of another paragraph, leave them out
+        // detect this by using new lines
+        
+        // get selection line by line
+        if let selLines = pdfSel.selectionsByLine() {
+            let nOfExtraLines: Int = Int(floor(CGFloat(count(selLines)) / CGFloat(extraLineAmount)))
+            
+            // split selection into beginning / end separating by new line
+            
+            // only proceed if there are extra lines
+            if nOfExtraLines > 0 {
+                var lineStartIndex = 0
+                // check if part before new line is included in any of the extra beginning lines,
+                // if so skip them
+                for i in 0..<nOfExtraLines {
+                    let currentLineSel = selLines[i] as! PDFSelection
+                    let cLString = currentLineSel.string() + "\r"
+                    if let cutRange = activePage.string().rangeOfString(cLString) {
+                        lineStartIndex = i+1
+                        break
+                    }
+                }
+                
+                // do the same for the ending part
+                var lineEndIndex = count(selLines)-1
+                for i in reverse(count(selLines)-1-nOfExtraLines..<count(selLines)) {
+                    let currentLineSel = selLines[i] as! PDFSelection
+                    let cLString = currentLineSel.string() + "\r"
+                    if let cutRange = activePage.string().rangeOfString(cLString) {
+                        lineEndIndex = i
+                        break
+                    }
+                }
+                
+                // generate new selection not taking into account excluded parts
+                pdfSel = PDFSelection(document: self.document())
+                for i in lineStartIndex...lineEndIndex {
+                    pdfSel.addSelection(selLines[i] as! PDFSelection)
+                }
+                
+            } // end of check for split, if no need just return selection as-was //
+        }
+        
+        // Single click adds a read rect, double click an interesting rect
+        switch importance {
+        case .Read:
+            if readRects[activePage] == nil {
+                readRects[activePage] = [NSRect]()
+            }
+            readRects[activePage]!.append(pdfSel.boundsForPage(activePage))
+        case .Important:
+            if interestingRects[activePage] == nil {
+                interestingRects[activePage] = [NSRect]()
+            }
+            interestingRects[activePage]!.append(pdfSel.boundsForPage(activePage))
+        default:
+            return
+        }
+    }
     
     /// Remove all annotations which are a line and match the annotations colours
     /// defined in PeyeConstants
@@ -363,25 +389,28 @@ class MyPDF: PDFView {
     /// :returns: The reading event for the current status, or nil if nothing is actually visible
     func getStatus() -> ReadingEvent? {
         if self.visiblePages() != nil {
-            let multiPage: Bool = (count(self.visiblePages())) > 1
-            let visiblePageLabels: [String] = getVisiblePageLabels()
-            let visiblePageNums: [Int] = getVisiblePageNums()
-            let pageRects: [NSRect] = getVisibleRects()
-            let proportion: DiMeRange = getProportion()
-            let plainTextContent: NSString = getVisibleString()!
-            
-            var readingRects = [ReadingRect]()
-            for rect in pageRects {
-                var newRect = ReadingRect(rect: rect, readingClass: PeyeConstants.CLASS_VIEWPORT)
-                readingRects.append(newRect)
-            }
-            
-            return ReadingEvent(multiPage: multiPage, visiblePageNumbers: visiblePageNums, visiblePageLabels: visiblePageLabels, pageRects: readingRects, proportion: proportion, plainTextContent: plainTextContent, infoElemId: infoElem!.id)
+        let multiPage: Bool = (count(self.visiblePages())) > 1
+        let visiblePageLabels: [String] = getVisiblePageLabels()
+        let visiblePageNums: [Int] = getVisiblePageNums()
+        let pageRects: [NSRect] = getVisibleRects()
+        let proportion: DiMeRange = getProportion()
+        let plainTextContent: NSString = getVisibleString()!
+        
+        var readingRects = [ReadingRect]()
+        for rect in pageRects {
+            var newRect = ReadingRect(rect: rect, readingClass: PeyeConstants.CLASS_VIEWPORT)
+            readingRects.append(newRect)
+        }
+        
+        return ReadingEvent(multiPage: multiPage, visiblePageNumbers: visiblePageNums, visiblePageLabels: visiblePageLabels, pageRects: readingRects, proportion: proportion, plainTextContent: plainTextContent, infoElemId: infoElem!.id)
         } else {
             return nil
         }
     }
     
+    @IBAction func test(sender: AnyObject?) {
+        
+    }
     // MARK: - No longer used
     
     // ROTATING ANNOTATION LINES FOR VERTICAL TEXT LINES

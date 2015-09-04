@@ -23,5 +23,9 @@ class PDFSideController: NSViewController {
         }
     }
 
+    /// Target for the gesture recognizer used to detect double clicks
+    @IBAction func doubleClick(sender: NSClickGestureRecognizer) {
+        myPDF.doubleClick(sender.locationInView(myPDF))
+    }
 }
 
