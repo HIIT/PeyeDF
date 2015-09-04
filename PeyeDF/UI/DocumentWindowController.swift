@@ -53,14 +53,14 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
     }
     
     /// Retrieves current ReadingEvent (for HistoryManager)
-    func getCurrentStatus() -> ReadingEvent {
-        return myPdf!.getStatus() as ReadingEvent
+    func getCurrentStatus() -> ReadingEvent? {
+        return myPdf!.getStatus() as ReadingEvent?
     }
     
     // MARK: - Debug functions
     
     @IBAction func sendToDiMe(sender: AnyObject?) {
-        let readingEvent:ReadingEvent = myPdf!.getStatus()
+        let readingEvent:ReadingEvent = myPdf!.getStatus()!  // assuming there is a non-nil status if we press the button
         HistoryManager.sharedManager.sendToDiMe(readingEvent as Event)
     }
     

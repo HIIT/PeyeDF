@@ -358,21 +358,28 @@ class MyPDF: PDFView {
         }
     }
     
-    func getStatus() -> ReadingEvent {
-        let multiPage: Bool = (count(self.visiblePages())) > 1
-        let visiblePageLabels: [String] = getVisiblePageLabels()
-        let visiblePageNums: [Int] = getVisiblePageNums()
-        let pageRects: [NSRect] = getVisibleRects()
-        let proportion: DiMeRange = getProportion()
-        let plainTextContent: NSString = getVisibleString()!
-        
-        var readingRects = [ReadingRect]()
-        for rect in pageRects {
-            var newRect = ReadingRect(rect: rect, readingClass: PeyeConstants.CLASS_VIEWPORT)
-            readingRects.append(newRect)
+    /// Returns the current status (i.e. converts the current viewport to a reading event.)
+    ///
+    /// :returns: The reading event for the current status, or nil if nothing is actually visible
+    func getStatus() -> ReadingEvent? {
+        if self.visiblePages() != nil {
+            let multiPage: Bool = (count(self.visiblePages())) > 1
+            let visiblePageLabels: [String] = getVisiblePageLabels()
+            let visiblePageNums: [Int] = getVisiblePageNums()
+            let pageRects: [NSRect] = getVisibleRects()
+            let proportion: DiMeRange = getProportion()
+            let plainTextContent: NSString = getVisibleString()!
+            
+            var readingRects = [ReadingRect]()
+            for rect in pageRects {
+                var newRect = ReadingRect(rect: rect, readingClass: PeyeConstants.CLASS_VIEWPORT)
+                readingRects.append(newRect)
+            }
+            
+            return ReadingEvent(multiPage: multiPage, visiblePageNumbers: visiblePageNums, visiblePageLabels: visiblePageLabels, pageRects: readingRects, proportion: proportion, plainTextContent: plainTextContent, infoElemId: infoElem!.id)
+        } else {
+            return nil
         }
-        
-        return ReadingEvent(multiPage: multiPage, visiblePageNumbers: visiblePageNums, visiblePageLabels: visiblePageLabels, pageRects: readingRects, proportion: proportion, plainTextContent: plainTextContent, infoElemId: infoElem!.id)
     }
     
     // MARK: - No longer used

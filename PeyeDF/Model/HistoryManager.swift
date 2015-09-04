@@ -123,10 +123,12 @@ class HistoryManager {
             exception.raise()
         }
         
-        // prepare exit timer, which will fire when the user is inactive long enough (or will be canceled if there is another exit event)
-        dispatch_sync(timerQueue) {
-            self.exitTimer = NSTimer(timeInterval: PeyeConstants.maxReadTime, target: self, selector: "exitEvent:", userInfo: nil, repeats: false)
-            NSRunLoop.currentRunLoop().addTimer(self.exitTimer!, forMode: NSRunLoopCommonModes)
+        // prepare exit timer, which will fire when the user is inactive long enough (or will be canceled if there is another exit event).
+        if let currentReadingEvent = self.currentReadingEvent {
+            dispatch_sync(timerQueue) {
+                self.exitTimer = NSTimer(timeInterval: PeyeConstants.maxReadTime, target: self, selector: "exitEvent:", userInfo: nil, repeats: false)
+                NSRunLoop.currentRunLoop().addTimer(self.exitTimer!, forMode: NSRunLoopCommonModes)
+            }
         }
     }
     
