@@ -42,7 +42,7 @@ class PeyeDocument: NSDocument {
     override class func autosavesInPlace() -> Bool {
         return false
     }
-
+    
     /// Creates window controllers and automatically calls loadDocument()
     override func makeWindowControllers() {
         let storyboard = AppSingleton.storyboard
@@ -53,11 +53,17 @@ class PeyeDocument: NSDocument {
         windowController.shouldCloseDocument = true // tell to automaticall close document when closing window
     }
     
-    override func dataOfType(typeName: String, error outError: NSErrorPointer) -> NSData? {
-        // Insert code here to write your document to data of the specified type. If outError != nil, ensure that you create and set an appropriate error when returning nil.
-        // You can also choose to override fileWrapperOfType:error:, writeToURL:ofType:error:, or writeToURL:ofType:forSaveOperation:originalContentsURL:error: instead.
-        outError.memory = NSError(domain: NSOSStatusErrorDomain, code: unimpErr, userInfo: nil)
-        return nil
+    /// This function is called automagically by Cocoa when closing the window, for some reason
+    override func writeToURL(url: NSURL, ofType type: String, error outError: NSErrorPointer) -> Bool {
+        if type == "PeyeDF" {
+            let wincontroller = self.windowControllers[0] as! DocumentWindowController
+            wincontroller.myPdf?.document().writeToURL(url)
+            return true
+        } else {
+            // We don't know what Cocoa is attempting to save, throw some error
+            outError.memory = NSError(domain: NSOSStatusErrorDomain, code: NSURLErrorCannotWriteToFile, userInfo: nil)
+            return false
+        }
     }
     
     /// Always returns true, assumes we can only open allowed documents (PDFs) in the first place

@@ -42,12 +42,14 @@ class MyPDF: PDFView {
     /// To receive single click actions
     override func mouseDown(theEvent: NSEvent) {
         // Only proceed if there is actually text to select
-        if containsRawString {
-            // Mouse in display view coordinates.
-            var mouseDownLoc = self.convertPoint(theEvent.locationInWindow, fromView: nil)
-            annotate(mouseDownLoc, importance: Importance.Read)
-        } else {
-            super.mouseDown(theEvent)
+        if theEvent.clickCount == 1 {
+            if containsRawString {
+                // Mouse in display view coordinates.
+                var mouseDownLoc = self.convertPoint(theEvent.locationInWindow, fromView: nil)
+                annotate(mouseDownLoc, importance: Importance.Read)
+            } else {
+                super.mouseDown(theEvent)
+            }
         }
     }
     
@@ -64,6 +66,8 @@ class MyPDF: PDFView {
     /// Manually tell that a point (and hence the paragraph/subparagraph related to it
     /// should be marked as somehow important
     func annotate(locationInView: NSPoint, importance: Importance) {
+        undoManager!.registerUndoWithTarget(self, selector:Selector("updateScore:"), object: nil)
+
         
         // Page we're on.
         var activePage = self.pageForPoint(locationInView, nearest: true)
