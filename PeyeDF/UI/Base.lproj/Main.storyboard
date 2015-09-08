@@ -896,8 +896,6 @@
                         <toolbar key="toolbar" implicitIdentifier="536DCB0E-4411-47B2-BE21-AD4B2EDCCC8A" autosavesConfiguration="NO" displayMode="iconAndLabel" sizeMode="regular" id="lWe-1p-qV3">
                             <allowedToolbarItems>
                                 <toolbarItem implicitItemIdentifier="NSToolbarPrintItem" id="aNh-Te-Qhf"/>
-                                <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="Ojd-M4-Zl7"/>
-                                <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="10c-J9-dPD"/>
                                 <toolbarItem implicitItemIdentifier="3B4FFFC1-3CAD-4007-A603-14C7FDF2B0A0" label="Thumbnails" paletteLabel="Thumbnails" tag="-1" image="TB_ThumbU" autovalidates="NO" id="8zr-Hg-gf0">
                                     <size key="minSize" width="32" height="32"/>
                                     <size key="maxSize" width="32" height="32"/>
@@ -925,6 +923,18 @@
                                         <action selector="autoAnnotate:" target="H3y-Bk-Ofi" id="vwb-Nk-t5M"/>
                                     </connections>
                                 </toolbarItem>
+                                <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="4ce-Bv-Fl8"/>
+                                <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="6Ts-EH-w4Q"/>
+                                <toolbarItem implicitItemIdentifier="A0A04AC5-2F2B-4E77-B39E-3363C73CFFF4" label="Undo" paletteLabel="Undo" tag="-1" image="Undo" id="jQD-2x-7zh">
+                                    <connections>
+                                        <action selector="undo:" target="H3y-Bk-Ofi" id="Aig-x1-FVM"/>
+                                    </connections>
+                                </toolbarItem>
+                                <toolbarItem implicitItemIdentifier="E707A569-4587-4A31-A350-560ADBBFA231" label="Redo" paletteLabel="Redo" tag="-1" image="Redo" id="QlV-kx-zkO">
+                                    <connections>
+                                        <action selector="redo:" target="H3y-Bk-Ofi" id="7OP-pZ-fZF"/>
+                                    </connections>
+                                </toolbarItem>
                             </allowedToolbarItems>
                             <defaultToolbarItems>
                                 <toolbarItem reference="8zr-Hg-gf0"/>
@@ -932,7 +942,10 @@
                                 <toolbarItem reference="1lR-l5-PLy"/>
                                 <toolbarItem reference="W5X-tm-Xbn"/>
                                 <toolbarItem reference="l3s-5e-m3r"/>
-                                <toolbarItem reference="10c-J9-dPD"/>
+                                <toolbarItem reference="6Ts-EH-w4Q"/>
+                                <toolbarItem reference="jQD-2x-7zh"/>
+                                <toolbarItem reference="QlV-kx-zkO"/>
+                                <toolbarItem reference="4ce-Bv-Fl8"/>
                                 <toolbarItem reference="aNh-Te-Qhf"/>
                             </defaultToolbarItems>
                         </toolbar>
@@ -1190,6 +1203,11 @@
                                             <action selector="doubleClick:" target="XfG-lQ-9wD" id="XsX-eT-2bS"/>
                                         </connections>
                                     </clickGestureRecognizer>
+                                    <clickGestureRecognizer delaysPrimaryMouseButtonEvents="YES" numberOfClicksRequired="3" id="u0J-k5-keg" userLabel="Triple click recognizer">
+                                        <connections>
+                                            <action selector="tripleClick:" target="XfG-lQ-9wD" id="Hch-WF-94E"/>
+                                        </connections>
+                                    </clickGestureRecognizer>
                                 </gestureRecognizers>
                             </pdfView>
                         </subviews>
@@ -1215,6 +1233,8 @@
         <image name="DiMeSettings" width="64" height="64"/>
         <image name="NSAdvanced" width="32" height="32"/>
         <image name="NSStatusNone" width="16" height="16"/>
+        <image name="Redo" width="64" height="64"/>
         <image name="TB_ThumbU" width="32" height="32"/>
+        <image name="Undo" width="64" height="64"/>
     </resources>
 </document>

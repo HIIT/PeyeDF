@@ -21,15 +21,45 @@ public enum Importance {
     case Critical
 }
 
+/// This class represents a "marking state", that is a selection of importance rectangles and the last rectangle and
+/// last page that were edited. It is used to store states in undo operations.
+class MarkingState: NSObject {
+    /// Rectangles of "critical" marks, prior to addition / deletion
+    var criticalRects: [PDFPage: [NSRect]]
+    /// Rectangles of "interesting" marks, prior to addition / deletion
+    var interestingRects: [PDFPage: [NSRect]]
+    /// Rectangles of "read" marks, prior to addition / deletion
+    var readRects: [PDFPage: [NSRect]]
+    /// The page on which the last modification was made
+    private var lastPage: PDFPage?
+    /// The rectangle on which the last modification was made
+    private var lastRect: NSRect?
+    
+    init(criticalRects: [PDFPage: [NSRect]], interestingRects: [PDFPage: [NSRect]], readRects: [PDFPage: [NSRect]]) {
+        self.criticalRects = criticalRects
+        self.interestingRects = interestingRects
+        self.readRects = readRects
+    }
+    
+    /// Sets the last rectangle (and on which page) that was added / removed
+    func setLastRect(lastRect: NSRect, lastPage: PDFPage) {
+        self.lastRect = lastRect
+        self.lastPage = lastPage
+    }
+    
+    /// Returns the last rectangle (if it exists). In the current implementation, this should never return nil.
+    func getLastRect() -> (lastRect: NSRect, lastPage: PDFPage)? {
+        if let lp = self.lastPage {
+            return (self.lastRect!, self.lastPage!)
+        } else {
+            return nil
+        }
+    }
+}
+
 /// Implementation of a custom PDFView class, used to implement additional function related to
 /// psychophysiology and user activity tracking
 class MyPDF: PDFView {
-    
-    /// Stores all rectangles marked as "interesting"
-    var interestingRects = [PDFPage: [NSRect]]()
-    
-    /// Stores all rectangles marked as "read"
-    var readRects = [PDFPage: [NSRect]]()
     
     var containsRawString = false  // this stores whether the document actually contains scanned text
     
@@ -37,37 +67,99 @@ class MyPDF: PDFView {
     /// Set by DocumentWindowController.loadDocument()
     var infoElem: DocumentInformationElement?
 
+    // MARK: - Markings (will be translated to annotations)
+    
+    /// Stores all rectangles marked as "critical"
+    var criticalRects = [PDFPage: [NSRect]]()
+    
+    /// Stores all rectangles marked as "interesting"
+    var interestingRects = [PDFPage: [NSRect]]()
+    
+    /// Stores all rectangles marked as "read"
+    var readRects = [PDFPage: [NSRect]]()
+    
     // MARK: - Event callbacks
     
-    /// To receive single click actions
+    /// To receive single click actions (create "read" mark)
     override func mouseDown(theEvent: NSEvent) {
         // Only proceed if there is actually text to select
         if theEvent.clickCount == 1 {
             if containsRawString {
                 // Mouse in display view coordinates.
                 var mouseDownLoc = self.convertPoint(theEvent.locationInWindow, fromView: nil)
-                annotate(mouseDownLoc, importance: Importance.Read)
+                markAndAnnotate(mouseDownLoc, importance: Importance.Read)
             } else {
                 super.mouseDown(theEvent)
             }
         }
     }
     
-    /// To receive double click actions from the recognizer
-    func doubleClick(location: NSPoint) {
-        // Only proceed if there is actually text to select
-        if containsRawString {
-            annotate(location, importance: Importance.Important)
+    // MARK: - Markings and Annotations
+    
+    /// Manually set all rectangles to the given parameters, and annotate them.
+    func setMarksAndAnnotate(criticalRects: [PDFPage: [NSRect]], interestingRects: [PDFPage: [NSRect]], readRects: [PDFPage: [NSRect]]) {
+        self.criticalRects = criticalRects
+        self.interestingRects = interestingRects
+        self.readRects = readRects
+        autoAnnotate()
+    }
+    
+    /// This method is called (so far) only by the undo manager. It sets the state of markings to the specified object (markingState) and
+    /// refreshes the view on the marking corresponding to the last rectangle's property of the given marking state (so that the last
+    /// added / removed rectangle can be seen appearing / disappearing immediately).
+    @objc func undoMarkAndAnnotate(previousState: MarkingState) {
+        // a last tuple must be present, otherwise it should not have been added in the first place
+        if let lastTuple = previousState.getLastRect() {
+            
+            // store previous state before making any modification
+            let evenPreviousState = MarkingState(criticalRects: self.criticalRects, interestingRects: self.interestingRects, readRects: self.readRects)
+            
+            // apply previous state and perform annotations
+            self.criticalRects = previousState.criticalRects
+            self.interestingRects = previousState.interestingRects
+            self.readRects = previousState.readRects
+            autoAnnotate()
+        
+            // show this change
+            let annotRect = annotationRectForMark(lastTuple.lastRect, page: lastTuple.lastPage)
+            refreshForAnnotation(annotRect, page: lastTuple.lastPage)
+            
+            // create an undo operation for this operation
+            let lastR = previousState.getLastRect()!
+            evenPreviousState.setLastRect(lastR.lastRect, lastPage: lastR.lastPage)
+            undoManager?.registerUndoWithTarget(self, selector: "undoMarkAndAnnotate:", object: evenPreviousState)
+            undoManager?.setActionName(NSLocalizedString("actions.annotate", value: "Mark Text", comment: "Some text was marked as importance by clicking"))
+        } else {
+            let exception = NSException(name: "This should never happen!", reason: "Undoing a nil last rectangle", userInfo: nil)
+            exception.raise()
         }
     }
     
-    // MARK: - Annotations
+    /// Create a marking (and subsequently a rect) at the given point, and make annotations
+    ///
+    /// :param: location The point for which a rect will be created
+    /// :param: importance The importance of the rect that will be created
+    func markAndAnnotate(location: NSPoint, importance: Importance) {
+        if containsRawString {
+            // prepare a marking state to store this operation
+            let previousState = MarkingState(criticalRects: self.criticalRects, interestingRects: self.interestingRects, readRects: self.readRects)
+            let newTuple = mark(location, importance: importance)
+            // if noting was done (i.e. vertical line) do nothing, otherwise store state and annotate
+            if let newMark = newTuple {
+                previousState.setLastRect(newMark.newRect, lastPage: newMark.onPage)
+                undoManager?.registerUndoWithTarget(self, selector: "undoMarkAndAnnotate:", object: previousState)
+                undoManager?.setActionName(NSLocalizedString("actions.annotate", value: "Mark Text", comment: "Some text was marked as importance by clicking"))
+                autoAnnotate()
+            }
+        }
+    }
     
     /// Manually tell that a point (and hence the paragraph/subparagraph related to it
     /// should be marked as somehow important
-    func annotate(locationInView: NSPoint, importance: Importance) {
-        undoManager!.registerUndoWithTarget(self, selector:Selector("updateScore:"), object: nil)
-
+    ///
+    /// :returns: A triplet containing the rectangle that was created, on which page it was created and what importance
+    func mark(locationInView: NSPoint, importance: Importance) -> (newRect: NSRect, onPage: PDFPage, importance: Importance)? {
+        var markRect: NSRect
         
         // Page we're on.
         var activePage = self.pageForPoint(locationInView, nearest: true)
@@ -99,7 +191,7 @@ class MyPDF: PDFView {
         
         // If the line is vertical, skip
         if !isHorizontalLine {
-            return
+            return nil
         }
         
         let medianSize = NSSize(width: medianWidth, height: medianHeight)
@@ -155,21 +247,31 @@ class MyPDF: PDFView {
             } // end of check for split, if no need just return selection as-was //
         }
         
+        // The new rectangle for this mark
+        markRect = pdfSel.boundsForPage(activePage)
+        
         // Single click adds a read rect, double click an interesting rect
         switch importance {
         case .Read:
             if readRects[activePage] == nil {
                 readRects[activePage] = [NSRect]()
             }
-            readRects[activePage]!.append(pdfSel.boundsForPage(activePage))
+            readRects[activePage]!.append(markRect)
         case .Important:
             if interestingRects[activePage] == nil {
                 interestingRects[activePage] = [NSRect]()
             }
-            interestingRects[activePage]!.append(pdfSel.boundsForPage(activePage))
+            interestingRects[activePage]!.append(markRect)
+        case .Critical:
+            if criticalRects[activePage] == nil {
+                criticalRects[activePage] = [NSRect]()
+            }
+            criticalRects[activePage]!.append(markRect)
         default:
-            return
+            let exception = NSException(name: "This should never happen!", reason: "Imporance enum non-existent", userInfo: nil)
+            exception.raise()
         }
+        return (markRect, activePage, importance)
     }
     
     /// Remove all annotations which are a line and match the annotations colours
@@ -189,7 +291,7 @@ class MyPDF: PDFView {
         }
     }
     
-    /// Create PDFAnnotationLines related to the specified rectangle dictionary
+    /// Create PDFAnnotationLines related to the specified rectangle dictionary (markings)
     /// (whieh contains locations of "interesting or read rectangles") on all pages
     ///
     /// :param: rectDict The rectangle dictionary
@@ -205,12 +307,7 @@ class MyPDF: PDFView {
             let unitedRects = uniteCollidingRects(rectDict[page]!)
             returnDictionary[page]! = unitedRects
             for rect in unitedRects {
-                var newRect: NSRect
-                let newRect_x = rect.origin.x - PeyeConstants.annotationLineDistance
-                let newRect_y = rect.origin.y
-                let newRect_height = rect.height
-                let newRect_width: CGFloat = 1.0
-                newRect = NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
+                let newRect = annotationRectForMark(rect, page: page)
                 let annotation = PDFAnnotationLine(bounds: newRect)
                 annotation.setColor(colour)
                 annotation.setBorder(myBord)
@@ -218,40 +315,37 @@ class MyPDF: PDFView {
                 
                 // tell the view to immediately refresh itself in an area which includes the
                 // line's "border"
-                var rectIncludingThickness = newRect
-                rectIncludingThickness.origin.x -= lineThickness / 2
-                rectIncludingThickness.size.width = lineThickness
-                setNeedsDisplayInRect(convertRect(rectIncludingThickness, fromPage: page))
+                refreshForAnnotation(newRect, page: page)
             }
         }
         return returnDictionary
     }
     
+    /// Writes all annotations corresponding to all marks, and deletes intersecting rectangles for "lower-class" rectangles which
+    /// intersect with "higher-class" rectangles
     func autoAnnotate() {
         removeAllAnnotations()
-        interestingRects = outputAnnotations(interestingRects, colour: PeyeConstants.annotationColourInteresting)
-        // Subtract interesting rects from read rects first
+        criticalRects = outputAnnotations(criticalRects, colour: PeyeConstants.annotationColourCritical)
+        // Subtract critical rects from interesting and read rects
+        for page in interestingRects.keys {
+            var unitedRects = uniteCollidingRects(interestingRects[page]!)
+            if let cRects = criticalRects[page] {  // continue only if there is something to subtract
+                interestingRects[page]! = subtractRectangles(interestingRects[page]!, cRects)
+            }
+        }
         for page in readRects.keys {
             var unitedRects = uniteCollidingRects(readRects[page]!)
-            var collidingRects: [(rRect: NSRect, iRect: NSRect)] = [] // tuple with read rects and interesting rects which intersect
-            if let iRects = interestingRects[page] {
-                var i = 0
-                while i < count(unitedRects) {
-                    let rRect = unitedRects[i]
-                    for iRect in iRects {
-                        if NSIntersectsRect(rRect, iRect) {
-                            collidingRects.append((rRect: rRect, iRect: iRect))
-                            unitedRects.removeAtIndex(i)
-                            continue
-                        }
-                    }
-                    ++i
-                }
+            if let cRects = criticalRects[page] {  // continue only if there is something to subtract
+                readRects[page]! = subtractRectangles(readRects[page]!, cRects)
             }
-            for (rRect, iRect) in collidingRects {
-                unitedRects.extend(rRect.subtractRect(iRect))
+        }
+        interestingRects = outputAnnotations(interestingRects, colour: PeyeConstants.annotationColourInteresting)
+        // Subtract (remaining) interesting rects from read rects
+        for page in readRects.keys {
+            var unitedRects = uniteCollidingRects(readRects[page]!)
+            if let iRects = interestingRects[page] {  // continue only if there is something to subtract
+                readRects[page]! = subtractRectangles(readRects[page]!, iRects)
             }
-            readRects[page]! = unitedRects
         }
         readRects = outputAnnotations(readRects, colour: PeyeConstants.annotationColourRead)
         // Placeholder for a better way to enable this
@@ -260,6 +354,33 @@ class MyPDF: PDFView {
     
     @objc func autoAnnotateCallback() {
         NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.autoAnnotationComplete, object: self)
+    }
+    
+    /// Refreshes the annotation for the given rectangle, which was added / deleted, taking into consideration annotation's line thickness
+    ///
+    /// :param: annotationRect The rectangle covering the actual annotation in view coordinates
+    /// :param: page The page on which the annotation resides
+    func refreshForAnnotation(annotationRect: NSRect, page: PDFPage) {
+        // tell the view to immediately refresh itself in an area which includes the
+        // line's "border"
+        let lineThickness: CGFloat = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefAnnotationLineThickness) as! CGFloat
+        var rectIncludingThickness = annotationRect
+        rectIncludingThickness.origin.x -= lineThickness / 2
+        rectIncludingThickness.size.width = lineThickness
+        setNeedsDisplayInRect(convertRect(rectIncludingThickness, fromPage: page))
+    }
+    
+    /// Returns a rectangle corresponding to the annotation for a rectangle corresponding to the mark, using all appropriate constants / preferences.
+    ///
+    /// :param: markRect The rectangle corresponding to the mark
+    /// :param: page The page on which the mark resides, and on which the annotation will be created
+    /// :returns: A rectangle representing the annotation
+    func annotationRectForMark(markRect: NSRect, page: PDFPage) -> NSRect {
+        let newRect_x = markRect.origin.x - PeyeConstants.annotationLineDistance
+        let newRect_y = markRect.origin.y
+        let newRect_height = markRect.height
+        let newRect_width: CGFloat = 1.0
+        return NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
     }
     
     
@@ -393,28 +514,29 @@ class MyPDF: PDFView {
     /// :returns: The reading event for the current status, or nil if nothing is actually visible
     func getStatus() -> ReadingEvent? {
         if self.visiblePages() != nil {
-        let multiPage: Bool = (count(self.visiblePages())) > 1
-        let visiblePageLabels: [String] = getVisiblePageLabels()
-        let visiblePageNums: [Int] = getVisiblePageNums()
-        let pageRects: [NSRect] = getVisibleRects()
-        let proportion: DiMeRange = getProportion()
-        let plainTextContent: NSString = getVisibleString()!
-        
-        var readingRects = [ReadingRect]()
-        for rect in pageRects {
-            var newRect = ReadingRect(rect: rect, readingClass: PeyeConstants.CLASS_VIEWPORT)
-            readingRects.append(newRect)
-        }
-        
-        return ReadingEvent(multiPage: multiPage, visiblePageNumbers: visiblePageNums, visiblePageLabels: visiblePageLabels, pageRects: readingRects, proportion: proportion, plainTextContent: plainTextContent, infoElemId: infoElem!.id)
+            let multiPage: Bool = (count(self.visiblePages())) > 1
+            let visiblePageLabels: [String] = getVisiblePageLabels()
+            let visiblePageNums: [Int] = getVisiblePageNums()
+            let pageRects: [NSRect] = getVisibleRects()
+            let proportion: DiMeRange = getProportion()
+            var plainTextContent: NSString = ""
+            
+            if let textContent = getVisibleString() {
+                plainTextContent = textContent
+            }
+            
+            var readingRects = [ReadingRect]()
+            for rect in pageRects {
+                var newRect = ReadingRect(rect: rect, readingClass: PeyeConstants.CLASS_VIEWPORT)
+                readingRects.append(newRect)
+            }
+            
+            return ReadingEvent(multiPage: multiPage, visiblePageNumbers: visiblePageNums, visiblePageLabels: visiblePageLabels, pageRects: readingRects, proportion: proportion, plainTextContent: plainTextContent, infoElemId: infoElem!.id)
         } else {
             return nil
         }
     }
     
-    @IBAction func test(sender: AnyObject?) {
-        
-    }
     // MARK: - No longer used
     
     // ROTATING ANNOTATION LINES FOR VERTICAL TEXT LINES

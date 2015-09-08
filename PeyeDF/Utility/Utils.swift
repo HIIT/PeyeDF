@@ -115,6 +115,9 @@ extension NSRect {
     /// Returns a array with the original rectangle if the two don't intersect (or are away
     /// a certain tolerance (PeyeConstants.rectHorizontalTolerance) on the x axis.
     /// An empty array if the subtrahend completely encloses this rect.
+    ///
+    /// :param: rhs The rectangle that will be subtracted **from** this rectangle (subtrahend)
+    /// :returns: An array of rectangles, the result of the operation
     func subtractRect(rhs: NSRect) -> [NSRect] {
         let constant: CGFloat = PeyeConstants.rectHorizontalTolerance
         var ary = [NSRect]()
@@ -185,4 +188,38 @@ public func uniteCollidingRects(inputArray: [NSRect]) -> [NSRect] {
         }
     }
     return ary
+}
+
+/// Given two sorted arrays of rectangles, assumed to be on the same page,
+/// subtract them (minuend-subtrahend). The subtrahend stays the same and
+/// is not returned. Returned is an array of minuends.
+///
+/// :param: minuends The array of rectangles from which the other will be subtracted (lhs)
+/// :param: subtrahends The array of rectangles that will be subtracted from minuends (rhs)
+/// :returns: An array of rectangles which is the result of minuends - subtrahends
+public func subtractRectangles(minuends: [NSRect], subtrahends: [NSRect]) -> [NSRect] {
+    var collidingRects: [(lhsRect: NSRect, rhsRect: NSRect)] = [] // tuples with minuend rect and subtrahend rects which intersect (assumed to be on the same page)
+    
+    // return the same result if there is nothing to subtract from / to
+    if count(minuends) == 0 || count(minuends) == 0 {
+        return minuends
+    }
+    
+    var i = 0
+    var result = minuends
+    while i < count(result) {
+        let minuendRect = result[i]
+        for subtrahendRect in subtrahends {
+            if NSIntersectsRect(minuendRect, subtrahendRect) {
+                collidingRects.append((lhsRect: minuendRect, rhsRect: subtrahendRect))
+                result.removeAtIndex(i)
+                continue
+            }
+        }
+        ++i
+    }
+    for (minuendRect, subtrahendRect) in collidingRects {
+        result.extend(minuendRect.subtractRect(subtrahendRect))
+    }
+    return result
 }
