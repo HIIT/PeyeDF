@@ -15,6 +15,9 @@ struct PeyeConstants {
     // MARK: - Preferences
     // Remember to set some default values in the appdelegate for each preference
     
+    /// Monitor DPI
+    static let prefMonitorDPI = "monitor.DPI"
+    
     /// Annotation line thickness
     static let prefAnnotationLineThickness = "annotations.lineThickness"
     

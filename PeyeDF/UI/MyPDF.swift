@@ -405,6 +405,8 @@ class MyPDF: PDFView {
     // MARK: - General accessor methods
     
     /// Return size of a page (the current page).
+    /// WARNING: DEPRECATED, use getPageRect instead
+    /// TODO: Remove this
     func pageSize() -> NSSize {
         return self.rowSizeForPage(self.currentPage())
     }

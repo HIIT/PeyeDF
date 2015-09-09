@@ -19,6 +19,12 @@ class AppSingleton {
     
     static let log = AppSingleton.createLog()
     
+    /// Convenience function to get monitor DPI
+    static func getMonitorDPI() -> Int {
+        let dpi: Int = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefMonitorDPI) as! Int
+        return dpi
+    }
+    
     /// Set up console and file log
     private static func createLog() -> XCGLogger {
         var error: NSError? = nil
