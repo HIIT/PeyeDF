@@ -96,8 +96,7 @@ class DebugController: NSViewController, NSTableViewDataSource {
     @objc func zoomChanged(notification: NSNotification) {
         let obji = notification.object as! PDFView
         let desc1 = "Zoom: \(obji.scaleFactor())"
-        let desc2 = "row size: \(pdfView?.pageSize().width) x \(pdfView?.pageSize().height)"
-        let desc = desc1 + ", " + desc2
+        let desc = desc1
         updateDesc("Changed zoom (level)", desc: desc)
     }
     

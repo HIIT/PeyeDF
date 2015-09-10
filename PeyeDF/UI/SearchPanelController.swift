@@ -13,7 +13,8 @@ import Foundation
 class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
     
     // make sure these match in IB
-    let kColumnTitlePage = "Page Label"
+    let kColumnTitlePageNumber = "Page #"
+    let kColumnTitlePageLabel = "Page Label"
     let kColumnTitleLine = "Line"
     
     // delay for making first responder
@@ -124,12 +125,18 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     }
     
     func tableView(tableView: NSTableView, objectValueForTableColumn tableColumn: NSTableColumn?, row: Int) -> AnyObject? {
-        if tableColumn?.identifier == kColumnTitlePage {
+        if tableColumn?.identifier == kColumnTitlePageLabel {
             
             // get found selection for this row
             let pages = foundSelections[row].pages()
             let page = pages[0] as! PDFPage
             return page.label()
+            
+        } else if tableColumn?.identifier == kColumnTitlePageNumber {
+            
+            let pages = foundSelections[row].pages()
+            let page = pages[0] as! PDFPage
+            return pdfView!.document().indexForPage(page) + 1
             
         } else if tableColumn?.identifier == kColumnTitleLine {
             
