@@ -172,6 +172,18 @@ public func withinRange(lhs: CGFloat, rhs: CGFloat, range: CGFloat) -> Bool {
     return (lhs + abs(range)) >= rhs && (lhs - abs(range)) <= rhs
 }
 
+/// Converts centimetre to inches
+public func cmToInch(cmValue: CGFloat) -> CGFloat {
+    return cmValue * 0.3937
+}
+
+/// Converts inches to centimetre
+public func inchToCm(inchValue: CGFloat) -> CGFloat {
+    return inchValue / 0.3937
+}
+
+// MARK: - Rectangle related
+
 /// Given an array of rectangles, return a sorted version of the array
 /// (sorted so that elements coming first should have been read first in western order)
 /// with the colliding rectangles united (two rects collide when their intersection is not zero).

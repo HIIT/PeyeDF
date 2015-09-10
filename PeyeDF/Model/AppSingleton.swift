@@ -20,9 +20,9 @@ class AppSingleton {
     static let log = AppSingleton.createLog()
     
     /// Convenience function to get monitor DPI
-    static func getMonitorDPI() -> Int {
+    static func getMonitorDPI() -> CGFloat {
         let dpi: Int = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefMonitorDPI) as! Int
-        return dpi
+        return CGFloat(dpi)
     }
     
     /// Set up console and file log

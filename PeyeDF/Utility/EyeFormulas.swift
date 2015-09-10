@@ -8,41 +8,41 @@
 
 import Foundation
 
-let pointsForVSeg: CGFloat = 10  // how many points are needed before inserting an additional selection point
-
-let _roundPrecision: CGFloat = 2.0  // This is used in the "hack" below to prevent the loop below from overlowing because of precision errors
-
-/// Given a zoom level, return how many points should that zoom level span
-/// current idea: we select 7 lines at zoom 1, 5 lines at zoom 2 and 3 lines at zoom 3
-/// corresponding (in one doc) to 7cm, 4cm, 2cm (2.76, 1.57, 0.79)
-/// corresponding to (at 72dpi) 198, 113, 57 points
-/// formula (29*x^2-257*x+624)/CONSTANT}
-/// the CONSTANT is defined in PeyeConstants, at the moment is updated manually
-func zoomToPoints(zoomLevel: CGFloat) -> CGFloat {
-    let a = 29*(pow(zoomLevel, 2))
-    let b = 257*zoomLevel
-    return CGFloat(round((a-b+624) / PeyeConstants.vSpanDenom ))
-}
-
-/// Given a selection and a zoom level, return an array of points spanning through
-/// the wanted vertical space
-func multiVPoint(point: NSPoint, zoomLevel: CGFloat) -> [NSPoint] {
-    var pointSpan = zoomToPoints(zoomLevel)
-    let nOfPoints = Int(floor(pointSpan/pointsForVSeg))
-    var pointArray = Array<NSPoint>(count: nOfPoints, repeatedValue: point)
+/// Given a point and a zoom level (PDFView's scaleFactor), return an array of points, separated by two points each (defaultStep),
+/// that covers the defaultInchSpan vertically. The page rectangle (i.e. media box) is passed
+/// in to avoid adding points which are not within 28 points (defaultMargin) (approximately 1cm in page space) to the returned array
+func verticalFocalPoints(fromPoint point: NSPoint, zoomLevel: CGFloat, pageRect: NSRect) -> [NSPoint] {
+    let defaultMargin: CGFloat = 28
+    let defaultStep: CGFloat = 2
     
-    pointSpan = CGFloat(nOfPoints) * pointsForVSeg
+    let pointSpan = defaultInchSpan() * AppSingleton.getMonitorDPI() / zoomLevel
+    let fitInRect = NSInsetRect(pageRect, defaultMargin, defaultMargin)
     
-    // "hack" because the loop below would overflow because of precision errors (when newY and endY should be equal an unequality would show up instead, causing the loop to continue)
-    let startY = roundToX(point.y + pointSpan / 2, _roundPrecision)
-    let endY = roundToX(point.y - pointSpan / 2, _roundPrecision)
-    // (remember origin is at bottom left)
-    var i = 0
-    for var newY = startY - 10 / (_roundPrecision + 1) ; newY > endY; newY -= pointsForVSeg {
-        pointArray[i].y = newY
-        ++i
+    var pointArray = [NSPoint]()
+    
+    let startPoint = NSPoint(x: point.x, y: point.y + pointSpan / 2)
+    let endPoint = NSPoint(x: point.x, y: point.y - pointSpan / 2)
+    var currentPoint = startPoint
+    while currentPoint.y >= endPoint.y {
+        if NSPointInRect(currentPoint, fitInRect) {
+            pointArray.append(currentPoint)
+        }
+        
+        currentPoint.y -= defaultStep
     }
-    assert(i>=count(pointArray), "Index is less than array length")
     
     return pointArray
+}
+
+
+/// Returns how many inches should be covered by the participant's fovea at a predefined distance
+func defaultInchSpan() -> CGFloat {
+    let defaultDistance: CGFloat = 24  // assuming to be approx. 60cm away from screen
+    let defaultAngle: CGFloat = degToRad(3)  // fovea's covered angle
+    return 2 * defaultDistance * tan(defaultAngle/2)
+}
+
+/// Converts degrees to radians (xcode tan function is in radians)
+func degToRad(deg: CGFloat) -> CGFloat {
+    return deg * CGFloat(M_PI) / 180.0
 }

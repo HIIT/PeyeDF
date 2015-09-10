@@ -185,7 +185,7 @@ class MyPDF: PDFView {
         // Get mouse in "page space".
         let pagePoint = self.convertPoint(locationInView, toPage: activePage)
         
-        let pointArray = multiVPoint(pagePoint, self.scaleFactor())
+        let pointArray = verticalFocalPoints(fromPoint: pagePoint, self.scaleFactor(), self.getPageRect(activePage))
         
         // if using columns, selection can "bleed" into footers and headers
         // solution: check the median height and median width of each selection, and discard
