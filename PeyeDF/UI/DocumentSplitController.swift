@@ -21,7 +21,7 @@ class DocumentSplitController: NSSplitViewController {
     weak var myThumbController: ThumbSideController?
     weak var sideCollapseDelegate: SideCollapseToggleDelegate?
     
-    // MARK: Initialisation
+    // MARK: - Initialisation
     
     override func viewDidLoad() {
         super.viewDidLoad()

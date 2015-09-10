@@ -11,15 +11,54 @@ import Foundation
 import Quartz
 
 /// Manages the "Document Window", which comprises two split views, one inside the other
-class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
+class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, SearchPanelCollapseDelegate {
     
     @IBOutlet weak var selectButton: NSToolbarItem!
     weak var myPdf: MyPDF?
     weak var docSplitController: DocumentSplitController?
+    weak var mainSplitController: MainSplitController?
     var debugController: DebugController?
     var debugWindowController: NSWindowController?
     @IBOutlet weak var docStatus: NSToolbarItem!
     @IBOutlet weak var tbAnnotate: NSToolbarItem!
+    
+    // MARK: - Searching
+    
+    /// Perform search using default methods.
+    @objc func performFindPanelAction(sender: AnyObject) {
+        switch UInt(sender.tag()) {
+        case NSFindPanelAction.ShowFindPanel.rawValue:
+            focusOnSearch()
+        case NSFindPanelAction.Next.rawValue:
+            println("next")
+        case NSFindPanelAction.Previous.rawValue:
+            println("previous")
+        case NSFindPanelAction.SetFindString.rawValue:
+            println("want to use selection")
+        default:
+            let exception = NSException(name: "Unimplemented search function", reason: "Enum raw value not recognized", userInfo: nil)
+            exception.raise()
+        }
+    }
+    
+    // MARK: - Search panel
+    
+    @IBOutlet weak var searchTB: NSToolbarItem!
+    @IBAction func toggleSearch(sender: NSToolbarItem) {
+        mainSplitController?.toggleSearchPanel()
+    }
+    
+    func focusOnSearch() {
+        mainSplitController?.openSearchPanel()
+    }
+    
+    func searchCollapseAction(wasCollapsed: Bool) {
+        if wasCollapsed {
+            searchTB.image = NSImage(named: PeyeConstants.searchButton_UP)
+        } else {
+            searchTB.image = NSImage(named: PeyeConstants.searchButton_DOWN)
+        }
+    }
     
     // MARK: - Thumbnail side expand / reduce
     
@@ -114,6 +153,11 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate {
         docSplitController = splV.childViewControllers[1] as? DocumentSplitController
         docSplitController?.sideCollapseDelegate = self
         myPdf = docSplitController?.myPDFSideController?.myPDF
+        
+        // Set reference to main split controller
+        self.mainSplitController = self.contentViewController as? MainSplitController
+        self.mainSplitController?.searchCollapseDelegate = self
+        self.mainSplitController?.searchPanelController?.pdfView = myPdf
         
         myPdf?.setAutoScales(true)
         

@@ -109,11 +109,23 @@ struct PeyeConstants {
     /// Defines tolerance proportion for line sizes when creating selections (lines **bigger** than this fraction - when compared to other lines - will be discarded)
     static let lineAutoSelectionTolerance: CGFloat = 0.1
     
+    /// Name of search button down (pressed) image
+    static let searchButton_DOWN = "TB_SearchD"
+    
+    /// Name of search button up (not pressed) image
+    static let searchButton_UP = "TB_SearchU"
+    
     /// Name of thumbnail button down (pressed) image
     static let thumbButton_DOWN = "TB_ThumbD"
     
     /// Name of thumbnail button up (not pressed) image
     static let thumbButton_UP = "TB_ThumbU"
+    
+    /// Minimum size of search panel view to be considered as "visible"
+    static let minSearchPanelViewHeight: CGFloat = 20
+    
+    /// Default size of search panel view (set when pressing button)
+    static let defaultSearchPanelViewHeight: CGFloat = 180
     
     /// Minimum size of thumbnail side view to be considered as "visible"
     static let minThumbSideViewWidth: CGFloat = 20

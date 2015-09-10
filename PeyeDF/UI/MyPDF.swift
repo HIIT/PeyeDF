@@ -82,33 +82,38 @@ class MyPDF: PDFView {
     
     /// To receive single click actions (create "read" mark)
     override func mouseDown(theEvent: NSEvent) {
+        let singleClickTestingMode = false  // set this to true if we want to redirect single clicks
+        if singleClickTestingMode {
         // Only proceed if there is actually text to select
-        if theEvent.clickCount == 1 {
-            if containsRawString {
-                // -- OLD STARTS HERE
-//                // Mouse in display view coordinates.
-//                var mouseDownLoc = self.convertPoint(theEvent.locationInWindow, fromView: nil)
-//                markAndAnnotate(mouseDownLoc, importance: Importance.Read)
-                // -- OLD ENDS HERE
-                
-                /// GETTING MOUSE LOCATION IN WINDOW FROM SCREEN COORDINATES
-                // get mouse in screen coordinates
-                let mouseLoc = NSEvent.mouseLocation()
-                for screen in NSScreen.screens() as! [NSScreen] {
-                    if NSMouseInRect(mouseLoc, screen.frame, false) {
-                        let tinySize = NSSize(width: 1, height: 1)
-                        let mouseRect = NSRect(origin: mouseLoc, size: tinySize)
-                        //let rawLocation = screen.convertRectToBacking(mouseRect)
-                        
-                        // use raw location to map back into view coordinates
-                        let mouseInWindow = self.window!.convertRectFromScreen(mouseRect)
-                        let mouseInView = self.convertRect(mouseInWindow, fromView: self.window!.contentViewController!.view)
-                        markAndAnnotate(mouseInView.origin, importance: Importance.Read)
+            if theEvent.clickCount == 1 {
+                if containsRawString {
+                    // -- OLD STARTS HERE
+    //                // Mouse in display view coordinates.
+    //                var mouseDownLoc = self.convertPoint(theEvent.locationInWindow, fromView: nil)
+    //                markAndAnnotate(mouseDownLoc, importance: Importance.Read)
+                    // -- OLD ENDS HERE
+                    
+                    /// GETTING MOUSE LOCATION IN WINDOW FROM SCREEN COORDINATES
+                    // get mouse in screen coordinates
+                    let mouseLoc = NSEvent.mouseLocation()
+                    for screen in NSScreen.screens() as! [NSScreen] {
+                        if NSMouseInRect(mouseLoc, screen.frame, false) {
+                            let tinySize = NSSize(width: 1, height: 1)
+                            let mouseRect = NSRect(origin: mouseLoc, size: tinySize)
+                            //let rawLocation = screen.convertRectToBacking(mouseRect)
+                            
+                            // use raw location to map back into view coordinates
+                            let mouseInWindow = self.window!.convertRectFromScreen(mouseRect)
+                            let mouseInView = self.convertRect(mouseInWindow, fromView: self.window!.contentViewController!.view)
+                            markAndAnnotate(mouseInView.origin, importance: Importance.Read)
+                        }
                     }
+                } else {
+                    super.mouseDown(theEvent)
                 }
-            } else {
-                super.mouseDown(theEvent)
             }
+        } else {
+            super.mouseDown(theEvent)
         }
     }
     
