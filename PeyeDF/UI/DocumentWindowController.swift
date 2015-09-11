@@ -30,14 +30,45 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
         case NSFindPanelAction.ShowFindPanel.rawValue:
             focusOnSearch()
         case NSFindPanelAction.Next.rawValue:
-            println("next")
+            mainSplitController?.searchProvider?.selectNextResult(nil)
         case NSFindPanelAction.Previous.rawValue:
-            println("previous")
+            mainSplitController?.searchProvider?.selectPreviousResult(nil)
         case NSFindPanelAction.SetFindString.rawValue:
-            println("want to use selection")
+            if let currentSelection = myPdf!.currentSelection() {
+                mainSplitController?.searchProvider?.doSearch(currentSelection.string())
+                mainSplitController?.openSearchPanel()
+            }
         default:
             let exception = NSException(name: "Unimplemented search function", reason: "Enum raw value not recognized", userInfo: nil)
             exception.raise()
+        }
+    }
+    
+    /// Checks if the find next and find previous item should be enabled
+    @objc override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
+        switch UInt(menuItem.tag) {
+            
+        // we always allow find
+        case NSFindPanelAction.ShowFindPanel.rawValue:
+            return true
+            
+        // we allow next and previous if there is some search done
+        case NSFindPanelAction.Next.rawValue:
+            return mainSplitController!.searchProvider!.hasResult()
+        case NSFindPanelAction.Previous.rawValue:
+            return mainSplitController!.searchProvider!.hasResult()
+            
+        // we allow use selection if something is selected in the pdf view
+        case NSFindPanelAction.SetFindString.rawValue:
+            if let currentSelection = myPdf!.currentSelection() {
+                return true
+            }
+            return false
+            
+        // nothing else should appear because we only implement performFindPanelAction(_)
+        default:
+            // any other tag was not considered and should not be enabled
+            return false
         }
     }
     
@@ -227,6 +258,9 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
             
             // Send event regardig opening of file
             sendDeskEvent()
+            
+            // To make keystroke shortcuts work
+            myPdf?.becomeFirstResponder()
         }
     }
     

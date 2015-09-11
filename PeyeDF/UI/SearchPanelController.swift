@@ -10,7 +10,24 @@ import Cocoa
 import Quartz
 import Foundation
 
-class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
+/// Used to allow the search panel controller to communicate with others
+protocol SearchProvider {
+    
+    /// Returns true if there is a result avaiable
+    func hasResult() -> Bool
+    
+    /// Performs the requested search using the given string
+    func doSearch(String)
+    
+    /// Gets the next found item
+    func selectNextResult(sender: AnyObject?)
+    
+    /// Gets the previous found item
+    func selectPreviousResult(sender: AnyObject?)
+    
+}
+
+class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableViewDelegate, SearchProvider {
     
     // make sure these match in IB
     let kColumnTitlePageNumber = "Page #"
@@ -31,6 +48,9 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     
     @IBOutlet weak var searchCell: NSSearchFieldCell!
     @IBOutlet weak var searchField: NSSearchField!
+    
+    @IBOutlet weak var previousButton: NSButton!
+    @IBOutlet weak var nextButton: NSButton!
     
     var searchString: String = ""
     weak var selectedSelection: PDFSelection?
@@ -112,7 +132,83 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
         searchField.becomeFirstResponder()
     }
     
-    // MARK: - Search-related
+    // MARK: - SearchProvider implementation
+    
+    func hasResult() -> Bool {
+        return numberOfResultsFound != 0
+    }
+    
+    @IBAction func selectPreviousResult(sender: AnyObject?) {
+        if hasResult() {
+            let selectedRow = resultTable.selectedRow  // is -1 if nothing
+            
+            // if nothing is selected, or first is selected, select last
+            if selectedRow == -1 || selectedRow == 0 {
+                resultTable.selectRowIndexes(NSIndexSet(index: numberOfResultsFound - 1), byExtendingSelection: false)
+                
+            // otherwise select selectedRow -1
+            } else {
+                resultTable.selectRowIndexes(NSIndexSet(index: selectedRow - 1), byExtendingSelection: false)
+            }
+            resultTable.scrollRowToVisible(resultTable.selectedRow)
+        }
+    }
+    
+    @IBAction func selectNextResult(sender: AnyObject?) {
+        if hasResult() {
+            let selectedRow = resultTable.selectedRow  // is -1 if nothing
+            
+            // if nothing is selected, or last is selected, select first
+            if selectedRow == -1 || selectedRow == numberOfResultsFound - 1 {
+                resultTable.selectRowIndexes(NSIndexSet(index: 0), byExtendingSelection: false)
+                
+            // otherwise select selectedRow +1
+            } else {
+                resultTable.selectRowIndexes(NSIndexSet(index: selectedRow + 1), byExtendingSelection: false)
+            }
+            resultTable.scrollRowToVisible(resultTable.selectedRow)
+        }
+    }
+    
+    /// Performs a search using the given string
+    func doSearch(theString: String) {
+        if searchField.stringValue != theString {
+            searchField.stringValue = theString
+        }
+        searchString = searchField.stringValue
+        
+        // -- check if recent search element is present in recent searches --
+        let recentSearches = searchCell.recentSearches
+        // if list is empty add it
+        if recentSearches.isEmpty {
+            searchCell.recentSearches.append(theString)
+        } else {
+            for i in 0..<count(recentSearches) {
+                // if item present, remove it
+                let item = recentSearches[i] as! String
+                if item == searchString {
+                    searchCell.recentSearches.removeAtIndex(i)
+                    break
+                }
+            }
+            // add it at "bottom of list"
+            searchCell.recentSearches.append(theString)
+        }
+        // -- end recent searches check --
+        
+        numberOfResultsFound = 0
+        foundSelections = [PDFSelection]()
+        resultNumberField.stringValue = "\(numberOfResultsFound)"
+        resultTable.reloadData()
+        selectedSelection = nil
+        
+        pdfView!.document().beginFindString(theString, withOptions: Int(NSStringCompareOptions.CaseInsensitiveSearch.rawValue))
+        
+        previousButton.enabled = false
+        nextButton.enabled = false
+    }
+    
+    // MARK: - Other search
     
     /// Some text has been entered in the search field
     @IBAction func startSearch(sender: NSSearchField) {
@@ -120,14 +216,7 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
             pdfView!.document().cancelFindString()
         }
         
-        numberOfResultsFound = 0
-        searchString = sender.stringValue
-        foundSelections = [PDFSelection]()
-        resultNumberField.stringValue = "\(numberOfResultsFound)"
-        resultTable.reloadData()
-        selectedSelection = nil
-        
-        pdfView!.document().beginFindString(sender.stringValue, withOptions: Int(NSStringCompareOptions.CaseInsensitiveSearch.rawValue))
+        doSearch(sender.stringValue)
     }
     
     // MARK: - Notification callbacks
@@ -140,6 +229,11 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
         foundSelections.append(pdfSel.copy() as! PDFSelection)
         resultTable.reloadData()
         resultNumberField.stringValue = "\(numberOfResultsFound)"
+        
+        if numberOfResultsFound > 1 {
+            nextButton.enabled = true
+            previousButton.enabled = true
+        }
     }
     
     // MARK: - Table data source

@@ -60,8 +60,8 @@
                                     <rect key="frame" x="1" y="1" width="423" height="47"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="E15-lK-fvD">
-                                            <rect key="frame" x="16" y="10" width="339" height="25"/>
+                                        <slider verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="E15-lK-fvD">
+                                            <rect key="frame" x="16" y="10" width="339" height="26"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="335" id="dtF-MU-gHK"/>
                                             </constraints>
@@ -70,7 +70,7 @@
                                                 <action selector="thicknessSlided:" target="62w-oK-rf7" id="Re0-xj-aMp"/>
                                             </connections>
                                         </slider>
-                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uRt-4J-vlE">
+                                        <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uRt-4J-vlE">
                                             <rect key="frame" x="359" y="14" width="53" height="22"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="53" id="N2Q-Hu-YTx"/>
@@ -1116,20 +1116,44 @@
                                 <constraints>
                                     <constraint firstAttribute="width" constant="41" id="HnT-Fs-jmn"/>
                                 </constraints>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Label" id="V2p-fm-iiA">
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" id="V2p-fm-iiA">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cMI-3Y-NYR">
+                                <rect key="frame" x="265" y="97" width="45" height="32"/>
+                                <buttonCell key="cell" type="push" bezelStyle="rounded" image="NSGoLeftTemplate" imagePosition="overlaps" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="PNo-I2-EJQ">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="selectPreviousResult:" target="DPg-yb-Bd5" id="kLa-cE-RjB"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="xNJ-gz-wQ1">
+                                <rect key="frame" x="298" y="97" width="45" height="32"/>
+                                <buttonCell key="cell" type="push" bezelStyle="rounded" image="NSGoRightTemplate" imagePosition="overlaps" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Gmj-7W-sl9">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="selectNextResult:" target="DPg-yb-Bd5" id="qho-QO-JGe"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="ObA-9X-EOe" firstAttribute="leading" secondItem="QCg-ar-Bwh" secondAttribute="trailing" constant="31" id="0F5-kb-eOO"/>
                             <constraint firstItem="QCg-ar-Bwh" firstAttribute="top" secondItem="ObA-9X-EOe" secondAttribute="top" id="16n-MZ-nmx"/>
+                            <constraint firstItem="xNJ-gz-wQ1" firstAttribute="leading" secondItem="QCg-ar-Bwh" secondAttribute="trailing" constant="-40" id="5Sk-hA-8nO"/>
+                            <constraint firstItem="xNJ-gz-wQ1" firstAttribute="centerY" secondItem="cMI-3Y-NYR" secondAttribute="centerY" id="6D2-W0-3So"/>
                             <constraint firstItem="YRd-J4-njP" firstAttribute="centerY" secondItem="hLf-rb-0HY" secondAttribute="centerY" id="AWE-6U-vWW"/>
                             <constraint firstItem="YRd-J4-njP" firstAttribute="leading" secondItem="mp4-z4-96E" secondAttribute="leading" constant="22" id="D5x-9j-QDY"/>
                             <constraint firstItem="hLf-rb-0HY" firstAttribute="leading" secondItem="YRd-J4-njP" secondAttribute="trailing" constant="10" id="JLJ-dv-taS"/>
                             <constraint firstAttribute="trailing" secondItem="ObA-9X-EOe" secondAttribute="trailing" constant="20" id="Nnv-3a-i0r"/>
+                            <constraint firstItem="xNJ-gz-wQ1" firstAttribute="top" secondItem="QCg-ar-Bwh" secondAttribute="bottom" constant="8" id="Ray-hu-cD5"/>
+                            <constraint firstItem="xNJ-gz-wQ1" firstAttribute="leading" secondItem="cMI-3Y-NYR" secondAttribute="trailing" id="Yt2-MQ-vzI"/>
                             <constraint firstAttribute="bottom" secondItem="YRd-J4-njP" secondAttribute="bottom" priority="250" constant="108" id="cTh-yh-Q6q"/>
                             <constraint firstItem="QCg-ar-Bwh" firstAttribute="top" relation="lessThanOrEqual" secondItem="mp4-z4-96E" secondAttribute="top" constant="20" id="hgd-ob-lfY"/>
                             <constraint firstItem="QCg-ar-Bwh" firstAttribute="leading" secondItem="mp4-z4-96E" secondAttribute="leading" constant="20" id="okf-Wi-Lz7"/>
@@ -1140,6 +1164,8 @@
                     </view>
                     <connections>
                         <outlet property="labelColumn" destination="pIW-kQ-ycf" id="1yz-en-HBy"/>
+                        <outlet property="nextButton" destination="xNJ-gz-wQ1" id="T2G-qP-w7F"/>
+                        <outlet property="previousButton" destination="cMI-3Y-NYR" id="xTC-uU-dcJ"/>
                         <outlet property="resultNumberField" destination="hLf-rb-0HY" id="y4Q-GX-gey"/>
                         <outlet property="resultTable" destination="LHf-eC-4mj" id="kdC-FW-PqN"/>
                         <outlet property="searchCell" destination="w42-W5-HTL" id="sR5-Dn-cfx"/>
@@ -1380,6 +1406,8 @@
         <image name="Beta" width="64" height="64"/>
         <image name="DiMeSettings" width="64" height="64"/>
         <image name="NSAdvanced" width="32" height="32"/>
+        <image name="NSGoLeftTemplate" width="9" height="12"/>
+        <image name="NSGoRightTemplate" width="9" height="12"/>
         <image name="NSStatusNone" width="16" height="16"/>
         <image name="Redo" width="64" height="64"/>
         <image name="TB_SearchU" width="64" height="64"/>
