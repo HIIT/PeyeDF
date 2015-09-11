@@ -933,9 +933,9 @@
                                         <action selector="sendToDiMe:" target="H3y-Bk-Ofi" id="yfv-Dg-ebE"/>
                                     </connections>
                                 </toolbarItem>
-                                <toolbarItem implicitItemIdentifier="D39BF8F4-E8F8-4708-82CC-5506275CE680" label="Annotate" paletteLabel="Annotate" tag="-1" image="Annotate" autovalidates="NO" id="GDs-fF-Uav">
+                                <toolbarItem implicitItemIdentifier="D39BF8F4-E8F8-4708-82CC-5506275CE680" label="Annotate" paletteLabel="Annotate" tag="-1" image="TB_AnnotateD" autovalidates="NO" id="GDs-fF-Uav">
                                     <connections>
-                                        <action selector="autoAnnotate:" target="H3y-Bk-Ofi" id="vwb-Nk-t5M"/>
+                                        <action selector="toggleAnnotate:" target="H3y-Bk-Ofi" id="wvf-8o-EJA"/>
                                     </connections>
                                 </toolbarItem>
                                 <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="4ce-Bv-Fl8"/>
@@ -1393,7 +1393,9 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="doubleClickRecognizer" destination="ifg-Tf-3YL" id="Cgl-nJ-Ein"/>
                         <outlet property="myPDF" destination="0Dp-rz-UVv" id="Zkt-Fu-N1T"/>
+                        <outlet property="tripleClickRecognizer" destination="u0J-k5-keg" id="mUQ-aJ-FWB"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -1402,7 +1404,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Annotate" width="64" height="64"/>
         <image name="Beta" width="64" height="64"/>
         <image name="DiMeSettings" width="64" height="64"/>
         <image name="NSAdvanced" width="32" height="32"/>
@@ -1410,6 +1411,7 @@
         <image name="NSGoRightTemplate" width="9" height="12"/>
         <image name="NSStatusNone" width="16" height="16"/>
         <image name="Redo" width="64" height="64"/>
+        <image name="TB_AnnotateD" width="64" height="64"/>
         <image name="TB_SearchU" width="64" height="64"/>
         <image name="TB_ThumbU" width="32" height="32"/>
         <image name="Undo" width="64" height="64"/>

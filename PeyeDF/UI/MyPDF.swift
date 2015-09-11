@@ -61,6 +61,9 @@ class MarkingState: NSObject {
 /// psychophysiology and user activity tracking
 class MyPDF: PDFView {
     
+    /// Whether we want to annotate by clicking
+    private var clickAnnotationEnabled = true
+    
     var containsRawString = false  // this stores whether the document actually contains scanned text
     
     /// Stores the information element for the current document.
@@ -77,6 +80,9 @@ class MyPDF: PDFView {
     
     /// Stores all rectangles marked as "read"
     var readRects = [PDFPage: [NSRect]]()
+    
+    /// Delegate for clicks gesture recognizer
+    var clickDelegate: ClickRecognizerDelegate?
     
     // MARK: - Event callbacks
     
@@ -115,6 +121,30 @@ class MyPDF: PDFView {
         } else {
             super.mouseDown(theEvent)
         }
+    }
+    
+    // MARK: - Page drawing override
+    
+    /// To draw extra stuff on page
+    override func drawPage(page: PDFPage!) {
+    	// Let PDFView do most of the hard work.
+        super.drawPage(page)
+        
+    	// Save.
+        NSGraphicsContext.saveGraphicsState()
+	
+        // Draw what you need
+        let sampleRect = NSRect(x: 10.0, y: 30.0, width: 100.0, height: 70.0)
+	
+        let borderColor = NSColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
+        borderColor.set()
+        
+        var cPath: NSBezierPath = NSBezierPath(ovalInRect: sampleRect)
+        cPath.lineWidth = 5.0
+        cPath.stroke()
+        
+    	// Restore.
+    	NSGraphicsContext.restoreGraphicsState()
     }
     
     // MARK: - Markings and Annotations
@@ -406,6 +436,16 @@ class MyPDF: PDFView {
         return NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
     }
     
+    /// Returns wheter annotation by click is enabled
+    func clickAnnotationIsEnabled() -> Bool {
+        return self.clickAnnotationEnabled
+    }
+    
+    /// Enabled / disables auto annotation by click
+    func setClickAnnotationTo(enabled: Bool) {
+        self.clickAnnotationEnabled = enabled
+        self.clickDelegate?.setRecognizersTo(enabled)
+    }
     
     // MARK: - General accessor methods
     

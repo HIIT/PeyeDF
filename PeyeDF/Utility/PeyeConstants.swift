@@ -121,6 +121,12 @@ struct PeyeConstants {
     /// Name of search button up (not pressed) image
     static let searchButton_UP = "TB_SearchU"
     
+    /// Name of annotation button down (pressed) image
+    static let annotateButton_DOWN = "TB_AnnotateD"
+    
+    /// Name of annotation button up (not pressed) image
+    static let annotateButton_UP = "TB_AnnotateU"
+    
     /// Name of thumbnail button down (pressed) image
     static let thumbButton_DOWN = "TB_ThumbD"
     

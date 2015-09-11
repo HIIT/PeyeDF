@@ -22,6 +22,8 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
     @IBOutlet weak var docStatus: NSToolbarItem!
     @IBOutlet weak var tbAnnotate: NSToolbarItem!
     
+    var clickDelegate: ClickRecognizerDelegate?
+    
     // MARK: - Searching
     
     /// Perform search using default methods.
@@ -108,9 +110,17 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
     
     // MARK: - Annotations
     
-    @IBAction func autoAnnotate(sender: AnyObject?) {
-        myPdf?.autoAnnotate()
-        tbAnnotate.enabled = false
+    @IBAction func toggleAnnotate(sender: AnyObject?) {
+        let annotateTB = sender as? NSToolbarItem
+        if let delegate = clickDelegate {
+            if delegate.getRecognizersState() {
+                delegate.setRecognizersTo(false)
+                annotateTB?.image = NSImage(named: PeyeConstants.annotateButton_UP)
+            } else {
+                delegate.setRecognizersTo(true)
+                annotateTB?.image = NSImage(named: PeyeConstants.annotateButton_DOWN)
+            }
+        }
     }
     
     // MARK: - DiMe communication
@@ -187,6 +197,9 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
         docSplitController = splV.childViewControllers[1] as? DocumentSplitController
         docSplitController?.sideCollapseDelegate = self
         myPdf = docSplitController?.myPDFSideController?.myPDF
+        
+        // Reference for click gesture recognizers
+        clickDelegate = docSplitController?.myPDFSideController
         
         // Set reference to main split controller
         self.mainSplitController = self.contentViewController as? MainSplitController

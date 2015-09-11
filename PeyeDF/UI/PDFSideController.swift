@@ -8,10 +8,23 @@
 
 import Cocoa
 
+/// Protocol for allowing / disallowing double and triple click recognizers
+protocol ClickRecognizerDelegate {
+    
+    /// Set the enabled state of the recognizer to the given value
+    func setRecognizersTo(enabled: Bool)
+    
+    /// Check if recognizers are enabled
+    func getRecognizersState() -> Bool
+}
+
 /// Controller for the PDF-side Document split view
-class PDFSideController: NSViewController {
+class PDFSideController: NSViewController, ClickRecognizerDelegate {
     
     @IBOutlet weak var myPDF: MyPDF!
+    
+    @IBOutlet weak var doubleClickRecognizer: NSClickGestureRecognizer!
+    @IBOutlet weak var tripleClickRecognizer: NSClickGestureRecognizer!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,5 +46,15 @@ class PDFSideController: NSViewController {
         myPDF.markAndAnnotate(sender.locationInView(myPDF), importance: Importance.Critical)
     }
     
+    /// Set the enabled state of the recognizer to the given value
+    func setRecognizersTo(enabled: Bool) {
+        doubleClickRecognizer.enabled = enabled
+        tripleClickRecognizer.enabled = enabled
+    }
+    
+    /// Check if recognizers are enabled
+    func getRecognizersState() -> Bool {
+        return doubleClickRecognizer.enabled && tripleClickRecognizer.enabled
+    }
 }
 
