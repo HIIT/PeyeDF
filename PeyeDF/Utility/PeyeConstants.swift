@@ -97,6 +97,12 @@ struct PeyeConstants {
     
     // MARK: - Other globals
     
+    /// Default window width. Make sure this is above min document window width in storyboard.
+    static let docWindowWidth: CGFloat = 1100
+    
+    /// Default window height. Make sure this is above min document window height in storyboard.
+    static let docWindowHeight: CGFloat = 700
+    
     /// When comparing rectangles, they are at the same horizontal positions if they are separated by less than this amount of points.
     static let rectHorizontalTolerance: CGFloat = 2.0
     

@@ -148,6 +148,9 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
     override func windowDidLoad() {
         super.windowDidLoad()
         
+        var oldFrame = NSRect(origin: self.window!.frame.origin, size: NSSize(width: PeyeConstants.docWindowWidth, height: PeyeConstants.docWindowHeight))
+        self.window!.setFrame(oldFrame, display: true)
+        
         // Set reference to myPdf for convenience by using references to children of this window
         let splV: NSSplitViewController = self.window?.contentViewController as! NSSplitViewController
         docSplitController = splV.childViewControllers[1] as? DocumentSplitController

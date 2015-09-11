@@ -1037,7 +1037,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" horizontalCompressionResistancePriority="730" verticalCompressionResistancePriority="730" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="hYF-Uy-3Rx" viewBased="YES" id="LHf-eC-4mj">
-                                            <rect key="frame" x="0.0" y="0.0" width="322" height="0.0"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="336" height="0.0"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1139,6 +1139,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="labelColumn" destination="pIW-kQ-ycf" id="1yz-en-HBy"/>
                         <outlet property="resultNumberField" destination="hLf-rb-0HY" id="y4Q-GX-gey"/>
                         <outlet property="resultTable" destination="LHf-eC-4mj" id="kdC-FW-PqN"/>
                         <outlet property="searchCell" destination="w42-W5-HTL" id="sR5-Dn-cfx"/>

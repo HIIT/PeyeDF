@@ -409,6 +409,17 @@ class MyPDF: PDFView {
     
     // MARK: - General accessor methods
     
+    /// Check if page labels and page numbers are the same for the current document
+    func pageNumbersSameAsLabels() -> Bool {
+        for i in 0..<document().pageCount() {
+            let page = document().pageAtIndex(i)
+            if page.label() != "\(i+1)" {
+                return false
+            }
+        }
+        return true
+    }
+    
     /// Get media box for page, representing coordinates which take into account if
     /// page has been cropped (in Preview, for example). By default returns
     /// media box instead if crop box is not present, which is what we want

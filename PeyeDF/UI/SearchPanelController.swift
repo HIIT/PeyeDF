@@ -17,6 +17,12 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     let kColumnTitlePageLabel = "Page Label"
     let kColumnTitleLine = "Line"
     
+    /// The column which contains labels (is collapsed if numbers==labels)
+    @IBOutlet weak var labelColumn: NSTableColumn!
+    
+    /// Default width for label column width when displayed
+    let kLabelColumnWidth: CGFloat = 68.0
+    
     // delay for making first responder
     let kFirstResponderDelay = 0.2
     
@@ -29,7 +35,7 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     var searchString: String = ""
     weak var selectedSelection: PDFSelection?
     
-    weak var pdfView: PDFView?
+    weak var pdfView: MyPDF?
     
     /// Keeps track of the number of results found
     var numberOfResultsFound = 0
@@ -41,8 +47,7 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        resultTable.setDataSource(self)
-        resultTable.setDelegate(self)
+        labelColumn.minWidth = 0.0
     }
     
     override func viewWillAppear() {
@@ -67,6 +72,10 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
         searchCell.searchMenuTemplate = cellMenu
         // end recents menu --
         
+        // table set
+        resultTable.setDataSource(self)
+        resultTable.setDelegate(self)
+        
         // set up search notifications
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "foundOneMatch:", name: PDFDocumentDidFindMatchNotification, object: pdfView!.document())
     }
@@ -74,12 +83,27 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     override func viewWillDisappear() {
         // unset search notifications
         NSNotificationCenter.defaultCenter().removeObserver(self, name: PDFDocumentDidFindMatchNotification, object: pdfView!.document())
+        
+        // table unset
+        resultTable.setDataSource(nil)
+        resultTable.setDelegate(nil)
+        
     }
     
     // MARK: - UI various
     
+    /// Show label column if needed
+    func labelColumnCheck() {
+        if pdfView!.pageNumbersSameAsLabels() {
+            labelColumn.width = 0
+        } else {
+            labelColumn.width = kLabelColumnWidth
+        }
+    }
+    
     /// Make the search field first responder, but with a delay
     func makeSearchFieldFirstResponderWithDelay() {
+        labelColumnCheck()
         NSTimer.scheduledTimerWithTimeInterval(kFirstResponderDelay, target: self, selector: "makeSearchFieldFirstResponder", userInfo: nil, repeats: false)
     }
     
