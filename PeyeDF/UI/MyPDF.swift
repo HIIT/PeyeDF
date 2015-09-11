@@ -84,14 +84,26 @@ class MyPDF: PDFView {
     /// Delegate for clicks gesture recognizer
     var clickDelegate: ClickRecognizerDelegate?
     
+    // MARK: - Semi-debug fields
+    
+    /// Position of the circle
+    var circlePosition = NSPoint(x: 0, y: 0)
+    
+    /// Size of circle
+    var circleSize = NSSize(width: 20, height: 20)
+    
+    /// What single click does
+    var singleClickMode: SingleClickMode = SingleClickMode.MoveCrosshair
+    
     // MARK: - Event callbacks
     
     /// To receive single click actions (create "read" mark)
     override func mouseDown(theEvent: NSEvent) {
-        let singleClickTestingMode = false  // set this to true if we want to redirect single clicks
-        if singleClickTestingMode {
-        // Only proceed if there is actually text to select
+        switch singleClickMode {
+        case .MarkAsRead:
+            
             if theEvent.clickCount == 1 {
+                // Only proceed if there is actually text to select
                 if containsRawString {
                     // -- OLD STARTS HERE
     //                // Mouse in display view coordinates.
@@ -118,8 +130,38 @@ class MyPDF: PDFView {
                     super.mouseDown(theEvent)
                 }
             }
-        } else {
+            
+        case .MoveCrosshair:
+            /// GETTING MOUSE LOCATION IN WINDOW FROM SCREEN COORDINATES
+            // get mouse in screen coordinates
+            let mouseLoc = NSEvent.mouseLocation()
+            for screen in NSScreen.screens() as! [NSScreen] {
+                if NSMouseInRect(mouseLoc, screen.frame, false) {
+                    let tinySize = NSSize(width: 1, height: 1)
+                    let mouseRect = NSRect(origin: mouseLoc, size: tinySize)
+                    //let rawLocation = screen.convertRectToBacking(mouseRect)
+                    
+                    let oldPosition = circlePosition
+                    
+                    // use raw location to map back into view coordinates
+                    let mouseInWindow = self.window!.convertRectFromScreen(mouseRect)
+                    let mouseInView = self.convertRect(mouseInWindow, fromView: self.window!.contentViewController!.view)
+                    circlePosition = mouseInView.origin
+                    
+                    var neworigin = NSPoint(x: oldPosition.x - circleSize.width / 2, y: oldPosition.y - circleSize.width / 2)
+                    var newsize = NSSize(width: circleSize.width*2, height: circleSize.height*2)
+                    setNeedsDisplayInRect(NSRect(origin: neworigin, size: newsize))
+                    
+                    neworigin = NSPoint(x: mouseInView.origin.x - circleSize.width / 2, y: mouseInView.origin.y - circleSize.width / 2)
+                    newsize = NSSize(width: circleSize.width*2, height: circleSize.height*2)
+                    setNeedsDisplayInRect(NSRect(origin: neworigin, size: newsize))
+
+                }
+            }
+            
+        case .Default:
             super.mouseDown(theEvent)
+            
         }
     }
     
@@ -133,18 +175,28 @@ class MyPDF: PDFView {
     	// Save.
         NSGraphicsContext.saveGraphicsState()
 	
+        // Convert circle position from view to page coordinates
+        // Page we're on.
+        var activePage = self.pageForPoint(circlePosition, nearest: true)
+        // Get circle location in "page space".
+        let pagePoint = self.convertPoint(circlePosition, toPage: activePage)
+        
         // Draw what you need
-        let sampleRect = NSRect(x: 10.0, y: 30.0, width: 100.0, height: 70.0)
+        let circleRect = NSRect(origin: pagePoint, size: circleSize)
 	
         let borderColor = NSColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
         borderColor.set()
         
-        var cPath: NSBezierPath = NSBezierPath(ovalInRect: sampleRect)
-        cPath.lineWidth = 5.0
-        cPath.stroke()
+        var circlePath: NSBezierPath = NSBezierPath(ovalInRect: circleRect)
+        circlePath.lineWidth = 3.0
+        circlePath.stroke()
         
     	// Restore.
     	NSGraphicsContext.restoreGraphicsState()
+//        
+//        let neworigin = NSPoint(x: circlePosition.x - 10, y: circlePosition.y - 10)
+//        let newsize = NSSize(width: circleSize.width + 20, height: circleSize.height + 20)
+//        setNeedsDisplayInRect(NSRect(origin: neworigin, size: newsize))
     }
     
     // MARK: - Markings and Annotations
@@ -190,7 +242,7 @@ class MyPDF: PDFView {
     
     /// Create a marking (and subsequently a rect) at the given point, and make annotations
     ///
-    /// :param: location The point for which a rect will be created
+    /// :param: location The point for which a rect will be created (in view coordinates)
     /// :param: importance The importance of the rect that will be created
     func markAndAnnotate(location: NSPoint, importance: Importance) {
         if containsRawString {
@@ -217,7 +269,7 @@ class MyPDF: PDFView {
         // Page we're on.
         var activePage = self.pageForPoint(locationInView, nearest: true)
         
-        // Get mouse in "page space".
+        // Get location in "page space".
         let pagePoint = self.convertPoint(locationInView, toPage: activePage)
         
         let pointArray = verticalFocalPoints(fromPoint: pagePoint, self.scaleFactor(), self.getPageRect(activePage))
@@ -617,4 +669,11 @@ class MyPDF: PDFView {
     //            newRect = NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
     //        }
     
+}
+
+/// Semi-debug enum
+enum SingleClickMode {
+    case Default
+    case MarkAsRead
+    case MoveCrosshair
 }

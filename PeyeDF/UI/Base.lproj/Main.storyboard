@@ -60,8 +60,8 @@
                                     <rect key="frame" x="1" y="1" width="423" height="47"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <slider verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="E15-lK-fvD">
-                                            <rect key="frame" x="16" y="10" width="339" height="26"/>
+                                        <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="E15-lK-fvD">
+                                            <rect key="frame" x="16" y="9" width="339" height="26"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="335" id="dtF-MU-gHK"/>
                                             </constraints>
@@ -70,8 +70,8 @@
                                                 <action selector="thicknessSlided:" target="62w-oK-rf7" id="Re0-xj-aMp"/>
                                             </connections>
                                         </slider>
-                                        <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uRt-4J-vlE">
-                                            <rect key="frame" x="359" y="14" width="53" height="22"/>
+                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uRt-4J-vlE">
+                                            <rect key="frame" x="359" y="13" width="53" height="22"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="53" id="N2Q-Hu-YTx"/>
                                             </constraints>
@@ -896,7 +896,7 @@
                 <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="PeyeDF" customModuleProvider="target"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-957.5" y="-1200"/>
+            <point key="canvasLocation" x="-1857.5" y="-1212"/>
         </scene>
         <!--Document Window Controller-->
         <scene sceneID="f6R-Kc-PFL">
@@ -1090,7 +1090,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="60" id="Vzr-WU-4oi"/>
                                 </constraints>
-                                <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="95A-eE-ckT">
+                                <scroller key="horizontalScroller" verticalHuggingPriority="750" doubleValue="0.071428571428571425" horizontal="YES" id="95A-eE-ckT">
                                     <rect key="frame" x="1" y="119" width="223" height="15"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
