@@ -13,7 +13,9 @@ import Cocoa
 /// Since this view is on top, hide it! Otherwise will catch events
 class CircleOverlay: NSView {
     
-    override var acceptsFirstResponder: Bool { return true }
+    weak var otherView: NSView?
+    
+    override var acceptsFirstResponder: Bool { return false }
     
     override func drawRect(dirtyRect: NSRect) {
         
@@ -27,6 +29,10 @@ class CircleOverlay: NSView {
         circlePath.stroke()
         
         self.acceptsTouchEvents = false
+    }
+    
+    override func hitTest(aPoint: NSPoint) -> NSView? {
+        return otherView!.hitTest(aPoint)
     }
     
 }

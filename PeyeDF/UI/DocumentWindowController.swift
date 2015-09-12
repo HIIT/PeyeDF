@@ -271,9 +271,6 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
             
             // Send event regardig opening of file
             sendDeskEvent()
-            
-            // To make keystroke shortcuts work
-            myPdf?.becomeFirstResponder()
         }
     }
     

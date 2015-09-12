@@ -29,6 +29,7 @@ class PDFSideController: NSViewController, ClickRecognizerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        circleOverlay.otherView = myPDF
     }
 
     override var representedObject: AnyObject? {
@@ -36,7 +37,7 @@ class PDFSideController: NSViewController, ClickRecognizerDelegate {
         // Update the view, if already loaded.
         }
     }
-
+    
     /// Target for the gesture recognizer used to detect double clicks
     @IBAction func doubleClick(sender: NSClickGestureRecognizer) {
         myPDF.markAndAnnotate(sender.locationInView(myPDF), importance: Importance.Important)

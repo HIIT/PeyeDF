@@ -435,7 +435,7 @@
                                                 <items>
                                                     <menuItem title="Find…" tag="1" keyEquivalent="f" id="Xz5-n4-O0W">
                                                         <connections>
-                                                            <action selector="performFindPanelAction:" target="Ady-hI-5gd" id="cD7-Qs-BN4"/>
+                                                            <action selector="manualSearch:" target="Voe-Tx-rLC" id="vZO-MO-69E"/>
                                                         </connections>
                                                     </menuItem>
                                                     <menuItem title="Find Next" tag="2" keyEquivalent="g" id="q09-fT-Sye">
@@ -1384,7 +1384,7 @@
                                     </clickGestureRecognizer>
                                 </gestureRecognizers>
                             </pdfView>
-                            <customView hidden="YES" wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lWC-Pn-r7j" customClass="CircleOverlay" customModule="PeyeDF" customModuleProvider="target">
+                            <customView wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lWC-Pn-r7j" customClass="CircleOverlay" customModule="PeyeDF" customModuleProvider="target">
                                 <rect key="frame" x="20" y="20" width="534" height="320"/>
                             </customView>
                         </subviews>

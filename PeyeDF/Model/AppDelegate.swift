@@ -24,6 +24,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSUserDefaults.standardUserDefaults().registerDefaults(defaultPrefs)
         NSUserDefaults.standardUserDefaults().synchronize()
     }
+    
+    /// Find menu item is linked to this global function
+    @IBAction func manualSearch(sender: AnyObject) {
+        if let keyWin = NSApplication.sharedApplication().keyWindow {
+            if let docWinController = keyWin.windowController() as? DocumentWindowController {
+                docWinController.focusOnSearch()
+            }
+        }
+    }
 
     @IBAction func allDocMetadata(sender: AnyObject) {
         let doci = NSDocumentController.sharedDocumentController().documents
