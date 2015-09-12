@@ -18,6 +18,7 @@
 		A91CB95F1B332EDB00671868 /* PeyeDFTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91CB95E1B332EDB00671868 /* PeyeDFTests.swift */; };
 		A91CB96F1B332FB700671868 /* EyeFormulas.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91CB9691B332FB700671868 /* EyeFormulas.swift */; };
 		A91CB9721B332FB700671868 /* PeyeDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91CB96C1B332FB700671868 /* PeyeDocument.swift */; };
+		A9260F571BA4CD10005B1556 /* CircleOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9260F561BA4CD10005B1556 /* CircleOverlay.swift */; };
 		A935F0C61B8CC5FD00587C99 /* DesktopEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A935F0C51B8CC5FD00587C99 /* DesktopEvent.swift */; };
 		A93C53DC1B8DCEFB00179C72 /* HistoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93C53DB1B8DCEFB00179C72 /* HistoryManager.swift */; };
 		A95A8CEA1B9440600093119E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A91CB9511B332EDB00671868 /* Main.storyboard */; };
@@ -116,6 +117,7 @@
 		A91CB95E1B332EDB00671868 /* PeyeDFTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeyeDFTests.swift; sourceTree = "<group>"; };
 		A91CB9691B332FB700671868 /* EyeFormulas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EyeFormulas.swift; sourceTree = "<group>"; };
 		A91CB96C1B332FB700671868 /* PeyeDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeyeDocument.swift; sourceTree = "<group>"; };
+		A9260F561BA4CD10005B1556 /* CircleOverlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleOverlay.swift; sourceTree = "<group>"; };
 		A935F0C51B8CC5FD00587C99 /* DesktopEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DesktopEvent.swift; sourceTree = "<group>"; };
 		A93C53DB1B8DCEFB00179C72 /* HistoryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryManager.swift; sourceTree = "<group>"; };
 		A95A8CEB1B94407D0093119E /* DebugController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugController.swift; sourceTree = "<group>"; };
@@ -164,6 +166,7 @@
 				A913A9241BA1B047008BA10D /* MainSplitController.swift */,
 				A9FE38A71B98497400680F31 /* GeneralSettingsController.swift */,
 				A95A8CEC1B94407D0093119E /* DocumentSplitController.swift */,
+				A9260F561BA4CD10005B1556 /* CircleOverlay.swift */,
 				A95A8CED1B94407D0093119E /* DocumentWindowController.swift */,
 				A913A91F1BA1A93B008BA10D /* SearchPanelController.swift */,
 				A95A8CEE1B94407D0093119E /* MyPDF.swift */,
@@ -422,6 +425,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9260F571BA4CD10005B1556 /* CircleOverlay.swift in Sources */,
 				A935F0C61B8CC5FD00587C99 /* DesktopEvent.swift in Sources */,
 				A91CB96F1B332FB700671868 /* EyeFormulas.swift in Sources */,
 				A912D8A41B8B5C3A006F0657 /* DocumentInformationElement.swift in Sources */,

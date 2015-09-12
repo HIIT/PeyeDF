@@ -22,6 +22,7 @@ protocol ClickRecognizerDelegate {
 class PDFSideController: NSViewController, ClickRecognizerDelegate {
     
     @IBOutlet weak var myPDF: MyPDF!
+    @IBOutlet weak var circleOverlay: CircleOverlay!
     
     @IBOutlet weak var doubleClickRecognizer: NSClickGestureRecognizer!
     @IBOutlet weak var tripleClickRecognizer: NSClickGestureRecognizer!
