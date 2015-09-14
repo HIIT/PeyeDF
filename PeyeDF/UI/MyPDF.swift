@@ -87,13 +87,13 @@ class MyPDF: PDFView {
     // MARK: - Semi-debug fields
     
     /// Position of the circle
-    var circlePosition = NSPoint(x: 0, y: 0)
+    var circlePosition: NSPoint?
     
     /// Size of circle
     var circleSize = NSSize(width: 20, height: 20)
     
     /// What single click does
-    var singleClickMode: SingleClickMode = SingleClickMode.MoveCrosshair
+    var singleClickMode: SingleClickMode = SingleClickMode.Default
     
     // MARK: - Event callbacks
     
@@ -139,22 +139,19 @@ class MyPDF: PDFView {
                 if NSMouseInRect(mouseLoc, screen.frame, false) {
                     let tinySize = NSSize(width: 1, height: 1)
                     let mouseRect = NSRect(origin: mouseLoc, size: tinySize)
-                    //let rawLocation = screen.convertRectToBacking(mouseRect)
-                    
-                    let oldPosition = circlePosition
-                    
-                    // use raw location to map back into view coordinates
                     let mouseInWindow = self.window!.convertRectFromScreen(mouseRect)
                     let mouseInView = self.convertRect(mouseInWindow, fromView: self.window!.contentViewController!.view)
-                    circlePosition = mouseInView.origin
                     
-                    var neworigin = NSPoint(x: oldPosition.x - circleSize.width / 2, y: oldPosition.y - circleSize.width / 2)
-                    var newsize = NSSize(width: circleSize.width*2, height: circleSize.height*2)
-                    setNeedsDisplayInRect(NSRect(origin: neworigin, size: newsize))
+                    if let oldPosition = circlePosition {
+                        let oldPageRect = NSRect(origin: oldPosition, size: circleSize)
+                        let screenRect = convertRect(oldPageRect, fromPage: currentPage())
+                        setNeedsDisplayInRect(screenRect.scale(scaleFactor()))
+                    }
                     
-                    neworigin = NSPoint(x: mouseInView.origin.x - circleSize.width / 2, y: mouseInView.origin.y - circleSize.width / 2)
-                    newsize = NSSize(width: circleSize.width*2, height: circleSize.height*2)
-                    setNeedsDisplayInRect(NSRect(origin: neworigin, size: newsize))
+                    circlePosition = convertPoint(mouseInView.origin, toPage: currentPage())
+                    var screenRect = NSRect(origin: circlePosition!, size: circleSize)
+                    screenRect = convertRect(screenRect, fromPage: currentPage())
+                    setNeedsDisplayInRect(screenRect.scale(scaleFactor()))
 
                 }
             }
@@ -175,28 +172,21 @@ class MyPDF: PDFView {
     	// Save.
         NSGraphicsContext.saveGraphicsState()
 	
-        // Convert circle position from view to page coordinates
-        // Page we're on.
-        var activePage = self.pageForPoint(circlePosition, nearest: true)
-        // Get circle location in "page space".
-        let pagePoint = self.convertPoint(circlePosition, toPage: activePage)
-        
-        // Draw what you need
-        let circleRect = NSRect(origin: pagePoint, size: circleSize)
-	
-        let borderColor = NSColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
-        borderColor.set()
-        
-        var circlePath: NSBezierPath = NSBezierPath(ovalInRect: circleRect)
-        circlePath.lineWidth = 3.0
-        circlePath.stroke()
+        // Draw.
+        if let circlePosition = circlePosition {
+            // Draw what you need
+            let circleRect = NSRect(origin: circlePosition, size: circleSize)
+    	
+            let borderColor = NSColor(red: 0.9, green: 0.0, blue: 0.0, alpha: 0.8)
+            borderColor.set()
+            
+            var circlePath: NSBezierPath = NSBezierPath(ovalInRect: circleRect)
+            circlePath.lineWidth = 3.0
+            circlePath.stroke()
+        }
         
     	// Restore.
     	NSGraphicsContext.restoreGraphicsState()
-//        
-//        let neworigin = NSPoint(x: circlePosition.x - 10, y: circlePosition.y - 10)
-//        let newsize = NSSize(width: circleSize.width + 20, height: circleSize.height + 20)
-//        setNeedsDisplayInRect(NSRect(origin: neworigin, size: newsize))
     }
     
     // MARK: - Markings and Annotations

@@ -152,6 +152,18 @@ extension NSRect {
         ary.append(self)
         return ary
     }
+    
+    /// Scale this rect by a given factor (by addition) and return a new rect.
+    func scale(scale: CGFloat) -> NSRect {
+        var newOrigin = NSPoint()
+    
+        let maxX = CGFloat(ceilf(Float(self.origin.x + self.size.width))) + scale
+        let maxY = CGFloat(ceilf(Float(self.origin.y + self.size.height))) + scale
+        newOrigin.x = CGFloat(floorf(Float(self.origin.x))) - scale
+        newOrigin.y = CGFloat(floorf(Float(self.origin.y))) - scale
+        
+        return NSMakeRect(newOrigin.x, newOrigin.y, maxX - newOrigin.x, maxY - newOrigin.y);
+    }
 }
 
 // MARK: - Other functions

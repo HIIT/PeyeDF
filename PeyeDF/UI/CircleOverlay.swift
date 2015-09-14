@@ -13,24 +13,47 @@ import Cocoa
 /// Since this view is on top, hide it! Otherwise will catch events
 class CircleOverlay: NSView {
     
+    /// All events will be redirected to this view
     weak var otherView: NSView?
     
+    /// Reject first respnder status
     override var acceptsFirstResponder: Bool { return false }
+    
+    /// Default circle size
+    let kCircleSize = NSSize(width: 30, height: 30)
+    
+    /// Default circle line width
+    let kCircleLineWidth: CGFloat = 3
+    
+    /// Default circle line colour
+    let kCircleLineColour = NSColor(red: 0.9, green: 0.0, blue: 0.0, alpha: 0.8)
+    
+    /// Default circle position (initially set to a semi random value)
+    let circlePosition = NSPoint(x: 30, y: 30)
+    
+    /// Raise an error if otherView is not set
+    override func viewDidMoveToWindow() {
+        if otherView == nil {
+            let exception = NSException(name: "otherView is not set", reason: "Can't redirect events behind circleOVerlay", userInfo: nil)
+            exception.raise()
+        }
+    }
     
     override func drawRect(dirtyRect: NSRect) {
         
-        let circleRect = NSRect(origin: NSPoint(x: 25, y: 25), size: NSSize(width: 50, height: 50))
+        let circleRect = NSRect(origin: circlePosition, size: kCircleSize)
 	
-        let borderColor = NSColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
+        let borderColor = kCircleLineColour
         borderColor.set()
         
         var circlePath: NSBezierPath = NSBezierPath(ovalInRect: circleRect)
-        circlePath.lineWidth = 3.0
+        circlePath.lineWidth = kCircleLineWidth
         circlePath.stroke()
         
         self.acceptsTouchEvents = false
     }
     
+    /// Redirect all events to otherView
     override func hitTest(aPoint: NSPoint) -> NSView? {
         return otherView!.hitTest(aPoint)
     }

@@ -29,7 +29,7 @@ class PDFSideController: NSViewController, ClickRecognizerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        circleOverlay.otherView = myPDF
+        circleOverlay.otherView = myPDF  // tell circleOverlay to be transparent
     }
 
     override var representedObject: AnyObject? {

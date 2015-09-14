@@ -254,7 +254,7 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
             
             let pages = foundSelections[row].pages()
             let page = pages[0] as! PDFPage
-            return pdfView!.document().indexForPage(page) + 1
+            return page.document().indexForPage(page) + 1
             
         } else if tableColumn?.identifier == kColumnTitleLine {
             
