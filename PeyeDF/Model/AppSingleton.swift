@@ -41,3 +41,8 @@ class AppSingleton {
     }
     
 }
+
+
+// midas fetching
+// Every 5 seconds, make a request using alamofire to get the last 5 seconds of data
+// save time and tuple with coordinates in a field

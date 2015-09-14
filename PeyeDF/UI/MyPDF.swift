@@ -274,12 +274,12 @@ class MyPDF: PDFView {
         
         let medI = selections.count / 2  // median point for selection array
         
-        // sort selections by height and get median height
-        selections.sort({$0.boundsForPage(activePage).height > $1.boundsForPage(activePage).height})
+        // sort selections by height (disabled, using middle point instead)
+        // selections.sort({$0.boundsForPage(activePage).height > $1.boundsForPage(activePage).height})
         let medianHeight = selections[medI].boundsForPage(activePage).height
         
-        // sort selections by width and get median width
-        selections.sort({$0.boundsForPage(activePage).width > $1.boundsForPage(activePage).width})
+        // sort selections by width (disabled, using median point)
+        // selections.sort({$0.boundsForPage(activePage).width > $1.boundsForPage(activePage).width})
         let medianWidth = selections[medI].boundsForPage(activePage).width
         
         let isHorizontalLine = medianHeight < medianWidth
