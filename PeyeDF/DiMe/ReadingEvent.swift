@@ -13,23 +13,28 @@ import Foundation
 
 class ReadingEvent: Event, DiMeAble {
     
+    var pageEyeData = [[String: AnyObject]]()
+    
     /**
         Creates this reading event.
     
         :param: multiPage yes if > 1 page is currently being displayed
-        :visiblePages: vector of pages specifying the pages currently being displayed, starting from 0 (length should be > 1 if multiPage == true)
-        :pageRects: A list of rectangles representing where the viewport is placed for each page. All the rects should fit within the page. Rect dimensions refer to points in a 72 dpi space where the bottom left is the origin, as in Apple's PDFKit. A page in US Letter format (often used for papers) translates to approx 594 x 792 points.
-        :proportion: Proportion of the page being looked at. Note: this is biased to excess, it gives the very max and min of the proportion of the page beeing looked at. If there is a part currently not being seen in 2-page continuous, it is ignored.
-        :plainTextContent: plain text visible on screen
-        :infoElemId: id referring to the info element referenced by this event (document id)
+        :param: visiblePages vector of pages specifying the pages currently being displayed, starting from 0 (length should be > 1 if multiPage == true)
+        :param: pageRects A list of rectangles representing where the viewport is placed for each page. All the rects should fit within the page. Rect dimensions refer to points in a 72 dpi space where the bottom left is the origin, as in Apple's PDFKit. A page in US Letter format (often used for papers) translates to approx 594 x 792 points.
+        :param: proportion Proportion of the page being looked at. Note: this is biased to excess, it gives the very max and min of the proportion of the page beeing looked at. If there is a part currently not being seen in 2-page continuous, it is ignored.
+    
+        :param: plainTextContent plain text visible on screen
+        :param: scaleFactor Sale factor of page on screen
+        :param: infoElemId id referring to the info element referenced by this event (document id)
     */
-    init(multiPage: Bool, visiblePageNumbers: [Int], visiblePageLabels: [String], pageRects: [ReadingRect], proportion: DiMeRange, plainTextContent: NSString, infoElemId: NSString) {
+    init(multiPage: Bool, visiblePageNumbers: [Int], visiblePageLabels: [String], pageRects: [ReadingRect], proportion: DiMeRange, scaleFactor: NSNumber, plainTextContent: NSString, infoElemId: NSString) {
         super.init()
         self.setDiMeDict()
         json["multiPage"] = JSON(multiPage)
         json["visiblePageNumbers"] = JSON(visiblePageNumbers)
         json["visiblePageLabels"] = JSON(visiblePageLabels)
         json["proportion"] = JSON(proportion.getDict())
+        json["scaleFactor"] = JSON(scaleFactor)
         json["plainTextContent"] = JSON(plainTextContent)
         
         var rectArray = [[String: AnyObject]]()
@@ -45,7 +50,12 @@ class ReadingEvent: Event, DiMeAble {
         infoElemDict["id"] = infoElemId
         
         json["targettedResource"] = JSON(infoElemDict)
-        
+    }
+    
+    /// Adds eye tracking data to this reading event
+    func addEyeData(newData: PageEyeData) {
+        pageEyeData.append(newData.getDict())
+        json["pageEyeData"] = JSON(pageEyeData)
     }
     
     func setDiMeDict() {

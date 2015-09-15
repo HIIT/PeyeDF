@@ -16,7 +16,7 @@ protocol Dictionariable {
     func getDict() -> [String: AnyObject]
 }
 
-/// Marks dime "leaf" objects that can send themselves to DiMe
+/// Marks dime "container" objects that can send themselves to DiMe
 protocol DiMeAble {
     
     /// Set DiMe Dictionary. Can be called directly by class/subclass' own initializer.

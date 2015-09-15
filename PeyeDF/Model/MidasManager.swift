@@ -29,7 +29,8 @@ class MidasManager {
     private let kTestURL = "http://127.0.0.1:8080/test"
     
     /// Fetching of eye tracking events, TO / FROM Midas Manager, and timers related to this activity, are all run on this queue to prevent resource conflicts.
-    static let sharedSerialQueue = dispatch_queue_create("hiit.PeyeDF.MidasManager.sharedSerialQueue", DISPATCH_QUEUE_SERIAL)
+    /// writing of eye tracking events blocks the queue, reading does not.
+    static let sharedQueue = dispatch_queue_create("hiit.PeyeDF.MidasManager.sharedQueue", DISPATCH_QUEUE_CONCURRENT)
     
     /// Time to regularly fetch data from Midas
     private var fetchTimer: NSTimer?
@@ -45,7 +46,7 @@ class MidasManager {
                 AppSingleton.log.error("Midas is down: \(requestError)")
             } else if self.fetchTimer == nil {
                 self.midasAvailable = true
-                dispatch_sync(MidasManager.sharedSerialQueue) {
+                dispatch_sync(MidasManager.sharedQueue) {
                     self.fetchTimer = NSTimer(timeInterval: self.kFetchInterval, target: self, selector: "fetchTimerHit:", userInfo: nil, repeats: true)
                     NSRunLoop.currentRunLoop().addTimer(self.fetchTimer!, forMode: NSRunLoopCommonModes)
                 }
@@ -56,7 +57,7 @@ class MidasManager {
     /// Stops fetching data from Midas
     func stop() {
         if let timer = fetchTimer {
-            dispatch_sync(MidasManager.sharedSerialQueue) {
+            dispatch_sync(MidasManager.sharedQueue) {
                     timer.invalidate()
                }
             fetchTimer = nil
@@ -81,7 +82,7 @@ class MidasManager {
         request.responseJSON {
             _, _, JSON, requestError in
             if let error = requestError {
-                AppSingleton.log.error("Error while reading json response from DiMe: \(requestError)")
+                AppSingleton.log.error("Error while reading json response from Midas: \(requestError)")
             } else {
                 AppSingleton.log.debug("Data got")
                 println(JSON!.description)
