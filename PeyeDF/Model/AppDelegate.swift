@@ -23,6 +23,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         defaultPrefs[PeyeConstants.prefSendEventOnFocusSwitch] = 0
         NSUserDefaults.standardUserDefaults().registerDefaults(defaultPrefs)
         NSUserDefaults.standardUserDefaults().synchronize()
+        
+        MidasManager.sharedInstance.start()
     }
     
     /// Find menu item is linked to this global function
@@ -53,6 +55,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationWillTerminate(aNotification: NSNotification) {
         // Insert code here to tear down your application
+        MidasManager.sharedInstance.stop()
     }
     
     func applicationShouldOpenUntitledFile(sender: NSApplication) -> Bool {

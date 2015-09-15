@@ -100,26 +100,6 @@ class HistoryManager {
         }
         
         
-        // get last 5 seconds of data
-        
-        let secondsFrom = 5
-        let windowLength = 5
-        let fetchString = "http://127.0.0.1:8080/sample_eyestream/data/{\"channels\":[\"x\", \"y\"], \"time_window\":[\(secondsFrom),\(windowLength)]}"
-        
-        let manager = Alamofire.Manager.sharedInstance
-        let midasUrl = NSURL(string: fetchString.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!)
-        let urlRequest = NSURLRequest(URL: midasUrl!)
-        let request = manager.request(urlRequest)
-        
-        request.responseJSON {
-            _, _, JSON, requestError in
-            if let error = requestError {
-                AppSingleton.log.error("Error while reading json response from DiMe: \(requestError)")
-            } else {
-                AppSingleton.log.debug("Data got")
-                println(JSON!.description)
-            }
-        }
     }
     
     /// Starts the "entry timer" and sets up references to the current window

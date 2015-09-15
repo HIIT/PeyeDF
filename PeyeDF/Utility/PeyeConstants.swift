@@ -59,23 +59,6 @@ struct PeyeConstants {
     /// Column name for debug table. Make sure this identifier matches the table view id in the storyboard
     static let debugTimeColName = "DebugTimeColumn"
     
-    // MARK: - Rectangle reading classes
-    
-    /// Unspecified reading class
-    static let CLASS_UNSET = 0
-    
-    /// Class for viewport (simple read without eye tracking) text
-    static let CLASS_VIEWPORT = 10
-    
-    /// Class for eye tracking read text.
-    static let CLASS_READ = 20
-    
-    /// Class for eye tracking "interesting" rectangles.
-    static let CLASS_INTERESTING = 25
-    
-    /// Class for eye tracking "critical" rectangles.
-    static let CLASS_CRITICAL = 30
-    
     // MARK: - Annotations
     
     /// Space between the "selection" (seen paragraph) rectangle and its line (in page points)
@@ -96,6 +79,12 @@ struct PeyeConstants {
                                        PeyeConstants.annotationColourCritical]
     
     // MARK: - Other globals
+    
+    /// What is returned when a coordinate on screen is outside the current pdfView.
+    static let outOfViewTriplet = (x: CGFloat(-1.0), y: CGFloat(-1.0), pageIndex: -1)
+    
+    /// What is returned when a coordinate on screen is outside the current page.
+    static let outOfPageTriplet = (x: CGFloat(-2.0), y: CGFloat(-2.0), pageIndex: -2)
     
     /// Default window width. Make sure this is above min document window width in storyboard.
     static let docWindowWidth: CGFloat = 1100
@@ -161,4 +150,23 @@ struct PeyeConstants {
         dateFormatter.dateFormat = PeyeConstants.diMeDateFormat
         return dateFormatter
     }
+}
+
+// MARK: - Rectangle reading classes
+
+/// How important is a paragraph
+public enum ReadingClass: Int {
+    case Unset = 0
+    case Viewport = 10
+    case Read = 20
+    case Interesting = 30
+    case Critical = 40
+}
+
+/// What decided that a paragraph is important
+public enum ClassSource: Int {
+    case Unset = 0
+    case Viewport = 1
+    case Click = 2
+    case Eye = 3
 }

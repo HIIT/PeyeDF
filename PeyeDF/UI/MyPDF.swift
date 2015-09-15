@@ -14,13 +14,6 @@ import Quartz
 let extraLineAmount = 3 // 1/this number is the amount of extra lines that we want to discard
                         // if we are at beginning or end of paragraph
 
-/// How important is a paragraph
-public enum Importance {
-    case Read
-    case Important
-    case Critical
-}
-
 /// This class represents a "marking state", that is a selection of importance rectangles and the last rectangle and
 /// last page that were edited. It is used to store states in undo operations.
 class MarkingState: NSObject {
@@ -57,9 +50,17 @@ class MarkingState: NSObject {
     }
 }
 
+/// Used to convert points on screen to points on a page
+protocol ScreenToPageConverter {
+    
+    /// Converts a point on screen and returns a tuple containing x coordinate, y coordinate, BOTH on page points
+    func screenToPage(pointOnScreen: NSPoint) -> (x: CGFloat, y: CGFloat, pageIndex: Int)
+    
+}
+
 /// Implementation of a custom PDFView class, used to implement additional function related to
 /// psychophysiology and user activity tracking
-class MyPDF: PDFView {
+class MyPDF: PDFView, ScreenToPageConverter {
     
     /// Whether we want to annotate by clicking
     private var clickAnnotationEnabled = true
@@ -123,7 +124,7 @@ class MyPDF: PDFView {
                             // use raw location to map back into view coordinates
                             let mouseInWindow = self.window!.convertRectFromScreen(mouseRect)
                             let mouseInView = self.convertRect(mouseInWindow, fromView: self.window!.contentViewController!.view)
-                            markAndAnnotate(mouseInView.origin, importance: Importance.Read)
+                            markAndAnnotate(mouseInView.origin, importance: ReadingClass.Read)
                         }
                     }
                 } else {
@@ -234,7 +235,7 @@ class MyPDF: PDFView {
     ///
     /// :param: location The point for which a rect will be created (in view coordinates)
     /// :param: importance The importance of the rect that will be created
-    func markAndAnnotate(location: NSPoint, importance: Importance) {
+    func markAndAnnotate(location: NSPoint, importance: ReadingClass) {
         if containsRawString {
             // prepare a marking state to store this operation
             let previousState = MarkingState(criticalRects: self.criticalRects, interestingRects: self.interestingRects, readRects: self.readRects)
@@ -253,7 +254,7 @@ class MyPDF: PDFView {
     /// should be marked as somehow important
     ///
     /// :returns: A triplet containing the rectangle that was created, on which page it was created and what importance
-    func mark(locationInView: NSPoint, importance: Importance) -> (newRect: NSRect, onPage: PDFPage, importance: Importance)? {
+    func mark(locationInView: NSPoint, importance: ReadingClass) -> (newRect: NSRect, onPage: PDFPage, importance: ReadingClass)? {
         var markRect: NSRect
         
         // Page we're on.
@@ -352,7 +353,7 @@ class MyPDF: PDFView {
                 readRects[activePage] = [NSRect]()
             }
             readRects[activePage]!.append(markRect)
-        case .Important:
+        case .Interesting:
             if interestingRects[activePage] == nil {
                 interestingRects[activePage] = [NSRect]()
             }
@@ -489,7 +490,50 @@ class MyPDF: PDFView {
         self.clickDelegate?.setRecognizersTo(enabled)
     }
     
+    // MARK: - Protocol implementations
+    
+    /// Returns the corresponding point on page for a point on screen.
+    ///
+    /// :param: pointOnScreen A point corresponding to a screen coordinate
+    /// :returns: A triple containing the x, y coordinate and page index. The default values
+    ///           for when a point can't be found is defined in PeyeConstants
+    func screenToPage(pointOnScreen: NSPoint) -> (x: CGFloat, y: CGFloat, pageIndex: Int) {
+        let tinySize = NSSize(width: 1, height: 1)
+        let tinyRect = NSRect(origin: pointOnScreen, size: tinySize)
+        
+        let rectInWindow = self.window!.convertRectToScreen(tinyRect)
+        let rectInView = self.convertRect(rectInWindow, fromView: self.window!.contentViewController!.view)
+        let pointInView = rectInView.origin
+        
+        //  return the default triplet for failing when the point is outside this view
+        if pointInView.x < 0 || pointInView.y < 0 || pointInView.x > frame.width || pointInView.y > frame.height {
+            return PeyeConstants.outOfViewTriplet
+        }
+        // otherwise calculate point on page, still return if point is outside page
+        let page = pageForPoint(pointInView, nearest:false)
+        if page == nil {
+            return PeyeConstants.outOfPageTriplet
+        }
+        let pointOnPage = self.convertPoint(pointInView, toPage: page)
+        let pageIndex = self.document().indexForPage(page)
+        if pageIndex > 5 {
+            // TODO: delete this once we verify reasonable page indices are being returned
+            let exception = NSException(name: "pageIndex is more than 5", reason: nil, userInfo: nil)
+            exception.raise()
+        }
+        return (x: pointOnPage.x, y: pointOnPage.y, pageIndex: pageIndex)
+    }
+    
     // MARK: - General accessor methods
+    
+    /// Get the rectangle of the pdf view, in screen coordinates
+    func getRectOfViewOnScreen() -> NSRect {
+        // get a rectangle representing the pdfview frame, relative to its superview and convert to the window's view
+        let r1:NSRect = self.superview!.convertRect(self.frame, toView: self.window!.contentView as? NSView)
+        // get screen coordinates corresponding to the rectangle got in the previous line
+        let r2 = self.window!.convertRectToScreen(r1)
+        return r2
+    }
     
     /// Check if page labels and page numbers are the same for the current document
     func pageNumbersSameAsLabels() -> Bool {
@@ -638,7 +682,7 @@ class MyPDF: PDFView {
             
             var readingRects = [ReadingRect]()
             for rect in pageRects {
-                var newRect = ReadingRect(rect: rect, readingClass: PeyeConstants.CLASS_VIEWPORT)
+                var newRect = ReadingRect(rect: rect, readingClass: ReadingClass.Viewport, classSource: ClassSource.Viewport)
                 readingRects.append(newRect)
             }
             
