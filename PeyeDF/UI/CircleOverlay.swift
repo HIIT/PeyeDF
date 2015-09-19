@@ -46,7 +46,7 @@ class CircleOverlay: NSView {
         let borderColor = kCircleLineColour
         borderColor.set()
         
-        var circlePath: NSBezierPath = NSBezierPath(ovalInRect: circleRect)
+        let circlePath: NSBezierPath = NSBezierPath(ovalInRect: circleRect)
         circlePath.lineWidth = kCircleLineWidth
         circlePath.stroke()
         

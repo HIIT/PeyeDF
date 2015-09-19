@@ -16,7 +16,7 @@ class Event: NSObject {
     
     /// Must be called by subclasses
     override init() {
-        var retDict = [String: AnyObject]()
+        let retDict = [String: AnyObject]()
         
         self.json = JSON(retDict)
         // Make creation date

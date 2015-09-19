@@ -54,23 +54,21 @@ class PeyeDocument: NSDocument {
     }
     
     /// This function is called automagically by Cocoa when closing the window, for some reason
-    override func writeToURL(url: NSURL, ofType type: String, error outError: NSErrorPointer) -> Bool {
+    override func writeToURL(url: NSURL, ofType type: String) throws {
         if type == "PeyeDF" {
             let wincontroller = self.windowControllers[0] as! DocumentWindowController
             wincontroller.myPdf?.document().writeToURL(url)
-            return true
+            return
         } else {
             // We don't know what Cocoa is attempting to save, throw some error
-            outError.memory = NSError(domain: NSOSStatusErrorDomain, code: NSURLErrorCannotWriteToFile, userInfo: nil)
-            return false
+            throw NSError(domain: NSOSStatusErrorDomain, code: NSURLErrorCannotWriteToFile, userInfo: nil)
         }
     }
     
     /// Always returns true, assumes we can only open allowed documents (PDFs) in the first place
-    override func readFromURL(url: NSURL, ofType typeName: String, error outError: NSErrorPointer) -> Bool {
-        AppSingleton.log.debug("Opening " + url.description)
+    override func readFromURL(url: NSURL, ofType typeName: String) throws {
+        AppSingleton.log.debug("Opening  \(url.description)")
         filename = url.lastPathComponent!
         sha1 = url.path!.sha1()
-        return true
     }
 }

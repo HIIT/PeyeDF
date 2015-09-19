@@ -39,11 +39,11 @@ class MidasManager {
     func start() {
         /// Checks if midas is available, if not doesn't start
         Alamofire.request(.GET, kTestURL).responseJSON {
-            _, _, JSON, requestError in
+            _, _, JSON in
             
-            if let error = requestError {
+            if JSON.isFailure {
                 self.midasAvailable = false
-                AppSingleton.log.error("Midas is down: \(requestError)")
+                AppSingleton.log.error("Midas is down: \(JSON.debugDescription)")
             } else if self.fetchTimer == nil {
                 self.midasAvailable = true
                 dispatch_sync(MidasManager.sharedQueue) {
@@ -75,17 +75,18 @@ class MidasManager {
         let fetchString = "http://127.0.0.1:8080/sample_eyestream/data/{\"channels\":[\"x\", \"y\"], \"time_window\":[\(kBufferLength),\(kBufferLength)]}"
         
         let manager = Alamofire.Manager.sharedInstance
-        let midasUrl = NSURL(string: fetchString.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!)
+        let midasUrl = NSURL(string: fetchString.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!)
+        
         let urlRequest = NSURLRequest(URL: midasUrl!)
         let request = manager.request(urlRequest)
         
         request.responseJSON {
-            _, _, JSON, requestError in
-            if let error = requestError {
-                AppSingleton.log.error("Error while reading json response from Midas: \(requestError)")
+            _, _, JSON in
+            if JSON.isFailure {
+                AppSingleton.log.error("Error while reading json response from Midas: \(JSON.debugDescription)")
             } else {
                 AppSingleton.log.debug("Data got")
-                println(JSON!.description)
+                print(JSON.description)
             }
         }
     }

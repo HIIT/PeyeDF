@@ -15,7 +15,7 @@ import Quartz
 /// - storyboard: the "Main" storyboard
 /// - log: XCGLogger instance to log information to console and file
 class AppSingleton {
-    static let storyboard = NSStoryboard(name: "Main", bundle: nil)!
+    static let storyboard = NSStoryboard(name: "Main", bundle: nil)
     
     static let log = AppSingleton.createLog()
     
@@ -29,13 +29,17 @@ class AppSingleton {
     private static func createLog() -> XCGLogger {
         var error: NSError? = nil
         var firstLine: String = "Log directory succesfully created / present"
-        let tempDirBase = NSTemporaryDirectory().stringByAppendingPathComponent(NSBundle.mainBundle().bundleIdentifier!)
-            if !NSFileManager.defaultManager().createDirectoryAtPath(tempDirBase, withIntermediateDirectories: true, attributes: nil, error: &error) {
-                firstLine = "Error creating log directory: " + error!.description
-            }
-        let logFilePath = tempDirBase.stringByAppendingPathComponent("XCGLog.log")
+        let tempURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).URLByAppendingPathComponent(NSBundle.mainBundle().bundleIdentifier!)
+        let tempDirBase = tempURL.URLString
+        do {
+            try NSFileManager.defaultManager().createDirectoryAtPath(tempDirBase, withIntermediateDirectories: true, attributes: nil)
+        } catch let error1 as NSError {
+            error = error1
+            firstLine = "Error creating log directory: " + error!.description
+        }
+        let logFilePathURL = tempURL.URLByAppendingPathComponent("XCGLog.log")
         let newLog = XCGLogger.defaultInstance()
-        newLog.setup(logLevel: .Debug, showThreadName: true, showLogLevel: true, showFileNames: true, showLineNumbers: true, writeToFile: logFilePath, fileLogLevel: .Debug)
+        newLog.setup(.Debug, showThreadName: true, showLogLevel: true, showFileNames: true, showLineNumbers: true, writeToFile: logFilePathURL.URLString, fileLogLevel: .Debug)
         newLog.debug(firstLine)
         return newLog
     }

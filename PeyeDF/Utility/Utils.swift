@@ -39,8 +39,8 @@ extension String {
         let data = self.dataUsingEncoding(NSUTF8StringEncoding)!
         var digest = [UInt8](count:Int(CC_SHA1_DIGEST_LENGTH), repeatedValue: 0)
         CC_SHA1(data.bytes, CC_LONG(data.length), &digest)
-        let hexBytes = map(digest) { String(format: "%02hhx", $0) }
-        return "".join(hexBytes)
+        let hexBytes = digest.map { String(format: "%02hhx", $0) }
+        return hexBytes.joinWithSeparator("")
     }
 }
 
@@ -72,8 +72,8 @@ extension NSColor {
     /// Returns true if all the components of the colour (rgb and alpha) are the same as the other color,
     /// ignoring the color space
     ///
-    /// :param: lhs The color to compare to
-    /// :returns: True if they are "practically equal"
+    /// - parameter lhs: The color to compare to
+    /// - returns: True if they are "practically equal"
     func practicallyEqual(lhs: NSColor) -> Bool {
         var components1 = [CGFloat](count: 4, repeatedValue: -1.0)
         var components2 = [CGFloat](count: 4, repeatedValue: -2.0)
@@ -100,7 +100,7 @@ public func == (lhs: NSRect, rhs: NSRect) -> Bool {
 /// come before rects with lower y.
 public func < (lhs: NSRect, rhs: NSRect) -> Bool {
     let constant: CGFloat = PeyeConstants.rectHorizontalTolerance
-    if withinRange(lhs.origin.x, rhs.origin.x, constant) {
+    if withinRange(lhs.origin.x, rhs: rhs.origin.x, range: constant) {
         return lhs.origin.y > rhs.origin.y
     } else {
         return lhs.origin.x < rhs.origin.x
@@ -116,15 +116,15 @@ extension NSRect {
     /// a certain tolerance (PeyeConstants.rectHorizontalTolerance) on the x axis.
     /// An empty array if the subtrahend completely encloses this rect.
     ///
-    /// :param: rhs The rectangle that will be subtracted **from** this rectangle (subtrahend)
-    /// :returns: An array of rectangles, the result of the operation
+    /// - parameter rhs: The rectangle that will be subtracted **from** this rectangle (subtrahend)
+    /// - returns: An array of rectangles, the result of the operation
     func subtractRect(rhs: NSRect) -> [NSRect] {
         let constant: CGFloat = PeyeConstants.rectHorizontalTolerance
         var ary = [NSRect]()
         if NSContainsRect(rhs, self) {
             return ary
         }
-        if withinRange(self.origin.x, rhs.origin.x, constant) {
+        if withinRange(self.origin.x, rhs: rhs.origin.x, range: constant) {
             if NSIntersectsRect(self, rhs) {
                 var slice = NSRect()
                 var remainder = NSRect()
@@ -136,14 +136,14 @@ extension NSRect {
                     // this rectangle extends below the other
                     // slce the bottom from below
                     let sliceFromBottom = rhs.minY - self.minY
-                    NSDivideRect(self, &slice, &remainder, sliceFromBottom, NSMinYEdge)
+                    NSDivideRect(self, &slice, &remainder, sliceFromBottom, NSRectEdge.MinY)
                     ary.append(slice)
                 }
                 if self.maxY > rhs.maxY {
                     // this rectangle extends above the other
                     // slice the top from above
                     let sliceFromTop = self.maxY - rhs.maxY
-                    NSDivideRect(self, &slice, &remainder, sliceFromTop, NSMaxYEdge)
+                    NSDivideRect(self, &slice, &remainder, sliceFromTop, NSRectEdge.MaxY)
                     ary.append(slice)
                 }
                 return ary
@@ -176,10 +176,10 @@ func roundToX(number: CGFloat, places: CGFloat) -> CGFloat {
 
 /// Check if a value is within a specified range of another value
 ///
-/// :param: lhs The first value
-/// :param: rhs The second value
-/// :param: range The allowance
-/// :returns: True if lhs is within ± abs(range) of rhs
+/// - parameter lhs: The first value
+/// - parameter rhs: The second value
+/// - parameter range: The allowance
+/// - returns: True if lhs is within ± abs(range) of rhs
 public func withinRange(lhs: CGFloat, rhs: CGFloat, range: CGFloat) -> Bool {
     return (lhs + abs(range)) >= rhs && (lhs - abs(range)) <= rhs
 }
@@ -201,9 +201,9 @@ public func inchToCm(inchValue: CGFloat) -> CGFloat {
 /// with the colliding rectangles united (two rects collide when their intersection is not zero).
 public func uniteCollidingRects(inputArray: [NSRect]) -> [NSRect] {
     var ary = inputArray
-    sort(&ary)
+    ary.sortInPlace()
     var i = 0
-    while i + 1 < count(ary) {
+    while i + 1 < ary.count {
         if NSIntersectsRect(ary[i], ary[i+1]) {
             ary[i] = NSUnionRect(ary[i], ary[i+1])
             ary.removeAtIndex(i+1)
@@ -218,20 +218,20 @@ public func uniteCollidingRects(inputArray: [NSRect]) -> [NSRect] {
 /// subtract them (minuend-subtrahend). The subtrahend stays the same and
 /// is not returned. Returned is an array of minuends.
 ///
-/// :param: minuends The array of rectangles from which the other will be subtracted (lhs)
-/// :param: subtrahends The array of rectangles that will be subtracted from minuends (rhs)
-/// :returns: An array of rectangles which is the result of minuends - subtrahends
+/// - parameter minuends: The array of rectangles from which the other will be subtracted (lhs)
+/// - parameter subtrahends: The array of rectangles that will be subtracted from minuends (rhs)
+/// - returns: An array of rectangles which is the result of minuends - subtrahends
 public func subtractRectangles(minuends: [NSRect], subtrahends: [NSRect]) -> [NSRect] {
     var collidingRects: [(lhsRect: NSRect, rhsRect: NSRect)] = [] // tuples with minuend rect and subtrahend rects which intersect (assumed to be on the same page)
     
     // return the same result if there is nothing to subtract from / to
-    if count(minuends) == 0 || count(minuends) == 0 {
+    if minuends.count == 0 || minuends.count == 0 {
         return minuends
     }
     
     var i = 0
     var result = minuends
-    while i < count(result) {
+    while i < result.count {
         let minuendRect = result[i]
         for subtrahendRect in subtrahends {
             if NSIntersectsRect(minuendRect, subtrahendRect) {
@@ -243,7 +243,7 @@ public func subtractRectangles(minuends: [NSRect], subtrahends: [NSRect]) -> [NS
         ++i
     }
     for (minuendRect, subtrahendRect) in collidingRects {
-        result.extend(minuendRect.subtractRect(subtrahendRect))
+        result.appendContentsOf(minuendRect.subtractRect(subtrahendRect))
     }
     return result
 }

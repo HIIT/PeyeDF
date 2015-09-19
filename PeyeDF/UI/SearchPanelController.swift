@@ -17,7 +17,7 @@ protocol SearchProvider {
     func hasResult() -> Bool
     
     /// Performs the requested search using the given string
-    func doSearch(String)
+    func doSearch(_: String)
     
     /// Gets the next found item
     func selectNextResult(sender: AnyObject?)
@@ -183,9 +183,9 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
         if recentSearches.isEmpty {
             searchCell.recentSearches.append(theString)
         } else {
-            for i in 0..<count(recentSearches) {
+            for i in 0..<recentSearches.count {
                 // if item present, remove it
-                let item = recentSearches[i] as! String
+                let item = recentSearches[i] 
                 if item == searchString {
                     searchCell.recentSearches.removeAtIndex(i)
                     break
@@ -239,7 +239,7 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     // MARK: - Table data source
     
     func numberOfRowsInTableView(aTableView: NSTableView) -> Int {
-        return count(foundSelections)
+        return foundSelections.count
     }
     
     func tableView(tableView: NSTableView, objectValueForTableColumn tableColumn: NSTableColumn?, row: Int) -> AnyObject? {
@@ -281,8 +281,6 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     // MARK: - Table delegate
     
     func tableViewSelectionDidChange(notification: NSNotification) {
-        let highlightDelay = 0.2
-        
         let tabView = notification.object as! NSTableView
         let rowIndex = tabView.selectedRow
         if rowIndex >= 0 {

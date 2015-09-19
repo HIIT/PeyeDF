@@ -19,7 +19,8 @@ class PreferencesViewController: NSViewController {
     /// Create view and programmatically set-up bindings
     override func viewDidLoad() {
         super.viewDidLoad()
-        let options = NSDictionary(object: NSNumber(bool: true), forKey: "NSContinuouslyUpdatesValue") as [NSObject : AnyObject]
+        
+        let options: [String: AnyObject] = ["NSContinuouslyUpdatesValue": true]
         
         urlField.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefServerURL, options: options)
         

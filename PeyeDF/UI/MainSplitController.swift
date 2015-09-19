@@ -72,16 +72,14 @@ class MainSplitController: NSSplitViewController {
     
     /// Convenience function to check if the splitview is collapsed or not
     ///
-    /// :param: splitView The splitview containing the search (index 0) and doc split (index 1)
-    /// :returns: false if not collapsed (or couldn't be found) true if collapsed
+    /// - parameter splitView: The splitview containing the search (index 0) and doc split (index 1)
+    /// - returns: false if not collapsed (or couldn't be found) true if collapsed
     func checkCollapseStatus(splitView: NSSplitView) -> Bool {
-        if let subw = splitView.subviews[0] as? NSView {
-            if splitView.isSubviewCollapsed(subw) || subw.visibleRect.height < PeyeConstants.minSearchPanelViewHeight {
-                return true
-            } else {
-                return false
-            }
+        let subw = splitView.subviews[0]
+        if splitView.isSubviewCollapsed(subw) || subw.visibleRect.height < PeyeConstants.minSearchPanelViewHeight {
+            return true
+        } else {
+            return false
         }
-        return false
     }
 }

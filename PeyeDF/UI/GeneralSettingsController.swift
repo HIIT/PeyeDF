@@ -28,8 +28,7 @@ class GeneralSettingsController: NSViewController {
         intFormatter.allowsFloats = false
         dpiField.formatter = intFormatter
         
-        
-        let options = NSDictionary(object: NSNumber(bool: true), forKey: "NSContinuouslyUpdatesValue") as [NSObject : AnyObject]
+        let options: [String: AnyObject] = ["NSContinuouslyUpdatesValue": true]
         
         dpiField.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefMonitorDPI, options: options)
         

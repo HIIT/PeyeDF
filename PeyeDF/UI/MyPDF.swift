@@ -42,7 +42,7 @@ class MarkingState: NSObject {
     
     /// Returns the last rectangle (if it exists). In the current implementation, this should never return nil.
     func getLastRect() -> (lastRect: NSRect, lastPage: PDFPage)? {
-        if let lp = self.lastPage {
+        if let _ = self.lastPage {
             return (self.lastRect!, self.lastPage!)
         } else {
             return nil
@@ -115,7 +115,7 @@ class MyPDF: PDFView, ScreenToPageConverter {
                     /// GETTING MOUSE LOCATION IN WINDOW FROM SCREEN COORDINATES
                     // get mouse in screen coordinates
                     let mouseLoc = NSEvent.mouseLocation()
-                    for screen in NSScreen.screens() as! [NSScreen] {
+                    for screen in (NSScreen.screens() as [NSScreen]!) {
                         if NSMouseInRect(mouseLoc, screen.frame, false) {
                             let tinySize = NSSize(width: 1, height: 1)
                             let mouseRect = NSRect(origin: mouseLoc, size: tinySize)
@@ -136,7 +136,7 @@ class MyPDF: PDFView, ScreenToPageConverter {
             /// GETTING MOUSE LOCATION IN WINDOW FROM SCREEN COORDINATES
             // get mouse in screen coordinates
             let mouseLoc = NSEvent.mouseLocation()
-            for screen in NSScreen.screens() as! [NSScreen] {
+            for screen in NSScreen.screens() as [NSScreen]! {
                 if NSMouseInRect(mouseLoc, screen.frame, false) {
                     let tinySize = NSSize(width: 1, height: 1)
                     let mouseRect = NSRect(origin: mouseLoc, size: tinySize)
@@ -181,7 +181,7 @@ class MyPDF: PDFView, ScreenToPageConverter {
             let borderColor = NSColor(red: 0.9, green: 0.0, blue: 0.0, alpha: 0.8)
             borderColor.set()
             
-            var circlePath: NSBezierPath = NSBezierPath(ovalInRect: circleRect)
+            let circlePath: NSBezierPath = NSBezierPath(ovalInRect: circleRect)
             circlePath.lineWidth = 3.0
             circlePath.stroke()
         }
@@ -233,8 +233,8 @@ class MyPDF: PDFView, ScreenToPageConverter {
     
     /// Create a marking (and subsequently a rect) at the given point, and make annotations
     ///
-    /// :param: location The point for which a rect will be created (in view coordinates)
-    /// :param: importance The importance of the rect that will be created
+    /// - parameter location: The point for which a rect will be created (in view coordinates)
+    /// - parameter importance: The importance of the rect that will be created
     func markAndAnnotate(location: NSPoint, importance: ReadingClass) {
         if containsRawString {
             // prepare a marking state to store this operation
@@ -253,17 +253,17 @@ class MyPDF: PDFView, ScreenToPageConverter {
     /// Manually tell that a point (and hence the paragraph/subparagraph related to it
     /// should be marked as somehow important
     ///
-    /// :returns: A triplet containing the rectangle that was created, on which page it was created and what importance
+    /// - returns: A triplet containing the rectangle that was created, on which page it was created and what importance
     func mark(locationInView: NSPoint, importance: ReadingClass) -> (newRect: NSRect, onPage: PDFPage, importance: ReadingClass)? {
         var markRect: NSRect
         
         // Page we're on.
-        var activePage = self.pageForPoint(locationInView, nearest: true)
+        let activePage = self.pageForPoint(locationInView, nearest: true)
         
         // Get location in "page space".
         let pagePoint = self.convertPoint(locationInView, toPage: activePage)
         
-        let pointArray = verticalFocalPoints(fromPoint: pagePoint, self.scaleFactor(), self.getPageRect(activePage))
+        let pointArray = verticalFocalPoints(fromPoint: pagePoint, zoomLevel: self.scaleFactor(), pageRect: self.getPageRect(activePage))
         
         // if using columns, selection can "bleed" into footers and headers
         // solution: check the median height and median width of each selection, and discard
@@ -305,7 +305,7 @@ class MyPDF: PDFView, ScreenToPageConverter {
         
         // get selection line by line
         if let selLines = pdfSel.selectionsByLine() {
-            let nOfExtraLines: Int = Int(floor(CGFloat(count(selLines)) / CGFloat(extraLineAmount)))
+            let nOfExtraLines: Int = Int(floor(CGFloat(selLines.count) / CGFloat(extraLineAmount)))
             
             // split selection into beginning / end separating by new line
             
@@ -317,18 +317,18 @@ class MyPDF: PDFView, ScreenToPageConverter {
                 for i in 0..<nOfExtraLines {
                     let currentLineSel = selLines[i] as! PDFSelection
                     let cLString = currentLineSel.string() + "\r"
-                    if let cutRange = activePage.string().rangeOfString(cLString) {
+                    if let _ = activePage.string().rangeOfString(cLString) {
                         lineStartIndex = i+1
                         break
                     }
                 }
                 
                 // do the same for the ending part
-                var lineEndIndex = count(selLines)-1
-                for i in reverse(count(selLines)-1-nOfExtraLines..<count(selLines)) {
+                var lineEndIndex = selLines.count-1
+                for i in Array((selLines.count-1-nOfExtraLines..<selLines.count).reverse()) {
                     let currentLineSel = selLines[i] as! PDFSelection
                     let cLString = currentLineSel.string() + "\r"
-                    if let cutRange = activePage.string().rangeOfString(cLString) {
+                    if let _ = activePage.string().rangeOfString(cLString) {
                         lineEndIndex = i
                         break
                     }
@@ -390,9 +390,9 @@ class MyPDF: PDFView, ScreenToPageConverter {
     /// Create PDFAnnotationLines related to the specified rectangle dictionary (markings)
     /// (whieh contains locations of "interesting or read rectangles") on all pages
     ///
-    /// :param: rectDict The rectangle dictionary
-    /// :param: colour The color to use, generally defined in PeyeConstants
-    /// :returns: A copy of the updated dictionary, after union/intersection
+    /// - parameter rectDict: The rectangle dictionary
+    /// - parameter colour: The color to use, generally defined in PeyeConstants
+    /// - returns: A copy of the updated dictionary, after union/intersection
     func outputAnnotations(rectDict: [PDFPage: [NSRect]], colour: NSColor) -> [PDFPage: [NSRect]] {
         let lineThickness: CGFloat = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefAnnotationLineThickness) as! CGFloat
         let myBord = PDFBorder()
@@ -424,23 +424,20 @@ class MyPDF: PDFView, ScreenToPageConverter {
         criticalRects = outputAnnotations(criticalRects, colour: PeyeConstants.annotationColourCritical)
         // Subtract critical rects from interesting and read rects
         for page in interestingRects.keys {
-            var unitedRects = uniteCollidingRects(interestingRects[page]!)
             if let cRects = criticalRects[page] {  // continue only if there is something to subtract
-                interestingRects[page]! = subtractRectangles(interestingRects[page]!, cRects)
+                interestingRects[page]! = subtractRectangles(interestingRects[page]!, subtrahends: cRects)
             }
         }
         for page in readRects.keys {
-            var unitedRects = uniteCollidingRects(readRects[page]!)
             if let cRects = criticalRects[page] {  // continue only if there is something to subtract
-                readRects[page]! = subtractRectangles(readRects[page]!, cRects)
+                readRects[page]! = subtractRectangles(readRects[page]!, subtrahends: cRects)
             }
         }
         interestingRects = outputAnnotations(interestingRects, colour: PeyeConstants.annotationColourInteresting)
         // Subtract (remaining) interesting rects from read rects
         for page in readRects.keys {
-            var unitedRects = uniteCollidingRects(readRects[page]!)
             if let iRects = interestingRects[page] {  // continue only if there is something to subtract
-                readRects[page]! = subtractRectangles(readRects[page]!, iRects)
+                readRects[page]! = subtractRectangles(readRects[page]!, subtrahends: iRects)
             }
         }
         readRects = outputAnnotations(readRects, colour: PeyeConstants.annotationColourRead)
@@ -454,8 +451,8 @@ class MyPDF: PDFView, ScreenToPageConverter {
     
     /// Refreshes the annotation for the given rectangle, which was added / deleted, taking into consideration annotation's line thickness
     ///
-    /// :param: annotationRect The rectangle covering the actual annotation in view coordinates
-    /// :param: page The page on which the annotation resides
+    /// - parameter annotationRect: The rectangle covering the actual annotation in view coordinates
+    /// - parameter page: The page on which the annotation resides
     func refreshForAnnotation(annotationRect: NSRect, page: PDFPage) {
         // tell the view to immediately refresh itself in an area which includes the
         // line's "border"
@@ -468,9 +465,9 @@ class MyPDF: PDFView, ScreenToPageConverter {
     
     /// Returns a rectangle corresponding to the annotation for a rectangle corresponding to the mark, using all appropriate constants / preferences.
     ///
-    /// :param: markRect The rectangle corresponding to the mark
-    /// :param: page The page on which the mark resides, and on which the annotation will be created
-    /// :returns: A rectangle representing the annotation
+    /// - parameter markRect: The rectangle corresponding to the mark
+    /// - parameter page: The page on which the mark resides, and on which the annotation will be created
+    /// - returns: A rectangle representing the annotation
     func annotationRectForMark(markRect: NSRect, page: PDFPage) -> NSRect {
         let newRect_x = markRect.origin.x - PeyeConstants.annotationLineDistance
         let newRect_y = markRect.origin.y
@@ -494,8 +491,8 @@ class MyPDF: PDFView, ScreenToPageConverter {
     
     /// Returns the corresponding point on page for a point on screen.
     ///
-    /// :param: pointOnScreen A point corresponding to a screen coordinate
-    /// :returns: A triple containing the x, y coordinate and page index. The default values
+    /// - parameter pointOnScreen: A point corresponding to a screen coordinate
+    /// - returns: A triple containing the x, y coordinate and page index. The default values
     ///           for when a point can't be found is defined in PeyeConstants
     func screenToPage(pointOnScreen: NSPoint) -> (x: CGFloat, y: CGFloat, pageIndex: Int) {
         let tinySize = NSSize(width: 1, height: 1)
@@ -529,7 +526,7 @@ class MyPDF: PDFView, ScreenToPageConverter {
     /// Get the rectangle of the pdf view, in screen coordinates
     func getRectOfViewOnScreen() -> NSRect {
         // get a rectangle representing the pdfview frame, relative to its superview and convert to the window's view
-        let r1:NSRect = self.superview!.convertRect(self.frame, toView: self.window!.contentView as? NSView)
+        let r1:NSRect = self.superview!.convertRect(self.frame, toView: self.window!.contentView!)
         // get screen coordinates corresponding to the rectangle got in the previous line
         let r2 = self.window!.convertRectToScreen(r1)
         return r2
@@ -584,21 +581,20 @@ class MyPDF: PDFView, ScreenToPageConverter {
     
     /// Returns the list of rects corresponding to portion of pages being seen
     func getVisibleRects() -> [NSRect] {
-        let mspace = PeyeConstants.extraMargin
         let visiblePages = self.visiblePages()
         var visibleRects = [NSRect]()  // rects in page coordinates, one for each page, representing visible portion
         
         for visiblePage in visiblePages as! [PDFPage] {
             
             // Get page's rectangle coordinates
-            var pageRect = getPageRect(visiblePage)
+            let pageRect = getPageRect(visiblePage)
             
             // Get viewport rect and apply margin
             var visibleRect = NSRect(origin: CGPoint(x: 0, y: 0), size: self.frame.size)
-            visibleRect.inset(dx: PeyeConstants.extraMargin, dy: PeyeConstants.extraMargin)
+            visibleRect.insetInPlace(dx: PeyeConstants.extraMargin, dy: PeyeConstants.extraMargin)
             
             visibleRect = self.convertRect(visibleRect, toPage: visiblePage)  // Convert rect to page coordinates
-            visibleRect.intersect(pageRect)  // Intersect to get seen portion
+            visibleRect.intersectInPlace(pageRect)  // Intersect to get seen portion
             visibleRects.append(visibleRect)
             
         }
@@ -609,22 +605,20 @@ class MyPDF: PDFView, ScreenToPageConverter {
     func getVisibleString() -> NSString? {
         // Only proceed if there is actually text to select
         if containsRawString {
-            let mspace = PeyeConstants.extraMargin
             let visiblePages = self.visiblePages()
             let generatedSelection = PDFSelection(document: self.document())
-            var visibleRects = [NSRect]()  // rects in page coordinates, one for each page, representing visible portion
             
             for visiblePage in visiblePages as! [PDFPage] {
                 
                 // Get page's rectangle coordinates
-                var pageRect = getPageRect(visiblePage)
+                let pageRect = getPageRect(visiblePage)
                 
                 // Get viewport rect and apply margin
                 var visibleRect = NSRect(origin: CGPoint(x: 0, y: 0), size: self.frame.size)
-                visibleRect.inset(dx: PeyeConstants.extraMargin, dy: PeyeConstants.extraMargin)
+                visibleRect.insetInPlace(dx: PeyeConstants.extraMargin, dy: PeyeConstants.extraMargin)
                 
                 visibleRect = self.convertRect(visibleRect, toPage: visiblePage)  // Convert rect to page coordinates
-                visibleRect.intersect(pageRect)  // Intersect to get seen portion
+                visibleRect.intersectInPlace(pageRect)  // Intersect to get seen portion
                 
                 generatedSelection.addSelection(visiblePage.selectionForRect(visibleRect))
             }
@@ -640,22 +634,20 @@ class MyPDF: PDFView, ScreenToPageConverter {
     func selectVisibleText(sender: AnyObject?) {
         // Only proceed if there is actually text to select
         if containsRawString {
-            let mspace = PeyeConstants.extraMargin
             let visiblePages = self.visiblePages()
             let generatedSelection = PDFSelection(document: self.document())
-            var visibleRects = [NSRect]()  // rects in page coordinates, one for each page, representing visible portion
             
             for visiblePage in visiblePages as! [PDFPage] {
                 
                 // Get page's rectangle coordinates
-                var pageRect = getPageRect(visiblePage)
+                let pageRect = getPageRect(visiblePage)
                 
                 // Get viewport rect and apply margin
                 var visibleRect = NSRect(origin: CGPoint(x: 0, y: 0), size: self.frame.size)
-                visibleRect.inset(dx: PeyeConstants.extraMargin, dy: PeyeConstants.extraMargin)
+                visibleRect.insetInPlace(dx: PeyeConstants.extraMargin, dy: PeyeConstants.extraMargin)
                 
                 visibleRect = self.convertRect(visibleRect, toPage: visiblePage)  // Convert rect to page coordinates
-                visibleRect.intersect(pageRect)  // Intersect to get seen portion
+                visibleRect.intersectInPlace(pageRect)  // Intersect to get seen portion
                 
                 generatedSelection.addSelection(visiblePage.selectionForRect(visibleRect))
             }
@@ -666,10 +658,10 @@ class MyPDF: PDFView, ScreenToPageConverter {
     
     /// Returns the current status (i.e. converts the current viewport to a reading event.)
     ///
-    /// :returns: The reading event for the current status, or nil if nothing is actually visible
+    /// - returns: The reading event for the current status, or nil if nothing is actually visible
     func getStatus() -> ReadingEvent? {
         if self.visiblePages() != nil {
-            let multiPage: Bool = (count(self.visiblePages())) > 1
+            let multiPage: Bool = (self.visiblePages().count) > 1
             let visiblePageLabels: [String] = getVisiblePageLabels()
             let visiblePageNums: [Int] = getVisiblePageNums()
             let pageRects: [NSRect] = getVisibleRects()
@@ -682,7 +674,7 @@ class MyPDF: PDFView, ScreenToPageConverter {
             
             var readingRects = [ReadingRect]()
             for rect in pageRects {
-                var newRect = ReadingRect(rect: rect, readingClass: ReadingClass.Viewport, classSource: ClassSource.Viewport)
+                let newRect = ReadingRect(rect: rect, readingClass: ReadingClass.Viewport, classSource: ClassSource.Viewport)
                 readingRects.append(newRect)
             }
             

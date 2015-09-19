@@ -30,7 +30,7 @@ class DebugController: NSViewController, NSTableViewDataSource {
     
     // MARK: - Data source for debug table, including methods to check for notifications
     func numberOfRowsInTableView(aTableView: NSTableView) -> Int {
-        return count(debugDescs)
+        return debugDescs.count
     }
     
     func tableView(tableView: NSTableView, objectValueForTableColumn tableColumn: NSTableColumn?, row: Int) -> AnyObject? {
@@ -78,7 +78,7 @@ class DebugController: NSViewController, NSTableViewDataSource {
     
     @objc func occlusionChanged(notification: NSNotification) {
         let obj = notification.object as! NSWindow
-        let title = "Window is visible: \(obj.occlusionState & NSWindowOcclusionState.Visible != nil)"
+        let title = "Window is visible: \(obj.occlusionState.intersect(NSWindowOcclusionState.Visible) != [])"
         let desc = "Occlusion raw: \(obj.occlusionState.rawValue), occlusion const: \(NSWindowOcclusionState.Visible.rawValue)"
         updateDesc(title, desc: desc)
     }
@@ -111,13 +111,13 @@ class DebugController: NSViewController, NSTableViewDataSource {
     /// Updates (adding, if necessary) an event and its description to the list of titles and descriptions
     /// that will be shown in the debug table
     func updateDesc(title: String, desc: String) {
-        if let k = debugDescs.indexForKey(title) {
+        if let _ = debugDescs.indexForKey(title) {
             debugDescs[title] = desc
             debugTimes[title] = NSDate.shortTime()
         } else {
             debugDescs[title] = desc
             debugTimes[title] = NSDate.shortTime()
-            let rowi = count(debugDescs) - 1
+            let rowi = debugDescs.count - 1
             debugTabIdxs[rowi] = title
         }
         
@@ -132,7 +132,7 @@ class DebugController: NSViewController, NSTableViewDataSource {
         if let pdfView = self.pdfView {
             let desc1 = "(px) View to screen:"
             // get a rectangle representing the pdfview frame, relative to its superview and convert to the window's view
-            let r1:NSRect? = pdfView.superview!.convertRect(pdfView.frame, toView: docWindow!.contentView as? NSView)
+            let r1:NSRect? = pdfView.superview!.convertRect(pdfView.frame, toView: docWindow!.contentView)
             // get screen coordinates corresponding to the rectangle got in the previous line
             let desc2 = "\(docWindow!.convertRectToScreen(r1!))"
             let desc = desc1 + ", " + desc2

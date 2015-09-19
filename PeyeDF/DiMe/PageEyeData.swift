@@ -31,27 +31,27 @@ struct PageEyeData: Dictionariable {
     }
     
     mutating func appendData(Xs: [NSNumber], Ys: [NSNumber], timepoints: [NSNumber]) {
-        self.Xs.extend(Xs)
-        self.Ys.extend(Ys)
-        self.timepoints.extend(timepoints)
+        self.Xs.appendContentsOf(Xs)
+        self.Ys.appendContentsOf(Ys)
+        self.timepoints.appendContentsOf(timepoints)
     }
     
     mutating func appendData(Xs: [NSNumber], Ys: [NSNumber], Ps: [NSNumber], timepoints: [NSNumber]) {
-        self.Xs.extend(Xs)
-        self.Ys.extend(Ys)
-        self.Ps!.extend(Ps)
-        self.timepoints.extend(timepoints)
+        self.Xs.appendContentsOf(Xs)
+        self.Ys.appendContentsOf(Ys)
+        self.Ps!.appendContentsOf(Ps)
+        self.timepoints.appendContentsOf(timepoints)
     }
     
     /// Check if xs, ys and timepoints are all the same length, traps if not.
     func autoCheck() {
         if let Ps = self.Ps {
-            if !(count(Xs) == count(Ys) && count(Ys) == count(timepoints) && count(timepoints) == count(Ps)) {
+            if !(Xs.count == Ys.count && Ys.count == timepoints.count && timepoints.count == Ps.count) {
                 let exception = NSException(name: "Incorrect count", reason: nil, userInfo: nil)
                 exception.raise()
             }
         } else {
-            if !(count(Xs) == count(Ys) && count(Ys) == count(timepoints)) {
+            if !(Xs.count == Ys.count && Ys.count == timepoints.count) {
                 let exception = NSException(name: "Incorrect count", reason: nil, userInfo: nil)
                 exception.raise()
             }

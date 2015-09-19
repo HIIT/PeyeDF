@@ -15,13 +15,13 @@ class DocumentInformationElement: NSObject, DiMeAble, Dictionariable {
     
     /** Creates this information element
         
-        :param: uri Path on file or web
-        :param: id Id (hash of plaintext or url)
-        :param: plainTextContent Contents of whole file
-        :param: title Title of the PDF
+        - parameter uri: Path on file or web
+        - parameter id: Id (hash of plaintext or url)
+        - parameter plainTextContent: Contents of whole file
+        - parameter title: Title of the PDF
     */
     init(uri: String, id: String, plainTextContent: String, title: String) {
-        var retDict = [String: AnyObject]()
+        let retDict = [String: AnyObject]()
         self.json = JSON(retDict)
         self.id = id
         super.init()

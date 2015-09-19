@@ -44,6 +44,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		A906D9011BAD827800DF10C4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A95FE9811B8B3EC60010E813 /* Alamofire.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E4202FE01B667AA100C997FB;
+			remoteInfo = "Alamofire watchOS";
+		};
 		A91CB9591B332EDB00671868 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A91CB93C1B332EDB00671868 /* Project object */;
@@ -271,6 +278,7 @@
 			children = (
 				A95FE9891B8B3EC60010E813 /* Alamofire.framework */,
 				A95FE98B1B8B3EC60010E813 /* Alamofire.framework */,
+				A906D9021BAD827800DF10C4 /* Alamofire.framework */,
 				A95FE98D1B8B3EC60010E813 /* Alamofire iOS Tests.xctest */,
 				A95FE98F1B8B3EC60010E813 /* Alamofire OSX Tests.xctest */,
 			);
@@ -339,7 +347,9 @@
 		A91CB93C1B332EDB00671868 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0630;
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = HIIT;
 				TargetAttributes = {
 					A91CB9431B332EDB00671868 = {
@@ -377,6 +387,13 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		A906D9021BAD827800DF10C4 /* Alamofire.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Alamofire.framework;
+			remoteRef = A906D9011BAD827800DF10C4 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		A95FE9891B8B3EC60010E813 /* Alamofire.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -519,6 +536,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -586,6 +604,7 @@
 				INFOPLIST_FILE = PeyeDF/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = "hiit.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "PeyeDF/Utility/PeyeDF-Bridging-Header.h";
 			};
@@ -599,6 +618,7 @@
 				INFOPLIST_FILE = PeyeDF/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = "hiit.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "PeyeDF/Utility/PeyeDF-Bridging-Header.h";
 			};
@@ -619,6 +639,7 @@
 				);
 				INFOPLIST_FILE = PeyeDFTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "HIIT.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PeyeDF.app/Contents/MacOS/PeyeDF";
 			};
@@ -635,6 +656,7 @@
 				);
 				INFOPLIST_FILE = PeyeDFTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "HIIT.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PeyeDF.app/Contents/MacOS/PeyeDF";
 			};

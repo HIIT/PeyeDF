@@ -39,7 +39,7 @@ class HistoryManager {
     
     /// Tells the history manager that something new is happened. The history manager check if the sender is a window in front (main window)
     ///
-    /// :param: documentWindow The window controller that is sending the message
+    /// - parameter documentWindow: The window controller that is sending the message
     func entry(documentWindow: DocumentWindowController) {
         if let window = documentWindow.window {
             if window.mainWindow {
@@ -75,14 +75,20 @@ class HistoryManager {
         let password: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefServerPassword) as! String
         
         let credentialData = "\(user):\(password)".dataUsingEncoding(NSUTF8StringEncoding)!
-        let base64Credentials = credentialData.base64EncodedStringWithOptions(nil)
+        let base64Credentials = credentialData.base64EncodedStringWithOptions([])
         
         let headers = ["Authorization": "Basic \(base64Credentials)"]
         
-        var error = NSErrorPointer()
+        let error = NSErrorPointer()
         let options = NSJSONWritingOptions.PrettyPrinted
 
-        let jsonData = NSJSONSerialization.dataWithJSONObject(dictionaryObject, options: options, error: error)
+        let jsonData: NSData?
+        do {
+            jsonData = try NSJSONSerialization.dataWithJSONObject(dictionaryObject, options: options)
+        } catch let error1 as NSError {
+            error.memory = error1
+            jsonData = nil
+        }
         
         if jsonData == nil {
             AppSingleton.log.error("Error while deserializing json! This should never happen. \(error)")
@@ -90,9 +96,9 @@ class HistoryManager {
         }
         
         Alamofire.request(Alamofire.Method.POST, server_url + "/data/event", parameters: dictionaryObject, encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON {
-            _, _, JSON, requestError in
-            if let error = requestError {
-                AppSingleton.log.error("Error while reading json response from DiMe: \(requestError)")
+            _, _, JSON in
+            if JSON.isFailure {
+                AppSingleton.log.error("Error while reading json response from DiMe: \(JSON.debugDescription)")
             } else {
                 AppSingleton.log.debug("Data pushed to DiMe")
                 // JSON!.description to see what dime replied
@@ -120,13 +126,13 @@ class HistoryManager {
         self.currentReadingEvent = docWindow.getCurrentStatus()
         
         // TODO: remove this debugging trap
-        if let exitTimer = self.exitTimer {
+        if let _ = self.exitTimer {
             let exception = NSException(name: "This should never happen!", reason: nil, userInfo: nil)
             exception.raise()
         }
         
         // prepare exit timer, which will fire when the user is inactive long enough (or will be canceled if there is another exit event).
-        if let currentReadingEvent = self.currentReadingEvent {
+        if let _ = self.currentReadingEvent {
             dispatch_sync(timerQueue) {
                 self.exitTimer = NSTimer(timeInterval: PeyeConstants.maxReadTime, target: self, selector: "exitEvent:", userInfo: nil, repeats: false)
                 NSRunLoop.currentRunLoop().addTimer(self.exitTimer!, forMode: NSRunLoopCommonModes)

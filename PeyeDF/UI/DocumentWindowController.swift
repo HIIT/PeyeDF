@@ -62,7 +62,7 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
             
         // we allow use selection if something is selected in the pdf view
         case NSFindPanelAction.SetFindString.rawValue:
-            if let currentSelection = myPdf!.currentSelection() {
+            if let _ = myPdf!.currentSelection() {
                 return true
             }
             return false
@@ -156,7 +156,7 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
             
             var allTextHead = "** NO TEXT FOUND **"
             if let aText = peyeDoc.trimmedText {  // we assume no text if this is nil
-                let ei = advance(aText.startIndex, 500)
+                let ei = aText.startIndex.advancedBy(500)
                 allTextHead = aText.substringToIndex(ei)
             }
             myAl.messageText = "Filename: \(peyeDoc.filename)\nTitle: \(peyeDoc.title)\nAuthor(s):\(peyeDoc.authors)"
@@ -177,7 +177,7 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
         panel.allowedFileTypes = ["pdf", "PDF"]
         if panel.runModal() == NSFileHandlingPanelOKButton {
             myPdf?.document().writeToURL(panel.URL)
-            let documentController = NSDocumentController.sharedDocumentController() as! NSDocumentController
+            let documentController = NSDocumentController.sharedDocumentController() 
             documentController.openDocumentWithContentsOfURL(panel.URL!, display: true) { _ in
                 // empty, nothing else to do (NSDocumentController will automacally link URL to NSDocument (pdf file)
             }
@@ -189,7 +189,7 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
     override func windowDidLoad() {
         super.windowDidLoad()
         
-        var oldFrame = NSRect(origin: self.window!.frame.origin, size: NSSize(width: PeyeConstants.docWindowWidth, height: PeyeConstants.docWindowHeight))
+        let oldFrame = NSRect(origin: self.window!.frame.origin, size: NSSize(width: PeyeConstants.docWindowWidth, height: PeyeConstants.docWindowHeight))
         self.window!.setFrame(oldFrame, display: true)
         
         // Set reference to myPdf for convenience by using references to children of this window
@@ -227,7 +227,6 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
         
         if let document: NSDocument = self.document as? NSDocument {
             let url: NSURL = document.fileURL!
-            let doc:PDFDocument = PDFDocument(URL: url)
             
             pdfDoc = PDFDocument(URL: url)
             myPdf?.setDocument(pdfDoc)
@@ -249,7 +248,7 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
             trimmedText = trimmedText.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) // get trimmed version of all text
             trimmedText = trimmedText.stringByTrimmingCharactersInSet(NSCharacterSet.newlineCharacterSet()) // trim newlines
             trimmedText = trimmedText.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) // trim again
-            if count(trimmedText) > 5 {  // we assume the document does contain useful text if there are more than 5 characters remaining
+            if trimmedText.characters.count > 5 {  // we assume the document does contain useful text if there are more than 5 characters remaining
                 peyeDoc.trimmedText = trimmedText
                 peyeDoc.sha1 = trimmedText.sha1()
                 myPdf?.containsRawString = true
