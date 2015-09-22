@@ -15,6 +15,9 @@ struct PeyeConstants {
     // MARK: - Preferences
     // Remember to set some default values in the appdelegate for each preference
     
+    /// Use midas
+    static let prefUseMidas = "midas.use"
+    
     /// Monitor DPI
     static let prefMonitorDPI = "monitor.DPI"
     
@@ -47,6 +50,20 @@ struct PeyeConstants {
     
     /// Date format used for DiMe submission
     static let diMeDateFormat = "Y'-'MM'-'d'T'HH':'mm':'ssZ"
+    
+    // MARK: - Midas
+    
+    /// Name of the midas node containing raw (gaze) data
+    static let midasRawNodeName = "raw_eyestream"
+    
+    /// Name of the midas node containing event data
+    static let midasEventNodeName = "event_eyestream"
+    
+    /// List of all channel names in raw stream, in order
+    static let midasRawChannelNames = ["timestamp", "leftGazeX", "leftGazeY", "leftDiam", "leftEyePositionX", "leftEyePositionY", "leftEyePositionZ", "rightGazeX", "rightGazeY", "rightDiam", "rightEyePositionX", "rightEyePositionY", "rightEyePositionZ"]
+    
+    /// List of all channel names in event stream, in order
+    static let midasEventChannelNames = ["eye", "startTime", "endTime", "duration", "positionX", "positionY"]
     
     // MARK: - Debug
     
@@ -136,7 +153,16 @@ struct PeyeConstants {
     
     // MARK: - Notifications
     
-    /// String identifying the notification sent when auto anootation is complete
+    /// String notifying that DiMe went down
+    static let diMeDownNotification = "hiit.PeyeDF.diMeDown"
+    
+    /// String notifying that midas went down
+    static let midasDownNotification = "hiit.MidasManager.down"
+    
+    /// String identifying the notification sent when a new sample is received from midas
+    static let newMidasSampleNotification = "hiit.MidasManager.newSample"
+    
+    /// String identifying the notification sent when auto annotation is complete
     static let autoAnnotationComplete = "hiit.PeyeDF.autoAnnotationComplete"
     
     /// String identifying the notification sent when a new document is opened / switched to
@@ -144,6 +170,8 @@ struct PeyeConstants {
     
     /// String identifying the notification sent when a new document is opened / switched to
     static let documentChangeNotification = "hiit.PeyeDF.documentChangeNotification"
+    
+    // MARK: - Static functions
     
     private static func makeDateFormatter() -> NSDateFormatter {
         let dateFormatter = NSDateFormatter()
@@ -158,6 +186,8 @@ struct PeyeConstants {
 public enum ReadingClass: Int {
     case Unset = 0
     case Viewport = 10
+    case Paragraph_floating = 13
+    case Paragraph_united = 14
     case Read = 20
     case Interesting = 30
     case Critical = 40
@@ -169,4 +199,14 @@ public enum ClassSource: Int {
     case Viewport = 1
     case Click = 2
     case Eye = 3
+}
+
+/// Midas raw channel numbers
+public enum midasRawChanNumbers: Int {
+    case timestamp = 0, leftGazeX, leftGazeY, leftDiam, leftEyePositionX, leftEyePositionY, leftEyePositionZ, rightGazeX, rightGazeY, rightDiam, rightEyePositionX, rightEyePositionY, rightEyePositionZ, planeNumber, unixtime
+}
+
+/// Midas event channel numbers
+public enum midasEventChanNumber: Int {
+    case eventType = 0, eye, startTime, endTime, duration, positionX, positionY, unixtime
 }

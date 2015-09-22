@@ -20,11 +20,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         defaultPrefs[PeyeConstants.prefServerURL] = "http://localhost:8080/api"
         defaultPrefs[PeyeConstants.prefServerUserName] = "Test1"
         defaultPrefs[PeyeConstants.prefServerPassword] = "123456"
+        defaultPrefs[PeyeConstants.prefUseMidas] = 0
         defaultPrefs[PeyeConstants.prefSendEventOnFocusSwitch] = 0
         NSUserDefaults.standardUserDefaults().registerDefaults(defaultPrefs)
         NSUserDefaults.standardUserDefaults().synchronize()
         
-        MidasManager.sharedInstance.start()
+        // If we want to use midas, start the manager
+        let useMidas = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefUseMidas) as! Bool
+        if useMidas {
+            MidasManager.sharedInstance.start()   
+        }
     }
     
     /// Find menu item is linked to this global function

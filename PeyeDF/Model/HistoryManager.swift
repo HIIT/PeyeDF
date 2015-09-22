@@ -96,12 +96,12 @@ class HistoryManager {
         }
         
         Alamofire.request(Alamofire.Method.POST, server_url + "/data/event", parameters: dictionaryObject, encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON {
-            _, _, JSON in
-            if JSON.isFailure {
-                AppSingleton.log.error("Error while reading json response from DiMe: \(JSON.debugDescription)")
+            _, _, response in
+            if response.isFailure {
+                AppSingleton.log.error("Error while reading json response from DiMe: \(response.debugDescription)")
             } else {
                 AppSingleton.log.debug("Data pushed to DiMe")
-                // JSON!.description to see what dime replied
+                // JSON(response.value!) to see what dime replied
             }
         }
         

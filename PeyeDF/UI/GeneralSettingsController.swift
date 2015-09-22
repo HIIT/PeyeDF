@@ -14,6 +14,7 @@ class GeneralSettingsController: NSViewController {
     @IBOutlet weak var dpiField: NSTextField!
     @IBOutlet weak var thicknessField: NSTextField!
     @IBOutlet weak var thicknessSlider: NSSlider!
+    @IBOutlet weak var midasCheckCell: NSButtonCell!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,6 +35,8 @@ class GeneralSettingsController: NSViewController {
         
         thicknessSlider.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefAnnotationLineThickness, options: options)
         thicknessField.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefAnnotationLineThickness, options: options)
+        
+        midasCheckCell.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefUseMidas, options: options)
     }
     
     

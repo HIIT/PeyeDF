@@ -168,6 +168,51 @@ extension NSRect {
 
 // MARK: - Other functions
 
+/// Finds i given the condition that ary[i-i] <= target and a[i] > target, using a binary search on
+/// a sorted array. Assuming no items are repeated.
+///
+/// - parameter ary: The sorted array to search
+/// - parameter target: The item to search for
+/// - returns: The index which corresponds to the item coming immediately after target (or the count of the array if last item <= target), 0 if the beginning of the array > target.
+func binarySearchOnSortedArray<T: Comparable>(ary: [T], target: T) -> Int {
+    var left: Int = 1
+    var right: Int = ary.count - 1
+    
+    if ary.last! <= target {
+        return ary.count
+    }
+    
+    if ary.first! > target {
+        return 0
+    }
+    
+    var mid: Int = -1
+    
+    while (left <= right) {
+        mid = (left + right) / 2
+        let previousitem = ary[mid - 1]
+        let value = ary[mid]
+        
+        if (previousitem <= target && value > target) {
+            return mid
+        }
+        
+        if (value == target) {
+            return mid + 1
+        }
+        
+        if (value < target) {
+            left = mid + 1
+        }
+        
+        if (previousitem > target) {
+            right = mid - 1
+        }
+    }
+    
+    return mid
+}
+
 /// Rounds a number to the amount of decimal places specified.
 /// Might not be actually be represented as such because computers.
 func roundToX(number: CGFloat, places: CGFloat) -> CGFloat {

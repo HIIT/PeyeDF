@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		A9038F761B8F5EE500A7D183 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9038F751B8F5EE500A7D183 /* Event.swift */; };
 		A9038F7B1B8F634200A7D183 /* DiMeProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9038F7A1B8F634200A7D183 /* DiMeProtocols.swift */; };
+		A904636F1BB2A5E70003FE8C /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A981F69C1B42FC4C00E7E9BD /* Utils.swift */; settings = {ASSET_TAGS = (); }; };
+		A90463741BB2A7D40003FE8C /* PeyeConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CDB2E81B3AC49800347398 /* PeyeConstants.swift */; settings = {ASSET_TAGS = (); }; };
 		A912D8A41B8B5C3A006F0657 /* DocumentInformationElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A912D8A21B8B5C3A006F0657 /* DocumentInformationElement.swift */; };
 		A912D8A51B8B5C3A006F0657 /* ReadingEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A912D8A31B8B5C3A006F0657 /* ReadingEvent.swift */; };
 		A913A9201BA1A93B008BA10D /* SearchPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A913A91F1BA1A93B008BA10D /* SearchPanelController.swift */; };
@@ -485,6 +487,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				A91CB95F1B332EDB00671868 /* PeyeDFTests.swift in Sources */,
+				A90463741BB2A7D40003FE8C /* PeyeConstants.swift in Sources */,
+				A904636F1BB2A5E70003FE8C /* Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -641,6 +645,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "HIIT.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "PeyeDF/Utility/PeyeDF-Bridging-Header.h";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PeyeDF.app/Contents/MacOS/PeyeDF";
 			};
 			name = Debug;
@@ -658,6 +663,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "HIIT.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "PeyeDF/Utility/PeyeDF-Bridging-Header.h";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PeyeDF.app/Contents/MacOS/PeyeDF";
 			};
 			name = Release;

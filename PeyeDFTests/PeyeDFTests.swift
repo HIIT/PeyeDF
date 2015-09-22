@@ -9,7 +9,7 @@
 import Cocoa
 import XCTest
 
-class PeyeDFTests: XCTestCase {
+class UtilsTest: XCTestCase {
     
     override func setUp() {
         super.setUp()
@@ -21,15 +21,35 @@ class PeyeDFTests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
+    /// Tests the binary search by creating a random vector of 10 000 values in increasing order and making sure the found value corresponds to what should have been found
+    func testBinarySearch() {
         // This is an example of a functional test case.
-        XCTAssert(true, "Pass")
+        var randVals = [CGFloat]()
+        for _ in 1..<10000 {
+            randVals.append(CGFloat(random()) / 10000.00)
+        }
+        let sortedVals = randVals.sort()
+        let theTarget = CGFloat(random()) / 10000.00
+        let foundI = binarySearchOnSortedArray(sortedVals, target: theTarget)
+        if foundI == sortedVals.count {
+            XCTAssert(sortedVals.last! <= theTarget, "Last item + 1 correctly found")
+        } else if foundI == 0 {
+            XCTAssert(sortedVals.first! > theTarget, "Item 0 correctly found")
+        } else {
+            let foundElem = sortedVals[foundI]
+            let previousElem = sortedVals[foundI - 1]
+            XCTAssert(foundElem > theTarget , "Following item correctly found")
+            XCTAssert(previousElem <= theTarget , "Previous item correctly found")
+        }
     }
     
     func testPerformanceExample() {
         // This is an example of a performance test case.
         self.measureBlock() {
-            // Put the code you want to measure the time of here.
+            // repeats the testBinarySearch() 1000 times
+            for _ in 1..<100 {
+                self.testBinarySearch()
+            }
         }
     }
     

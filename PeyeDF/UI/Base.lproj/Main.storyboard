@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7706"/>
-        <plugIn identifier="com.apple.pdfkit.ibplugin" version="7706"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="8191"/>
+        <plugIn identifier="com.apple.pdfkit.ibplugin" version="8191"/>
+        <capability name="box content view" minToolsVersion="7.0"/>
     </dependencies>
     <scenes>
         <!--Preferences Window-->
@@ -51,12 +52,12 @@
             <objects>
                 <viewController title="General Settings" showSeguePresentationStyle="single" id="62w-oK-rf7" customClass="GeneralSettingsController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="WGw-LJ-0lD">
-                        <rect key="frame" x="0.0" y="0.0" width="459" height="199"/>
+                        <rect key="frame" x="0.0" y="0.0" width="459" height="194"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <box title="Annotation line thickness" borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="UC7-V4-Wrp">
-                                <rect key="frame" x="17" y="43" width="425" height="66"/>
-                                <view key="contentView">
+                                <rect key="frame" x="17" y="58" width="425" height="66"/>
+                                <view key="contentView" id="cbh-La-9jU">
                                     <rect key="frame" x="1" y="1" width="423" height="47"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
@@ -84,11 +85,11 @@
                                     </subviews>
                                 </view>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="uRt-4J-vlE" secondAttribute="trailing" constant="9" id="0Ba-Co-SbP"/>
-                                    <constraint firstItem="E15-lK-fvD" firstAttribute="leading" secondItem="UC7-V4-Wrp" secondAttribute="leading" constant="16" id="4c8-t4-6L9"/>
-                                    <constraint firstItem="uRt-4J-vlE" firstAttribute="centerY" secondItem="E15-lK-fvD" secondAttribute="centerY" constant="-1" id="NTl-wO-wGV"/>
-                                    <constraint firstItem="uRt-4J-vlE" firstAttribute="leading" secondItem="E15-lK-fvD" secondAttribute="trailing" constant="6" id="pWv-Kk-d9V"/>
-                                    <constraint firstItem="E15-lK-fvD" firstAttribute="top" secondItem="UC7-V4-Wrp" secondAttribute="top" constant="30" id="sy5-It-ax7"/>
+                                    <constraint firstItem="E15-lK-fvD" firstAttribute="top" secondItem="UC7-V4-Wrp" secondAttribute="top" constant="30" id="4fd-U8-hze"/>
+                                    <constraint firstItem="uRt-4J-vlE" firstAttribute="leading" secondItem="E15-lK-fvD" secondAttribute="trailing" constant="6" id="MSs-hS-xe7"/>
+                                    <constraint firstAttribute="trailing" secondItem="uRt-4J-vlE" secondAttribute="trailing" constant="9" id="VQS-HC-Mwq"/>
+                                    <constraint firstItem="E15-lK-fvD" firstAttribute="leading" secondItem="UC7-V4-Wrp" secondAttribute="leading" constant="16" id="Wud-dI-VYU"/>
+                                    <constraint firstItem="uRt-4J-vlE" firstAttribute="centerY" secondItem="E15-lK-fvD" secondAttribute="centerY" constant="-1" id="h2v-jE-CsO"/>
                                     <constraint firstAttribute="height" constant="62" id="yrF-Ac-hSa"/>
                                 </constraints>
                                 <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
@@ -96,7 +97,7 @@
                                 <font key="titleFont" metaFont="system"/>
                             </box>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="kwa-ow-smM">
-                                <rect key="frame" x="18" y="150" width="78" height="17"/>
+                                <rect key="frame" x="18" y="135" width="78" height="17"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Monitor DPI" id="H12-Iy-AxQ">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -104,7 +105,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gxa-Hp-eF0">
-                                <rect key="frame" x="109" y="147" width="96" height="22"/>
+                                <rect key="frame" x="109" y="132" width="96" height="22"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="96" id="muS-6h-TCJ"/>
                                 </constraints>
@@ -114,28 +115,37 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="BVV-hH-JyH">
+                                <rect key="frame" x="18" y="158" width="326" height="18"/>
+                                <buttonCell key="cell" type="check" title="Use MIDAS (will take effect after next app restart)" bezelStyle="regularSquare" imagePosition="left" inset="2" id="7Or-3q-KEa">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="BVV-hH-JyH" firstAttribute="top" secondItem="WGw-LJ-0lD" secondAttribute="top" constant="20" symbolic="YES" id="A9l-CU-HT2"/>
                             <constraint firstItem="kwa-ow-smM" firstAttribute="centerY" secondItem="gxa-Hp-eF0" secondAttribute="centerY" constant="-0.5" id="AMn-gO-zt9"/>
-                            <constraint firstItem="kwa-ow-smM" firstAttribute="top" secondItem="WGw-LJ-0lD" secondAttribute="top" constant="32" id="Ca5-lJ-Ouv"/>
                             <constraint firstItem="UC7-V4-Wrp" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" id="GDs-Qo-G4q"/>
+                            <constraint firstItem="UC7-V4-Wrp" firstAttribute="top" secondItem="gxa-Hp-eF0" secondAttribute="bottom" constant="8" symbolic="YES" id="My0-gm-Agt"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="gxa-Hp-eF0" secondAttribute="trailing" constant="254" id="ZTB-dj-bam"/>
+                            <constraint firstItem="BVV-hH-JyH" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" symbolic="YES" id="fXk-kY-jPK"/>
+                            <constraint firstItem="kwa-ow-smM" firstAttribute="top" secondItem="BVV-hH-JyH" secondAttribute="bottom" constant="8" symbolic="YES" id="iAN-Eu-eY7"/>
                             <constraint firstItem="gxa-Hp-eF0" firstAttribute="leading" secondItem="kwa-ow-smM" secondAttribute="trailing" constant="15" id="jDD-qL-Gav"/>
                             <constraint firstAttribute="trailing" secondItem="UC7-V4-Wrp" secondAttribute="trailing" constant="20" id="rwf-WJ-HtQ"/>
                             <constraint firstItem="kwa-ow-smM" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" id="spo-cJ-rCU"/>
-                            <constraint firstItem="UC7-V4-Wrp" firstAttribute="top" secondItem="WGw-LJ-0lD" secondAttribute="top" constant="90" id="t7m-Po-T3i"/>
-                            <constraint firstAttribute="bottom" secondItem="UC7-V4-Wrp" secondAttribute="bottom" constant="47" id="yvm-Fx-nkI"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="dpiField" destination="gxa-Hp-eF0" id="Ag9-HG-C3H"/>
+                        <outlet property="midasCheckCell" destination="7Or-3q-KEa" id="uQA-7a-iu5"/>
                         <outlet property="thicknessField" destination="uRt-4J-vlE" id="X4Y-Zs-osl"/>
                         <outlet property="thicknessSlider" destination="E15-lK-fvD" id="Zdy-es-hyr"/>
                     </connections>
                 </viewController>
                 <customObject id="ThY-Hh-P4H" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="508.5" y="-1855.5"/>
+            <point key="canvasLocation" x="508.5" y="-1837"/>
         </scene>
         <!--DiMe Preferences-->
         <scene sceneID="JFC-Eo-9Mb">
@@ -1090,7 +1100,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="60" id="Vzr-WU-4oi"/>
                                 </constraints>
-                                <scroller key="horizontalScroller" verticalHuggingPriority="750" doubleValue="0.28571428571428081" horizontal="YES" id="95A-eE-ckT">
+                                <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="95A-eE-ckT">
                                     <rect key="frame" x="1" y="119" width="223" height="15"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
@@ -1099,7 +1109,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <tableHeaderView key="headerView" horizontalCompressionResistancePriority="600" verticalCompressionResistancePriority="600" id="hYF-Uy-3Rx">
-                                    <rect key="frame" x="0.0" y="0.0" width="238" height="17"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="336" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableHeaderView>
                             </scrollView>
@@ -1292,7 +1302,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <tableHeaderView key="headerView" id="edg-qR-Mnf">
-                                    <rect key="frame" x="0.0" y="0.0" width="238" height="17"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="589" height="17"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableHeaderView>
                             </scrollView>
