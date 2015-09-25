@@ -19,7 +19,7 @@ class MainSplitController: NSSplitViewController {
     
     weak var searchCollapseDelegate: SearchPanelCollapseDelegate?
     weak var searchPanelController: SearchPanelController?
-    var searchProvider: SearchProvider?
+    weak var searchProvider: SearchProvider?
     
     // MARK: - Initialisation
     

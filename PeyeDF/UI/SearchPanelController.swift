@@ -11,7 +11,7 @@ import Quartz
 import Foundation
 
 /// Used to allow the search panel controller to communicate with others
-protocol SearchProvider {
+protocol SearchProvider: class {
     
     /// Returns true if there is a result avaiable
     func hasResult() -> Bool
