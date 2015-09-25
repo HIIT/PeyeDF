@@ -158,7 +158,7 @@ print "deviationXLeft " + str(accuracyData.deviationLX) + " deviationYLeft " + s
 print "deviationXRight " + str(accuracyData.deviationRX) + " deviationYRight " + str(accuracyData.deviationRY)
 
 # ---------------------------------------------
-# ---- define the callback functions
+# ---- define the callback functions. Also see the enum and string arrays in PeyeConstants for input/output formats.
 # ---------------------------------------------
 
 def SampleCallback(sample):

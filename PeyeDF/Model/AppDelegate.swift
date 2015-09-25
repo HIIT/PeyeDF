@@ -15,6 +15,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// Creates default preferences
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         var defaultPrefs = [String: AnyObject]()
+        defaultPrefs[PeyeConstants.prefDominantEye] = Eye.right.rawValue
         defaultPrefs[PeyeConstants.prefMonitorDPI] = 110  // defaulting monitor DPI to 110 as this is developing PC's DPI
         defaultPrefs[PeyeConstants.prefAnnotationLineThickness] = 1.0
         defaultPrefs[PeyeConstants.prefServerURL] = "http://localhost:8080/api"

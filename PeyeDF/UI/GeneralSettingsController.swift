@@ -11,6 +11,9 @@ import Cocoa
 
 class GeneralSettingsController: NSViewController {
     
+    @IBOutlet weak var leftDomEyeButton: NSButton!
+    @IBOutlet weak var rightDomEyeButton: NSButton!
+    
     @IBOutlet weak var dpiField: NSTextField!
     @IBOutlet weak var thicknessField: NSTextField!
     @IBOutlet weak var thicknessSlider: NSSlider!
@@ -18,6 +21,17 @@ class GeneralSettingsController: NSViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // set dominant eye button pressed accordingly to current preference
+        let rawEyePreference = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDominantEye) as! Int
+        
+        let eyePreference = Eye(rawValue: rawEyePreference)
+        
+        if eyePreference == .left {
+            leftDomEyeButton.state = NSOnState
+        } else {
+            rightDomEyeButton.state = NSOnState
+        }
         
         let floatFormatter = NSNumberFormatter()
         floatFormatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
@@ -39,6 +53,15 @@ class GeneralSettingsController: NSViewController {
         midasCheckCell.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefUseMidas, options: options)
     }
     
+    @IBAction func dominantButtonPress(sender: NSButton) {
+        if sender.identifier! == "leftDomEyeButton" {
+            NSUserDefaults.standardUserDefaults().setValue(Eye.left.rawValue, forKey: PeyeConstants.prefDominantEye)
+        } else if sender.identifier! == "rightDomEyeButton" {
+            NSUserDefaults.standardUserDefaults().setValue(Eye.right.rawValue, forKey: PeyeConstants.prefDominantEye)
+        } else {
+            fatalError("Some unrecognized button was pressed!?")
+        }
+    }
     
     @IBAction func thicknessSlided(sender: NSSlider) {
         thicknessField.floatValue = sender.floatValue

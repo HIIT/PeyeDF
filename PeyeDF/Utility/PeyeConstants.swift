@@ -15,6 +15,9 @@ struct PeyeConstants {
     // MARK: - Preferences
     // Remember to set some default values in the appdelegate for each preference
     
+    /// Dominant eye
+    static let prefDominantEye = "eye.dominant"
+    
     /// Use midas
     static let prefUseMidas = "midas.use"
     
@@ -203,10 +206,16 @@ public enum ClassSource: Int {
 
 /// Midas raw channel numbers
 public enum midasRawChanNumbers: Int {
-    case timestamp = 0, leftGazeX, leftGazeY, leftDiam, leftEyePositionX, leftEyePositionY, leftEyePositionZ, rightGazeX, rightGazeY, rightDiam, rightEyePositionX, rightEyePositionY, rightEyePositionZ, planeNumber, unixtime
+    case timestamp = 0, leftGazeX, leftGazeY, leftDiam, leftEyePositionX, leftEyePositionY, leftEyePositionZ, rightGazeX, rightGazeY, rightDiam, rightEyePositionX, rightEyePositionY, rightEyePositionZ
 }
 
 /// Midas event channel numbers
 public enum midasEventChanNumber: Int {
-    case eventType = 0, eye, startTime, endTime, duration, positionX, positionY, unixtime
+    case eye = 0, startTime, endTime, duration, positionX, positionY
+}
+
+/// Eye (left or right). Using same coding as SMI_LSL data streaming.
+public enum Eye: Int {
+    case left = -1
+    case right = 1
 }

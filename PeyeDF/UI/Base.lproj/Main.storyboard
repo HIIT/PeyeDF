@@ -33,7 +33,7 @@
                         <tabViewItem image="DiMeSettings" id="l63-82-4pB"/>
                     </tabViewItems>
                     <tabView key="tabView" type="noTabsNoBorder" id="DAg-Nl-ODD">
-                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="328"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <font key="font" metaFont="message"/>
                         <tabViewItems/>
@@ -45,18 +45,18 @@
                 </tabViewController>
                 <customObject id="lPz-h3-CrG" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-107" y="-1554"/>
+            <point key="canvasLocation" x="-107" y="-1540"/>
         </scene>
         <!--General Settings-->
         <scene sceneID="0Hy-ct-NUa">
             <objects>
                 <viewController title="General Settings" showSeguePresentationStyle="single" id="62w-oK-rf7" customClass="GeneralSettingsController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="WGw-LJ-0lD">
-                        <rect key="frame" x="0.0" y="0.0" width="459" height="194"/>
+                        <rect key="frame" x="0.0" y="0.0" width="459" height="228"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <box title="Annotation line thickness" borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="UC7-V4-Wrp">
-                                <rect key="frame" x="17" y="58" width="425" height="66"/>
+                                <rect key="frame" x="17" y="23" width="425" height="66"/>
                                 <view key="contentView" id="cbh-La-9jU">
                                     <rect key="frame" x="1" y="1" width="423" height="47"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -97,7 +97,7 @@
                                 <font key="titleFont" metaFont="system"/>
                             </box>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="kwa-ow-smM">
-                                <rect key="frame" x="18" y="135" width="78" height="17"/>
+                                <rect key="frame" x="18" y="100" width="78" height="17"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Monitor DPI" id="H12-Iy-AxQ">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -105,7 +105,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gxa-Hp-eF0">
-                                <rect key="frame" x="109" y="132" width="96" height="22"/>
+                                <rect key="frame" x="109" y="97" width="96" height="22"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="96" id="muS-6h-TCJ"/>
                                 </constraints>
@@ -116,21 +116,65 @@
                                 </textFieldCell>
                             </textField>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="BVV-hH-JyH">
-                                <rect key="frame" x="18" y="158" width="326" height="18"/>
+                                <rect key="frame" x="18" y="192" width="326" height="18"/>
                                 <buttonCell key="cell" type="check" title="Use MIDAS (will take effect after next app restart)" bezelStyle="regularSquare" imagePosition="left" inset="2" id="7Or-3q-KEa">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
+                            <box title="Dominant Eye" borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="afp-6T-41F">
+                                <rect key="frame" x="17" y="121" width="234" height="65"/>
+                                <view key="contentView" id="59u-gM-x6L">
+                                    <rect key="frame" x="1" y="1" width="232" height="46"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <button identifier="rightDomEyeButton" translatesAutoresizingMaskIntoConstraints="NO" id="8qy-dl-5fN">
+                                            <rect key="frame" x="116" y="14" width="55" height="18"/>
+                                            <buttonCell key="cell" type="radio" title="Right" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="b8U-Ci-elD">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="dominantButtonPress:" target="62w-oK-rf7" id="0fY-0L-S6c"/>
+                                            </connections>
+                                        </button>
+                                        <button identifier="leftDomEyeButton" translatesAutoresizingMaskIntoConstraints="NO" id="I21-cq-meB">
+                                            <rect key="frame" x="47" y="14" width="46" height="18"/>
+                                            <buttonCell key="cell" type="radio" title="Left" bezelStyle="regularSquare" imagePosition="right" alignment="left" inset="2" id="owH-dP-d1g">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="dominantButtonPress:" target="62w-oK-rf7" id="OiU-wN-PwD"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="8qy-dl-5fN" firstAttribute="leading" secondItem="I21-cq-meB" secondAttribute="trailing" constant="26" id="5es-Xl-0Cy"/>
+                                        <constraint firstItem="I21-cq-meB" firstAttribute="leading" secondItem="59u-gM-x6L" secondAttribute="leading" constant="48" id="arQ-W9-eG3"/>
+                                        <constraint firstItem="8qy-dl-5fN" firstAttribute="top" secondItem="59u-gM-x6L" secondAttribute="top" constant="15" id="kUU-Qz-t6Z"/>
+                                    </constraints>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="61" id="1I9-gW-eKI"/>
+                                    <constraint firstAttribute="width" constant="228" id="G7Y-0g-sV0"/>
+                                    <constraint firstItem="I21-cq-meB" firstAttribute="top" secondItem="afp-6T-41F" secondAttribute="top" constant="33" id="LKD-gp-5Ac"/>
+                                </constraints>
+                                <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <font key="titleFont" metaFont="system"/>
+                            </box>
                         </subviews>
                         <constraints>
                             <constraint firstItem="BVV-hH-JyH" firstAttribute="top" secondItem="WGw-LJ-0lD" secondAttribute="top" constant="20" symbolic="YES" id="A9l-CU-HT2"/>
                             <constraint firstItem="kwa-ow-smM" firstAttribute="centerY" secondItem="gxa-Hp-eF0" secondAttribute="centerY" constant="-0.5" id="AMn-gO-zt9"/>
+                            <constraint firstItem="kwa-ow-smM" firstAttribute="top" secondItem="afp-6T-41F" secondAttribute="bottom" constant="8" symbolic="YES" id="F5Z-PG-XBm"/>
                             <constraint firstItem="UC7-V4-Wrp" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" id="GDs-Qo-G4q"/>
                             <constraint firstItem="UC7-V4-Wrp" firstAttribute="top" secondItem="gxa-Hp-eF0" secondAttribute="bottom" constant="8" symbolic="YES" id="My0-gm-Agt"/>
+                            <constraint firstItem="afp-6T-41F" firstAttribute="top" secondItem="BVV-hH-JyH" secondAttribute="bottom" constant="8" symbolic="YES" id="YHp-9p-g1S"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="gxa-Hp-eF0" secondAttribute="trailing" constant="254" id="ZTB-dj-bam"/>
+                            <constraint firstItem="afp-6T-41F" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" symbolic="YES" id="am1-DD-o8Q"/>
                             <constraint firstItem="BVV-hH-JyH" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" symbolic="YES" id="fXk-kY-jPK"/>
-                            <constraint firstItem="kwa-ow-smM" firstAttribute="top" secondItem="BVV-hH-JyH" secondAttribute="bottom" constant="8" symbolic="YES" id="iAN-Eu-eY7"/>
                             <constraint firstItem="gxa-Hp-eF0" firstAttribute="leading" secondItem="kwa-ow-smM" secondAttribute="trailing" constant="15" id="jDD-qL-Gav"/>
                             <constraint firstAttribute="trailing" secondItem="UC7-V4-Wrp" secondAttribute="trailing" constant="20" id="rwf-WJ-HtQ"/>
                             <constraint firstItem="kwa-ow-smM" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" id="spo-cJ-rCU"/>
@@ -138,14 +182,16 @@
                     </view>
                     <connections>
                         <outlet property="dpiField" destination="gxa-Hp-eF0" id="Ag9-HG-C3H"/>
+                        <outlet property="leftDomEyeButton" destination="I21-cq-meB" id="xHI-t6-wUf"/>
                         <outlet property="midasCheckCell" destination="7Or-3q-KEa" id="uQA-7a-iu5"/>
+                        <outlet property="rightDomEyeButton" destination="8qy-dl-5fN" id="hNA-b5-fpP"/>
                         <outlet property="thicknessField" destination="uRt-4J-vlE" id="X4Y-Zs-osl"/>
                         <outlet property="thicknessSlider" destination="E15-lK-fvD" id="Zdy-es-hyr"/>
                     </connections>
                 </viewController>
                 <customObject id="ThY-Hh-P4H" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="508.5" y="-1837"/>
+            <point key="canvasLocation" x="508.5" y="-1820"/>
         </scene>
         <!--DiMe Preferences-->
         <scene sceneID="JFC-Eo-9Mb">
@@ -259,7 +305,7 @@
                 </viewController>
                 <customObject id="Xpl-sd-9MF" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="519" y="-1477"/>
+            <point key="canvasLocation" x="519" y="-1462"/>
         </scene>
         <!--Application-->
         <scene sceneID="JPo-4y-FX3">
