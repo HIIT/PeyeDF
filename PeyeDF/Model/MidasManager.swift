@@ -122,7 +122,7 @@ class MidasManager {
         let sampleCount = timestampA.count
         let latestTimeStamp = timestampA[sampleCount - 1]
         if latestTimeStamp.intValue > previousTimeStamps[nodeName]! {
-            let indexFollowingLastTime = binarySearchOnSortedArray(timestampA.arrayValue, target: latestTimeStamp)
+            let indexFollowingLastTime = binaryGreaterOnSortedArray(timestampA.arrayValue, target: latestTimeStamp)
             let filename = "\(nodeName).txt"
 
             if let dir : NSString = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.AllDomainsMask, true).first {

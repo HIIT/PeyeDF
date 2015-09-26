@@ -23,14 +23,19 @@ class UtilsTest: XCTestCase {
     
     /// Tests the binary search by creating a random vector of 10 000 values in increasing order and making sure the found value corresponds to what should have been found
     func testBinarySearch() {
-        // This is an example of a functional test case.
+        // testing using predefined values
+        let myArr: [Double] = [1,1,2,2,3,4,5,6,6,7]
+        let testOne = binaryGreaterOrEqOnSortedArray(myArr, target:6.9)
+        XCTAssert(testOne == 9, "Should find last element of test array")
+        
+        // testing using a random array
         var randVals = [CGFloat]()
         for _ in 1..<10000 {
             randVals.append(CGFloat(random()) / 10000.00)
         }
         let sortedVals = randVals.sort()
         let theTarget = CGFloat(random()) / 10000.00
-        let foundI = binarySearchOnSortedArray(sortedVals, target: theTarget)
+        let foundI = binaryGreaterOnSortedArray(sortedVals, target: theTarget)
         if foundI == sortedVals.count {
             XCTAssert(sortedVals.last! <= theTarget, "Last item + 1 correctly found")
         } else if foundI == 0 {
@@ -41,6 +46,17 @@ class UtilsTest: XCTestCase {
             XCTAssert(foundElem > theTarget , "Following item correctly found")
             XCTAssert(previousElem <= theTarget , "Previous item correctly found")
         }
+    }
+    
+    func testStrideTest() {
+        var testArr: [Double] = [1,2,3,4,5,6,7]
+        XCTAssertTrue(strideArrayTest(ary: testArr, index: 2, precedingFunc: <, followingFunc: >))
+        
+        testArr = [1,2,3,4,5,4,5,6,7]
+        XCTAssertFalse(strideArrayTest(ary: testArr, index: 5, precedingFunc: <, followingFunc: >))
+        
+        testArr = [1,2,3,4,5,4,5,6,7]
+        XCTAssertTrue(strideArrayTest(ary: testArr, index: 2, precedingFunc: <, followingFunc: >, strideLength: 2))
     }
     
     func testPerformanceExample() {

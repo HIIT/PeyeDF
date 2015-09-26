@@ -168,13 +168,13 @@ extension NSRect {
 
 // MARK: - Other functions
 
-/// Finds i given the condition that ary[i-i] <= target and a[i] > target, using a binary search on
+/// Finds i given the condition that ary[i-1] <= target and a[i] > target, using a binary search on
 /// a sorted array. Assuming no items are repeated.
 ///
 /// - parameter ary: The sorted array to search
 /// - parameter target: The item to search for
 /// - returns: The index which corresponds to the item coming immediately after target (or the count of the array if last item <= target), 0 if the beginning of the array > target.
-func binarySearchOnSortedArray<T: Comparable>(ary: [T], target: T) -> Int {
+func binaryGreaterOnSortedArray<T: Comparable>(ary: [T], target: T) -> Int {
     var left: Int = 1
     var right: Int = ary.count - 1
     
@@ -210,7 +210,84 @@ func binarySearchOnSortedArray<T: Comparable>(ary: [T], target: T) -> Int {
         }
     }
     
-    return mid
+    fatalError("Loop terminated without finding a value")
+}
+
+/// Finds i given the condition that ary[i-1] < target and a[i] >= target, using a binary search on
+/// a sorted array. Returns the first match.
+///
+/// - parameter ary: The sorted array to search
+/// - parameter target: The item to search for
+/// - returns: The index which corresponds to the first match, the count of the array if firstOperator(last item >= target), 0 if first item < target).
+func binaryGreaterOrEqOnSortedArray<T: Comparable>(ary: [T], target: T) -> Int {
+    var left: Int = 1
+    var right: Int = ary.count - 1
+    
+    if ary.last! < target {
+        return ary.count
+    }
+    
+    if ary.first! >= target {
+        return 0
+    }
+    
+    var mid: Int = -1
+    
+    while (left <= right) {
+        mid = (left + right) / 2
+        let previousitem = ary[mid - 1]
+        let value = ary[mid]
+        
+        if (previousitem < target && value >= target) {
+            return mid
+        }
+        
+        if (value == target) {
+            if mid-1 > 0 && ary[mid-1] < target {
+                return mid
+            } else if previousitem == target {
+                right = mid - 1
+            }
+        }
+        
+        if (value < target) {
+            left = mid + 1
+        }
+        
+        if (previousitem > target) {
+            right = mid - 1
+        }
+    }
+    
+    fatalError("Loop terminated without finding a value")
+}
+
+/// Given an array _ary_ and an index _i_, checks that all items preceding (within the given stride length, 5 by default) ary[i] cause prededingFunc(otherItem, ary[i])==True and followingFunc(otherItem, ary[o])==True
+///
+/// - parameter ary: The input array
+/// - parameter index: Where the search starts
+/// - parameter precedingFunc: The function that tests all preceding items (e.g. <)
+/// - parameter followingFunc: The function that tests all following items (e.g. >)
+/// - parameter strideLength: How far the testing goes
+/// - returns: True if both functions tests true on all values covered by stride.
+func strideArrayTest<T: Comparable>(ary ary: [T], index: Int, precedingFunc: (T, T) -> Bool, followingFunc: (T, T) -> Bool, strideLength: Int = 5) -> Bool {
+    var leftI = index - 1
+    var rightI = index + 1
+    
+    while leftI >= 0 && leftI >= index - strideLength {
+        if !precedingFunc(ary[leftI], ary[index]) {
+            return false
+        }
+        leftI--
+    }
+    
+    while rightI < ary.count && rightI <= index + strideLength {
+        if !followingFunc(ary[rightI], ary[index]) {
+            return false
+        }
+        rightI++
+    }
+    return true
 }
 
 /// Rounds a number to the amount of decimal places specified.
