@@ -1,3 +1,4 @@
+# Must be run with python3 on windows (or linux? untested). Not mac because of bugs in lsl.
 # Generates a fake lsl stream, sending data similar to what the eye tracker sends
 
 import time
