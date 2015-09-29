@@ -218,7 +218,7 @@ func binaryGreaterOnSortedArray<T: Comparable>(ary: [T], target: T) -> Int {
 ///
 /// - parameter ary: The sorted array to search
 /// - parameter target: The item to search for
-/// - returns: The index which corresponds to the first match, the count of the array if firstOperator(last item >= target), 0 if first item < target).
+/// - returns: The index which corresponds to the first match, the count of the array if firstOperator(last item > target), 0 if first item < target).
 func binaryGreaterOrEqOnSortedArray<T: Comparable>(ary: [T], target: T) -> Int {
     var left: Int = 1
     var right: Int = ary.count - 1
@@ -227,7 +227,7 @@ func binaryGreaterOrEqOnSortedArray<T: Comparable>(ary: [T], target: T) -> Int {
         return ary.count
     }
     
-    if ary.first! >= target {
+    if ary.first! > target {
         return 0
     }
     
@@ -262,15 +262,15 @@ func binaryGreaterOrEqOnSortedArray<T: Comparable>(ary: [T], target: T) -> Int {
     fatalError("Loop terminated without finding a value")
 }
 
-/// Given an array _ary_ and an index _i_, checks that all items preceding (within the given stride length, 5 by default) ary[i] cause prededingFunc(otherItem, ary[i])==True and followingFunc(otherItem, ary[o])==True
+/// Given an array _ary_ and an index _i_, checks that all items following or preceding ary[i] (within the given stride length, 5 by default) cause prededingFunc(otherItem, ary[i])==True and followingFunc(otherItem, ary[o])==True
 ///
 /// - parameter ary: The input array
 /// - parameter index: Where the search starts
+/// - parameter strideLength: How far the testing goes
 /// - parameter precedingFunc: The function that tests all preceding items (e.g. <)
 /// - parameter followingFunc: The function that tests all following items (e.g. >)
-/// - parameter strideLength: How far the testing goes
 /// - returns: True if both functions tests true on all values covered by stride.
-func strideArrayTest<T: Comparable>(ary ary: [T], index: Int, precedingFunc: (T, T) -> Bool, followingFunc: (T, T) -> Bool, strideLength: Int = 5) -> Bool {
+func strideArrayTest<T: Comparable>(ary ary: [T], index: Int, strideLength: Int = 5, precedingFunc: (T, T) -> Bool, followingFunc: (T, T) -> Bool) -> Bool {
     var leftI = index - 1
     var rightI = index + 1
     
