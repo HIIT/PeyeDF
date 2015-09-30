@@ -9,6 +9,7 @@
 import Cocoa
 import XCTest
 @testable import PeyeDF
+@testable import Alamofire
 
 class UtilsTest: XCTestCase {
     
