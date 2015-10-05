@@ -41,8 +41,8 @@ struct PeyeConstants {
     
     /// MARK: - History-specific constants
     
-    /// Amount of seconds that are needed before we start recording the current event.
-    static let minReadTime: NSTimeInterval = 5
+    /// Amount of seconds that are needed before we assume user is reading (after, we start recording the current readingevent).
+    static let minReadTime: NSTimeInterval = 2.5
     
     /// Amount of seconds after which we always close a reading event.
     /// (It is assumed the user went away from keyboard).
@@ -163,11 +163,15 @@ struct PeyeConstants {
     /// - "available": Boolean, true if dime went up, false if down
     static let diMeConnectionNotification = "hiit.PeyeDF.diMeConnectionChange"
     
-    /// String notifying that midas went down
-    static let midasDownNotification = "hiit.MidasManager.down"
+    /// String notifying that Midas' connection status changed
+    ///
+    /// **UserInfo dictionary fields**:
+    ///
+    /// - "available": Boolean, true if midas went up, false if down
+    static let midasConnectionNotification = "hiit.PeyeDF.midasConnectionChanged"
     
     /// String identifying the notification sent when a new sample is received from midas
-    static let newMidasSampleNotification = "hiit.MidasManager.newSample"
+    static let newMidasSampleNotification = "hiit.PeyeDF.midasNewSample"
     
     /// String identifying the notification sent when auto annotation is complete
     static let autoAnnotationComplete = "hiit.PeyeDF.autoAnnotationComplete"

@@ -25,6 +25,9 @@ class HistoryManager {
     /// The timer that fires after a certain amount of time passed, and generates an "exit event"
     private var exitTimer: NSTimer?
     
+    /// A boolean indicating that the user is (probably) reading. Essentially, it means we are after entry timer but before exit timer (or exit event).
+    private var userIsReading = false
+    
     /// The reading event that will be sent at an exit event
     private var currentReadingEvent: ReadingEvent?
     
@@ -34,11 +37,12 @@ class HistoryManager {
     /// Is true if there is a connection to DiMe, and can be used
     private var dimeAvailable: Bool = false
     
-    private init() {
-        dimeConnect()
-    }
-    
     // MARK: - External functions
+    
+    /// Returns true if the user is (probably) reading
+    func isUserReading() -> Bool {
+        return userIsReading
+    }
     
     /// Attempts to connect to dime. Sends a notification if we succeeded / failed
     func dimeConnect() {
@@ -166,17 +170,13 @@ class HistoryManager {
     
     /// The document has been "seen" long enough, request information and prepare second (exit) timer
     @objc private func entryTimerFire(entryTimer: NSTimer) {
+        userIsReading = true
+        
         let docWindow = entryTimer.userInfo as! DocumentWindowController
         self.entryTimer = nil
         
         // retrieve status
         self.currentReadingEvent = docWindow.getCurrentStatus()
-        
-        // TODO: remove this debugging trap
-        if let _ = self.exitTimer {
-            let exception = NSException(name: "This should never happen!", reason: nil, userInfo: nil)
-            exception.raise()
-        }
         
         // prepare exit timer, which will fire when the user is inactive long enough (or will be canceled if there is another exit event).
         if let _ = self.currentReadingEvent {
@@ -189,18 +189,23 @@ class HistoryManager {
     
     /// The user has moved away, send current status (if any) and invalidate timer
     @objc private func exitEvent(exitTimer: NSTimer?) {
+        userIsReading = false
+        
+        // cancel previous entry timer, if any
         if let timer = self.entryTimer {
             dispatch_sync(timerQueue) {
                     timer.invalidate()
                }
             self.entryTimer = nil
         }
+        // cancel previous exit timer, if any
         if let timer = self.exitTimer {
             dispatch_sync(timerQueue) {
                     timer.invalidate()
                }
             self.exitTimer = nil
         }
+        // if there's something to send, send it
         if let currentStatus = self.currentReadingEvent {
             currentStatus.setEnd(NSDate())
             sendToDiMe(currentStatus as Event)

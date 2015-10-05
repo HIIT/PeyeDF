@@ -25,6 +25,12 @@ class AppSingleton {
         return CGFloat(dpi)
     }
     
+    /// Convenience function to get preferred eye
+    static func getDominantEye() -> Eye {
+        let eyeRaw = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDominantEye) as! Int
+        return Eye(rawValue: eyeRaw)!
+    }
+    
     /// Convenience function to show an alerting alert
     ///
     /// - parameter message: The message to show

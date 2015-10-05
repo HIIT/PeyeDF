@@ -9,7 +9,7 @@
 import Foundation
 import Cocoa
 
-class PreferencesViewController: NSViewController {
+class DiMePreferencesViewController: NSViewController {
     
     @IBOutlet weak var urlField: NSTextField!
     @IBOutlet weak var usernameField: NSTextField!

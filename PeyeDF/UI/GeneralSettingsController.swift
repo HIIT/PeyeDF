@@ -56,8 +56,10 @@ class GeneralSettingsController: NSViewController {
     @IBAction func dominantButtonPress(sender: NSButton) {
         if sender.identifier! == "leftDomEyeButton" {
             NSUserDefaults.standardUserDefaults().setValue(Eye.left.rawValue, forKey: PeyeConstants.prefDominantEye)
+            MidasManager.sharedInstance.setDominantEye(.left)
         } else if sender.identifier! == "rightDomEyeButton" {
             NSUserDefaults.standardUserDefaults().setValue(Eye.right.rawValue, forKey: PeyeConstants.prefDominantEye)
+            MidasManager.sharedInstance.setDominantEye(.right)
         } else {
             fatalError("Some unrecognized button was pressed!?")
         }

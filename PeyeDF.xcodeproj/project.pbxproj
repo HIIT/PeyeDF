@@ -27,7 +27,7 @@
 		A95A8CF41B94407D0093119E /* DocumentWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95A8CED1B94407D0093119E /* DocumentWindowController.swift */; };
 		A95A8CF51B94407D0093119E /* MyPDF.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95A8CEE1B94407D0093119E /* MyPDF.swift */; };
 		A95A8CF61B94407D0093119E /* PDFSideController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95A8CEF1B94407D0093119E /* PDFSideController.swift */; };
-		A95A8CF71B94407D0093119E /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95A8CF01B94407D0093119E /* PreferencesViewController.swift */; };
+		A95A8CF71B94407D0093119E /* DiMePreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95A8CF01B94407D0093119E /* DiMePreferencesViewController.swift */; };
 		A95A8CF81B94407D0093119E /* ThumbSideController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95A8CF11B94407D0093119E /* ThumbSideController.swift */; };
 		A95FE9801B8B3C1D0010E813 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FE97F1B8B3C1D0010E813 /* SwiftyJSON.swift */; };
 		A95FE9901B8B3F7D0010E813 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A95FE98B1B8B3EC60010E813 /* Alamofire.framework */; };
@@ -134,7 +134,7 @@
 		A95A8CED1B94407D0093119E /* DocumentWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentWindowController.swift; sourceTree = "<group>"; };
 		A95A8CEE1B94407D0093119E /* MyPDF.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPDF.swift; sourceTree = "<group>"; };
 		A95A8CEF1B94407D0093119E /* PDFSideController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFSideController.swift; sourceTree = "<group>"; };
-		A95A8CF01B94407D0093119E /* PreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesViewController.swift; sourceTree = "<group>"; };
+		A95A8CF01B94407D0093119E /* DiMePreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiMePreferencesViewController.swift; sourceTree = "<group>"; };
 		A95A8CF11B94407D0093119E /* ThumbSideController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThumbSideController.swift; sourceTree = "<group>"; };
 		A95FE97F1B8B3C1D0010E813 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
 		A95FE9811B8B3EC60010E813 /* Alamofire.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Alamofire.xcodeproj; path = Alamofire/Alamofire.xcodeproj; sourceTree = "<group>"; };
@@ -182,7 +182,7 @@
 				A913A91F1BA1A93B008BA10D /* SearchPanelController.swift */,
 				A95A8CEE1B94407D0093119E /* MyPDF.swift */,
 				A95A8CEF1B94407D0093119E /* PDFSideController.swift */,
-				A95A8CF01B94407D0093119E /* PreferencesViewController.swift */,
+				A95A8CF01B94407D0093119E /* DiMePreferencesViewController.swift */,
 				A95A8CF11B94407D0093119E /* ThumbSideController.swift */,
 			);
 			name = UI;
@@ -456,7 +456,7 @@
 				A91CB9721B332FB700671868 /* PeyeDocument.swift in Sources */,
 				A95A8CF51B94407D0093119E /* MyPDF.swift in Sources */,
 				A9FE38A81B98497400680F31 /* GeneralSettingsController.swift in Sources */,
-				A95A8CF71B94407D0093119E /* PreferencesViewController.swift in Sources */,
+				A95A8CF71B94407D0093119E /* DiMePreferencesViewController.swift in Sources */,
 				A95A8CF61B94407D0093119E /* PDFSideController.swift in Sources */,
 				A9E771111B96091F0005A4B3 /* ReadingRect.swift in Sources */,
 				A93C53DC1B8DCEFB00179C72 /* HistoryManager.swift in Sources */,

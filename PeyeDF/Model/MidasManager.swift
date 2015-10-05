@@ -37,6 +37,9 @@ class MidasManager {
     /// Testing url used by midas
     private let kTestURL = "http://\(kMidasAddress):\(kMidasPort)/test"
     
+    /// Dominant eye
+    private var dominantEye: Eye!
+    
     /// Fetching of eye tracking events, TO / FROM Midas Manager, and timers related to this activity, are all run on this queue to prevent resource conflicts.
     /// writing of eye tracking events blocks the queue, reading does not.
     static let sharedQueue = dispatch_queue_create("hiit.MidasManager.sharedQueue", DISPATCH_QUEUE_CONCURRENT)
@@ -44,24 +47,32 @@ class MidasManager {
     /// Time to regularly fetch data from Midas
     private var fetchTimer: NSTimer?
     
+    // MARK: - External functions
+    
     /// Starts fetching data from Midas
     func start() {
+        dominantEye = AppSingleton.getDominantEye()
         
-        /// Checks if midas is available, if not doesn't start
-        Alamofire.request(.GET, kTestURL).responseJSON {
-            _, _, response in
-            
-            if response.isFailure {
-                self.midasAvailable = false
-                AppSingleton.log.error("Midas is down: \(response.debugDescription)")
-                AppSingleton.alertUser("Midas is down", infoText: "Initial connection to midas failed")
-            } else if self.fetchTimer == nil {
-                self.midasAvailable = true
-                self.previousTimeStamps[PeyeConstants.midasRawNodeName] = 0
-                self.previousTimeStamps[PeyeConstants.midasEventNodeName] = 0
-                dispatch_sync(MidasManager.sharedQueue) {
-                    self.fetchTimer = NSTimer(timeInterval: self.kFetchInterval, target: self, selector: "fetchTimerHit:", userInfo: nil, repeats: true)
-                    NSRunLoop.currentRunLoop().addTimer(self.fetchTimer!, forMode: NSRunLoopCommonModes)
+        // Take action only if midas is currently off
+        
+        if !midasAvailable {
+            // Checks if midas is available, if not doesn't start
+            Alamofire.request(.GET, kTestURL).responseJSON {
+                _, _, response in
+                
+                if response.isFailure {
+                    self.midasAvailable = false
+                    AppSingleton.log.error("Midas is down: \(response.debugDescription)")
+                    AppSingleton.alertUser("Midas is down", infoText: "Initial connection to midas failed")
+                } else if self.fetchTimer == nil {
+                    NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.midasConnectionNotification, object: self, userInfo: ["available": true])
+                    self.midasAvailable = true
+                    self.previousTimeStamps[PeyeConstants.midasRawNodeName] = 0
+                    self.previousTimeStamps[PeyeConstants.midasEventNodeName] = 0
+                    dispatch_sync(MidasManager.sharedQueue) {
+                        self.fetchTimer = NSTimer(timeInterval: self.kFetchInterval, target: self, selector: "fetchTimerHit:", userInfo: nil, repeats: true)
+                        NSRunLoop.currentRunLoop().addTimer(self.fetchTimer!, forMode: NSRunLoopCommonModes)
+                    }
                 }
             }
         }
@@ -69,6 +80,11 @@ class MidasManager {
     
     /// Stops fetching data from Midas
     func stop() {
+        // take note
+        self.midasAvailable = false
+        NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.midasConnectionNotification, object: self, userInfo: ["available": false])
+        
+        // stop timer
         if let timer = fetchTimer {
             dispatch_sync(MidasManager.sharedQueue) {
                     timer.invalidate()
@@ -81,6 +97,13 @@ class MidasManager {
     func isMidasAvailable() -> Bool {
         return midasAvailable
     }
+    
+    /// Sets dominant eye
+    func setDominantEye(eye: Eye!) {
+        dominantEye = eye
+    }
+    
+    // MARK: - Internal functions
     
     /// Fetching timer regularly calls this
     @objc private func fetchTimerHit(timer: NSTimer) {
@@ -104,10 +127,11 @@ class MidasManager {
         request.responseJSON {
             _, _, response in
             if response.isFailure {
+                self.stop()
                 AppSingleton.log.error("Error while reading json response from Midas: \(response.debugDescription)")
                 AppSingleton.alertUser("Error while reading json response from Midas", infoText: "Message from midas:\n\(response.debugDescription)")
             } else {
-                AppSingleton.log.debug("Data got")
+                AppSingleton.log.debug("Data got. You userIsReading is \(HistoryManager.sharedManager.isUserReading())")
                 self.gotData(nodeName, channels: channels, json: JSON(response.value!))
             }
         }
@@ -115,6 +139,7 @@ class MidasManager {
  
     /// Called when new data arrives (in fetchdata, Alamofire, hence asynchronously)
     private func gotData(nodeName: String, channels: [String], json: JSON) {
+        return
         var timestampA: JSON
         if nodeName == PeyeConstants.midasRawNodeName {
             timestampA = json[0]["return"]["timestamp"]["data"]

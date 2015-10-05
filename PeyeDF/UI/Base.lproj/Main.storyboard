@@ -123,9 +123,9 @@
                                 </textFieldCell>
                             </textField>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="BVV-hH-JyH">
-                                <rect key="frame" x="18" y="192" width="323" height="18"/>
+                                <rect key="frame" x="18" y="192" width="334" height="18"/>
                                 <animations/>
-                                <buttonCell key="cell" type="check" title="Use MIDAS (will take effect after next app restart)" bezelStyle="regularSquare" imagePosition="left" inset="2" id="7Or-3q-KEa">
+                                <buttonCell key="cell" type="check" title="Automatically attempt to connect to MIDAS on start" bezelStyle="regularSquare" imagePosition="left" inset="2" id="7Or-3q-KEa">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -209,7 +209,7 @@
         <!--DiMe Preferences-->
         <scene sceneID="JFC-Eo-9Mb">
             <objects>
-                <viewController title="DiMe Preferences" showSeguePresentationStyle="single" id="cA3-Nk-NKg" customClass="PreferencesViewController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="DiMe Preferences" showSeguePresentationStyle="single" id="cA3-Nk-NKg" customClass="DiMePreferencesViewController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="wSP-gb-Ssy">
                         <rect key="frame" x="0.0" y="0.0" width="480" height="196"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -954,12 +954,18 @@
                             </menuItem>
                             <menuItem title="Connections" id="XuG-xl-orp">
                                 <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="Connections" id="SQE-Zk-SC9">
+                                <menu key="submenu" title="Connections" autoenablesItems="NO" id="SQE-Zk-SC9">
                                     <items>
-                                        <menuItem title="_dime_connect" id="dV0-IR-78f">
+                                        <menuItem title="_dime_connect" id="dV0-IR-78f" userLabel="Connect Dime">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="connectDime:" target="Voe-Tx-rLC" id="TMU-ol-eIp"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Connect to Midas" id="hMB-fS-WXv" userLabel="Connect Midas">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="connectMidas:" target="Voe-Tx-rLC" id="4yp-e5-P2l"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -986,6 +992,7 @@
                 <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="PeyeDF" customModuleProvider="target">
                     <connections>
                         <outlet property="connectDime" destination="dV0-IR-78f" id="79n-Qg-M5b"/>
+                        <outlet property="connectMidas" destination="hMB-fS-WXv" id="wik-W4-9Lc"/>
                     </connections>
                 </customObject>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -1189,7 +1196,7 @@
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="60" id="Vzr-WU-4oi"/>
                                 </constraints>
                                 <animations/>
-                                <scroller key="horizontalScroller" verticalHuggingPriority="750" doubleValue="0.010700486598910606" horizontal="YES" id="95A-eE-ckT">
+                                <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="95A-eE-ckT">
                                     <rect key="frame" x="1" y="119" width="223" height="15"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <animations/>
