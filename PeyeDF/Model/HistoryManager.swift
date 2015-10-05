@@ -31,11 +31,41 @@ class HistoryManager {
     /// The GDC queue in which all timers are created / destroyed (to prevent potential memory leaks, they all run here)
     private let timerQueue = dispatch_queue_create("hiit.PeyeDF.HistoryManager.timerQueue", DISPATCH_QUEUE_SERIAL)
     
+    /// Is true if there is a connection to DiMe, and can be used
+    private var dimeAvailable: Bool = false
+    
     private init() {
-        
+        dimeConnect()
     }
     
-    // MARK: - External functions - entry / exit events
+    // MARK: - External functions
+    
+    /// Attempts to connect to dime. Sends a notification if we succeeded / failed
+    func dimeConnect() {
+        let server_url: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefServerURL) as! String
+        let user: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefServerUserName) as! String
+        let password: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefServerPassword) as! String
+        
+        let credentialData = "\(user):\(password)".dataUsingEncoding(NSUTF8StringEncoding)!
+        let base64Credentials = credentialData.base64EncodedStringWithOptions([])
+        
+        let headers = ["Authorization": "Basic \(base64Credentials)"]
+        
+        let dictionaryObject = ["test": "test"]
+        
+        Alamofire.request(Alamofire.Method.POST, server_url + "/ping", parameters: dictionaryObject, encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON {
+            _, _, response in
+            if response.isFailure {
+                // connection failed
+                AppSingleton.alertUser("Error while communcating with dime. Dime has now been disconnected", infoText: "Message from dime:\n\(response.debugDescription)")
+                
+                self.dimeConnectState(false)
+            } else {
+                // succesfully connected
+                self.dimeConnectState(true)
+            }
+        }
+    }
     
     /// Tells the history manager that something new is happened. The history manager check if the sender is a window in front (main window)
     ///
@@ -67,44 +97,61 @@ class HistoryManager {
     
     // MARK: - Internal functions
     
+    /// Connection to dime successful / failed
+    private func dimeConnectState(success: Bool) {
+        if !success {
+            self.dimeAvailable = false
+            NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.diMeConnectionNotification, object: self, userInfo: ["available": false])
+        } else {
+            // succesfully connected
+            self.dimeAvailable = true
+            NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.diMeConnectionNotification, object: self, userInfo: ["available": true])
+        }
+    }
+    
     /// Send the given dictionary to DiMe (assumed to be in correct form due to the use of public callers of this method)
     private func sendDictToDime(dictionaryObject: [String: AnyObject]) {
-        
-        let server_url: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefServerURL) as! String
-        let user: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefServerUserName) as! String
-        let password: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefServerPassword) as! String
-        
-        let credentialData = "\(user):\(password)".dataUsingEncoding(NSUTF8StringEncoding)!
-        let base64Credentials = credentialData.base64EncodedStringWithOptions([])
-        
-        let headers = ["Authorization": "Basic \(base64Credentials)"]
-        
-        let error = NSErrorPointer()
-        let options = NSJSONWritingOptions.PrettyPrinted
+       
+        if dimeAvailable {
+            
+            let server_url: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefServerURL) as! String
+            let user: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefServerUserName) as! String
+            let password: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefServerPassword) as! String
+            
+            let credentialData = "\(user):\(password)".dataUsingEncoding(NSUTF8StringEncoding)!
+            let base64Credentials = credentialData.base64EncodedStringWithOptions([])
+            
+            let headers = ["Authorization": "Basic \(base64Credentials)"]
+            
+            let error = NSErrorPointer()
+            let options = NSJSONWritingOptions.PrettyPrinted
 
-        let jsonData: NSData?
-        do {
-            jsonData = try NSJSONSerialization.dataWithJSONObject(dictionaryObject, options: options)
-        } catch let error1 as NSError {
-            error.memory = error1
-            jsonData = nil
-        }
-        
-        if jsonData == nil {
-            AppSingleton.log.error("Error while deserializing json! This should never happen. \(error)")
-            return
-        }
-        
-        Alamofire.request(Alamofire.Method.POST, server_url + "/data/event", parameters: dictionaryObject, encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON {
-            _, _, response in
-            if response.isFailure {
-                AppSingleton.log.error("Error while reading json response from DiMe: \(response.debugDescription)")
-            } else {
-                AppSingleton.log.debug("Data pushed to DiMe")
-                // JSON(response.value!) to see what dime replied
+            let jsonData: NSData?
+            do {
+                jsonData = try NSJSONSerialization.dataWithJSONObject(dictionaryObject, options: options)
+            } catch let error1 as NSError {
+                error.memory = error1
+                jsonData = nil
             }
+            
+            if jsonData == nil {
+                AppSingleton.log.error("Error while deserializing json! This should never happen. \(error)")
+                return
+            }
+            
+            Alamofire.request(Alamofire.Method.POST, server_url + "/data/event", parameters: dictionaryObject, encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON {
+                _, _, response in
+                if response.isFailure {
+                    AppSingleton.log.error("Error while reading json response from DiMe: \(response.debugDescription)")
+                    AppSingleton.alertUser("Error while communcating with dime. Dime has now been disconnected", infoText: "Message from dime:\n\(response.debugDescription)")
+                    self.dimeConnectState(false)
+                } else {
+                    AppSingleton.log.debug("Data pushed to DiMe")
+                    // JSON(response.value!) to see what dime replied
+                }
+            }
+            
         }
-        
         
     }
     

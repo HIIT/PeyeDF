@@ -54,6 +54,7 @@ class MidasManager {
             if response.isFailure {
                 self.midasAvailable = false
                 AppSingleton.log.error("Midas is down: \(response.debugDescription)")
+                AppSingleton.alertUser("Midas is down", infoText: "Initial connection to midas failed")
             } else if self.fetchTimer == nil {
                 self.midasAvailable = true
                 self.previousTimeStamps[PeyeConstants.midasRawNodeName] = 0
@@ -104,6 +105,7 @@ class MidasManager {
             _, _, response in
             if response.isFailure {
                 AppSingleton.log.error("Error while reading json response from Midas: \(response.debugDescription)")
+                AppSingleton.alertUser("Error while reading json response from Midas", infoText: "Message from midas:\n\(response.debugDescription)")
             } else {
                 AppSingleton.log.debug("Data got")
                 self.gotData(nodeName, channels: channels, json: JSON(response.value!))

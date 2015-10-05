@@ -156,8 +156,12 @@ struct PeyeConstants {
     
     // MARK: - Notifications
     
-    /// String notifying that DiMe went down
-    static let diMeDownNotification = "hiit.PeyeDF.diMeDown"
+    /// String notifying that something changed in the dime connection.
+    ///
+    /// **UserInfo dictionary fields**:
+    ///
+    /// - "available": Boolean, true if dime went up, false if down
+    static let diMeConnectionNotification = "hiit.PeyeDF.diMeConnectionChange"
     
     /// String notifying that midas went down
     static let midasDownNotification = "hiit.MidasManager.down"

@@ -12,6 +12,9 @@ import Quartz
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
+    /// Outlet for connect to dime menu item
+    @IBOutlet weak var connectDime: NSMenuItem!
+    
     /// Creates default preferences
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         var defaultPrefs = [String: AnyObject]()
@@ -31,6 +34,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if useMidas {
             MidasManager.sharedInstance.start()   
         }
+        
+        // Monitor dime down/up
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "dimeConnectionChanged:", name: PeyeConstants.diMeConnectionNotification, object: HistoryManager.sharedManager)
+    }
+    
+    /// Callback for click on connect to dime
+    @IBAction func connectDime(sender: NSMenuItem) {
+        HistoryManager.sharedManager.dimeConnect()
     }
     
     /// Find menu item is linked to this global function
@@ -62,11 +73,26 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillTerminate(aNotification: NSNotification) {
         // Insert code here to tear down your application
         MidasManager.sharedInstance.stop()
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: PeyeConstants.diMeConnectionNotification, object: HistoryManager.sharedManager)
     }
     
     func applicationShouldOpenUntitledFile(sender: NSApplication) -> Bool {
         return false
     }
-
+    
+    /// MARK: - Notification callbacks
+    
+    @objc func dimeConnectionChanged(notification: NSNotification) {
+        let userInfo = notification.userInfo as! [String: Bool]
+        let dimeAvailable = userInfo["available"]!
+        
+        if dimeAvailable {
+            connectDime.state = NSOnState
+            connectDime.title = "Connected to dime"
+        } else {
+            connectDime.state = NSOffState
+            connectDime.title = "Connect to dime"
+        }
+    }
 }
 

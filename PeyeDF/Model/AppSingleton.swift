@@ -25,6 +25,21 @@ class AppSingleton {
         return CGFloat(dpi)
     }
     
+    /// Convenience function to show an alerting alert
+    ///
+    /// - parameter message: The message to show
+    /// - parameter infoText: If not nil (default), shows additional text
+    static func alertUser(message: String, infoText: String? = nil) {
+        let myAl = NSAlert()
+        myAl.alertStyle = .WarningAlertStyle
+        myAl.icon = NSImage(named: "NSCaution")
+        myAl.messageText = message
+        if let infoText = infoText {
+            myAl.informativeText = infoText
+        }
+        myAl.runModal()
+    }
+    
     /// Set up console and file log
     private static func createLog() -> XCGLogger {
         var error: NSError? = nil
