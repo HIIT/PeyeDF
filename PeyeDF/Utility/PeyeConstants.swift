@@ -18,7 +18,7 @@ struct PeyeConstants {
     /// Dominant eye
     static let prefDominantEye = "eye.dominant"
     
-    /// Use midas
+    /// Use midas on start
     static let prefUseMidas = "midas.use"
     
     /// Monitor DPI
@@ -170,8 +170,14 @@ struct PeyeConstants {
     /// - "available": Boolean, true if midas went up, false if down
     static let midasConnectionNotification = "hiit.PeyeDF.midasConnectionChanged"
     
-    /// String identifying the notification sent when a new sample is received from midas
-    static let newMidasSampleNotification = "hiit.PeyeDF.midasNewSample"
+    /// String identifying the notification sent when a new raw sample (for eye position) is received from midas.
+    /// The sample regarding the last (most recent) event is sent
+    ///
+    /// **UserInfo dictionary fields**:
+    /// - "xpos": last seen position, x
+    /// - "ypos": last seen position, y
+    /// - "zpos": last seen position, z (distance from camera)
+    static let midasEyePositionNotification = "hiit.PeyeDF.midasEyePosition"
     
     /// String identifying the notification sent when auto annotation is complete
     static let autoAnnotationComplete = "hiit.PeyeDF.autoAnnotationComplete"

@@ -13,6 +13,7 @@
 		A912D8A51B8B5C3A006F0657 /* ReadingEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A912D8A31B8B5C3A006F0657 /* ReadingEvent.swift */; };
 		A913A9201BA1A93B008BA10D /* SearchPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A913A91F1BA1A93B008BA10D /* SearchPanelController.swift */; };
 		A913A9251BA1B047008BA10D /* MainSplitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A913A9241BA1B047008BA10D /* MainSplitController.swift */; };
+		A918F8101BC2D71500345448 /* eyeBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = A918F80F1BC2D71500345448 /* eyeBox.swift */; settings = {ASSET_TAGS = (); }; };
 		A91CB94A1B332EDB00671868 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91CB9491B332EDB00671868 /* AppDelegate.swift */; };
 		A91CB9501B332EDB00671868 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A91CB94F1B332EDB00671868 /* Images.xcassets */; };
 		A91CB95F1B332EDB00671868 /* PeyeDFTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91CB95E1B332EDB00671868 /* PeyeDFTests.swift */; };
@@ -35,6 +36,8 @@
 		A9677F921BA806F700DC48CC /* MidasManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9677F911BA806F700DC48CC /* MidasManager.swift */; };
 		A97230761B8B60C8005D29E0 /* DiMeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97230751B8B60C8005D29E0 /* DiMeData.swift */; };
 		A981F69D1B42FC4C00E7E9BD /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A981F69C1B42FC4C00E7E9BD /* Utils.swift */; };
+		A9C8F0251BC2B309007ABE1A /* Fixation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C8F0241BC2B309007ABE1A /* Fixation.swift */; settings = {ASSET_TAGS = (); }; };
+		A9C8F0271BC2B31A007ABE1A /* Raw.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C8F0261BC2B31A007ABE1A /* Raw.swift */; settings = {ASSET_TAGS = (); }; };
 		A9CDB2E91B3AC49800347398 /* PeyeConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CDB2E81B3AC49800347398 /* PeyeConstants.swift */; };
 		A9D833AD1BA868520046B21F /* PageEyeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D833AC1BA868520046B21F /* PageEyeData.swift */; };
 		A9DFF1721B7E3D1A008CFF0C /* XCGLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DFF1711B7E3D1A008CFF0C /* XCGLogger.swift */; };
@@ -116,6 +119,7 @@
 		A912D8A31B8B5C3A006F0657 /* ReadingEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadingEvent.swift; sourceTree = "<group>"; };
 		A913A91F1BA1A93B008BA10D /* SearchPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchPanelController.swift; sourceTree = "<group>"; };
 		A913A9241BA1B047008BA10D /* MainSplitController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainSplitController.swift; sourceTree = "<group>"; };
+		A918F80F1BC2D71500345448 /* eyeBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = eyeBox.swift; sourceTree = "<group>"; };
 		A91CB9441B332EDB00671868 /* PeyeDF.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PeyeDF.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A91CB9481B332EDB00671868 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A91CB9491B332EDB00671868 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -142,6 +146,8 @@
 		A97230751B8B60C8005D29E0 /* DiMeData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiMeData.swift; sourceTree = "<group>"; };
 		A97F7B951B8CB32700013E26 /* PeyeDF-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PeyeDF-Bridging-Header.h"; sourceTree = "<group>"; };
 		A981F69C1B42FC4C00E7E9BD /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		A9C8F0241BC2B309007ABE1A /* Fixation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fixation.swift; sourceTree = "<group>"; };
+		A9C8F0261BC2B31A007ABE1A /* Raw.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Raw.swift; sourceTree = "<group>"; };
 		A9CDB2E81B3AC49800347398 /* PeyeConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeyeConstants.swift; sourceTree = "<group>"; };
 		A9D833AC1BA868520046B21F /* PageEyeData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageEyeData.swift; sourceTree = "<group>"; };
 		A9DFF1711B7E3D1A008CFF0C /* XCGLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCGLogger.swift; sourceTree = "<group>"; };
@@ -176,6 +182,7 @@
 				A95A8CEB1B94407D0093119E /* DebugController.swift */,
 				A913A9241BA1B047008BA10D /* MainSplitController.swift */,
 				A9FE38A71B98497400680F31 /* GeneralSettingsController.swift */,
+				A918F80F1BC2D71500345448 /* eyeBox.swift */,
 				A95A8CEC1B94407D0093119E /* DocumentSplitController.swift */,
 				A9260F561BA4CD10005B1556 /* CircleOverlay.swift */,
 				A95A8CED1B94407D0093119E /* DocumentWindowController.swift */,
@@ -206,11 +213,11 @@
 		A9000C5D1B358BBC00E59C7B /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				A9F335721B3ABC090042BFB3 /* AppSingleton.swift */,
+				A93C53DB1B8DCEFB00179C72 /* HistoryManager.swift */,
 				A9677F911BA806F700DC48CC /* MidasManager.swift */,
+				A9F335721B3ABC090042BFB3 /* AppSingleton.swift */,
 				A91CB96C1B332FB700671868 /* PeyeDocument.swift */,
 				A91CB9491B332EDB00671868 /* AppDelegate.swift */,
-				A93C53DB1B8DCEFB00179C72 /* HistoryManager.swift */,
 			);
 			name = Model;
 			path = PeyeDF/Model;
@@ -219,7 +226,8 @@
 		A91CB93B1B332EDB00671868 = {
 			isa = PBXGroup;
 			children = (
-				A9D9545F1B8B59DD007A34BF /* DiMe */,
+				A9D9545F1B8B59DD007A34BF /* DiMe data types */,
+				A9C8F0231BC2B27A007ABE1A /* Midas data types */,
 				A9000C5D1B358BBC00E59C7B /* Model */,
 				A9000C5C1B358B8E00E59C7B /* Utility */,
 				A9000C5B1B358B7F00E59C7B /* UI */,
@@ -285,7 +293,17 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		A9D9545F1B8B59DD007A34BF /* DiMe */ = {
+		A9C8F0231BC2B27A007ABE1A /* Midas data types */ = {
+			isa = PBXGroup;
+			children = (
+				A9C8F0261BC2B31A007ABE1A /* Raw.swift */,
+				A9C8F0241BC2B309007ABE1A /* Fixation.swift */,
+			);
+			name = "Midas data types";
+			path = PeyeDF/Midas;
+			sourceTree = SOURCE_ROOT;
+		};
+		A9D9545F1B8B59DD007A34BF /* DiMe data types */ = {
 			isa = PBXGroup;
 			children = (
 				A912D8A21B8B5C3A006F0657 /* DocumentInformationElement.swift */,
@@ -297,7 +315,7 @@
 				A9038F7A1B8F634200A7D183 /* DiMeProtocols.swift */,
 				A97230751B8B60C8005D29E0 /* DiMeData.swift */,
 			);
-			name = DiMe;
+			name = "DiMe data types";
 			path = PeyeDF/DiMe;
 			sourceTree = SOURCE_ROOT;
 		};
@@ -467,15 +485,18 @@
 				A9CDB2E91B3AC49800347398 /* PeyeConstants.swift in Sources */,
 				A95A8CF41B94407D0093119E /* DocumentWindowController.swift in Sources */,
 				A9F335731B3ABC090042BFB3 /* AppSingleton.swift in Sources */,
+				A918F8101BC2D71500345448 /* eyeBox.swift in Sources */,
 				A9677F921BA806F700DC48CC /* MidasManager.swift in Sources */,
 				A9038F7B1B8F634200A7D183 /* DiMeProtocols.swift in Sources */,
 				A95A8CF31B94407D0093119E /* DocumentSplitController.swift in Sources */,
 				A9038F761B8F5EE500A7D183 /* Event.swift in Sources */,
 				A913A9201BA1A93B008BA10D /* SearchPanelController.swift in Sources */,
 				A95A8CF21B94407D0093119E /* DebugController.swift in Sources */,
+				A9C8F0251BC2B309007ABE1A /* Fixation.swift in Sources */,
 				A912D8A51B8B5C3A006F0657 /* ReadingEvent.swift in Sources */,
 				A9DFF1721B7E3D1A008CFF0C /* XCGLogger.swift in Sources */,
 				A981F69D1B42FC4C00E7E9BD /* Utils.swift in Sources */,
+				A9C8F0271BC2B31A007ABE1A /* Raw.swift in Sources */,
 				A97230761B8B60C8005D29E0 /* DiMeData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

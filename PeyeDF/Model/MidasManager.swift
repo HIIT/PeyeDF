@@ -9,6 +9,11 @@
 import Foundation
 import Alamofire
 
+/// The fixation data receiver specifies a class that can receive new fixation events
+protocol FixationDataDelegate: class {
+    
+    func receiveNewFixationData(newData: [SMIFixationEvent])
+}
 
 /// MidasManager is a singleton. It is used to retrieve data from Midas at regular intervals. It keeps a buffer of all retrieved data.
 class MidasManager {
@@ -25,17 +30,20 @@ class MidasManager {
     /// Whether there is a midas connection available
     private var midasAvailable: Bool = false
     
-    /// Last received unix timestamp for the node of the given name
-    private var previousTimeStamps: [String: Int] = [String: Int]()
+    /// Last SMI timestamp for last recorded fixation
+    private var lastFixationStartTime: Int = 0
     
     /// Length of buffer in seconds
-    private let kBufferLength: Int = 10
+    private let kBufferLength: Int = 1
     
     /// How often a request is made to midas (seconds)
-    private let kFetchInterval: NSTimeInterval = 5.0
+    private let kFetchInterval: NSTimeInterval = 0.5
     
     /// Testing url used by midas
     private let kTestURL = "http://\(kMidasAddress):\(kMidasPort)/test"
+    
+    /// Fixation data delegate, to which fixation data will be sent
+    private var fixationDelegate: FixationDataDelegate?
     
     /// Dominant eye
     private var dominantEye: Eye!
@@ -47,7 +55,29 @@ class MidasManager {
     /// Time to regularly fetch data from Midas
     private var fetchTimer: NSTimer?
     
+    /// What kind of data we want to get from midas
+    private enum MidasFetchKind {
+        /// Eye position X, Y and Z with respect to camera, to know how the user is standing in front of eye tracker
+        case EyePosition
+        /// Gets an array of all fixations since last fetch
+        case Fixations
+    }
+    
     // MARK: - External functions
+    
+    /// Registers a new fixation delegate, able to receive fixation data. Overwrites the previous one.
+    func setFixationDelegate(newDelegate: FixationDataDelegate) {
+        if fixationDelegate !== newDelegate {
+            fixationDelegate = newDelegate
+        }
+    }
+    
+    /// Unregisters the current fixation delegate. The one that wants to unregister itself should call this function
+    func unsetFixationDelegate(oldDelegate: FixationDataDelegate) {
+        if fixationDelegate === oldDelegate {
+            fixationDelegate = nil
+        }
+    }
     
     /// Starts fetching data from Midas
     func start() {
@@ -67,8 +97,6 @@ class MidasManager {
                 } else if self.fetchTimer == nil {
                     NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.midasConnectionNotification, object: self, userInfo: ["available": true])
                     self.midasAvailable = true
-                    self.previousTimeStamps[PeyeConstants.midasRawNodeName] = 0
-                    self.previousTimeStamps[PeyeConstants.midasEventNodeName] = 0
                     dispatch_sync(MidasManager.sharedQueue) {
                         self.fetchTimer = NSTimer(timeInterval: self.kFetchInterval, target: self, selector: "fetchTimerHit:", userInfo: nil, repeats: true)
                         NSRunLoop.currentRunLoop().addTimer(self.fetchTimer!, forMode: NSRunLoopCommonModes)
@@ -107,12 +135,12 @@ class MidasManager {
     
     /// Fetching timer regularly calls this
     @objc private func fetchTimerHit(timer: NSTimer) {
-        fetchData(PeyeConstants.midasRawNodeName, channels: PeyeConstants.midasRawChannelNames)
-        fetchData(PeyeConstants.midasEventNodeName, channels: PeyeConstants.midasEventChannelNames)
+        fetchData(PeyeConstants.midasRawNodeName, channels: PeyeConstants.midasRawChannelNames, fetchKind: .EyePosition)
+        fetchData(PeyeConstants.midasEventNodeName, channels: PeyeConstants.midasEventChannelNames, fetchKind: .Fixations)
     }
     
     /// Gets data from the given node, for the given channels
-    private func fetchData(nodeName: String, channels: [String]) {
+    private func fetchData(nodeName: String, channels: [String], fetchKind: MidasFetchKind) {
         
         let chanString = midasChanString(fromChannels: channels)
         
@@ -131,55 +159,24 @@ class MidasManager {
                 AppSingleton.log.error("Error while reading json response from Midas: \(response.debugDescription)")
                 AppSingleton.alertUser("Error while reading json response from Midas", infoText: "Message from midas:\n\(response.debugDescription)")
             } else {
-                AppSingleton.log.debug("Data got. You userIsReading is \(HistoryManager.sharedManager.isUserReading())")
-                self.gotData(nodeName, channels: channels, json: JSON(response.value!))
+                self.gotData(ofKind: fetchKind, json: JSON(response.value!))
             }
         }
     }
  
     /// Called when new data arrives (in fetchdata, Alamofire, hence asynchronously)
-    private func gotData(nodeName: String, channels: [String], json: JSON) {
-        return
-        var timestampA: JSON
-        if nodeName == PeyeConstants.midasRawNodeName {
-            timestampA = json[0]["return"]["timestamp"]["data"]
-        } else {
-            timestampA = json[0]["return"]["startTime"]["data"]
-        }
-        let sampleCount = timestampA.count
-        let latestTimeStamp = timestampA[sampleCount - 1]
-        if latestTimeStamp.intValue > previousTimeStamps[nodeName]! {
-            let indexFollowingLastTime = binaryGreaterOnSortedArray(timestampA.arrayValue, target: latestTimeStamp)
-            let filename = "\(nodeName).txt"
-
-            if let dir : NSString = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.AllDomainsMask, true).first {
-                let path = dir.stringByAppendingPathComponent(filename);
-                
-                if !NSFileManager.defaultManager().fileExistsAtPath(path) {
-                    var chanHead = ""
-                    for chan in channels {
-                        chanHead += "\(chan)\t"
-                    }
-                    chanHead += "\n"
-                    chanHead.dataUsingEncoding(NSUTF8StringEncoding)!.writeToFile(path, atomically: false)
-                }
-                
-                let fileHandle = NSFileHandle(forWritingAtPath: path)!
-                fileHandle.seekToEndOfFile()
-                var i = 0  // CHANGE THISS
-                while i < sampleCount {
-                    for chan in channels {
-                        let rawVal = json[0]["return"][chan]["data"][i].stringValue
-                        fileHandle.writeData((rawVal + "\t").dataUsingEncoding(NSUTF8StringEncoding)!)
-                    }
-                    fileHandle.writeData("\n".dataUsingEncoding(NSUTF8StringEncoding)!)
-                    ++i
-                }
-                fileHandle.closeFile()
-                
+    private func gotData(ofKind fetchKind: MidasFetchKind, json: JSON) {
+        switch fetchKind {
+        case .EyePosition:
+            let lastPos = SMIEyePosition(fromLastInJSON: json, dominantEye: dominantEye)
+            NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.midasEyePositionNotification, object: self, userInfo: lastPos.asDict())
+        case .Fixations:
+            let newFixations = getAllFixationsAfter(lastFixationStartTime, forEye: dominantEye, fromJSON: json)
+            if let newFixations = newFixations {
+                lastFixationStartTime = newFixations.last!.startTime
+                fixationDelegate?.receiveNewFixationData(newFixations)
             }
         }
-        previousTimeStamps[nodeName] = latestTimeStamp.intValue
     }
 }
 

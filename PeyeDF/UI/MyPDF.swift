@@ -60,7 +60,7 @@ protocol ScreenToPageConverter {
 
 /// Implementation of a custom PDFView class, used to implement additional function related to
 /// psychophysiology and user activity tracking
-class MyPDF: PDFView, ScreenToPageConverter {
+class MyPDF: PDFView, ScreenToPageConverter, FixationDataDelegate {
     
     /// Whether we want to annotate by clicking
     private var clickAnnotationEnabled = true
@@ -513,12 +513,16 @@ class MyPDF: PDFView, ScreenToPageConverter {
         }
         let pointOnPage = self.convertPoint(pointInView, toPage: page)
         let pageIndex = self.document().indexForPage(page)
-        if pageIndex > 5 {
-            // TODO: delete this once we verify reasonable page indices are being returned
-            let exception = NSException(name: "pageIndex is more than 5", reason: nil, userInfo: nil)
-            exception.raise()
-        }
         return (x: pointOnPage.x, y: pointOnPage.y, pageIndex: pageIndex)
+    }
+    
+    /// Receives new fixation data and converts it to page
+    func receiveNewFixationData(newData: [SMIFixationEvent]) {
+        // TODO: not implemented
+        let someData = newData
+        
+        let data2 = someData
+        Swift.print("received some \(newData.count) new fixations. Reading: \(HistoryManager.sharedManager.isUserReading())")
     }
     
     // MARK: - General accessor methods

@@ -137,7 +137,7 @@ def FakeSample():
         data[12] = fakeSamp[12]
         rawOutlet.push_sample(data)
         
-        time.sleep(0.002)
+        time.sleep(0.002)  # note: minimum sleep on win seems to be 13ms
 
 
 def FakeEvent():
@@ -157,7 +157,7 @@ def FakeEvent():
         data[5] = fakeEv[5]
         eventOutlet.push_sample(data)
         
-        time.sleep(0.002)
+        time.sleep(0.002)  # note: minimum sleep on win seems to be 13ms
 
 # ---------------------------------------------
 # ---- start FakeStream, loops until quit received

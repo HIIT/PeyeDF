@@ -44,6 +44,11 @@ class HistoryManager {
         return userIsReading
     }
     
+    /// Returns true if dime is available
+    func isDiMeAvailable() -> Bool {
+        return dimeAvailable
+    }
+    
     /// Attempts to connect to dime. Sends a notification if we succeeded / failed
     func dimeConnect() {
         let server_url: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefServerURL) as! String

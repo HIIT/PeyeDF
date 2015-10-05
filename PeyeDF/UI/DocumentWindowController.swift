@@ -321,16 +321,25 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
     @objc private func zoomChanged(notification: NSNotification) {
         // Tell the history manager to "start recording"
         HistoryManager.sharedManager.entry(self)
+        
+        // Register PDFView as Fixation receiver
+        MidasManager.sharedInstance.setFixationDelegate(myPdf!)
     }
     
     @objc private func frameChanged(notification: NSNotification) {
         // Tell the history manager to "start recording"
         HistoryManager.sharedManager.entry(self)
+        
+        // Register PDFView as Fixation receiver
+        MidasManager.sharedInstance.setFixationDelegate(myPdf!)
     }
     
     @objc private func scrollingChanged(notification: NSNotification) {
         // Tell the history manager to "start recording"
         HistoryManager.sharedManager.entry(self)
+        
+        // Register PDFView as Fixation receiver
+        MidasManager.sharedInstance.setFixationDelegate(myPdf!)
     }
     
     // MARK: - Notification callbacks from window
@@ -338,6 +347,9 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
     @objc private func windowMoved(notification: NSNotification) {
         // Tell the history manager to "start recording"
         HistoryManager.sharedManager.entry(self)
+        
+        // Register PDFView as Fixation receiver
+        MidasManager.sharedInstance.setFixationDelegate(myPdf!)
     }
     
     /// Enables the annotate toolbar button when auto annotation is complete
@@ -356,6 +368,9 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
         
         // Tell the history manager to "start recording"
         HistoryManager.sharedManager.entry(self)
+        
+        // Register PDFView as Fixation receiver
+        MidasManager.sharedInstance.setFixationDelegate(myPdf!)
     }
     
     /// Unused yet (probably not really needed as we already know when windowWillSwitchAway)
@@ -367,6 +382,9 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
     @objc private func windowWillSwitchAway(notification: NSNotification) {
         // Tell the history manager to "stop recording"
         HistoryManager.sharedManager.exit(self)
+        
+        // Unregister PDFView as Fixation receiver
+        MidasManager.sharedInstance.unsetFixationDelegate(myPdf!)
     }
     
     /// This window is going to close, release all references (importantly, remove notification observers)

@@ -41,7 +41,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             MidasManager.sharedInstance.start()   
         }
         
-        // Monitor dime down/up
+        // Dime/Midas down/up observers
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "dimeConnectionChanged:", name: PeyeConstants.diMeConnectionNotification, object: HistoryManager.sharedManager)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "midasConnectionChanged:", name: PeyeConstants.midasConnectionNotification, object: MidasManager.sharedInstance)
     }

@@ -1056,6 +1056,23 @@
                                         <action selector="toggleSearch:" target="sy6-nO-Tdf" id="KJY-Bu-oIn"/>
                                     </connections>
                                 </toolbarItem>
+                                <toolbarItem implicitItemIdentifier="6751E55B-2444-46B5-BFDC-027A9AB7ECB8" label="Eye Position" paletteLabel="Eye Position" tag="-1" id="dAp-G9-a6k">
+                                    <nil key="toolTip"/>
+                                    <size key="minSize" width="40" height="40"/>
+                                    <size key="maxSize" width="40" height="114"/>
+                                    <box key="view" title="Box" borderType="line" titlePosition="noTitle" id="Uhw-gD-I1T" customClass="eyeBox" customModule="PeyeDF" customModuleProvider="target">
+                                        <rect key="frame" x="16" y="14" width="40" height="40"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <view key="contentView" id="OGf-B2-FoQ">
+                                            <rect key="frame" x="1" y="1" width="38" height="38"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <animations/>
+                                        </view>
+                                        <animations/>
+                                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    </box>
+                                </toolbarItem>
                             </allowedToolbarItems>
                             <defaultToolbarItems>
                                 <toolbarItem reference="8zr-Hg-gf0"/>
@@ -1064,6 +1081,8 @@
                                 <toolbarItem reference="1lR-l5-PLy"/>
                                 <toolbarItem reference="W5X-tm-Xbn"/>
                                 <toolbarItem reference="l3s-5e-m3r"/>
+                                <toolbarItem reference="6Ts-EH-w4Q"/>
+                                <toolbarItem reference="dAp-G9-a6k"/>
                                 <toolbarItem reference="6Ts-EH-w4Q"/>
                                 <toolbarItem reference="jQD-2x-7zh"/>
                                 <toolbarItem reference="QlV-kx-zkO"/>
