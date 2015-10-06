@@ -1301,7 +1301,7 @@
             <objects>
                 <splitViewController title="PeyeDF Document" id="upE-hu-sHW" userLabel="Document split" customClass="DocumentSplitController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
                     <splitViewItems>
-                        <splitViewItem canCollapse="YES" id="6iq-Xm-XGP"/>
+                        <splitViewItem canCollapse="YES" collapsed="YES" id="6iq-Xm-XGP"/>
                         <splitViewItem holdingPriority="248" id="CKe-Mb-mD5"/>
                     </splitViewItems>
                     <splitView key="splitView" dividerStyle="thin" vertical="YES" id="7iA-Js-Cw6">
@@ -1458,22 +1458,22 @@
             <objects>
                 <viewController title="Thumbnail Controller" id="NDG-Mr-8zT" customClass="ThumbSideController" customModule="PeyeDF" sceneMemberID="viewController">
                     <view key="view" horizontalHuggingPriority="240" verticalHuggingPriority="240" id="Xcj-vT-c4k">
-                        <rect key="frame" x="0.0" y="0.0" width="340" height="144"/>
+                        <rect key="frame" x="0.0" y="0.0" width="240" height="144"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <pdfThumbnailView horizontalHuggingPriority="248" verticalHuggingPriority="248" horizontalCompressionResistancePriority="748" verticalCompressionResistancePriority="748" translatesAutoresizingMaskIntoConstraints="NO" id="67W-LG-b20">
-                                <rect key="frame" x="20" y="20" width="300" height="104"/>
+                                <rect key="frame" x="20" y="20" width="200" height="104"/>
                                 <constraints>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="104" id="Hkx-92-wIT"/>
-                                    <constraint firstAttribute="width" relation="lessThanOrEqual" constant="300" id="cr3-Zp-R0O"/>
+                                    <constraint firstAttribute="width" relation="lessThanOrEqual" priority="750" constant="200" id="cr3-Zp-R0O"/>
                                 </constraints>
                                 <animations/>
                                 <size key="thumbnailSize" width="64" height="64"/>
                             </pdfThumbnailView>
                         </subviews>
                         <constraints>
-                            <constraint firstAttribute="trailing" relation="lessThanOrEqual" secondItem="67W-LG-b20" secondAttribute="trailing" constant="20" id="75m-sb-zEz"/>
-                            <constraint firstItem="67W-LG-b20" firstAttribute="leading" relation="lessThanOrEqual" secondItem="Xcj-vT-c4k" secondAttribute="leading" constant="20" id="H86-rS-Wrj"/>
+                            <constraint firstAttribute="trailing" secondItem="67W-LG-b20" secondAttribute="trailing" constant="20" id="75m-sb-zEz"/>
+                            <constraint firstItem="67W-LG-b20" firstAttribute="leading" secondItem="Xcj-vT-c4k" secondAttribute="leading" constant="20" id="H86-rS-Wrj"/>
                             <constraint firstAttribute="bottom" secondItem="67W-LG-b20" secondAttribute="bottom" constant="20" id="dth-1C-qE3"/>
                             <constraint firstItem="67W-LG-b20" firstAttribute="top" secondItem="Xcj-vT-c4k" secondAttribute="top" constant="20" id="gXL-mn-gnC"/>
                         </constraints>

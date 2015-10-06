@@ -152,7 +152,7 @@ struct PeyeConstants {
     static let minThumbSideViewWidth: CGFloat = 20
     
     /// Default size of thumbnail side view (set when pressing button)
-    static let defaultThumbSideViewWidth: CGFloat = 200
+    static let defaultThumbSideViewWidth: CGFloat = 150
     
     // MARK: - Notifications
     

@@ -27,8 +27,6 @@ class DocumentSplitController: NSSplitViewController {
         super.viewDidLoad()
         myThumbController = self.childViewControllers[0] as? ThumbSideController
         myPDFSideController = self.childViewControllers[1] as? PDFSideController
-        
-        myThumbController?.myThumb.setPDFView(myPDFSideController?.myPDF)
     }
     
     // MARK: - Thumbnail side collapse / uncollapse

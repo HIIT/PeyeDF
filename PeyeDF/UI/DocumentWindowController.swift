@@ -45,7 +45,7 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
         }
     }
     
-    /// Checks if the find next and find previous item should be enabled
+    /// Checks which menu items should be enabled (some logic used for find next and previous menu items).
     @objc override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
         switch UInt(menuItem.tag) {
             
@@ -66,10 +66,18 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
             }
             return false
             
-        // nothing else should appear because we only implement performFindPanelAction(_)
         default:
-            // any other tag was not considered and should not be enabled
-            return false
+            // in any other case, we check the action instead of tag
+            switch menuItem.action.description {
+                // these should always be enabled
+                case "thisDocMdata:", "saveDocument:", "saveDocumentAs:":
+                return true
+            default:
+                // any other tag was not considered we disable it by default
+                // we can print to check who else is calling this function using
+                // print(menuItem.action)
+                return false
+            }
         }
     }
     
@@ -147,7 +155,7 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
         myPdf?.selectVisibleText(sender)
     }
     
-    @IBAction func thisDocMdata(sender: AnyObject) {
+    @IBAction func thisDocMdata(sender: AnyObject?) {
         if let mainWin = NSApplication.sharedApplication().mainWindow {
             let peyeDoc: PeyeDocument = NSDocumentController.sharedDocumentController().documentForWindow(mainWin) as! PeyeDocument
             let myAl = NSAlert()

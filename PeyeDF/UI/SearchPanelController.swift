@@ -68,6 +68,7 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     override func viewDidLoad() {
         super.viewDidLoad()
         labelColumn.minWidth = 0.0
+        self.view.frame = NSRect()  // hide the search panel on launch
     }
     
     override func viewWillAppear() {
@@ -129,7 +130,7 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     
     /// Make the search field the first reponder (i.e. focus on it)
     @objc func makeSearchFieldFirstResponder() {
-        searchField.becomeFirstResponder()
+        self.view.window?.makeFirstResponder(searchField)
     }
     
     // MARK: - SearchProvider implementation
