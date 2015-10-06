@@ -13,13 +13,12 @@ import Quartz
 /// Manages the "Document Window", which comprises two split views, one inside the other
 class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, SearchPanelCollapseDelegate {
     
-    @IBOutlet weak var selectButton: NSToolbarItem!
     weak var myPdf: MyPDF?
     weak var docSplitController: DocumentSplitController?
     weak var mainSplitController: MainSplitController?
     var debugController: DebugController?
     var debugWindowController: NSWindowController?
-    @IBOutlet weak var docStatus: NSToolbarItem!
+    @IBOutlet weak var tbMetadata: NSToolbarItem!
     @IBOutlet weak var tbAnnotate: NSToolbarItem!
     
     var clickDelegate: ClickRecognizerDelegate?
@@ -252,9 +251,9 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
                 peyeDoc.trimmedText = trimmedText
                 peyeDoc.sha1 = trimmedText.sha1()
                 myPdf?.containsRawString = true
-                docStatus.image = NSImage(named: "NSStatusAvailable")
+                tbMetadata.image = NSImage(named: "NSStatusAvailable")
             } else {
-                docStatus.image = NSImage(named: "NSStatusUnavailable")
+                tbMetadata.image = NSImage(named: "NSStatusUnavailable")
             }
             
             // Associate PDF view to info element

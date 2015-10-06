@@ -1019,19 +1019,9 @@
                                         <action selector="showSide:" target="sy6-nO-Tdf" id="Ad8-47-SsZ"/>
                                     </connections>
                                 </toolbarItem>
-                                <toolbarItem implicitItemIdentifier="89601E0B-9CA8-4616-9840-802B86612D69" label="Select visible text" paletteLabel="Select visible text" tag="-1" image="Beta" id="1lR-l5-PLy">
-                                    <connections>
-                                        <action selector="selectVisibleText:" target="H3y-Bk-Ofi" id="f60-cs-OKe"/>
-                                    </connections>
-                                </toolbarItem>
-                                <toolbarItem implicitItemIdentifier="CC7FE61C-736A-48C6-AF6F-F7575AB673D8" label="Metadata" paletteLabel="Metadata" tag="-1" image="NSStatusNone" id="l3s-5e-m3r">
+                                <toolbarItem implicitItemIdentifier="CC7FE61C-736A-48C6-AF6F-F7575AB673D8" label="Metadata" paletteLabel="Metadata" tag="-1" image="NSStatusNone" id="l3s-5e-m3r" userLabel="Metadata">
                                     <connections>
                                         <action selector="thisDocMdata:" target="H3y-Bk-Ofi" id="prl-UE-k7l"/>
-                                    </connections>
-                                </toolbarItem>
-                                <toolbarItem implicitItemIdentifier="1046FDB0-1EE7-4C1B-BF93-CDAE75908811" label="Send to DiMe" paletteLabel="Send to DiMe" tag="-1" image="Beta" id="W5X-tm-Xbn">
-                                    <connections>
-                                        <action selector="sendToDiMe:" target="H3y-Bk-Ofi" id="yfv-Dg-ebE"/>
                                     </connections>
                                 </toolbarItem>
                                 <toolbarItem implicitItemIdentifier="D39BF8F4-E8F8-4708-82CC-5506275CE680" label="Annotate" paletteLabel="Annotate" tag="-1" image="TB_AnnotateD" autovalidates="NO" id="GDs-fF-Uav">
@@ -1078,8 +1068,6 @@
                                 <toolbarItem reference="8zr-Hg-gf0"/>
                                 <toolbarItem reference="mrl-au-qa7"/>
                                 <toolbarItem reference="GDs-fF-Uav"/>
-                                <toolbarItem reference="1lR-l5-PLy"/>
-                                <toolbarItem reference="W5X-tm-Xbn"/>
                                 <toolbarItem reference="l3s-5e-m3r"/>
                                 <toolbarItem reference="6Ts-EH-w4Q"/>
                                 <toolbarItem reference="dAp-G9-a6k"/>
@@ -1092,10 +1080,9 @@
                         </toolbar>
                     </window>
                     <connections>
-                        <outlet property="docStatus" destination="l3s-5e-m3r" id="NbI-4o-i7d"/>
                         <outlet property="searchTB" destination="mrl-au-qa7" id="LRL-Z8-rnk"/>
-                        <outlet property="selectButton" destination="1lR-l5-PLy" id="ZLG-j2-q30"/>
                         <outlet property="tbAnnotate" destination="GDs-fF-Uav" id="Dn7-Uk-RBy"/>
+                        <outlet property="tbMetadata" destination="l3s-5e-m3r" id="LVb-qE-pkk"/>
                         <outlet property="thumbTB" destination="8zr-Hg-gf0" id="kBi-3Q-0wK"/>
                         <segue destination="f9L-GU-eYT" kind="relationship" relationship="window.shadowedContentViewController" id="t30-fj-7gb"/>
                     </connections>
@@ -1558,7 +1545,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Beta" width="64" height="64"/>
         <image name="DiMeSettings" width="64" height="64"/>
         <image name="NSAdvanced" width="32" height="32"/>
         <image name="NSGoLeftTemplate" width="9" height="12"/>
