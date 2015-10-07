@@ -8,13 +8,13 @@
 
 import Foundation
 import Cocoa
+import Quartz
 
 /// Implementation of a (PDF) Document (partially?) following NSDocument's guidelines
 class PeyeDocument: NSDocument {
     
-    var title: String
-    var authors: String
-    var filename: String
+    /// Reference to underlying PDFDocument. Set after loading document by window controller.
+    weak var pdfDoc: PDFDocument?
     
     /// Initially is set to a hash of the url. After loading the document, it is set to the hash of the whole file plain text content (if any)
     var sha1: String?
@@ -27,10 +27,6 @@ class PeyeDocument: NSDocument {
     // MARK: - NSDocument overrides
     
     override init() {
-        title = "N/A"
-        authors = "N/A"
-        filename = "N/A"
-        
         super.init()
     }
 
@@ -69,7 +65,6 @@ class PeyeDocument: NSDocument {
     /// Always returns true, assumes we can only open allowed documents (PDFs) in the first place
     override func readFromURL(url: NSURL, ofType typeName: String) throws {
         AppSingleton.log.debug("Opening  \(url.description)")
-        filename = url.lastPathComponent!
         sha1 = url.path!.sha1()
     }
 }

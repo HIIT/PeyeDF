@@ -20,7 +20,7 @@ class DocumentInformationElement: NSObject, DiMeAble, Dictionariable {
         - parameter plainTextContent: Contents of whole file
         - parameter title: Title of the PDF
     */
-    init(uri: String, id: String, plainTextContent: String, title: String) {
+    init(uri: String, id: String, plainTextContent: String, title: String?) {
         let retDict = [String: AnyObject]()
         self.json = JSON(retDict)
         self.id = id
@@ -30,7 +30,9 @@ class DocumentInformationElement: NSObject, DiMeAble, Dictionariable {
         json["uri"] = JSON(uri)
         json["id"] = JSON(id)
         json["plainTextContent"] = JSON(plainTextContent)
-        json["title"] = JSON(title)
+        if let title = title {
+            json["title"] = JSON(title)
+        }
         json["mimeType"] = "application/pdf"  // forcing pdf for mime type
     }
     

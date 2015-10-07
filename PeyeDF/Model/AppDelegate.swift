@@ -71,8 +71,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         var inum = 1
         for doc: PeyeDocument in doci as! [PeyeDocument] {
             outString += "-- Document \(inum) --\n" +
-            "Filename: \(doc.filename)\n" +
-            "Title: \(doc.title)\nAuthor(s):\(doc.authors)\n\n"
+            "Filename: \(doc.pdfDoc!.documentURL().lastPathComponent!)\n" +
+            "Title: \(doc.pdfDoc!.getTitle())\nAuthor(s):\(doc.pdfDoc!.getAuthor())\n\n"
             ++inum
         }
         if let mainWin = NSApplication.sharedApplication().mainWindow {

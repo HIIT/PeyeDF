@@ -21,6 +21,8 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
     @IBOutlet weak var tbMetadata: NSToolbarItem!
     @IBOutlet weak var tbAnnotate: NSToolbarItem!
     
+    var metadataWindowController: MetadataWindowController?
+    
     var clickDelegate: ClickRecognizerDelegate?
     
     // MARK: - Searching
@@ -156,20 +158,15 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
     }
     
     @IBAction func thisDocMdata(sender: AnyObject?) {
-        if let mainWin = NSApplication.sharedApplication().mainWindow {
-            let peyeDoc: PeyeDocument = NSDocumentController.sharedDocumentController().documentForWindow(mainWin) as! PeyeDocument
-            let myAl = NSAlert()
-            
-            
-            var allTextHead = "** NO TEXT FOUND **"
-            if let aText = peyeDoc.trimmedText {  // we assume no text if this is nil
-                let ei = aText.startIndex.advancedBy(500)
-                allTextHead = aText.substringToIndex(ei)
-            }
-            myAl.messageText = "Filename: \(peyeDoc.filename)\nTitle: \(peyeDoc.title)\nAuthor(s):\(peyeDoc.authors)"
-            myAl.informativeText = "All text (first 500 chars):\n" + allTextHead
-            myAl.beginSheetModalForWindow(mainWin, completionHandler: nil)
+        // create metadata window, if currently nil
+        if metadataWindowController == nil {
+            metadataWindowController = AppSingleton.storyboard.instantiateControllerWithIdentifier("MetadataWindow") as? MetadataWindowController
         }
+        
+        // show window controller for metadata and send data
+        metadataWindowController?.showWindow(self)
+        Swift.print(myPdf?.document()!.documentAttributes())
+        metadataWindowController?.setDoc(myPdf!.document())
     }
     
     
@@ -241,22 +238,10 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
                 NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.documentChangeNotification, object: self.document)
             }
         
-            // Put metadata into NSDocument subclass for convenience
+            // NSDocument subclass
             let peyeDoc = self.document as! PeyeDocument
-            let docAttrib = pdfDoc.documentAttributes()
-            if let title: AnyObject = docAttrib[PDFDocumentTitleAttribute] {
-                peyeDoc.title = title as! String
-            }
-            if let auth: AnyObject = docAttrib[PDFDocumentAuthorAttribute] {
-                peyeDoc.authors = auth as! String
-            }
-            var trimmedText = pdfDoc.string()
-            trimmedText = trimmedText.stringByReplacingOccurrencesOfString("\u{fffc}", withString: "")
-            trimmedText = trimmedText.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) // get trimmed version of all text
-            trimmedText = trimmedText.stringByTrimmingCharactersInSet(NSCharacterSet.newlineCharacterSet()) // trim newlines
-            trimmedText = trimmedText.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) // trim again
-            if trimmedText.characters.count > 5 {  // we assume the document does contain useful text if there are more than 5 characters remaining
-                peyeDoc.trimmedText = trimmedText
+            peyeDoc.pdfDoc = pdfDoc
+            if let trimmedText = pdfDoc.getText() {
                 peyeDoc.sha1 = trimmedText.sha1()
                 myPdf?.containsRawString = true
                 tbMetadata.image = NSImage(named: "NSStatusAvailable")
@@ -269,11 +254,13 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
             if let inputText = peyeDoc.trimmedText {
                 plainText = inputText
             }
-            let infoElem = DocumentInformationElement(uri: url.path!, id: peyeDoc.sha1!, plainTextContent: plainText, title: peyeDoc.title)
+            let infoElem = DocumentInformationElement(uri: url.path!, id: peyeDoc.sha1!, plainTextContent: plainText, title: pdfDoc.getTitle())
             myPdf?.infoElem = infoElem
             
             // Update debug controller with metadata
-            debugController?.titleLabel.stringValue = peyeDoc.title
+            if let title = pdfDoc.getTitle() {
+                debugController?.titleLabel.stringValue = title
+            }
             
             // Send event regardig opening of file
             sendDeskEvent()
@@ -399,6 +386,7 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
         unSetObservers()
         debugController?.unSetMonitors(myPdf!, docWindow: self.window!)
         debugController?.view.window?.close()
+        metadataWindowController?.close()
         myPdf?.setDocument(nil)
     }
 }
