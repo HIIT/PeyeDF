@@ -50,7 +50,7 @@ class PeyeDocument: NSDocument {
     }
     
     /// This function is called automagically by Cocoa when closing the window, for some reason
-    /// TODO: automatically calling of this function seems to have disappeared in OS X 10.11
+    /// TODO: automatically calling of this function seems to have disappeared in OS X 10.11, probably some change in undomanager
     override func writeToURL(url: NSURL, ofType type: String) throws {
         if type == "PeyeDF" {
             let wincontroller = self.windowControllers[0] as! DocumentWindowController

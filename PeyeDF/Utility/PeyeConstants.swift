@@ -28,13 +28,13 @@ struct PeyeConstants {
     static let prefAnnotationLineThickness = "annotations.lineThickness"
     
     /// URL of the DiMe server (bound in the preferences window)
-    static let prefServerURL = "serverinfo.url"
+    static let prefDiMeServerURL = "dime.serverinfo.url"
     
     /// Username of the DiMe server (bound in the preferences window)
-    static let prefServerUserName = "serverinfo.userName"
+    static let prefDiMeServerUserName = "dime.serverinfo.userName"
     
     /// Password of the DiMe server (bound in the preferences window)
-    static let prefServerPassword = "serverinfo.password"
+    static let prefDiMeServerPassword = "dime.serverinfo.password"
     
     /// Wheter we want to push an event at every window focus event (bound in the preferences window)
     static let prefSendEventOnFocusSwitch = "preferences.sendEventOnFocusSwitch"

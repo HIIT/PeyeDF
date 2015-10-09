@@ -364,7 +364,7 @@ class MyPDF: PDFView, ScreenToPageConverter, FixationDataDelegate {
             }
             criticalRects[activePage]!.append(markRect)
         default:
-            let exception = NSException(name: "This should never happen!", reason: "Imporance enum non-existent", userInfo: nil)
+            let exception = NSException(name: "Not implemented", reason: "Unsupported reading class for annotation", userInfo: nil)
             exception.raise()
         }
         return (markRect, activePage, importance)

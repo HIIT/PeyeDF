@@ -11,6 +11,7 @@ import Foundation
 struct PageEyeData: Dictionariable {
     var Xs: [NSNumber]
     var Ys: [NSNumber]
+    /// pupil sizes
     var Ps: [NSNumber]?
     var timepoints: [NSNumber]
     var pageIndex: Int?

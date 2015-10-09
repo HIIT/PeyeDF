@@ -22,7 +22,9 @@ class Event: NSObject {
         // Make creation date
         json["start"] = JSON(PeyeConstants.diMeDateFormatter.stringFromDate(NSDate()))
         json["actor"] = JSON("PeyeDF")
-        json["origin"] = JSON("ORIGIN")
+        if let hostname = NSHost.currentHost().name {
+            json["origin"] = JSON(hostname)
+        }
         
         super.init()
     }

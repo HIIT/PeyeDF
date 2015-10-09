@@ -9,8 +9,8 @@
 import Foundation
 import Cocoa
 
-/// Class to display a circle (on top of another view)
-/// Since this view is on top, hide it! Otherwise will catch events
+/// Class to display something (e.g. a circle) on top of another view
+/// Made to sends events to the view behind it (otherView)
 class CircleOverlay: NSView {
     
     /// All events will be redirected to this view

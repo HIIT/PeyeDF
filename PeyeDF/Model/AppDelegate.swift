@@ -24,9 +24,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         defaultPrefs[PeyeConstants.prefDominantEye] = Eye.right.rawValue
         defaultPrefs[PeyeConstants.prefMonitorDPI] = 110  // defaulting monitor DPI to 110 as this is developing PC's DPI
         defaultPrefs[PeyeConstants.prefAnnotationLineThickness] = 1.0
-        defaultPrefs[PeyeConstants.prefServerURL] = "http://localhost:8080/api"
-        defaultPrefs[PeyeConstants.prefServerUserName] = "Test1"
-        defaultPrefs[PeyeConstants.prefServerPassword] = "123456"
+        defaultPrefs[PeyeConstants.prefDiMeServerURL] = "http://localhost:8080/api"
+        defaultPrefs[PeyeConstants.prefDiMeServerUserName] = "Test1"
+        defaultPrefs[PeyeConstants.prefDiMeServerPassword] = "123456"
         defaultPrefs[PeyeConstants.prefUseMidas] = 0
         defaultPrefs[PeyeConstants.prefSendEventOnFocusSwitch] = 0
         NSUserDefaults.standardUserDefaults().registerDefaults(defaultPrefs)

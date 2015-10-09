@@ -22,11 +22,11 @@ class DiMePreferencesViewController: NSViewController {
         
         let options: [String: AnyObject] = ["NSContinuouslyUpdatesValue": true]
         
-        urlField.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefServerURL, options: options)
+        urlField.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefDiMeServerURL, options: options)
         
-        usernameField.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefServerUserName, options: options)
+        usernameField.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefDiMeServerUserName, options: options)
         
-        passwordField.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefServerPassword, options: options)
+        passwordField.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefDiMeServerPassword, options: options)
         
         // the following will set
         // (PeyeConstants.prefSendEventOnFocusSwitch)
