@@ -94,32 +94,8 @@ class HistoryManager {
     
     // MARK: - External functions - direct sending
     
-    /// Send an "Event" to DiMe
-    func sendToDiMe(event: Event) {
-        sendDictToDime(event.json.dictionaryObject!)
-    }
-    
-    /// Send a "Dictionariable" to DiMe
-    func sendToDiMe(dictionariable: Dictionariable) {
-        sendDictToDime(dictionariable.getDict())
-    }
-    
-    // MARK: - Internal functions
-    
-    /// Connection to dime successful / failed
-    private func dimeConnectState(success: Bool) {
-        if !success {
-            self.dimeAvailable = false
-            NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.diMeConnectionNotification, object: self, userInfo: ["available": false])
-        } else {
-            // succesfully connected
-            self.dimeAvailable = true
-            NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.diMeConnectionNotification, object: self, userInfo: ["available": true])
-        }
-    }
-    
-    /// Send the given dictionary to DiMe (assumed to be in correct form due to the use of public callers of this method)
-    private func sendDictToDime(dictionaryObject: [String: AnyObject]) {
+    /// Send the given data to dime
+    func sendToDiMe(dimeData: DiMeBase) {
        
         if dimeAvailable {
             
@@ -137,7 +113,7 @@ class HistoryManager {
 
             let jsonData: NSData?
             do {
-                jsonData = try NSJSONSerialization.dataWithJSONObject(dictionaryObject, options: options)
+                jsonData = try NSJSONSerialization.dataWithJSONObject(dimeData.getDict(), options: options)
             } catch let error1 as NSError {
                 error.memory = error1
                 jsonData = nil
@@ -148,7 +124,7 @@ class HistoryManager {
                 return
             }
             
-            Alamofire.request(Alamofire.Method.POST, server_url + "/data/event", parameters: dictionaryObject, encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON {
+            Alamofire.request(Alamofire.Method.POST, server_url + "/data/event", parameters: dimeData.getDict(), encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON {
                 _, _, response in
                 if response.isFailure {
                     AppSingleton.log.error("Error while reading json response from DiMe: \(response.debugDescription)")
@@ -162,6 +138,21 @@ class HistoryManager {
             
         }
         
+    }
+    
+
+    // MARK: - Internal functions
+    
+    /// Connection to dime successful / failed
+    private func dimeConnectState(success: Bool) {
+        if !success {
+            self.dimeAvailable = false
+            NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.diMeConnectionNotification, object: self, userInfo: ["available": false])
+        } else {
+            // succesfully connected
+            self.dimeAvailable = true
+            NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.diMeConnectionNotification, object: self, userInfo: ["available": true])
+        }
     }
     
     /// Starts the "entry timer" and sets up references to the current window
@@ -213,7 +204,7 @@ class HistoryManager {
         // if there's something to send, send it
         if let currentStatus = self.currentReadingEvent {
             currentStatus.setEnd(NSDate())
-            sendToDiMe(currentStatus as Event)
+            sendToDiMe(currentStatus)
             self.currentReadingEvent = nil
         }
     }

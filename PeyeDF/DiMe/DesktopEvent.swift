@@ -9,21 +9,15 @@
 import Foundation
 
 /// Used to send the first-time file opening event
-class DesktopEvent: Event, DiMeAble, Dictionariable {
+class DesktopEvent: Event {
     
     init(infoElem: DocumentInformationElement) {
         super.init()
-        self.json["targettedResource"] = JSON(infoElem.getDict())
-        setDiMeDict()
-    }
-    
-    func setDiMeDict() {
-        self.json["@type"] = JSON("DesktopEvent")
-        self.json["type"] = JSON("http://www.hiit.fi/ontologies/dime/#DesktopEvent")
-    }
-    
-    func getDict() -> [String : AnyObject] {
-        return json.dictionaryObject!
+        theDictionary["targettedResource"] = infoElem.getDict()
+        
+        // dime-required
+        theDictionary["@type"] = "DesktopEvent"
+        theDictionary["type"] = "http://www.hiit.fi/ontologies/dime/#DesktopEvent"
     }
     
 }

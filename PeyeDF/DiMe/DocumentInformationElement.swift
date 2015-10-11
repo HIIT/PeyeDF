@@ -8,10 +8,9 @@
 
 import Foundation
 
-class DocumentInformationElement: NSObject, DiMeAble, Dictionariable {
+class DocumentInformationElement: DiMeBase {
     
-    var json: JSON
-    var id: String
+    let id: String
     
     /** Creates this information element
         
@@ -20,28 +19,23 @@ class DocumentInformationElement: NSObject, DiMeAble, Dictionariable {
         - parameter plainTextContent: Contents of whole file
         - parameter title: Title of the PDF
     */
-    init(uri: String, id: String, plainTextContent: String, title: String?) {
-        let retDict = [String: AnyObject]()
-        self.json = JSON(retDict)
+    init(uri: String, id: String, plainTextContent: String?, title: String?) {
         self.id = id
         super.init()
-        setDiMeDict()
         
-        json["uri"] = JSON(uri)
-        json["id"] = JSON(id)
-        json["plainTextContent"] = JSON(plainTextContent)
-        if let title = title {
-            json["title"] = JSON(title)
+        theDictionary["uri"] = uri
+        theDictionary["id"] = id
+        if let ptc = plainTextContent {
+            theDictionary["plainTextContent"] = ptc
         }
-        json["mimeType"] = "application/pdf"  // forcing pdf for mime type
+        if let title = title {
+            theDictionary["title"] = title
+        }
+        theDictionary["mimeType"] = "application/pdf"  // forcing pdf for mime type
+        
+        // dime-required
+        theDictionary["@type"] = "Document"
+        theDictionary["type"] = "http://www.hiit.fi/ontologies/dime/#Document"
     }
     
-    func setDiMeDict() {
-        json["@type"] = JSON("Document")
-        json["type"] = JSON("http://www.hiit.fi/ontologies/dime/#Document")
-    }
-    
-    func getDict() -> [String : AnyObject] {
-        return json.dictionaryObject!
-    }
 }

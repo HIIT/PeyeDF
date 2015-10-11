@@ -19,9 +19,6 @@ class PeyeDocument: NSDocument {
     /// Initially is set to a hash of the url. After loading the document, it is set to the hash of the whole file plain text content (if any)
     var sha1: String?
     
-    /// Contains all plain text from PDF, with extra characters (such as whitespace) trimmed
-    var trimmedText: String?
-    
     // MARK: - DiMe related
     
     // MARK: - NSDocument overrides

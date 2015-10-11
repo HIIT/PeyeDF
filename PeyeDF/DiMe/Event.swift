@@ -10,27 +10,26 @@ import Foundation
 
 /// Note: this class is for subclassing and should not be used directly.
 /// subclasses must implement the DiMeAble protocol.
-class Event: NSObject {
-    
-    var json: JSON
+class Event: DiMeBase {
     
     /// Must be called by subclasses
     override init() {
-        let retDict = [String: AnyObject]()
+        super.init()
         
-        self.json = JSON(retDict)
         // Make creation date
-        json["start"] = JSON(PeyeConstants.diMeDateFormatter.stringFromDate(NSDate()))
-        json["actor"] = JSON("PeyeDF")
+        theDictionary["start"] = PeyeConstants.diMeDateFormatter.stringFromDate(NSDate())
+        theDictionary["actor"] = "PeyeDF"
         if let hostname = NSHost.currentHost().name {
-            json["origin"] = JSON(hostname)
+            theDictionary["origin"] = hostname
         }
         
-        super.init()
+        // set dime-required fields (these are defaults that can be overwritten by subclasses)
+        theDictionary["@type"] = "Event"
+        theDictionary["type"] = "http://www.hiit.fi/ontologies/dime/#Event"
     }
     
     /// Set an end date for this item (otherwise, won't be submitted)
     func setEnd(endDate: NSDate) {
-        json["end"] = JSON(PeyeConstants.diMeDateFormatter.stringFromDate(endDate))
+        theDictionary["end"] = PeyeConstants.diMeDateFormatter.stringFromDate(endDate)
     }
 }

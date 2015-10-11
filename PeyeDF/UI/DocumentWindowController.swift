@@ -138,7 +138,7 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
     func sendDeskEvent() {
         let infoElem = myPdf!.infoElem!
         let deskEvent = DesktopEvent(infoElem: infoElem)
-        HistoryManager.sharedManager.sendToDiMe(deskEvent as Event)
+        HistoryManager.sharedManager.sendToDiMe(deskEvent)
     }
     
     /// Retrieves current ReadingEvent (for HistoryManager)
@@ -150,7 +150,7 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
     
     @IBAction func sendToDiMe(sender: AnyObject?) {
         let readingEvent:ReadingEvent = myPdf!.getStatus()!  // assuming there is a non-nil status if we press the button
-        HistoryManager.sharedManager.sendToDiMe(readingEvent as Event)
+        HistoryManager.sharedManager.sendToDiMe(readingEvent)
     }
     
     @IBAction func selectVisibleText(sender: AnyObject?) {
@@ -250,11 +250,7 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
             }
             
             // Associate PDF view to info element
-            var plainText = "** No text **"
-            if let inputText = peyeDoc.trimmedText {
-                plainText = inputText
-            }
-            let infoElem = DocumentInformationElement(uri: url.path!, id: peyeDoc.sha1!, plainTextContent: plainText, title: pdfDoc.getTitle())
+            let infoElem = DocumentInformationElement(uri: url.path!, id: peyeDoc.sha1!, plainTextContent: pdfDoc.getText(), title: pdfDoc.getTitle())
             myPdf?.infoElem = infoElem
             
             // Update debug controller with metadata

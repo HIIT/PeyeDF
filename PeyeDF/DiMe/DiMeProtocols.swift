@@ -16,17 +16,6 @@ protocol Dictionariable {
     func getDict() -> [String: AnyObject]
 }
 
-/// Marks dime "container" objects that can send themselves to DiMe
-protocol DiMeAble {
-    
-    /// Set DiMe Dictionary. Can be called directly by class/subclass' own initializer.
-    /// This method must set the following fields in its own json:
-    ///
-    /// - @type
-    /// - type
-    func setDiMeDict()
-}
-
 extension CGSize: Dictionariable {
     /// Returns width and height in a dictionary with their values as
     /// numbers (both as JSONableItem enums).

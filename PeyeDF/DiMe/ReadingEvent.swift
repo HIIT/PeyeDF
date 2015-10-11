@@ -11,7 +11,7 @@
 import Cocoa
 import Foundation
 
-class ReadingEvent: Event, DiMeAble {
+class ReadingEvent: Event {
     
     var pageEyeData = [[String: AnyObject]]()
     
@@ -29,19 +29,19 @@ class ReadingEvent: Event, DiMeAble {
     */
     init(multiPage: Bool, visiblePageNumbers: [Int], visiblePageLabels: [String], pageRects: [ReadingRect], proportion: DiMeRange, scaleFactor: NSNumber, plainTextContent: NSString, infoElemId: NSString) {
         super.init()
-        self.setDiMeDict()
-        json["multiPage"] = JSON(multiPage)
-        json["visiblePageNumbers"] = JSON(visiblePageNumbers)
-        json["visiblePageLabels"] = JSON(visiblePageLabels)
-        json["proportion"] = JSON(proportion.getDict())
-        json["scaleFactor"] = JSON(scaleFactor)
-        json["plainTextContent"] = JSON(plainTextContent)
+        
+        theDictionary["multiPage"] = multiPage
+        theDictionary["visiblePageNumbers"] = visiblePageNumbers
+        theDictionary["visiblePageLabels"] = visiblePageLabels
+        theDictionary["proportion"] = proportion.getDict()
+        theDictionary["scaleFactor"] = scaleFactor
+        theDictionary["plainTextContent"] = plainTextContent
         
         var rectArray = [[String: AnyObject]]()
         for rect in pageRects {
             rectArray.append(rect.getDict())
         }
-        json["pageRects"] = JSON(rectArray)
+        theDictionary["pageRects"] = rectArray
         
         
         var infoElemDict = [String: AnyObject]()
@@ -49,18 +49,17 @@ class ReadingEvent: Event, DiMeAble {
         infoElemDict["type"] = "http://www.hiit.fi/ontologies/dime/#Document"
         infoElemDict["id"] = infoElemId
         
-        json["targettedResource"] = JSON(infoElemDict)
+        theDictionary["targettedResource"] = infoElemDict
+        
+        // dime-required
+        theDictionary["@type"] = ("ReadingEvent")
+        theDictionary["type"] = ("http://www.hiit.fi/ontologies/dime/#ReadingEvent")
     }
     
     /// Adds eye tracking data to this reading event
     func addEyeData(newData: PageEyeData) {
         pageEyeData.append(newData.getDict())
-        json["pageEyeData"] = JSON(pageEyeData)
-    }
-    
-    func setDiMeDict() {
-        json["@type"] = JSON("ReadingEvent")
-        json["type"] = JSON("http://www.hiit.fi/ontologies/dime/#ReadingEvent")
+        theDictionary["pageEyeData"] = pageEyeData
     }
     
 }
