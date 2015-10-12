@@ -100,12 +100,6 @@ struct PeyeConstants {
     
     // MARK: - Other globals
     
-    /// What is returned when a coordinate on screen is outside the current pdfView.
-    static let outOfViewTriplet = (x: CGFloat(-1.0), y: CGFloat(-1.0), pageIndex: -1)
-    
-    /// What is returned when a coordinate on screen is outside the current page.
-    static let outOfPageTriplet = (x: CGFloat(-2.0), y: CGFloat(-2.0), pageIndex: -2)
-    
     /// Default window width. Make sure this is above min document window width in storyboard.
     static let docWindowWidth: CGFloat = 1100
     

@@ -38,7 +38,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // If we want to use midas, start the manager
         let useMidas = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefUseMidas) as! Bool
         if useMidas {
-            MidasManager.sharedInstance.start()   
+            MidasManager.sharedInstance.start()
+            MidasManager.sharedInstance.setFixationDelegate(HistoryManager.sharedManager)
         }
         
         // Dime/Midas down/up observers
@@ -54,6 +55,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// Callback for connect to midas menu action
     @IBAction func connectMidas(sender: NSMenuItem) {
         MidasManager.sharedInstance.start()
+        MidasManager.sharedInstance.setFixationDelegate(HistoryManager.sharedManager)
     }
     
     /// Find menu item is linked to this global function
@@ -84,6 +86,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationWillTerminate(aNotification: NSNotification) {
         // Insert code here to tear down your application
+        MidasManager.sharedInstance.unsetFixationDelegate(HistoryManager.sharedManager)
         MidasManager.sharedInstance.stop()
         NSNotificationCenter.defaultCenter().removeObserver(self, name: PeyeConstants.diMeConnectionNotification, object: HistoryManager.sharedManager)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: PeyeConstants.midasConnectionNotification, object: MidasManager.sharedInstance)
@@ -102,11 +105,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if dimeAvailable {
             connectDime.state = NSOnState
             connectDime.enabled = false
-            connectDime.title = "Connected to dime"
+            connectDime.title = "Connected to DiMe"
         } else {
             connectDime.state = NSOffState
             connectDime.enabled = true
-            connectDime.title = "Connect to dime"
+            connectDime.title = "Connect to DiMe"
         }
     }
     

@@ -51,16 +51,16 @@ class MarkingState: NSObject {
 }
 
 /// Used to convert points on screen to points on a page
-protocol ScreenToPageConverter {
+protocol ScreenToPageConverter: class {
     
     /// Converts a point on screen and returns a tuple containing x coordinate, y coordinate, BOTH on page points
-    func screenToPage(pointOnScreen: NSPoint) -> (x: CGFloat, y: CGFloat, pageIndex: Int)
+    func screenToPage(pointOnScreen: NSPoint) -> (x: CGFloat, y: CGFloat, pageIndex: Int)?
     
 }
 
 /// Implementation of a custom PDFView class, used to implement additional function related to
 /// psychophysiology and user activity tracking
-class MyPDF: PDFView, ScreenToPageConverter, FixationDataDelegate {
+class MyPDF: PDFView, ScreenToPageConverter {
     
     /// Whether we want to annotate by clicking
     private var clickAnnotationEnabled = true
@@ -492,9 +492,8 @@ class MyPDF: PDFView, ScreenToPageConverter, FixationDataDelegate {
     /// Returns the corresponding point on page for a point on screen.
     ///
     /// - parameter pointOnScreen: A point corresponding to a screen coordinate
-    /// - returns: A triple containing the x, y coordinate and page index. The default values
-    ///           for when a point can't be found is defined in PeyeConstants
-    func screenToPage(pointOnScreen: NSPoint) -> (x: CGFloat, y: CGFloat, pageIndex: Int) {
+    /// - returns: A triple containing the x, y coordinate and page index. Nil if point is outside view/page
+    func screenToPage(pointOnScreen: NSPoint) -> (x: CGFloat, y: CGFloat, pageIndex: Int)? {
         let tinySize = NSSize(width: 1, height: 1)
         let tinyRect = NSRect(origin: pointOnScreen, size: tinySize)
         
@@ -502,27 +501,18 @@ class MyPDF: PDFView, ScreenToPageConverter, FixationDataDelegate {
         let rectInView = self.convertRect(rectInWindow, fromView: self.window!.contentViewController!.view)
         let pointInView = rectInView.origin
         
-        //  return the default triplet for failing when the point is outside this view
+        //  return nil if the point is outside this view
         if pointInView.x < 0 || pointInView.y < 0 || pointInView.x > frame.width || pointInView.y > frame.height {
-            return PeyeConstants.outOfViewTriplet
+            return nil
         }
-        // otherwise calculate point on page, still return if point is outside page
+        // otherwise calculate point on page, but return nil if point is out of page
         let page = pageForPoint(pointInView, nearest:false)
         if page == nil {
-            return PeyeConstants.outOfPageTriplet
+            return nil
         }
         let pointOnPage = self.convertPoint(pointInView, toPage: page)
         let pageIndex = self.document().indexForPage(page)
         return (x: pointOnPage.x, y: pointOnPage.y, pageIndex: pageIndex)
-    }
-    
-    /// Receives new fixation data and converts it to page
-    func receiveNewFixationData(newData: [SMIFixationEvent]) {
-        // TODO: not implemented
-        let someData = newData
-        
-        let data2 = someData
-        Swift.print("received some \(newData.count) new fixations. Reading: \(HistoryManager.sharedManager.isUserReading())")
     }
     
     // MARK: - General accessor methods

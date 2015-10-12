@@ -31,6 +31,7 @@ k_maxBuff = 30  # maximum buffer size in seconds
 # ---------------------------------------------
 # ---- Fake raw data (replace -999 (timestamp) microSsinceStart())
 # ---------------------------------------------
+zero_raw = [-999, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 fake_raw1 = [-999, 0, 0, 4.389999866485596, 76.60700225830078, 75.18099975585938, 565.06201171875, 0, 0, 3.900000095367432, 22.23399925231934, 76.66799926757812, 584.8170166015625]
 fake_raw2 = [-999, 1099, 880, 0, 97.51300048828125, 76.25900268554688, 552.0659790039062, 1099, 880, 0, 45.5800018310546, 78.98500061035156, 580.6119995117188]
@@ -169,7 +170,13 @@ eventT.start()
 
 command = ''
 while not command == 'q':
-    command = raw_input('Enter q+enter to quit: ')
+    command = raw_input('q=quit, l=send zeroes, f=send normal events: ')
+    if command=='l':
+        print('Sending zeroes in raw stream')
+        fake_raws = [zero_raw, zero_raw, zero_raw, zero_raw]
+    elif command=='f':
+        print('Sending "normal" raw stream')
+        fake_raws = [fake_raw1, fake_raw2, fake_raw3, fake_raw4]
 
 stop = True
 

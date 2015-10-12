@@ -13,46 +13,73 @@ struct PageEyeData: Dictionariable {
     var Ys: [NSNumber]
     /// pupil sizes
     var Ps: [NSNumber]?
-    var timepoints: [NSNumber]
+    var startTimes: [NSNumber]
+    var endTimes: [NSNumber]
+    var durations: [NSNumber]
     var pageIndex: Int?
     
-    init(Xs: [NSNumber], Ys: [NSNumber], timepoints: [NSNumber], pageIndex: Int) {
+    init(Xs: [NSNumber], Ys: [NSNumber], startTimes: [NSNumber], endTimes: [NSNumber], durations: [NSNumber], pageIndex: Int) {
         self.Xs = Xs
         self.Ys = Ys
-        self.timepoints = timepoints
+        self.startTimes = startTimes
+        self.endTimes = endTimes
+        self.durations = durations
         self.pageIndex = pageIndex
     }
     
-    init(Xs: [NSNumber], Ys: [NSNumber], Ps: [NSNumber], timepoints: [NSNumber], pageIndex: Int) {
+    init(Xs: [NSNumber], Ys: [NSNumber], Ps: [NSNumber], startTimes: [NSNumber], endTimes: [NSNumber], durations: [NSNumber], pageIndex: Int) {
         self.Xs = Xs
         self.Ys = Ys
         self.Ps = Ps
-        self.timepoints = timepoints
+        self.startTimes = startTimes
+        self.endTimes = endTimes
+        self.durations = durations
         self.pageIndex = pageIndex
     }
     
-    mutating func appendData(Xs: [NSNumber], Ys: [NSNumber], timepoints: [NSNumber]) {
-        self.Xs.appendContentsOf(Xs)
-        self.Ys.appendContentsOf(Ys)
-        self.timepoints.appendContentsOf(timepoints)
+    mutating func appendEvent(x: NSNumber, y: NSNumber, startTime: NSNumber, endTime: NSNumber, duration: NSNumber) {
+        self.Xs.append(x)
+        self.Ys.append(y)
+        self.startTimes.append(startTime)
+        self.endTimes.append(endTime)
+        self.durations.append(duration)
     }
     
-    mutating func appendData(Xs: [NSNumber], Ys: [NSNumber], Ps: [NSNumber], timepoints: [NSNumber]) {
+    mutating func appendEvent(x: NSNumber, y: NSNumber, p: NSNumber, startTime: NSNumber, endTime: NSNumber, duration: NSNumber) {
+        self.Xs.append(x)
+        self.Ys.append(y)
+        self.Ps!.append(p)
+        self.startTimes.append(startTime)
+        self.endTimes.append(endTime)
+        self.durations.append(duration)
+    }
+    
+    mutating func appendData(Xs: [NSNumber], Ys: [NSNumber], startTimes: [NSNumber], endTimes: [NSNumber], durations: [NSNumber]) {
+        self.Xs.appendContentsOf(Xs)
+        self.Ys.appendContentsOf(Ys)
+        self.startTimes.appendContentsOf(startTimes)
+        self.endTimes.appendContentsOf(endTimes)
+        self.durations.appendContentsOf(durations)
+    }
+    
+    mutating func appendData(Xs: [NSNumber], Ys: [NSNumber], Ps: [NSNumber], startTimes: [NSNumber], endTimes: [NSNumber], durations: [NSNumber]) {
         self.Xs.appendContentsOf(Xs)
         self.Ys.appendContentsOf(Ys)
         self.Ps!.appendContentsOf(Ps)
-        self.timepoints.appendContentsOf(timepoints)
+        self.startTimes.appendContentsOf(startTimes)
+        self.endTimes.appendContentsOf(endTimes)
+        self.durations.appendContentsOf(durations)
     }
     
     /// Check if xs, ys and timepoints are all the same length, traps if not.
     func autoCheck() {
         if let Ps = self.Ps {
-            if !(Xs.count == Ys.count && Ys.count == timepoints.count && timepoints.count == Ps.count) {
+            if !(Xs.count == Ys.count && Ys.count == startTimes.count && startTimes.count == Ps.count) {
                 let exception = NSException(name: "Incorrect count", reason: nil, userInfo: nil)
                 exception.raise()
             }
         } else {
-            if !(Xs.count == Ys.count && Ys.count == timepoints.count) {
+            if !(Xs.count == Ys.count && Ys.count == startTimes.count) {
                 let exception = NSException(name: "Incorrect count", reason: nil, userInfo: nil)
                 exception.raise()
             }
@@ -69,7 +96,9 @@ struct PageEyeData: Dictionariable {
         
         retDict["Xs"] = Xs
         retDict["Ys"] = Ys
-        retDict["timepoints"] = timepoints
+        retDict["startTimes"] = startTimes
+        retDict["endTimes"] = endTimes
+        retDict["durations"] = durations
         retDict["pageIndex"] = pageIndex!
         
         return retDict

@@ -14,7 +14,8 @@
 import Foundation
 import Alamofire
 
-class HistoryManager {
+/// The HistoryManager tracks all user activity, including fixations from eye tracking
+class HistoryManager: FixationDataDelegate {
     
     /// Returns a shared instance of this class. This is the designed way of accessing the history manager.
     static let sharedManager = HistoryManager()
@@ -25,29 +26,27 @@ class HistoryManager {
     /// The timer that fires after a certain amount of time passed, and generates an "exit event"
     private var exitTimer: NSTimer?
     
-    /// A boolean indicating that the user is (probably) reading. Essentially, it means we are after entry timer but before exit timer (or exit event).
-    private var userIsReading = false
-    
-    /// The reading event that will be sent at an exit event
-    private var currentReadingEvent: ReadingEvent?
-    
     /// The GDC queue in which all timers are created / destroyed (to prevent potential memory leaks, they all run here)
     private let timerQueue = dispatch_queue_create("hiit.PeyeDF.HistoryManager.timerQueue", DISPATCH_QUEUE_SERIAL)
     
     /// Is true if there is a connection to DiMe, and can be used
-    private var dimeAvailable: Bool = false
+    private(set) var dimeAvailable: Bool = false
+
+    // MARK: - History tracking fields
+    
+    /// The reading event that will be sent at an exit event
+    private var currentReadingEvent: ReadingEvent?
+    
+    /// A boolean indicating that the user is (probably) reading. Essentially, it means we are after entry timer but before exit timer (or exit event).
+    private(set) var userIsReading = false
+    
+    /// The current thing the user is probably looking at (MyPDF instance), which will be used to convert screen to page coordinates
+    private var currentEyeReceiver: ScreenToPageConverter?
+    
+    /// A dictionary, one entry per page (indexed by page number) containing all page eye tracking data
+    private var currentEyeData = [Int: PageEyeData]()
     
     // MARK: - External functions
-    
-    /// Returns true if the user is (probably) reading
-    func isUserReading() -> Bool {
-        return userIsReading
-    }
-    
-    /// Returns true if dime is available
-    func isDiMeAvailable() -> Bool {
-        return dimeAvailable
-    }
     
     /// Attempts to connect to dime. Sends a notification if we succeeded / failed
     func dimeConnect() {
@@ -92,7 +91,23 @@ class HistoryManager {
         exitEvent(nil)
     }
     
-    // MARK: - External functions - direct sending
+    // MARK: - External functions
+    
+    func receiveNewFixationData(newData: [SMIFixationEvent]) {
+        if let eyeReceiver = currentEyeReceiver {
+            // translate all fixations to page points, and insert to corresponding data in the main dictionary
+            for fixEv in newData {
+                let screenPoint = NSPoint(x: fixEv.positionX, y: fixEv.positionY)
+                if let triple = eyeReceiver.screenToPage(screenPoint) {
+                    if currentEyeData[triple.pageIndex] != nil {
+                        currentEyeData[triple.pageIndex]!.appendEvent(triple.x, y: triple.y, startTime: fixEv.startTime, endTime: fixEv.endTime, duration: fixEv.duration)
+                    } else {
+                        currentEyeData[triple.pageIndex] = PageEyeData(Xs: [triple.x], Ys: [triple.y], startTimes: [fixEv.startTime], endTimes: [fixEv.endTime], durations: [fixEv.duration], pageIndex: triple.pageIndex)
+                    }
+                }
+            }
+        }
+    }
     
     /// Send the given data to dime
     func sendToDiMe(dimeData: DiMeBase) {
@@ -174,6 +189,9 @@ class HistoryManager {
         // retrieve status
         self.currentReadingEvent = docWindow.getCurrentStatus()
         
+        // prepare to convert eye coordinates
+        self.currentEyeReceiver = docWindow.myPdf
+        
         // prepare exit timer, which will fire when the user is inactive long enough (or will be canceled if there is another exit event).
         if let _ = self.currentReadingEvent {
             dispatch_sync(timerQueue) {
@@ -186,6 +204,7 @@ class HistoryManager {
     /// The user has moved away, send current status (if any) and invalidate timer
     @objc private func exitEvent(exitTimer: NSTimer?) {
         userIsReading = false
+        self.currentEyeReceiver = nil
         
         // cancel previous entry timer, if any
         if let timer = self.entryTimer {
@@ -204,8 +223,13 @@ class HistoryManager {
         // if there's something to send, send it
         if let currentStatus = self.currentReadingEvent {
             currentStatus.setEnd(NSDate())
+            // check if there is page eye data, and append it if so
+            for k in self.currentEyeData.keys {
+                currentStatus.addEyeData(self.currentEyeData[k]!)
+            }
             sendToDiMe(currentStatus)
             self.currentReadingEvent = nil
+            self.currentEyeData = [Int: PageEyeData]()
         }
     }
     
