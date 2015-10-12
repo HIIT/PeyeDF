@@ -36,6 +36,15 @@ class MidasManager {
     /// Length of buffer in seconds
     private let kBufferLength: Int = 1
     
+    /// Earliest time that eyes were lost (if they were lost)
+    private var eyesLastSeen: NSDate?
+    
+    /// If eyes are lost for this whole period (seconds) an eye lost notification is sent
+    let kEyesMaxLostDuration: NSTimeInterval = 5.0
+    
+    /// Whether eyes were lost for at least kEyesMaxLostDuration
+    private(set) var eyesLost: Bool = true
+    
     /// How often a request is made to midas (seconds)
     private let kFetchInterval: NSTimeInterval = 0.5
     
@@ -46,7 +55,9 @@ class MidasManager {
     private var fixationDelegate: FixationDataDelegate?
     
     /// Dominant eye
-    private var dominantEye: Eye!
+    lazy private var dominantEye: Eye = {
+        return AppSingleton.getDominantEye()
+    }()
     
     /// Fetching of eye tracking events, TO / FROM Midas Manager, and timers related to this activity, are all run on this queue to prevent resource conflicts.
     /// writing of eye tracking events blocks the queue, reading does not.
@@ -81,7 +92,6 @@ class MidasManager {
     
     /// Starts fetching data from Midas
     func start() {
-        dominantEye = AppSingleton.getDominantEye()
         
         // Take action only if midas is currently off
         
@@ -127,7 +137,7 @@ class MidasManager {
     }
     
     /// Sets dominant eye
-    func setDominantEye(eye: Eye!) {
+    func setDominantEye(eye: Eye) {
         dominantEye = eye
     }
     
@@ -168,13 +178,59 @@ class MidasManager {
     private func gotData(ofKind fetchKind: MidasFetchKind, json: JSON) {
         switch fetchKind {
         case .EyePosition:
+            // send last eye position
             let lastPos = SMIEyePosition(fromLastInJSON: json, dominantEye: dominantEye)
             NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.midasEyePositionNotification, object: self, userInfo: lastPos.asDict())
+            
+            // check if the entry buffer is all zeros (i.e. eye lost for 1 whole second, assuming a kBufferLength of 1)
+            zeroEyeCheck(json)
         case .Fixations:
             let newFixations = getAllFixationsAfter(lastFixationStartTime, forEye: dominantEye, fromJSON: json)
             if let newFixations = newFixations {
                 lastFixationStartTime = newFixations.last!.startTime
                 fixationDelegate?.receiveNewFixationData(newFixations)
+            }
+        }
+    }
+    
+    /// Checks if eye buffer is zeroed. If the eyes were lost, checks how long ago they were first lost. If they were lost for long enough, sends a notification.
+    /// Sends a notification also if the eyes were previously lost, and are now found
+    /// - parameter json: the json object from alamofire
+    private func zeroEyeCheck(json: JSON) {
+        var eyeString: String
+        switch dominantEye {
+        case .left:
+            eyeString = "left"
+        case .right:
+            eyeString = "right"
+        }
+        
+        let Xs = json[0]["return"]["\(eyeString)EyePositionX"]["data"].arrayValue
+        let Ys = json[0]["return"]["\(eyeString)EyePositionY"]["data"].arrayValue
+        var eyesFound = false
+        for i in 0 ..< Xs.count {
+            if !(Xs[i].doubleValue == 0 && Ys[i].doubleValue == 0) {
+                eyesFound = true
+                break
+            }
+        }
+        
+        if self.eyesLost && eyesFound {
+            // send found notification
+            NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.eyesAvailabilityNotification, object: self, userInfo: ["available": true])
+            self.eyesLost = false
+            self.eyesLastSeen = nil
+        } else if !self.eyesLost && !eyesFound {
+            // check when eyes were lost before (if so) if period exceeds constant, send notification
+            if let prevLostDate = self.eyesLastSeen {
+                let shiftedDate = prevLostDate.dateByAddingTimeInterval(kEyesMaxLostDuration)
+                // if the current date comes after the shifted date, send notification
+                if NSDate().compare(shiftedDate) == NSComparisonResult.OrderedDescending {
+                    NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.eyesAvailabilityNotification, object: self, userInfo: ["available": false])
+                    self.eyesLost = true
+                }
+            } else {
+                self.eyesLastSeen = NSDate()
             }
         }
     }

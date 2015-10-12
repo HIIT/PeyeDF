@@ -170,6 +170,13 @@ struct PeyeConstants {
     /// - "available": Boolean, true if midas went up, false if down
     static let midasConnectionNotification = "hiit.PeyeDF.midasConnectionChanged"
     
+    /// String notifying that eyes were lost/seen
+    ///
+    /// **UserInfo dictionary fields**:
+    ///
+    /// - "available": Boolean, true if eyes can be seen, false if they were lost
+    static let eyesAvailabilityNotification = "hiit.PeyeDF.eyesAvailabilityNotification"
+    
     /// String identifying the notification sent when a new raw sample (for eye position) is received from midas.
     /// The sample regarding the last (most recent) event is sent
     ///

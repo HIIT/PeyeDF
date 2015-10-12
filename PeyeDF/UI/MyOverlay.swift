@@ -34,13 +34,21 @@ class MyOverlay: NSView {
     /// Default circle position (initially set to a semi random value)
     let circlePosition = NSPoint(x: 30, y: 30)
     
-    /// Raise an error if otherView is not set
+    /// Raise an error if otherView is not set and observe notifications
     override func viewDidMoveToWindow() {
         if otherView == nil {
             let exception = NSException(name: "otherView is not set", reason: "Can't redirect events behind circleOVerlay", userInfo: nil)
             exception.raise()
         }
         self.acceptsTouchEvents = false
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "eyeStateCallback:", name: PeyeConstants.eyesAvailabilityNotification, object: MidasManager.sharedInstance)
+    }
+    
+    /// Callback for eye status change (show overlay accordingly)
+    @objc private func eyeStateCallback(notification: NSNotification) {
+        let uInfo = notification.userInfo as! [String: AnyObject]
+        let avail = uInfo["available"] as! Bool
+        drawOverlay = !avail
     }
     
     override func drawRect(dirtyRect: NSRect) {
