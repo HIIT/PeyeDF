@@ -22,14 +22,14 @@ protocol ClickRecognizerDelegate {
 class PDFSideController: NSViewController, ClickRecognizerDelegate {
     
     @IBOutlet weak var myPDF: MyPDF!
-    @IBOutlet weak var circleOverlay: CircleOverlay!
+    @IBOutlet weak var overlay: MyOverlay!
     
     @IBOutlet weak var doubleClickRecognizer: NSClickGestureRecognizer!
     @IBOutlet weak var tripleClickRecognizer: NSClickGestureRecognizer!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        circleOverlay.otherView = myPDF  // tell circleOverlay to be transparent
+        overlay.otherView = myPDF  // tell circleOverlay to be transparent
     }
 
     override var representedObject: AnyObject? {

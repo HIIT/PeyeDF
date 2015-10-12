@@ -63,8 +63,8 @@
                                     <rect key="frame" x="1" y="1" width="423" height="47"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="E15-lK-fvD">
-                                            <rect key="frame" x="16" y="9" width="339" height="26"/>
+                                        <slider verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="E15-lK-fvD">
+                                            <rect key="frame" x="16" y="9" width="339" height="25"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="335" id="dtF-MU-gHK"/>
                                             </constraints>
@@ -74,7 +74,7 @@
                                                 <action selector="thicknessSlided:" target="62w-oK-rf7" id="Re0-xj-aMp"/>
                                             </connections>
                                         </slider>
-                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uRt-4J-vlE">
+                                        <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uRt-4J-vlE">
                                             <rect key="frame" x="359" y="13" width="53" height="22"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="53" id="N2Q-Hu-YTx"/>
@@ -1166,7 +1166,7 @@
                                     <animations/>
                                 </scroller>
                                 <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="yXb-ko-u85">
-                                    <rect key="frame" x="444" y="1" width="15" height="152"/>
+                                    <rect key="frame" x="443" y="1" width="16" height="152"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <animations/>
                                 </scroller>
@@ -1713,11 +1713,11 @@
             <objects>
                 <viewController title="PDFView Controller" storyboardIdentifier="MyPDFController" id="XfG-lQ-9wD" userLabel="MyPDFController" customClass="PDFSideController" customModule="PeyeDF" sceneMemberID="viewController">
                     <view key="view" horizontalCompressionResistancePriority="740" verticalCompressionResistancePriority="740" id="m2S-Jp-Qdl">
-                        <rect key="frame" x="0.0" y="0.0" width="574" height="360"/>
+                        <rect key="frame" x="0.0" y="0.0" width="632" height="629"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <pdfView autoresizesSubviews="NO" wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0Dp-rz-UVv" customClass="MyPDF" customModule="PeyeDF" customModuleProvider="target">
-                                <rect key="frame" x="20" y="20" width="534" height="320"/>
+                                <rect key="frame" x="20" y="20" width="592" height="589"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="534" id="gIf-Ik-hwW"/>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="320" id="uZL-UY-4Xd"/>
@@ -1736,8 +1736,8 @@
                                 </gestureRecognizers>
                                 <animations/>
                             </pdfView>
-                            <customView wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lWC-Pn-r7j" customClass="CircleOverlay" customModule="PeyeDF" customModuleProvider="target">
-                                <rect key="frame" x="20" y="20" width="534" height="320"/>
+                            <customView wantsLayer="YES" alphaValue="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="lWC-Pn-r7j" userLabel="Overlay" customClass="MyOverlay" customModule="PeyeDF" customModuleProvider="target">
+                                <rect key="frame" x="20" y="20" width="592" height="589"/>
                                 <animations/>
                             </customView>
                         </subviews>
@@ -1754,9 +1754,9 @@
                         <animations/>
                     </view>
                     <connections>
-                        <outlet property="circleOverlay" destination="lWC-Pn-r7j" id="JwT-Fg-WRQ"/>
                         <outlet property="doubleClickRecognizer" destination="ifg-Tf-3YL" id="Cgl-nJ-Ein"/>
                         <outlet property="myPDF" destination="0Dp-rz-UVv" id="Zkt-Fu-N1T"/>
+                        <outlet property="overlay" destination="lWC-Pn-r7j" id="WcG-Fv-63r"/>
                         <outlet property="tripleClickRecognizer" destination="u0J-k5-keg" id="mUQ-aJ-FWB"/>
                     </connections>
                 </viewController>
