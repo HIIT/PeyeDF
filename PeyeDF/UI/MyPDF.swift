@@ -94,7 +94,7 @@ class MyPDF: PDFView, ScreenToPageConverter {
     var circleSize = NSSize(width: 20, height: 20)
     
     /// What single click does
-    var singleClickMode: SingleClickMode = SingleClickMode.Default
+    var singleClickMode: SingleClickMode = SingleClickMode.MoveCrosshair
     
     // MARK: - Event callbacks
     
@@ -496,8 +496,8 @@ class MyPDF: PDFView, ScreenToPageConverter {
     func screenToPage(pointOnScreen: NSPoint) -> (x: CGFloat, y: CGFloat, pageIndex: Int)? {
         let tinySize = NSSize(width: 1, height: 1)
         let tinyRect = NSRect(origin: pointOnScreen, size: tinySize)
-        
-        let rectInWindow = self.window!.convertRectToScreen(tinyRect)
+        // TODO: must flip coordinates of pointOnScreen
+        let rectInWindow = self.window!.convertRectFromScreen(tinyRect)
         let rectInView = self.convertRect(rectInWindow, fromView: self.window!.contentViewController!.view)
         let pointInView = rectInView.origin
         
@@ -511,6 +511,22 @@ class MyPDF: PDFView, ScreenToPageConverter {
             return nil
         }
         let pointOnPage = self.convertPoint(pointInView, toPage: page)
+        
+        // TODO: remove debug-circle
+        // start debug- circle
+        
+        if let oldPosition = circlePosition {
+            let oldPageRect = NSRect(origin: oldPosition, size: circleSize)
+            let screenRect = convertRect(oldPageRect, fromPage: currentPage())
+            setNeedsDisplayInRect(screenRect.scale(scaleFactor()))
+        }
+        
+        circlePosition = pointOnPage
+        var screenRect = NSRect(origin: circlePosition!, size: circleSize)
+        screenRect = convertRect(screenRect, fromPage: currentPage())
+        setNeedsDisplayInRect(screenRect.scale(scaleFactor()))
+        // End debug - circle
+        
         let pageIndex = self.document().indexForPage(page)
         return (x: pointOnPage.x, y: pointOnPage.y, pageIndex: pageIndex)
     }

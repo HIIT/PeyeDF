@@ -14,7 +14,7 @@ import Cocoa
 class MyOverlay: NSView {
     
     /// Whether the eye overlay must be drawn
-    var drawOverlay = false
+    private(set) lazy var drawOverlay = {return MidasManager.sharedInstance.midasAvailable && MidasManager.sharedInstance.eyesLost}()
     
     /// All events will be redirected to this view
     weak var otherView: NSView?
@@ -49,6 +49,7 @@ class MyOverlay: NSView {
         let uInfo = notification.userInfo as! [String: AnyObject]
         let avail = uInfo["available"] as! Bool
         drawOverlay = !avail
+        self.setNeedsDisplayInRect(NSRect(origin: NSPoint(), size: self.frame.size))
     }
     
     override func drawRect(dirtyRect: NSRect) {

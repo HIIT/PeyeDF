@@ -28,7 +28,7 @@ class MidasManager {
     static let kMidasPort: String = "8085"
     
     /// Whether there is a midas connection available
-    private var midasAvailable: Bool = false
+    private(set) var midasAvailable: Bool = false
     
     /// Last SMI timestamp for last recorded fixation
     private var lastFixationStartTime: Int = 0
@@ -131,11 +131,6 @@ class MidasManager {
         }
     }
     
-    /// Tells whether midas is available
-    func isMidasAvailable() -> Bool {
-        return midasAvailable
-    }
-    
     /// Sets dominant eye
     func setDominantEye(eye: Eye) {
         dominantEye = eye
@@ -178,12 +173,14 @@ class MidasManager {
     private func gotData(ofKind fetchKind: MidasFetchKind, json: JSON) {
         switch fetchKind {
         case .EyePosition:
-            // send last eye position
-            let lastPos = SMIEyePosition(fromLastInJSON: json, dominantEye: dominantEye)
-            NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.midasEyePositionNotification, object: self, userInfo: lastPos.asDict())
-            
-            // check if the entry buffer is all zeros (i.e. eye lost for 1 whole second, assuming a kBufferLength of 1)
-            zeroEyeCheck(json)
+            // send last eye position, if there is actually data
+            if json[0]["return"]["timestamp"]["data"].arrayValue.count > 0 {
+                let lastPos = SMIEyePosition(fromLastInJSON: json, dominantEye: dominantEye)
+                NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.midasEyePositionNotification, object: self, userInfo: lastPos.asDict())
+                
+                // check if the entry buffer is all zeros (i.e. eye lost for 1 whole second, assuming a kBufferLength of 1)
+                zeroEyeCheck(json)
+            }
         case .Fixations:
             let newFixations = getAllFixationsAfter(lastFixationStartTime, forEye: dominantEye, fromJSON: json)
             if let newFixations = newFixations {
