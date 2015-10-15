@@ -32,7 +32,6 @@
 		A95A8CF81B94407D0093119E /* ThumbSideController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95A8CF11B94407D0093119E /* ThumbSideController.swift */; };
 		A95DF5651BC511A400EA1157 /* PDFDocumentExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95DF5641BC511A400EA1157 /* PDFDocumentExtensions.swift */; settings = {ASSET_TAGS = (); }; };
 		A95FE9801B8B3C1D0010E813 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FE97F1B8B3C1D0010E813 /* SwiftyJSON.swift */; };
-		A95FE9901B8B3F7D0010E813 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A95FE98B1B8B3EC60010E813 /* Alamofire.framework */; };
 		A95FE9911B8B3F7D0010E813 /* Alamofire.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A95FE98B1B8B3EC60010E813 /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A9677F921BA806F700DC48CC /* MidasManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9677F911BA806F700DC48CC /* MidasManager.swift */; };
 		A97230761B8B60C8005D29E0 /* DiMeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97230751B8B60C8005D29E0 /* DiMeData.swift */; };
@@ -167,7 +166,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A95FE9901B8B3F7D0010E813 /* Alamofire.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
