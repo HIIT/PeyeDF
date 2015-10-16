@@ -18,7 +18,7 @@ protocol FixationDataDelegate: class {
 /// MidasManager is a singleton. It is used to retrieve data from Midas at regular intervals. It keeps a buffer of all retrieved data.
 class MidasManager {
     
-    /// Returns itself
+    /// Returns itself in a shared instance for the whole app
     static let sharedInstance = MidasManager()
     
     /// Address of midas server

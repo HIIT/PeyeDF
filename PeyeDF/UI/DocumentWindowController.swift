@@ -11,7 +11,7 @@ import Foundation
 import Quartz
 
 /// Manages the "Document Window", which comprises two split views, one inside the other
-class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, SearchPanelCollapseDelegate {
+class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollapseToggleDelegate, SearchPanelCollapseDelegate {
     
     weak var myPdf: MyPDF?
     weak var docSplitController: DocumentSplitController?
@@ -24,6 +24,23 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
     var metadataWindowController: MetadataWindowController?
     
     var clickDelegate: ClickRecognizerDelegate?
+    
+    // MARK: - Window delegate
+    
+    /// Ensures that the document window never gets bigger than the maximum
+    /// allowed size when midas is active and stays within its boundaries.
+    func windowDidResize(notification: NSNotification) {
+        // only constrain if midas is active
+        if MidasManager.sharedInstance.midasAvailable {
+            if let window = notification.object as? NSWindow, screen = window.screen {
+                let shrankRect = DocumentWindow.getConstrainingRect(forScreen: screen)
+                let intersectedRect = shrankRect.intersect(window.frame)
+                if intersectedRect != window.frame {
+                    window.setFrame(intersectedRect, display: true)
+                }
+            }
+        }
+    }
     
     // MARK: - Searching
     
@@ -365,10 +382,10 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
     
     /// This window is going to close, release all references (importantly, remove notification observers)
     @objc private func windowWantsClose(notification: NSNotification) {
+        HistoryManager.sharedManager.exit(self)  // TODO: send all outgoing interesting rects
         unSetObservers()
         debugController?.unSetMonitors(myPdf!, docWindow: self.window!)
         debugController?.view.window?.close()
         metadataWindowController?.close()
-        myPdf?.setDocument(nil)
     }
 }

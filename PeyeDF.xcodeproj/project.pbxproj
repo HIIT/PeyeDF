@@ -35,6 +35,7 @@
 		A95FE9911B8B3F7D0010E813 /* Alamofire.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A95FE98B1B8B3EC60010E813 /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A9677F921BA806F700DC48CC /* MidasManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9677F911BA806F700DC48CC /* MidasManager.swift */; };
 		A97230761B8B60C8005D29E0 /* DiMeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97230751B8B60C8005D29E0 /* DiMeData.swift */; };
+		A974ADD81BD169E0008AB977 /* DocumentWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A974ADD71BD169E0008AB977 /* DocumentWindow.swift */; settings = {ASSET_TAGS = (); }; };
 		A981F69D1B42FC4C00E7E9BD /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A981F69C1B42FC4C00E7E9BD /* Utils.swift */; };
 		A9A2DFC61BC427BE006C07FD /* MetadataWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A2DFC51BC427BE006C07FD /* MetadataWindowController.swift */; settings = {ASSET_TAGS = (); }; };
 		A9A2DFCC1BC427D2006C07FD /* MetadataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A2DFCB1BC427D2006C07FD /* MetadataViewController.swift */; settings = {ASSET_TAGS = (); }; };
@@ -147,6 +148,7 @@
 		A95FE9811B8B3EC60010E813 /* Alamofire.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Alamofire.xcodeproj; path = Alamofire/Alamofire.xcodeproj; sourceTree = "<group>"; };
 		A9677F911BA806F700DC48CC /* MidasManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MidasManager.swift; sourceTree = "<group>"; };
 		A97230751B8B60C8005D29E0 /* DiMeData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiMeData.swift; sourceTree = "<group>"; };
+		A974ADD71BD169E0008AB977 /* DocumentWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentWindow.swift; sourceTree = "<group>"; };
 		A97F7B951B8CB32700013E26 /* PeyeDF-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PeyeDF-Bridging-Header.h"; sourceTree = "<group>"; };
 		A981F69C1B42FC4C00E7E9BD /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		A9A2DFC51BC427BE006C07FD /* MetadataWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetadataWindowController.swift; sourceTree = "<group>"; };
@@ -189,6 +191,7 @@
 				A918F80F1BC2D71500345448 /* eyeBox.swift */,
 				A95A8CEC1B94407D0093119E /* DocumentSplitController.swift */,
 				A9260F561BA4CD10005B1556 /* MyOverlay.swift */,
+				A974ADD71BD169E0008AB977 /* DocumentWindow.swift */,
 				A95A8CED1B94407D0093119E /* DocumentWindowController.swift */,
 				A913A91F1BA1A93B008BA10D /* SearchPanelController.swift */,
 				A95A8CEE1B94407D0093119E /* MyPDF.swift */,
@@ -475,6 +478,7 @@
 			files = (
 				A9260F571BA4CD10005B1556 /* MyOverlay.swift in Sources */,
 				A935F0C61B8CC5FD00587C99 /* DesktopEvent.swift in Sources */,
+				A974ADD81BD169E0008AB977 /* DocumentWindow.swift in Sources */,
 				A91CB96F1B332FB700671868 /* EyeFormulas.swift in Sources */,
 				A9D833AD1BA868520046B21F /* PageEyeData.swift in Sources */,
 				A912D8A41B8B5C3A006F0657 /* DocumentInformationElement.swift in Sources */,

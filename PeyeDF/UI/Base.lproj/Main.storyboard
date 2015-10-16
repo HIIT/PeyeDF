@@ -1224,12 +1224,11 @@
         <scene sceneID="f6R-Kc-PFL">
             <objects>
                 <windowController storyboardIdentifier="Document Window Controller" id="sy6-nO-Tdf" userLabel="Document Window Controller" customClass="DocumentWindowController" customModule="PeyeDF" sceneMemberID="viewController">
-                    <window key="window" title="Window for &lt;&lt;Filename&gt;&gt;" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="Ezf-2B-VUj">
+                    <window key="window" title="Window for &lt;&lt;Filename&gt;&gt;" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="Ezf-2B-VUj" customClass="DocumentWindow" customModule="PeyeDF" customModuleProvider="target">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-                        <rect key="contentRect" x="169" y="209" width="1100" height="700"/>
+                        <rect key="contentRect" x="214" y="386" width="810" height="485"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
-                        <value key="minSize" type="size" width="1100" height="700"/>
                         <toolbar key="toolbar" implicitIdentifier="536DCB0E-4411-47B2-BE21-AD4B2EDCCC8A" autosavesConfiguration="NO" displayMode="iconAndLabel" sizeMode="regular" id="lWe-1p-qV3">
                             <allowedToolbarItems>
                                 <toolbarItem implicitItemIdentifier="NSToolbarPrintItem" id="aNh-Te-Qhf"/>
@@ -1299,6 +1298,9 @@
                                 <toolbarItem reference="aNh-Te-Qhf"/>
                             </defaultToolbarItems>
                         </toolbar>
+                        <connections>
+                            <outlet property="delegate" destination="sy6-nO-Tdf" id="cgf-VX-JSe"/>
+                        </connections>
                     </window>
                     <connections>
                         <outlet property="searchTB" destination="mrl-au-qa7" id="LRL-Z8-rnk"/>
@@ -1310,7 +1312,7 @@
                 </windowController>
                 <customObject id="H3y-Bk-Ofi" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2290" y="-235"/>
+            <point key="canvasLocation" x="-2435" y="-342.5"/>
         </scene>
         <!--Main Split-->
         <scene sceneID="MBz-GY-gCZ">
@@ -1719,8 +1721,8 @@
                             <pdfView autoresizesSubviews="NO" wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0Dp-rz-UVv" customClass="MyPDF" customModule="PeyeDF" customModuleProvider="target">
                                 <rect key="frame" x="20" y="20" width="592" height="589"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="534" id="gIf-Ik-hwW"/>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="320" id="uZL-UY-4Xd"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="400" id="gIf-Ik-hwW"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="200" id="uZL-UY-4Xd"/>
                                 </constraints>
                                 <gestureRecognizers>
                                     <clickGestureRecognizer delaysPrimaryMouseButtonEvents="YES" numberOfClicksRequired="2" id="ifg-Tf-3YL" userLabel="Double click recognizer">
@@ -1762,7 +1764,7 @@
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-45" y="364"/>
+            <point key="canvasLocation" x="-64" y="477.5"/>
         </scene>
     </scenes>
     <resources>
