@@ -63,8 +63,8 @@
                                     <rect key="frame" x="1" y="1" width="423" height="47"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <slider verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="E15-lK-fvD">
-                                            <rect key="frame" x="16" y="9" width="339" height="25"/>
+                                        <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="E15-lK-fvD">
+                                            <rect key="frame" x="16" y="9" width="339" height="26"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="335" id="dtF-MU-gHK"/>
                                             </constraints>
@@ -74,7 +74,7 @@
                                                 <action selector="thicknessSlided:" target="62w-oK-rf7" id="Re0-xj-aMp"/>
                                             </connections>
                                         </slider>
-                                        <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uRt-4J-vlE">
+                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uRt-4J-vlE">
                                             <rect key="frame" x="359" y="13" width="53" height="22"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="53" id="N2Q-Hu-YTx"/>
@@ -1166,7 +1166,7 @@
                                     <animations/>
                                 </scroller>
                                 <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="yXb-ko-u85">
-                                    <rect key="frame" x="443" y="1" width="16" height="152"/>
+                                    <rect key="frame" x="444" y="1" width="15" height="152"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <animations/>
                                 </scroller>

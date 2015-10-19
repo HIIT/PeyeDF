@@ -91,14 +91,17 @@ class HistoryManager: FixationDataDelegate {
         exitEvent(nil)
     }
     
-    // MARK: - External functions
+    // MARK: - Protocol implementation
     
     func receiveNewFixationData(newData: [SMIFixationEvent]) {
         if let eyeReceiver = currentEyeReceiver {
             // translate all fixations to page points, and insert to corresponding data in the main dictionary
             for fixEv in newData {
-                let screenPoint = NSPoint(x: fixEv.positionX, y: fixEv.positionY)
-                if let triple = eyeReceiver.screenToPage(screenPoint) {
+                // convert to screen point and flip it (smi and os x have y coordinate flipped.
+                var screenPoint = NSPoint(x: fixEv.positionX, y: fixEv.positionY)
+                screenPoint.y = AppSingleton.screenRect.height - screenPoint.y
+                
+                if let triple = eyeReceiver.screenToPage(screenPoint, fromEye: true) {
                     if currentEyeData[triple.pageIndex] != nil {
                         currentEyeData[triple.pageIndex]!.appendEvent(triple.x, y: triple.y, startTime: fixEv.startTime, endTime: fixEv.endTime, duration: fixEv.duration)
                     } else {
@@ -108,6 +111,8 @@ class HistoryManager: FixationDataDelegate {
             }
         }
     }
+    
+    // MARK: - External functions
     
     /// Send the given data to dime
     func sendToDiMe(dimeData: DiMeBase) {

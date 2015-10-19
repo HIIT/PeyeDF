@@ -176,7 +176,7 @@ struct PeyeConstants {
     ///
     /// **UserInfo dictionary fields**:
     /// - "xpos": last seen position, x
-    /// - "ypos": last seen position, y
+    /// - "ypos": last seen position, y (in SMI coordinate system, which is different from OS X)
     /// - "zpos": last seen position, z (distance from camera)
     static let midasEyePositionNotification = "hiit.PeyeDF.midasEyePosition"
     

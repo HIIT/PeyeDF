@@ -143,13 +143,13 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
     
     /// Retrieves current ReadingEvent (for HistoryManager)
     func getCurrentStatus() -> ReadingEvent? {
-        return myPdf!.getStatus() as ReadingEvent?
+        return myPdf!.getViewportStatus() as ReadingEvent?
     }
     
     // MARK: - Debug functions
     
     @IBAction func sendToDiMe(sender: AnyObject?) {
-        let readingEvent:ReadingEvent = myPdf!.getStatus()!  // assuming there is a non-nil status if we press the button
+        let readingEvent:ReadingEvent = myPdf!.getViewportStatus()!  // assuming there is a non-nil status if we press the button
         HistoryManager.sharedManager.sendToDiMe(readingEvent)
     }
     
@@ -165,7 +165,6 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
         
         // show window controller for metadata and send data
         metadataWindowController?.showWindow(self)
-        Swift.print(myPdf?.document()!.documentAttributes())
         metadataWindowController?.setDoc(myPdf!.document())
     }
     
@@ -252,6 +251,11 @@ class DocumentWindowController: NSWindowController, SideCollapseToggleDelegate, 
             // Associate PDF view to info element
             let infoElem = DocumentInformationElement(uri: url.path!, id: peyeDoc.sha1!, plainTextContent: pdfDoc.getText(), title: pdfDoc.getTitle())
             myPdf?.infoElem = infoElem
+            
+            // Tell app singleton which screen size we are using
+            if let screen = window?.screen {
+                AppSingleton.screenRect = screen.frame
+            }
             
             // Update debug controller with metadata
             if let title = pdfDoc.getTitle() {

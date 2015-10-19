@@ -21,19 +21,22 @@ class ReadingEvent: Event {
         - parameter multiPage: yes if > 1 page is currently being displayed
         - parameter visiblePages: vector of pages specifying the pages currently being displayed, starting from 0 (length should be > 1 if multiPage == true)
         - parameter pageRects: A list of rectangles representing where the viewport is placed for each page. All the rects should fit within the page. Rect dimensions refer to points in a 72 dpi space where the bottom left is the origin, as in Apple's PDFKit. A page in US Letter format (often used for papers) translates to approx 594 x 792 points.
-        - parameter proportion: Proportion of the page being looked at. Note: this is biased to excess, it gives the very max and min of the proportion of the page beeing looked at. If there is a part currently not being seen in 2-page continuous, it is ignored.
-    
+        - parameter isSummary: Whether this event is a "big" summary event, set at the end of reading.
+        - parameter proportion: Proportion of the page being looked at. Note: this is biased to excess, it gives the very max and min of the proportion of the page beeing looked at. If there is a part currently not being seen in 2-page continuous, it is ignored. Not set if this is a summary event.
         - parameter plainTextContent: plain text visible on screen
         - parameter scaleFactor: Sale factor of page on screen
         - parameter infoElemId: id referring to the info element referenced by this event (document id)
     */
-    init(multiPage: Bool, visiblePageNumbers: [Int], visiblePageLabels: [String], pageRects: [ReadingRect], proportion: DiMeRange, scaleFactor: NSNumber, plainTextContent: NSString, infoElemId: NSString) {
+    init(multiPage: Bool, visiblePageNumbers: [Int], visiblePageLabels: [String], pageRects: [ReadingRect], isSummary: Bool, proportion: DiMeRange?, scaleFactor: NSNumber, plainTextContent: NSString, infoElemId: NSString) {
         super.init()
         
         theDictionary["multiPage"] = multiPage
         theDictionary["visiblePageNumbers"] = visiblePageNumbers
         theDictionary["visiblePageLabels"] = visiblePageLabels
-        theDictionary["proportion"] = proportion.getDict()
+        theDictionary["isSummary"] = isSummary
+        if let proportion = proportion {
+            theDictionary["proportion"] = proportion.getDict()
+        }
         theDictionary["scaleFactor"] = scaleFactor
         theDictionary["plainTextContent"] = plainTextContent
         

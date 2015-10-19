@@ -49,7 +49,7 @@ class eyeBox: NSBox {
         let userInfo = notification.userInfo!
         dist = userInfo["zpos"] as! CGFloat
         xdelta = userInfo["xpos"] as! CGFloat
-        ydelta = userInfo["ypos"] as! CGFloat
+        ydelta = -1.0 * (userInfo["ypos"] as! CGFloat)  // flip y because SMI vs OS X
         self.needsDisplay = true
     }
 

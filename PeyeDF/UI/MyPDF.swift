@@ -54,7 +54,11 @@ class MarkingState: NSObject {
 protocol ScreenToPageConverter: class {
     
     /// Converts a point on screen and returns a tuple containing x coordinate, y coordinate, BOTH on page points
-    func screenToPage(pointOnScreen: NSPoint) -> (x: CGFloat, y: CGFloat, pageIndex: Int)?
+    ///
+    /// - parameter pointOnScreen: point to convert (in OS X coordinate system)
+    /// - parameter fromEye: if this is being done because of eye tracking (so gaze points are stored)
+    /// - returns: A triple containing x, y in page coordinates, and the index of the page in which gaze fell
+    func screenToPage(pointOnScreen: NSPoint, fromEye: Bool) -> (x: CGFloat, y: CGFloat, pageIndex: Int)?
     
 }
 
@@ -70,6 +74,9 @@ class MyPDF: PDFView, ScreenToPageConverter {
     /// Stores the information element for the current document.
     /// Set by DocumentWindowController.loadDocument()
     var infoElem: DocumentInformationElement?
+    
+    /// Stores all rects at which the user looked at (via screenToPage(_, true))
+    var gazedRects = [PDFPage: [NSRect]]()
 
     // MARK: - Markings (will be translated to annotations)
     
@@ -190,79 +197,14 @@ class MyPDF: PDFView, ScreenToPageConverter {
     	NSGraphicsContext.restoreGraphicsState()
     }
     
-    // MARK: - Markings and Annotations
+    // MARK: - Internal functions
     
-    /// Manually set all rectangles to the given parameters, and annotate them.
-    func setMarksAndAnnotate(criticalRects: [PDFPage: [NSRect]], interestingRects: [PDFPage: [NSRect]], readRects: [PDFPage: [NSRect]]) {
-        self.criticalRects = criticalRects
-        self.interestingRects = interestingRects
-        self.readRects = readRects
-        autoAnnotate()
-    }
-    
-    /// This method is called (so far) only by the undo manager. It sets the state of markings to the specified object (markingState) and
-    /// refreshes the view on the marking corresponding to the last rectangle's property of the given marking state (so that the last
-    /// added / removed rectangle can be seen appearing / disappearing immediately).
-    @objc func undoMarkAndAnnotate(previousState: MarkingState) {
-        // a last tuple must be present, otherwise it should not have been added in the first place
-        if let lastTuple = previousState.getLastRect() {
-            
-            // store previous state before making any modification
-            let evenPreviousState = MarkingState(criticalRects: self.criticalRects, interestingRects: self.interestingRects, readRects: self.readRects)
-            
-            // apply previous state and perform annotations
-            self.criticalRects = previousState.criticalRects
-            self.interestingRects = previousState.interestingRects
-            self.readRects = previousState.readRects
-            autoAnnotate()
-        
-            // show this change
-            let annotRect = annotationRectForMark(lastTuple.lastRect, page: lastTuple.lastPage)
-            refreshForAnnotation(annotRect, page: lastTuple.lastPage)
-            
-            // create an undo operation for this operation
-            let lastR = previousState.getLastRect()!
-            evenPreviousState.setLastRect(lastR.lastRect, lastPage: lastR.lastPage)
-            undoManager?.registerUndoWithTarget(self, selector: "undoMarkAndAnnotate:", object: evenPreviousState)
-            undoManager?.setActionName(NSLocalizedString("actions.annotate", value: "Mark Text", comment: "Some text was marked as importance by clicking"))
-        } else {
-            let exception = NSException(name: "This should never happen!", reason: "Undoing a nil last rectangle", userInfo: nil)
-            exception.raise()
-        }
-    }
-    
-    /// Create a marking (and subsequently a rect) at the given point, and make annotations
+    /// Converts a point to a rectangle corresponding to the paragraph in which the point resides.
     ///
-    /// - parameter location: The point for which a rect will be created (in view coordinates)
-    /// - parameter importance: The importance of the rect that will be created
-    func markAndAnnotate(location: NSPoint, importance: ReadingClass) {
-        if containsRawString {
-            // prepare a marking state to store this operation
-            let previousState = MarkingState(criticalRects: self.criticalRects, interestingRects: self.interestingRects, readRects: self.readRects)
-            let newTuple = mark(location, importance: importance)
-            // if noting was done (i.e. vertical line) do nothing, otherwise store state and annotate
-            if let newMark = newTuple {
-                previousState.setLastRect(newMark.newRect, lastPage: newMark.onPage)
-                undoManager?.registerUndoWithTarget(self, selector: "undoMarkAndAnnotate:", object: previousState)
-                undoManager?.setActionName(NSLocalizedString("actions.annotate", value: "Mark Text", comment: "Some text was marked as importance by clicking"))
-                autoAnnotate()
-            }
-        }
-    }
-    
-    /// Manually tell that a point (and hence the paragraph/subparagraph related to it
-    /// should be marked as somehow important
-    ///
-    /// - returns: A triplet containing the rectangle that was created, on which page it was created and what importance
-    func mark(locationInView: NSPoint, importance: ReadingClass) -> (newRect: NSRect, onPage: PDFPage, importance: ReadingClass)? {
-        var markRect: NSRect
-        
-        // Page we're on.
-        let activePage = self.pageForPoint(locationInView, nearest: true)
-        
-        // Get location in "page space".
-        let pagePoint = self.convertPoint(locationInView, toPage: activePage)
-        
+    /// - parameter pagePoint: the point of interest
+    /// - parameter forPage: the page of interest
+    /// - returns: A rectangle corresponding to the point, nil if there is no paragraph
+    private func pointToParagraphRect(pagePoint: NSPoint, forPage activePage: PDFPage) -> NSRect? {
         let pointArray = verticalFocalPoints(fromPoint: pagePoint, zoomLevel: self.scaleFactor(), pageRect: self.getPageRect(activePage))
         
         // if using columns, selection can "bleed" into footers and headers
@@ -341,10 +283,90 @@ class MyPDF: PDFView, ScreenToPageConverter {
                 }
                 
             } // end of check for split, if no need just return selection as-was //
+        } else {
+            return nil
         }
         
         // The new rectangle for this mark
-        markRect = pdfSel.boundsForPage(activePage)
+        return pdfSel.boundsForPage(activePage)
+    }
+    
+    // MARK: - Markings and Annotations
+    
+    /// Manually set all rectangles to the given parameters, and annotate them.
+    func setMarksAndAnnotate(criticalRects: [PDFPage: [NSRect]], interestingRects: [PDFPage: [NSRect]], readRects: [PDFPage: [NSRect]]) {
+        self.criticalRects = criticalRects
+        self.interestingRects = interestingRects
+        self.readRects = readRects
+        autoAnnotate()
+    }
+    
+    /// This method is called (so far) only by the undo manager. It sets the state of markings to the specified object (markingState) and
+    /// refreshes the view on the marking corresponding to the last rectangle's property of the given marking state (so that the last
+    /// added / removed rectangle can be seen appearing / disappearing immediately).
+    @objc func undoMarkAndAnnotate(previousState: MarkingState) {
+        // a last tuple must be present, otherwise it should not have been added in the first place
+        if let lastTuple = previousState.getLastRect() {
+            
+            // store previous state before making any modification
+            let evenPreviousState = MarkingState(criticalRects: self.criticalRects, interestingRects: self.interestingRects, readRects: self.readRects)
+            
+            // apply previous state and perform annotations
+            self.criticalRects = previousState.criticalRects
+            self.interestingRects = previousState.interestingRects
+            self.readRects = previousState.readRects
+            autoAnnotate()
+        
+            // show this change
+            let annotRect = annotationRectForMark(lastTuple.lastRect, page: lastTuple.lastPage)
+            refreshForAnnotation(annotRect, page: lastTuple.lastPage)
+            
+            // create an undo operation for this operation
+            let lastR = previousState.getLastRect()!
+            evenPreviousState.setLastRect(lastR.lastRect, lastPage: lastR.lastPage)
+            undoManager?.registerUndoWithTarget(self, selector: "undoMarkAndAnnotate:", object: evenPreviousState)
+            undoManager?.setActionName(NSLocalizedString("actions.annotate", value: "Mark Text", comment: "Some text was marked as importance by clicking"))
+        } else {
+            let exception = NSException(name: "This should never happen!", reason: "Undoing a nil last rectangle", userInfo: nil)
+            exception.raise()
+        }
+    }
+    
+    /// Create a marking (and subsequently a rect) at the given point, and make annotations
+    ///
+    /// - parameter location: The point for which a rect will be created (in view coordinates)
+    /// - parameter importance: The importance of the rect that will be created
+    func markAndAnnotate(location: NSPoint, importance: ReadingClass) {
+        if containsRawString {
+            // prepare a marking state to store this operation
+            let previousState = MarkingState(criticalRects: self.criticalRects, interestingRects: self.interestingRects, readRects: self.readRects)
+            let newTuple = mark(location, importance: importance)
+            // if noting was done (i.e. no paragraph at point) do nothing, otherwise store state and annotate
+            if let newMark = newTuple {
+                previousState.setLastRect(newMark.newRect, lastPage: newMark.onPage)
+                undoManager?.registerUndoWithTarget(self, selector: "undoMarkAndAnnotate:", object: previousState)
+                undoManager?.setActionName(NSLocalizedString("actions.annotate", value: "Mark Text", comment: "Some text was marked as importance by clicking"))
+                autoAnnotate()
+            }
+        }
+    }
+    
+    /// Manually tell that a point (and hence the paragraph/subparagraph related to it
+    /// should be marked as somehow important
+    ///
+    /// - returns: A triplet containing the rectangle that was created, on which page it was created and what importance
+    func mark(locationInView: NSPoint, importance: ReadingClass) -> (newRect: NSRect, onPage: PDFPage, importance: ReadingClass)? {
+        
+        // Page we're on.
+        let activePage = self.pageForPoint(locationInView, nearest: true)
+        
+        // Get location in "page space".
+        let pagePoint = self.convertPoint(locationInView, toPage: activePage)
+        
+        // Convert point to rect, if possible
+        guard let markRect = pointToParagraphRect(pagePoint, forPage: activePage) else {
+            return nil
+        }
         
         // Single click adds a read rect, double click an interesting rect
         switch importance {
@@ -489,14 +511,15 @@ class MyPDF: PDFView, ScreenToPageConverter {
     
     // MARK: - Protocol implementations
     
-    /// Returns the corresponding point on page for a point on screen.
+    /// Converts a point on screen and returns a tuple containing x coordinate, y coordinate, BOTH on page points
     ///
-    /// - parameter pointOnScreen: A point corresponding to a screen coordinate
-    /// - returns: A triple containing the x, y coordinate and page index. Nil if point is outside view/page
-    func screenToPage(pointOnScreen: NSPoint) -> (x: CGFloat, y: CGFloat, pageIndex: Int)? {
+    /// - parameter pointOnScreen: point to convert (in OS X coordinate system)
+    /// - parameter fromEye: if this is being done because of eye tracking (so gaze points are stored)
+    /// - returns: A triple containing x, y in page coordinates, and the index of the page in which gaze fell
+    func screenToPage(pointOnScreen: NSPoint, fromEye: Bool) -> (x: CGFloat, y: CGFloat, pageIndex: Int)? {
         let tinySize = NSSize(width: 1, height: 1)
         let tinyRect = NSRect(origin: pointOnScreen, size: tinySize)
-        // TODO: must flip coordinates of pointOnScreen
+        
         let rectInWindow = self.window!.convertRectFromScreen(tinyRect)
         let rectInView = self.convertRect(rectInWindow, fromView: self.window!.contentViewController!.view)
         let pointInView = rectInView.origin
@@ -526,6 +549,16 @@ class MyPDF: PDFView, ScreenToPageConverter {
         screenRect = convertRect(screenRect, fromPage: currentPage())
         setNeedsDisplayInRect(screenRect.scale(scaleFactor()))
         // End debug - circle
+        
+        // create rect for gazed-at paragraph
+        if fromEye {
+            if let seenRect = pointToParagraphRect(pointOnPage, forPage: page) {
+                if gazedRects[page] == nil {
+                    gazedRects[page] = [NSRect]()
+                }
+                gazedRects[page]!.append(seenRect)
+            }
+        }
         
         let pageIndex = self.document().indexForPage(page)
         return (x: pointOnPage.x, y: pointOnPage.y, pageIndex: pageIndex)
@@ -666,10 +699,10 @@ class MyPDF: PDFView, ScreenToPageConverter {
         }
     }
     
-    /// Returns the current status (i.e. converts the current viewport to a reading event.)
+    /// Converts the current viewport to a reading event.
     ///
     /// - returns: The reading event for the current status, or nil if nothing is actually visible
-    func getStatus() -> ReadingEvent? {
+    func getViewportStatus() -> ReadingEvent? {
         if self.visiblePages() != nil {
             let multiPage: Bool = (self.visiblePages().count) > 1
             let visiblePageLabels: [String] = getVisiblePageLabels()
@@ -688,7 +721,7 @@ class MyPDF: PDFView, ScreenToPageConverter {
                 readingRects.append(newRect)
             }
             
-            return ReadingEvent(multiPage: multiPage, visiblePageNumbers: visiblePageNums, visiblePageLabels: visiblePageLabels, pageRects: readingRects, proportion: proportion, scaleFactor: self.scaleFactor(), plainTextContent: plainTextContent, infoElemId: infoElem!.id)
+            return ReadingEvent(multiPage: multiPage, visiblePageNumbers: visiblePageNums, visiblePageLabels: visiblePageLabels, pageRects: readingRects, isSummary: false, proportion: proportion, scaleFactor: self.scaleFactor(), plainTextContent: plainTextContent, infoElemId: infoElem!.id)
         } else {
             return nil
         }

@@ -15,9 +15,14 @@ import Quartz
 /// - storyboard: the "Main" storyboard
 /// - log: XCGLogger instance to log information to console and file
 class AppSingleton {
+    
     static let storyboard = NSStoryboard(name: "Main", bundle: nil)
     
     static let log = AppSingleton.createLog()
+    
+    /// The dimensions of the screen the application is running within.
+    /// It is assumed there is only one screen when using eye tracking.
+    static var screenRect = NSRect()
     
     /// Convenience function to get monitor DPI
     static func getMonitorDPI() -> CGFloat {

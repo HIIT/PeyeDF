@@ -42,11 +42,6 @@ func getAllFixationsAfter(previousTime: Int, forEye eye: Eye, fromJSON json: JSO
     
     var retVal = [SMIFixationEvent]()
     
-    // TODO: remove this debugging check
-    if !(allEyes.count == allStartTimes.count && allStartTimes.count == allEndTimes.count && allEndTimes.count == allYs.count) {
-        fatalError("Counts do not match!")
-    }
-    
     // loop all remaining items and add if they match eye and have duration
     while i < timeArray.count {
         if allEyes[i] == eye.rawValue {
