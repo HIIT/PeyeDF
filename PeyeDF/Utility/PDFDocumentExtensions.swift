@@ -113,7 +113,7 @@ extension PDFDocument {
     func getKeywords() -> String? {
         let docAttrib = documentAttributes()
         if let keywords: AnyObject = docAttrib[PDFDocumentKeywordsAttribute] {
-            return (keywords as! String)
+            return (keywords[0] as! String)
         } else {
             return nil
         }

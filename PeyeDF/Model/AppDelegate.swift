@@ -18,6 +18,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// Connect midas menu item
     @IBOutlet weak var connectMidas: NSMenuItem!
     
+    /// Refinder window
+    var refinderWindow: NSWindowController?
+    
     /// Creates default preferences
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         var defaultPrefs = [String: AnyObject]()
@@ -45,6 +48,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Dime/Midas down/up observers
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "dimeConnectionChanged:", name: PeyeConstants.diMeConnectionNotification, object: HistoryManager.sharedManager)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "midasConnectionChanged:", name: PeyeConstants.midasConnectionNotification, object: MidasManager.sharedInstance)
+        
+        // TODO: remove debugging creation of refinder
+        refinderWindow = (AppSingleton.refinderStoryboard.instantiateControllerWithIdentifier("RefinderWindowController") as! NSWindowController)
+        refinderWindow!.showWindow(self)
     }
     
     /// Callback for click on connect to dime

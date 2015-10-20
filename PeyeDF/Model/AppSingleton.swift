@@ -16,7 +16,8 @@ import Quartz
 /// - log: XCGLogger instance to log information to console and file
 class AppSingleton {
     
-    static let storyboard = NSStoryboard(name: "Main", bundle: nil)
+    static let mainStoryboard = NSStoryboard(name: "Main", bundle: nil)
+    static let refinderStoryboard = NSStoryboard(name: "Refinder", bundle: nil)
     
     static let log = AppSingleton.createLog()
     

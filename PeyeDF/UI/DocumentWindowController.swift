@@ -177,7 +177,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     @IBAction func thisDocMdata(sender: AnyObject?) {
         // create metadata window, if currently nil
         if metadataWindowController == nil {
-            metadataWindowController = AppSingleton.storyboard.instantiateControllerWithIdentifier("MetadataWindow") as? MetadataWindowController
+            metadataWindowController = AppSingleton.mainStoryboard.instantiateControllerWithIdentifier("MetadataWindow") as? MetadataWindowController
         }
         
         // show window controller for metadata and send data
@@ -229,11 +229,10 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         myPdf?.setAutoScales(true)
         
         // Create debug window
-        debugWindowController = AppSingleton.storyboard.instantiateControllerWithIdentifier("DebugWindow") as? NSWindowController
+        debugWindowController = AppSingleton.mainStoryboard.instantiateControllerWithIdentifier("DebugWindow") as? NSWindowController
         debugWindowController?.showWindow(self)
         debugController = (debugWindowController?.contentViewController as! DebugController)
         debugController?.setUpMonitors(myPdf!, docWindow: self.window!)
-        self.showWindow(self)
         
         // Prepare to receive events
         setUpObservers()

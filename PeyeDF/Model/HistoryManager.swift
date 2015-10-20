@@ -152,7 +152,7 @@ class HistoryManager: FixationDataDelegate {
                     self.dimeConnectState(false)
                 } else {
                     AppSingleton.log.debug("Data pushed to DiMe")
-                    //print(response.value!)  // to see what dime replied
+                    print(response.value!)  // to see what dime replied
                 }
             }
             

@@ -35,7 +35,7 @@ class PeyeDocument: NSDocument {
     
     /// Creates window controllers and automatically calls loadDocument()
     override func makeWindowControllers() {
-        let storyboard = AppSingleton.storyboard
+        let storyboard = AppSingleton.mainStoryboard
         
         let windowController = storyboard.instantiateControllerWithIdentifier("Document Window Controller") as! DocumentWindowController
         self.addWindowController(windowController)

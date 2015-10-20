@@ -913,6 +913,11 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="View" id="HyV-fh-RgO">
                                     <items>
+                                        <menuItem title="Reload data" keyEquivalent="r" id="qHx-jN-Jpb">
+                                            <connections>
+                                                <action selector="reloadData:" target="Ady-hI-5gd" id="Quc-nP-lEB"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem title="Show Toolbar" keyEquivalent="t" id="snW-S8-Cw5">
                                             <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                             <connections>
@@ -1166,7 +1171,7 @@
                                     <animations/>
                                 </scroller>
                                 <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="yXb-ko-u85">
-                                    <rect key="frame" x="444" y="1" width="15" height="152"/>
+                                    <rect key="frame" x="443" y="1" width="16" height="152"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <animations/>
                                 </scroller>
@@ -1438,7 +1443,7 @@
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="60" id="Vzr-WU-4oi"/>
                                 </constraints>
                                 <animations/>
-                                <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="95A-eE-ckT">
+                                <scroller key="horizontalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="95A-eE-ckT">
                                     <rect key="frame" x="1" y="118" width="322" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <animations/>
