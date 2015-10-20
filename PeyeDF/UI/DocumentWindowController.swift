@@ -257,8 +257,8 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             // NSDocument subclass
             let peyeDoc = self.document as! PeyeDocument
             peyeDoc.pdfDoc = pdfDoc
-            if let trimmedText = pdfDoc.getText() {
-                peyeDoc.sha1 = trimmedText.sha1()
+            // check if there is text
+            if let _ = pdfDoc.getText() {
                 myPdf?.containsRawString = true
                 tbMetadata.image = NSImage(named: "NSStatusAvailable")
             } else {
@@ -266,7 +266,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             }
             
             // Associate PDF view to info element
-            let sciDoc = ScientificDocument(uri: url.path!, id: peyeDoc.sha1!, plainTextContent: pdfDoc.getText(), title: pdfDoc.getTitle(), authors: pdfDoc.getAuthorsAsArray(), keywords: pdfDoc.getKeywordsAsArray())
+            let sciDoc = ScientificDocument(uri: url.path!, plainTextContent: pdfDoc.getText(), title: pdfDoc.getTitle(), authors: pdfDoc.getAuthorsAsArray(), keywords: pdfDoc.getKeywordsAsArray())
             myPdf?.sciDoc = sciDoc
             
             // Tell app singleton which screen size we are using

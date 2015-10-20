@@ -16,9 +16,6 @@ class PeyeDocument: NSDocument {
     /// Reference to underlying PDFDocument. Set after loading document by window controller.
     weak var pdfDoc: PDFDocument?
     
-    /// Initially is set to a hash of the url. After loading the document, it is set to the hash of the whole file plain text content (if any)
-    var sha1: String?
-    
     // MARK: - DiMe related
     
     // MARK: - NSDocument overrides
@@ -58,9 +55,8 @@ class PeyeDocument: NSDocument {
         }
     }
     
-    /// Always returns true, assumes we can only open allowed documents (PDFs) in the first place
+    /// Does nothing, assumes we can only open allowed documents (PDFs) in the first place
     override func readFromURL(url: NSURL, ofType typeName: String) throws {
-        AppSingleton.log.debug("Opening  \(url.description)")
-        sha1 = url.path!.sha1()
+        // AppSingleton.log.debug("Opening  \(url.description)")
     }
 }

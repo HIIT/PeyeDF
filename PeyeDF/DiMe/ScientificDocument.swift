@@ -16,16 +16,15 @@ class ScientificDocument: DocumentInformationElement {
     /// Creates this scientific document
     ///
     /// - parameter uri: Path on file or web
-    /// - parameter id: Id (hash of plaintext or url)
     /// - parameter plainTextContent: Contents of whole file
     /// - parameter title: Title of the PDF
     /// - parameter authors: List of authors for the document (if any)
     /// - parameter keywords: List of keywords for the document (if any)
-    init(uri: String, id: String, plainTextContent: String?, title: String?, authors: [Person]?, keywords: [String]?) {
+    init(uri: String, plainTextContent: String?, title: String?, authors: [Person]?, keywords: [String]?) {
         self.authors = authors
         self.keywords = keywords
         
-        super.init(uri: uri, id: id, plainTextContent: plainTextContent, title: title)
+        super.init(uri: uri, plainTextContent: plainTextContent, title: title)
         
         // dime-required
         theDictionary["@type"] = "ScientificDocument"

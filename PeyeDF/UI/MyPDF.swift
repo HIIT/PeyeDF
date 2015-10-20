@@ -721,7 +721,7 @@ class MyPDF: PDFView, ScreenToPageConverter {
                 readingRects.append(newRect)
             }
             
-            return ReadingEvent(multiPage: multiPage, visiblePageNumbers: visiblePageNums, visiblePageLabels: visiblePageLabels, pageRects: readingRects, isSummary: false, proportion: proportion, scaleFactor: self.scaleFactor(), plainTextContent: plainTextContent, infoElemId: sciDoc!.id)
+            return ReadingEvent(multiPage: multiPage, visiblePageNumbers: visiblePageNums, visiblePageLabels: visiblePageLabels, pageRects: readingRects, isSummary: false, proportion: proportion, scaleFactor: self.scaleFactor(), plainTextContent: plainTextContent, infoElemId: sciDoc!.getId())
         } else {
             return nil
         }
