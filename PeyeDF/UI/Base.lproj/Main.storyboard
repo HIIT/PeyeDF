@@ -1171,6 +1171,17 @@
                                     <animations/>
                                 </scroller>
                             </scrollView>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Cqs-98-b3g">
+                                <rect key="frame" x="20" y="20" width="32" height="25"/>
+                                <animations/>
+                                <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="NSInfo" imagePosition="overlaps" alignment="center" imageScaling="proportionallyDown" inset="2" id="RU0-ct-qz8">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="infoButtonPress:" target="Tob-nv-EUI" id="J9y-Xi-f7d"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="RIk-28-FIi" firstAttribute="leading" secondItem="NCt-Rx-KJJ" secondAttribute="leading" id="3vq-2R-VHm"/>
@@ -1188,7 +1199,9 @@
                             <constraint firstItem="yEM-H3-GmJ" firstAttribute="leading" secondItem="PIX-7T-EOz" secondAttribute="leading" constant="20" symbolic="YES" id="YRH-KS-mMz"/>
                             <constraint firstAttribute="trailing" secondItem="NEN-ou-gAo" secondAttribute="trailing" constant="20" symbolic="YES" id="aLu-4t-yOi"/>
                             <constraint firstItem="R2a-EL-IQ3" firstAttribute="top" secondItem="NEN-ou-gAo" secondAttribute="bottom" constant="10" symbolic="YES" id="cty-gI-wzS"/>
+                            <constraint firstItem="Cqs-98-b3g" firstAttribute="leading" secondItem="PIX-7T-EOz" secondAttribute="leading" constant="20" symbolic="YES" id="dVy-cp-Fnx"/>
                             <constraint firstItem="NCt-Rx-KJJ" firstAttribute="centerY" secondItem="yEM-H3-GmJ" secondAttribute="centerY" id="dY0-M8-AWz"/>
+                            <constraint firstAttribute="bottom" secondItem="Cqs-98-b3g" secondAttribute="bottom" constant="20" symbolic="YES" id="esS-f9-H6a"/>
                             <constraint firstItem="zc2-Vh-FQu" firstAttribute="top" secondItem="yEM-H3-GmJ" secondAttribute="bottom" multiplier="1.1" constant="8" symbolic="YES" id="eut-jz-IZ2"/>
                             <constraint firstItem="70D-xN-OKv" firstAttribute="top" secondItem="zc2-Vh-FQu" secondAttribute="top" id="hO2-Tc-ib2"/>
                             <constraint firstAttribute="trailing" secondItem="R2a-EL-IQ3" secondAttribute="trailing" constant="20" symbolic="YES" id="jDN-5X-I1x"/>
@@ -1772,6 +1785,7 @@
         <image name="NSAdvanced" width="32" height="32"/>
         <image name="NSGoLeftTemplate" width="9" height="12"/>
         <image name="NSGoRightTemplate" width="9" height="12"/>
+        <image name="NSInfo" width="32" height="32"/>
         <image name="NSStatusNone" width="16" height="16"/>
         <image name="Redo" width="64" height="64"/>
         <image name="TB_AnnotateD" width="64" height="64"/>

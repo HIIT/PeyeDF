@@ -13,6 +13,57 @@ extension PDFDocument {
     
     // MARK: - Getters
     
+    /// Returns all keywords in an array, useful for DiMe.
+    /// Keywords can be separated by ";" or ","
+    func getKeywordsAsArray() -> [String]? {
+        guard let keyws = getKeywords() else {
+            return nil
+        }
+        
+        var retVal: [String]?
+        if keyws.containsChar(";") {
+            retVal = keyws.split(";")
+        } else if keyws.containsChar(",") {
+            retVal = keyws.split(",")
+        } else {
+            retVal = [keyws]
+        }
+        if let retVal = retVal {
+            return retVal
+        } else {
+            return nil
+        }
+    }
+    
+    /// Returns all authors as an array of person, useful for DiMe.
+    /// Authors can be only separated by ";"
+    func getAuthorsAsArray() -> [Person]? {
+        guard let auths = getAuthor() else {
+            return nil
+        }
+        
+        var retVal = [Person]()
+        if auths.containsChar(";") {
+            if let splitStr = auths.split(";") {
+                for subStr in splitStr {
+                    if let newPerson = Person(fromString: subStr) {
+                        retVal.append(newPerson)
+                    }
+                }
+            }
+        } else {
+            if let newPerson = Person(fromString: auths) {
+                retVal.append(newPerson)
+            }
+        }
+        
+        if retVal.count > 0 {
+            return retVal
+        } else {
+            return nil
+        }
+    }
+    
     /// Returns a trimmed plain text of the data contained in the document, nil not present
     func getText() -> String? {
         

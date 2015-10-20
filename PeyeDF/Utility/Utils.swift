@@ -42,6 +42,48 @@ extension String {
         let hexBytes = digest.map { String(format: "%02hhx", $0) }
         return hexBytes.joinWithSeparator("")
     }
+    
+    /// Trims whitespace and newlines using foundation
+    func trimmed() -> String {
+        let nss: NSString = self
+        return nss.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+    }
+    
+    /// Checks if this string contains the given character
+    func containsChar(theChar: Character) -> Bool {
+        for c in self.characters {
+            if c == theChar {
+                return true
+            }
+        }
+        return false
+    }
+    
+    /// Splits the string, trimming whitespaces, between the given characters (note: slow for very long strings)
+    func split(theChar: Character) -> [String]? {
+        var outVal = [String]()
+        var remainingString = self
+        while remainingString.containsChar(theChar) {
+            var outString = ""
+            var nextChar = remainingString.removeAtIndex(remainingString.startIndex)
+            while nextChar != theChar {
+                outString.append(nextChar)
+                nextChar = remainingString.removeAtIndex(remainingString.startIndex)
+            }
+            if !outString.trimmed().isEmpty {
+                outVal.append(outString.trimmed())
+            }
+        }
+        if !remainingString.trimmed().isEmpty {
+            outVal.append(remainingString.trimmed())
+        }
+        if outVal.count > 0 {
+            return outVal
+        } else {
+            return nil
+        }
+    }
+    
 }
 
 extension NSSize {
@@ -65,6 +107,7 @@ extension NSSize {
         return self.height < maxHeight &&
                self.width < maxWidth
     }
+    
 }
 
 extension NSColor {

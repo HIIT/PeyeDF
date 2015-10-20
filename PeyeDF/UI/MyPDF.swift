@@ -73,7 +73,7 @@ class MyPDF: PDFView, ScreenToPageConverter {
     
     /// Stores the information element for the current document.
     /// Set by DocumentWindowController.loadDocument()
-    var infoElem: DocumentInformationElement?
+    var sciDoc: ScientificDocument?
     
     /// Stores all rects at which the user looked at (via screenToPage(_, true))
     var gazedRects = [PDFPage: [NSRect]]()
@@ -721,7 +721,7 @@ class MyPDF: PDFView, ScreenToPageConverter {
                 readingRects.append(newRect)
             }
             
-            return ReadingEvent(multiPage: multiPage, visiblePageNumbers: visiblePageNums, visiblePageLabels: visiblePageLabels, pageRects: readingRects, isSummary: false, proportion: proportion, scaleFactor: self.scaleFactor(), plainTextContent: plainTextContent, infoElemId: infoElem!.id)
+            return ReadingEvent(multiPage: multiPage, visiblePageNumbers: visiblePageNums, visiblePageLabels: visiblePageLabels, pageRects: readingRects, isSummary: false, proportion: proportion, scaleFactor: self.scaleFactor(), plainTextContent: plainTextContent, infoElemId: sciDoc!.id)
         } else {
             return nil
         }

@@ -153,8 +153,8 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     /// Sends a desktop event directly (which includes doc metadata) for the currently displayed pdf
     func sendDeskEvent() {
-        let infoElem = myPdf!.infoElem!
-        let deskEvent = DesktopEvent(infoElem: infoElem)
+        let sciDoc = myPdf!.sciDoc!
+        let deskEvent = DesktopEvent(sciDoc: sciDoc)
         HistoryManager.sharedManager.sendToDiMe(deskEvent)
     }
     
@@ -266,8 +266,8 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             }
             
             // Associate PDF view to info element
-            let infoElem = DocumentInformationElement(uri: url.path!, id: peyeDoc.sha1!, plainTextContent: pdfDoc.getText(), title: pdfDoc.getTitle())
-            myPdf?.infoElem = infoElem
+            let sciDoc = ScientificDocument(uri: url.path!, id: peyeDoc.sha1!, plainTextContent: pdfDoc.getText(), title: pdfDoc.getTitle(), authors: pdfDoc.getAuthorsAsArray(), keywords: pdfDoc.getKeywordsAsArray())
+            myPdf?.sciDoc = sciDoc
             
             // Tell app singleton which screen size we are using
             if let screen = window?.screen {

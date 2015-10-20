@@ -48,8 +48,8 @@ class ReadingEvent: Event {
         
         
         var infoElemDict = [String: AnyObject]()
-        infoElemDict["@type"] = "Document"
-        infoElemDict["type"] = "http://www.hiit.fi/ontologies/dime/#Document"
+        infoElemDict["@type"] = "ScientificDocument"
+        infoElemDict["type"] = "http://www.hiit.fi/ontologies/dime/#ScientificDocument"
         infoElemDict["id"] = infoElemId
         
         theDictionary["targettedResource"] = infoElemDict

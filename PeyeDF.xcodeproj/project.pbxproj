@@ -22,6 +22,8 @@
 		A9260F571BA4CD10005B1556 /* MyOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9260F561BA4CD10005B1556 /* MyOverlay.swift */; };
 		A935F0C61B8CC5FD00587C99 /* DesktopEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A935F0C51B8CC5FD00587C99 /* DesktopEvent.swift */; };
 		A93C53DC1B8DCEFB00179C72 /* HistoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93C53DB1B8DCEFB00179C72 /* HistoryManager.swift */; };
+		A95795071BD668E40083525C /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95795061BD668E40083525C /* Person.swift */; settings = {ASSET_TAGS = (); }; };
+		A957950D1BD66A600083525C /* ScientificDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = A957950C1BD66A600083525C /* ScientificDocument.swift */; settings = {ASSET_TAGS = (); }; };
 		A95A8CEA1B9440600093119E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A91CB9511B332EDB00671868 /* Main.storyboard */; };
 		A95A8CF21B94407D0093119E /* DebugController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95A8CEB1B94407D0093119E /* DebugController.swift */; };
 		A95A8CF31B94407D0093119E /* DocumentSplitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95A8CEC1B94407D0093119E /* DocumentSplitController.swift */; };
@@ -136,6 +138,8 @@
 		A9260F561BA4CD10005B1556 /* MyOverlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyOverlay.swift; sourceTree = "<group>"; };
 		A935F0C51B8CC5FD00587C99 /* DesktopEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DesktopEvent.swift; sourceTree = "<group>"; };
 		A93C53DB1B8DCEFB00179C72 /* HistoryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryManager.swift; sourceTree = "<group>"; };
+		A95795061BD668E40083525C /* Person.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
+		A957950C1BD66A600083525C /* ScientificDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScientificDocument.swift; sourceTree = "<group>"; };
 		A95A8CEB1B94407D0093119E /* DebugController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugController.swift; sourceTree = "<group>"; };
 		A95A8CEC1B94407D0093119E /* DocumentSplitController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentSplitController.swift; sourceTree = "<group>"; };
 		A95A8CED1B94407D0093119E /* DocumentWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentWindowController.swift; sourceTree = "<group>"; };
@@ -317,9 +321,11 @@
 			isa = PBXGroup;
 			children = (
 				A912D8A21B8B5C3A006F0657 /* DocumentInformationElement.swift */,
+				A957950C1BD66A600083525C /* ScientificDocument.swift */,
 				A9E771101B96091F0005A4B3 /* ReadingRect.swift */,
 				A9D833AC1BA868520046B21F /* PageEyeData.swift */,
 				A9038F751B8F5EE500A7D183 /* Event.swift */,
+				A95795061BD668E40083525C /* Person.swift */,
 				A912D8A31B8B5C3A006F0657 /* ReadingEvent.swift */,
 				A935F0C51B8CC5FD00587C99 /* DesktopEvent.swift */,
 				A9038F7A1B8F634200A7D183 /* DiMeProtocols.swift */,
@@ -485,6 +491,7 @@
 				A91CB9721B332FB700671868 /* PeyeDocument.swift in Sources */,
 				A95A8CF51B94407D0093119E /* MyPDF.swift in Sources */,
 				A9FE38A81B98497400680F31 /* GeneralSettingsController.swift in Sources */,
+				A95795071BD668E40083525C /* Person.swift in Sources */,
 				A95A8CF71B94407D0093119E /* DiMePreferencesViewController.swift in Sources */,
 				A9A2DFC61BC427BE006C07FD /* MetadataWindowController.swift in Sources */,
 				A95A8CF61B94407D0093119E /* PDFSideController.swift in Sources */,
@@ -500,6 +507,7 @@
 				A918F8101BC2D71500345448 /* eyeBox.swift in Sources */,
 				A9677F921BA806F700DC48CC /* MidasManager.swift in Sources */,
 				A9038F7B1B8F634200A7D183 /* DiMeProtocols.swift in Sources */,
+				A957950D1BD66A600083525C /* ScientificDocument.swift in Sources */,
 				A95A8CF31B94407D0093119E /* DocumentSplitController.swift in Sources */,
 				A9038F761B8F5EE500A7D183 /* Event.swift in Sources */,
 				A913A9201BA1A93B008BA10D /* SearchPanelController.swift in Sources */,

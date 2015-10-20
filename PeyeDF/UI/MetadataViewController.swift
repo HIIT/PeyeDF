@@ -95,4 +95,14 @@ class MetadataViewController: NSViewController {
         }
     }
     
+    /// Called when press on 'i' button
+    @IBAction func infoButtonPress(sender: AnyObject) {
+        let myInfo = NSAlert()
+        myInfo.messageText = "· You can use ';' characters to separate authors\n" +
+                             "· You can use ';' or ',' characters to separate keywords\n" +
+                             "· Authors should be either in the format 'first_name last_name' or 'last_name, first_name' (middle names are allowed)\n" +
+                             "· Press enter after changing a field to confirm changes"
+        myInfo.icon = NSImage(named: "NSInfo")
+        myInfo.beginSheetModalForWindow(self.view.window!, completionHandler: nil)
+    }
 }

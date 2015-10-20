@@ -11,9 +11,9 @@ import Foundation
 /// Used to send the first-time file opening event
 class DesktopEvent: Event {
     
-    init(infoElem: DocumentInformationElement) {
+    init(sciDoc: ScientificDocument) {
         super.init()
-        theDictionary["targettedResource"] = infoElem.getDict()
+        theDictionary["targettedResource"] = sciDoc.getDict()
         
         // dime-required
         theDictionary["@type"] = "DesktopEvent"
