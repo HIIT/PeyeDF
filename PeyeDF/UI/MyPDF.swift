@@ -287,7 +287,7 @@ class MyPDF: PDFView, ScreenToPageConverter {
             return nil
         }
         
-        // The new rectangle for this mark
+        // The new rectangle for this point
         return pdfSel.boundsForPage(activePage)
     }
     
@@ -566,6 +566,46 @@ class MyPDF: PDFView, ScreenToPageConverter {
     
     // MARK: - General accessor methods
     
+    /// Converts the current viewport to a reading event.
+    ///
+    /// - returns: The reading event for the current status, or nil if nothing is actually visible
+    func getViewportStatus() -> ReadingEvent? {
+        if self.visiblePages() != nil {
+            let multiPage: Bool = (self.visiblePages().count) > 1
+            let visiblePageLabels: [String] = getVisiblePageLabels()
+            let visiblePageNums: [Int] = getVisiblePageNums()
+            let pageRects: [NSRect] = getVisibleRects()
+            var plainTextContent: NSString = ""
+            
+            if let textContent = getVisibleString() {
+                plainTextContent = textContent
+            }
+            
+            // TODO: remove this debugging check
+            if visiblePageNums.count != pageRects.count {
+                fatalError("Number of visible pages and visible rectangles does not match")
+            }
+            
+            var readingRects = [ReadingRect]()
+            var vpi = 0
+            for rect in pageRects {
+                let visiblePageNum = visiblePageNums[vpi]
+                let newRect = ReadingRect(pageIndex: visiblePageNum, rect: rect, readingClass: ReadingClass.Viewport, classSource: ClassSource.Viewport)
+                readingRects.append(newRect)
+                vpi++
+            }
+            
+            return ReadingEvent(multiPage: multiPage, pageNumbers: visiblePageNums, pageLabels: visiblePageLabels, pageRects: readingRects, isSummary: false, scaleFactor: self.scaleFactor(), plainTextContent: plainTextContent, infoElemId: sciDoc!.getId())
+        } else {
+            return nil
+        }
+    }
+    
+    /// Returns all rectangles with their corresponding class, marked by the user (and basic eye tracking)
+    func getUserRectStatus() -> ReadingEvent {
+        fatalError("not implemented")
+    }
+    
     /// Get the rectangle of the pdf view, in screen coordinates
     func getRectOfViewOnScreen() -> NSRect {
         // get a rectangle representing the pdfview frame, relative to its superview and convert to the window's view
@@ -596,6 +636,7 @@ class MyPDF: PDFView, ScreenToPageConverter {
     /// Get proportion of document currently being seen, as a pair of numbers from
     /// 0 to 1 (e.g. 0, 0.25 means that we are observing the first quarter of a document, or whole page 1 out of 4).
     /// Note: this is biased in excess (for example if we are seeing two pages side-by-side it returns the smallest min and the highest max possible).
+    @available(*, unavailable, message="Proportions are no longer used, everything should be done using rects.")
     func getProportion() -> DiMeRange {
         let clipView = self.subviews[0].subviews[0] as! NSClipView  // forced assumption on the clipview tree
         let yMin = clipView.visibleRect.origin.y
@@ -696,34 +737,6 @@ class MyPDF: PDFView, ScreenToPageConverter {
             }
             
             self.setCurrentSelection(generatedSelection, animate: true)
-        }
-    }
-    
-    /// Converts the current viewport to a reading event.
-    ///
-    /// - returns: The reading event for the current status, or nil if nothing is actually visible
-    func getViewportStatus() -> ReadingEvent? {
-        if self.visiblePages() != nil {
-            let multiPage: Bool = (self.visiblePages().count) > 1
-            let visiblePageLabels: [String] = getVisiblePageLabels()
-            let visiblePageNums: [Int] = getVisiblePageNums()
-            let pageRects: [NSRect] = getVisibleRects()
-            let proportion: DiMeRange = getProportion()
-            var plainTextContent: NSString = ""
-            
-            if let textContent = getVisibleString() {
-                plainTextContent = textContent
-            }
-            
-            var readingRects = [ReadingRect]()
-            for rect in pageRects {
-                let newRect = ReadingRect(rect: rect, readingClass: ReadingClass.Viewport, classSource: ClassSource.Viewport)
-                readingRects.append(newRect)
-            }
-            
-            return ReadingEvent(multiPage: multiPage, visiblePageNumbers: visiblePageNums, visiblePageLabels: visiblePageLabels, pageRects: readingRects, isSummary: false, proportion: proportion, scaleFactor: self.scaleFactor(), plainTextContent: plainTextContent, infoElemId: sciDoc!.getId())
-        } else {
-            return nil
         }
     }
     

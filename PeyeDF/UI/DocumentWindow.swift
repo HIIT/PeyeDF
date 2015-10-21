@@ -15,7 +15,7 @@ class DocumentWindow: NSWindow {
     /// how much of the whole screen should be covered, at most,
     /// so that eye tracker accuracy is maximised (so that
     /// window does not cover corners or margins).
-    static let kScreenCoverProportion: CGFloat = 4/5
+    static let kScreenCoverProportion: CGFloat = 6/7
     
     /// returns the rectangle in which the window should be contrained
     static func getConstrainingRect(forScreen screen: NSScreen) -> NSRect {

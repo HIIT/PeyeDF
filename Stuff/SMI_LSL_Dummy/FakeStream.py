@@ -172,7 +172,9 @@ command = ''
 while not command == 'q':
     command = raw_input('q = quit, l = send zeroes, f = send normal events: ')
     if command=='l':
-        print('Sending zeroes in raw stream')
+        print('Sending zeroes in raw stream in 5 seconds...')
+        time.sleep(5)
+        print('Sending zeroes...')
         fake_raws = [zero_raw, zero_raw, zero_raw, zero_raw]
     elif command=='f':
         print('Sending "normal" raw stream')

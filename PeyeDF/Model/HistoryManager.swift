@@ -81,7 +81,14 @@ class HistoryManager: FixationDataDelegate {
     func entry(documentWindow: DocumentWindowController) {
         if let window = documentWindow.window {
             if window.mainWindow {
-                preparation(documentWindow)
+                // if we are tracking eyes (using midas), make sure eyes are available before starting
+                if MidasManager.sharedInstance.midasAvailable {
+                    if !MidasManager.sharedInstance.eyesLost {
+                        preparation(documentWindow)
+                    }
+                } else {
+                    preparation(documentWindow)
+                }
             }
         }
     }
@@ -152,7 +159,7 @@ class HistoryManager: FixationDataDelegate {
                     self.dimeConnectState(false)
                 } else {
                     AppSingleton.log.debug("Data pushed to DiMe")
-                    print(response.value!)  // to see what dime replied
+                    //print(response.value!)  // to see what dime replied
                 }
             }
             

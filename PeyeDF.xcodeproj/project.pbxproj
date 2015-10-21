@@ -220,10 +220,10 @@
 		A9000C5C1B358B8E00E59C7B /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				A9CDB2E81B3AC49800347398 /* PeyeConstants.swift */,
 				A95DF5641BC511A400EA1157 /* PDFDocumentExtensions.swift */,
 				A95FE97F1B8B3C1D0010E813 /* SwiftyJSON.swift */,
 				A9DFF1711B7E3D1A008CFF0C /* XCGLogger.swift */,
-				A9CDB2E81B3AC49800347398 /* PeyeConstants.swift */,
 				A981F69C1B42FC4C00E7E9BD /* Utils.swift */,
 				A91CB9691B332FB700671868 /* EyeFormulas.swift */,
 				A97F7B951B8CB32700013E26 /* PeyeDF-Bridging-Header.h */,

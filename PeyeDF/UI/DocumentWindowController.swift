@@ -25,23 +25,6 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     var clickDelegate: ClickRecognizerDelegate?
     
-    // MARK: - Window delegate
-    
-    /// Ensures that the document window never gets bigger than the maximum
-    /// allowed size when midas is active and stays within its boundaries.
-    func windowDidResize(notification: NSNotification) {
-        // only constrain if midas is active
-        if MidasManager.sharedInstance.midasAvailable {
-            if let window = notification.object as? NSWindow, screen = window.screen {
-                let shrankRect = DocumentWindow.getConstrainingRect(forScreen: screen)
-                let intersectedRect = shrankRect.intersect(window.frame)
-                if intersectedRect != window.frame {
-                    window.setFrame(intersectedRect, display: true)
-                }
-            }
-        }
-    }
-    
     // MARK: - Searching
     
     /// Perform search using default methods.
@@ -150,6 +133,11 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     }
     
     // MARK: - DiMe communication
+    
+    /// Sends all rectangles (gazed, interesting, critical, etc.) to DiMe
+    func sendUserRects() {
+        let sciDoc = myPdf!.sciDoc!
+    }
     
     /// Sends a desktop event directly (which includes doc metadata) for the currently displayed pdf
     func sendDeskEvent() {
@@ -298,10 +286,13 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         // Get notifications from managed window
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowMoved:", name: NSWindowDidMoveNotification, object: self.window)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowWillSwitchAway:", name: NSWindowDidResignMainNotification, object: self.window)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowWantsMain:", name: NSWindowDidBecomeMainNotification, object: self.window)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowWantsClose:", name: NSWindowWillCloseNotification, object: self.window)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowWillSwitchAway:", name: NSWindowDidResignKeyNotification, object: self.window)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowWantsMain:", name: NSWindowDidBecomeKeyNotification, object: self.window)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowOcclusionChange:", name: NSWindowDidChangeOcclusionStateNotification, object: self.window)
+        
+        // Get notifications from midas manager
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "eyeStateCallback:", name: PeyeConstants.eyesAvailabilityNotification, object: MidasManager.sharedInstance)
     }
     
     // MARK: - Unloading
@@ -315,15 +306,17 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         NSNotificationCenter.defaultCenter().removeObserver(self, name: PDFViewScaleChangedNotification, object: self.myPdf!)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSViewFrameDidChangeNotification, object: self.myPdf!)
         // Note: forced downcast, etc.
-        NSNotificationCenter.defaultCenter().removeObserver(self, name:             NSViewBoundsDidChangeNotification, object: self.myPdf!.subviews[0].subviews[0] as! NSClipView)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSViewBoundsDidChangeNotification, object: self.myPdf!.subviews[0].subviews[0] as! NSClipView)
         
         // Remove notifications from managed window
         
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowDidMoveNotification, object: self.window)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowDidResignMainNotification, object: self.window)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowDidBecomeMainNotification, object: self.window)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowWillCloseNotification, object: self.window)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowDidResignKeyNotification, object: self.window)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowDidBecomeKeyNotification, object: self.window)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowDidChangeOcclusionStateNotification, object: self.window)
+        
+        // Remove notifications from midas manager
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: PeyeConstants.eyesAvailabilityNotification, object: MidasManager.sharedInstance)
     }
     
     // MARK: - Notification callbacks from managed pdf view
@@ -373,18 +366,56 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.occlusionChangeNotification, object: self.window)
     }
     
-    /// The managed window will stop being main window
+    /// The managed window will stop being key window
     @objc private func windowWillSwitchAway(notification: NSNotification) {
         // Tell the history manager to "stop recording"
         HistoryManager.sharedManager.exit(self)
     }
+   
+    // MARK: - Window delegate
+    // DocumentWindowController is the delegate of DocumentWindow
     
-    /// This window is going to close, release all references (importantly, remove notification observers)
-    @objc private func windowWantsClose(notification: NSNotification) {
+    /// This window is going to close, send exit event and send all paragraph data to HistoryManager as summary
+    func windowWillClose(notification: NSNotification) {
         HistoryManager.sharedManager.exit(self)  // TODO: send all outgoing interesting rects
         unSetObservers()
         debugController?.unSetMonitors(myPdf!, docWindow: self.window!)
         debugController?.view.window?.close()
         metadataWindowController?.close()
+    }
+    
+    
+    /// Ensures that the document window never gets bigger than the maximum
+    /// allowed size when midas is active and stays within its boundaries.
+    func windowDidResize(notification: NSNotification) {
+        // only constrain if midas is active
+        if MidasManager.sharedInstance.midasAvailable {
+            if let window = notification.object as? NSWindow, screen = window.screen {
+                let shrankRect = DocumentWindow.getConstrainingRect(forScreen: screen)
+                let intersectedRect = shrankRect.intersect(window.frame)
+                if intersectedRect != window.frame {
+                    window.setFrame(intersectedRect, display: true)
+                }
+            }
+        }
+    }
+    
+    // MARK: - Notification callbacks from MidasManager
+    
+    /// Reacts to eye being lost / found. If status changes when this is
+    /// key window, send exit / enter event as necessary
+    @objc private func eyeStateCallback(notification: NSNotification) {
+        if self.window!.keyWindow {
+            let uInfo = notification.userInfo as! [String: AnyObject]
+            let avail = uInfo["available"] as! Bool
+            if avail {
+                HistoryManager.sharedManager.entry(self)
+                // TODO: remove debug
+                Swift.print(self.window!.title + " gained gaze")
+            } else {
+                HistoryManager.sharedManager.exit(self)
+                Swift.print(self.window!.title + " lost gaze")
+            }
+        }
     }
 }

@@ -28,7 +28,7 @@
             <objects>
                 <splitViewController id="bkN-72-0hO" userLabel="RefinderMainSplit" sceneMemberID="viewController">
                     <splitViewItems>
-                        <splitViewItem canCollapse="YES" holdingPriority="260" behavior="sidebar" id="MFS-DU-3Gy"/>
+                        <splitViewItem id="MFS-DU-3Gy"/>
                         <splitViewItem id="xLW-Nw-fBM"/>
                     </splitViewItems>
                     <splitView key="splitView" dividerStyle="thin" vertical="YES" id="KSX-3A-Rzy">
@@ -60,7 +60,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="191" viewBased="YES" id="WGv-dD-r3A">
-                                            <rect key="frame" x="0.0" y="0.0" width="347" height="573"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="347" height="0.0"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <animations/>
                                             <size key="intercellSpacing" width="3" height="2"/>
@@ -81,11 +81,11 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView id="zzU-uF-wqW" customClass="HistoryTableCell" customModule="PeyeDF" customModuleProvider="target">
-                                                            <rect key="frame" x="1" y="1" width="344" height="191"/>
+                                                            <rect key="frame" x="1" y="1" width="344" height="162"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KSp-Fg-dFn">
-                                                                    <rect key="frame" x="1" y="171" width="342" height="17"/>
+                                                                    <rect key="frame" x="1" y="142" width="342" height="17"/>
                                                                     <animations/>
                                                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="&lt;&lt;Filename.pdf&gt;&gt;" id="zWR-rc-Cy9">
                                                                         <font key="font" metaFont="systemBold"/>
@@ -94,7 +94,7 @@
                                                                     </textFieldCell>
                                                                 </textField>
                                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wKU-WM-7j0">
-                                                                    <rect key="frame" x="1" y="146" width="342" height="17"/>
+                                                                    <rect key="frame" x="1" y="117" width="342" height="17"/>
                                                                     <animations/>
                                                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="&lt;&lt;Authors&gt;&gt;" id="R99-SJ-ZOB">
                                                                         <font key="font" metaFont="system"/>
@@ -102,10 +102,10 @@
                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
                                                                 </textField>
-                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vDe-Po-ZzU">
-                                                                    <rect key="frame" x="1" y="28" width="168" height="110"/>
+                                                                <textField autoresizesSubviews="NO" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vDe-Po-ZzU">
+                                                                    <rect key="frame" x="1" y="28" width="168" height="81"/>
                                                                     <animations/>
-                                                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="&lt;&lt; title title title title title title title title title title title title title title title title title title &gt;&gt;" id="DwF-ho-gSE">
+                                                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="&lt;&lt; title title title title title title title title &gt;&gt;" id="DwF-ho-gSE">
                                                                         <font key="font" size="13" name="HelveticaNeue-LightItalic"/>
                                                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -121,23 +121,23 @@
                                                                     </textFieldCell>
                                                                 </textField>
                                                                 <customView translatesAutoresizingMaskIntoConstraints="NO" id="xHO-2n-oO8">
-                                                                    <rect key="frame" x="178" y="28" width="163" height="110"/>
+                                                                    <rect key="frame" x="178" y="28" width="163" height="81"/>
                                                                     <subviews>
                                                                         <progressIndicator wantsLayer="YES" fixedFrame="YES" maxValue="100" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="6jm-Xw-dux">
-                                                                            <rect key="frame" x="0.0" y="71" width="163" height="20"/>
+                                                                            <rect key="frame" x="0.0" y="51" width="163" height="20"/>
                                                                             <animations/>
                                                                         </progressIndicator>
                                                                         <progressIndicator wantsLayer="YES" fixedFrame="YES" maxValue="100" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="Su6-N8-0rh">
-                                                                            <rect key="frame" x="0.0" y="45" width="163" height="20"/>
+                                                                            <rect key="frame" x="0.0" y="30" width="163" height="20"/>
                                                                             <animations/>
                                                                         </progressIndicator>
                                                                         <progressIndicator wantsLayer="YES" fixedFrame="YES" maxValue="100" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="rLX-iJ-uhT">
-                                                                            <rect key="frame" x="0.0" y="19" width="163" height="20"/>
+                                                                            <rect key="frame" x="0.0" y="9" width="163" height="20"/>
                                                                             <animations/>
                                                                         </progressIndicator>
                                                                     </subviews>
                                                                     <constraints>
-                                                                        <constraint firstAttribute="height" constant="110" id="ixd-kx-iFG"/>
+                                                                        <constraint firstAttribute="height" constant="81" id="ixd-kx-iFG"/>
                                                                     </constraints>
                                                                     <animations/>
                                                                 </customView>
@@ -172,7 +172,7 @@
                                 </clipView>
                                 <animations/>
                                 <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="fez-Vz-4al">
-                                    <rect key="frame" x="1" y="117.99989628791809" width="237.99977111816406" height="16"/>
+                                    <rect key="frame" x="1" y="558" width="347" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <animations/>
                                 </scroller>
@@ -204,7 +204,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="1076" height="575"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <pdfView autoresizesSubviews="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pp2-ez-teK">
+                            <pdfView autoresizesSubviews="NO" wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Pp2-ez-teK">
                                 <rect key="frame" x="20" y="20" width="200" height="535"/>
                                 <constraints>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="400" id="0MM-Vw-NO0"/>
@@ -212,7 +212,7 @@
                                 </constraints>
                                 <animations/>
                             </pdfView>
-                            <pdfView autoresizesSubviews="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qs2-8R-88d">
+                            <pdfView autoresizesSubviews="NO" wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Qs2-8R-88d">
                                 <rect key="frame" x="228" y="20" width="828" height="535"/>
                                 <constraints>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="400" id="jen-Sz-bd1"/>
