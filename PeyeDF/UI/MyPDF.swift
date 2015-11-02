@@ -274,8 +274,8 @@ class MyPDF: PDFView, ScreenToPageConverter {
             autoAnnotate()
         
             // show this change
-            let annotRect = annotationRectForMark(lastTuple.lastRect, page: lastTuple.lastPage)
-            setNeedsDisplayInRect(convertRect(annotRect, fromPage: lastTuple.lastPage))
+            let annotRect = annotationRectForMark(lastTuple.lastRect)
+            setNeedsDisplayInRect(convertRect(annotRect, fromPage: self.document().pageAtIndex( lastTuple.lastPage)))
             
             // create an undo operation for this operation
             let lastR = previousState.getLastRect()!
@@ -311,10 +311,13 @@ class MyPDF: PDFView, ScreenToPageConverter {
     /// should be marked as somehow important
     ///
     /// - returns: A triplet containing the rectangle that was created, on which page it was created and what importance
-    func mark(locationInView: NSPoint, importance: ReadingClass) -> (newRect: NSRect, onPage: PDFPage, importance: ReadingClass)? {
+    func mark(locationInView: NSPoint, importance: ReadingClass) -> (newRect: NSRect, onPage: Int, importance: ReadingClass)? {
         
         // Page we're on.
         let activePage = self.pageForPoint(locationInView, nearest: true)
+        
+        // Index for current page
+        let pageIndex = self.document().indexForPage(activePage)
         
         // Get location in "page space".
         let pagePoint = self.convertPoint(locationInView, toPage: activePage)
@@ -329,9 +332,9 @@ class MyPDF: PDFView, ScreenToPageConverter {
             exception.raise()
         }
         
-        manualMarks.addRect(markRect, ofClass: importance, forPage: activePage)
+        manualMarks.addRect(markRect, ofClass: importance, forPage: pageIndex)
         
-        return (markRect, activePage, importance)
+        return (markRect, pageIndex, importance)
     }
     
     /// Remove all annotations which are a line and match the annotations colours
@@ -362,16 +365,18 @@ class MyPDF: PDFView, ScreenToPageConverter {
         
         for page in manualMarks.get(forClass).keys {
             for rect in manualMarks.get(forClass)[page]! {
-                let newRect = annotationRectForMark(rect, page: page)
+                let newRect = annotationRectForMark(rect)
                 let annotation = PDFAnnotationSquare(bounds: newRect)
                 annotation.setColor(colour)
                 annotation.setBorder(myBord)
                 
-                page.addAnnotation(annotation)
+                let pdfPage = self.document().pageAtIndex(page)
+                
+                pdfPage.addAnnotation(annotation)
                 
                 // tell the view to immediately refresh itself in an area which includes the
                 // line's "border"
-                setNeedsDisplayInRect(convertRect(newRect, fromPage: page))
+                setNeedsDisplayInRect(convertRect(newRect, fromPage: pdfPage))
             }
         }
     }
@@ -396,9 +401,8 @@ class MyPDF: PDFView, ScreenToPageConverter {
     /// Returns a rectangle corresponding to the annotation for a rectangle corresponding to the mark, using all appropriate constants / preferences.
     ///
     /// - parameter markRect: The rectangle corresponding to the mark
-    /// - parameter page: The page on which the mark resides, and on which the annotation will be created
     /// - returns: A rectangle representing the annotation
-    func annotationRectForMark(markRect: NSRect, page: PDFPage) -> NSRect {
+    func annotationRectForMark(markRect: NSRect) -> NSRect {
         let lineThickness = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefAnnotationLineThickness) as! CGFloat
         let newRect_x = markRect.origin.x - PeyeConstants.annotationLineDistance
         let newRect_y = markRect.origin.y

@@ -265,7 +265,7 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
             let selRect = foundSelections[row].boundsForPage(page)
             let selPoint = NSPoint(x: selRect.origin.x + selRect.width / 2, y: selRect.origin.y + selRect.height / 2)
             let lineSel = page.selectionForLineAtPoint(selPoint)
-            let lineString: NSString = lineSel.string()
+            let lineString: NSString = lineSel.string().trimmed()
             
             // make found result bold
             let rangeOfQuery = lineString.rangeOfString(searchString, options: NSStringCompareOptions.CaseInsensitiveSearch)

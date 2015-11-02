@@ -9,15 +9,14 @@
 // This source file contains classes helpful in identifying paragraphs (interesting / etc) in PDF documents
 
 import Foundation
-import Quartz
 
 /// Represents all markings in a given PDF Document. Essentially, it uses PDFPages to index all rectangles (paragraphs) of a given importance
 struct PDFMarkings {
     
     /// All rectangles (markings) for the given document.
     /// They are a dictionary of dictionaries, in which a reading classes indexes a dictionary.
-    /// The second dictionary has a page indexing all rects on the given page
-    private var allRects = [ReadingClass: [PDFPage: [NSRect]]]()
+    /// The second dictionary has a page indexing all rects on the given page (as an index from 0)
+    private var allRects = [ReadingClass: [Int: [NSRect]]]()
     
     /// What is the source of this group of markings
     var source: ClassSource
@@ -28,20 +27,20 @@ struct PDFMarkings {
         if source == .Click {
             // manually entered markings can only have these three classes (read is even for debug)
             for rc in [ReadingClass.Read, ReadingClass.Interesting, ReadingClass.Critical] {
-                allRects[rc] = [PDFPage: [NSRect]]()
+                allRects[rc] = [Int: [NSRect]]()
             }
         } else if source == .SMI {
             // midas / smi eye tracking is only related to floating rectangles when initialized
-            allRects[ReadingClass.Paragraph_floating] = [PDFPage: [NSRect]]()
+            allRects[ReadingClass.Paragraph_floating] = [Int: [NSRect]]()
         } else {
             for rc in [ReadingClass.Paragraph_floating, ReadingClass.Paragraph_united, ReadingClass.Read, ReadingClass.Interesting, ReadingClass.Critical] {
-                allRects[rc] = [PDFPage: [NSRect]]()
+                allRects[rc] = [Int: [NSRect]]()
             }
         }
     }
     
     /// Add a rect of the given class to the given page
-    mutating func addRect(rect: NSRect, ofClass: ReadingClass, forPage: PDFPage) {
+    mutating func addRect(rect: NSRect, ofClass: ReadingClass, forPage: Int) {
         if allRects[ofClass]![forPage] == nil {
             allRects[ofClass]![forPage] = [NSRect]()
         }
@@ -49,12 +48,12 @@ struct PDFMarkings {
     }
     
     /// Returns all rectangles for a given class
-    func get(theClass: ReadingClass) -> [PDFPage: [NSRect]] {
+    func get(theClass: ReadingClass) -> [Int: [NSRect]] {
         return allRects[theClass]!
     }
     
     /// Sets rects of a given class to the given dictionary
-    mutating func set(theClass: ReadingClass, _ rects: [PDFPage: [NSRect]]) {
+    mutating func set(theClass: ReadingClass, _ rects: [Int: [NSRect]]) {
         allRects[theClass] = rects
     }
     
@@ -158,7 +157,7 @@ class PDFMarkingsState: NSObject {
     /// All rectangles, prior to addition / deletion
     var rectState: PDFMarkings
     /// The page on which the last modification was made
-    private var lastPage: PDFPage?
+    private var lastPage: Int?
     /// The rectangle on which the last modification was made
     private var lastRect: NSRect?
     
@@ -167,13 +166,13 @@ class PDFMarkingsState: NSObject {
     }
     
     /// Sets the last rectangle (and on which page) that was added / removed
-    func setLastRect(lastRect: NSRect, lastPage: PDFPage) {
+    func setLastRect(lastRect: NSRect, lastPage: Int) {
         self.lastRect = lastRect
         self.lastPage = lastPage
     }
     
     /// Returns the last rectangle (if it exists). In the current implementation, this should never return nil.
-    func getLastRect() -> (lastRect: NSRect, lastPage: PDFPage)? {
+    func getLastRect() -> (lastRect: NSRect, lastPage: Int)? {
         if let _ = self.lastPage {
             return (self.lastRect!, self.lastPage!)
         } else {
