@@ -275,7 +275,7 @@ class MyPDF: PDFView, ScreenToPageConverter {
         
             // show this change
             let annotRect = annotationRectForMark(lastTuple.lastRect, page: lastTuple.lastPage)
-            refreshForAnnotation(annotRect, page: lastTuple.lastPage)
+            setNeedsDisplayInRect(convertRect(annotRect, fromPage: lastTuple.lastPage))
             
             // create an undo operation for this operation
             let lastR = previousState.getLastRect()!
@@ -341,7 +341,7 @@ class MyPDF: PDFView, ScreenToPageConverter {
             let page = document()!.pageAtIndex(i)
             for annColour in PeyeConstants.annotationAllColours {
                 for annotation in page.annotations() {
-                    if let annotation = annotation as? PDFAnnotationLine {
+                    if let annotation = annotation as? PDFAnnotationSquare {
                         if annotation.color().practicallyEqual(annColour) {
                             page.removeAnnotation(annotation)
                         }
@@ -363,7 +363,7 @@ class MyPDF: PDFView, ScreenToPageConverter {
         for page in manualMarks.get(forClass).keys {
             for rect in manualMarks.get(forClass)[page]! {
                 let newRect = annotationRectForMark(rect, page: page)
-                let annotation = PDFAnnotationLine(bounds: newRect)
+                let annotation = PDFAnnotationSquare(bounds: newRect)
                 annotation.setColor(colour)
                 annotation.setBorder(myBord)
                 
@@ -371,7 +371,7 @@ class MyPDF: PDFView, ScreenToPageConverter {
                 
                 // tell the view to immediately refresh itself in an area which includes the
                 // line's "border"
-                refreshForAnnotation(newRect, page: page)
+                setNeedsDisplayInRect(convertRect(newRect, fromPage: page))
             }
         }
     }
@@ -393,30 +393,17 @@ class MyPDF: PDFView, ScreenToPageConverter {
         NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.autoAnnotationComplete, object: self)
     }
     
-    /// Refreshes the annotation for the given rectangle, which was added / deleted, taking into consideration annotation's line thickness
-    ///
-    /// - parameter annotationRect: The rectangle covering the actual annotation in view coordinates
-    /// - parameter page: The page on which the annotation resides
-    func refreshForAnnotation(annotationRect: NSRect, page: PDFPage) {
-        // tell the view to immediately refresh itself in an area which includes the
-        // line's "border"
-        let lineThickness: CGFloat = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefAnnotationLineThickness) as! CGFloat
-        var rectIncludingThickness = annotationRect
-        rectIncludingThickness.origin.x -= lineThickness / 2
-        rectIncludingThickness.size.width = lineThickness
-        setNeedsDisplayInRect(convertRect(rectIncludingThickness, fromPage: page))
-    }
-    
     /// Returns a rectangle corresponding to the annotation for a rectangle corresponding to the mark, using all appropriate constants / preferences.
     ///
     /// - parameter markRect: The rectangle corresponding to the mark
     /// - parameter page: The page on which the mark resides, and on which the annotation will be created
     /// - returns: A rectangle representing the annotation
     func annotationRectForMark(markRect: NSRect, page: PDFPage) -> NSRect {
+        let lineThickness = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefAnnotationLineThickness) as! CGFloat
         let newRect_x = markRect.origin.x - PeyeConstants.annotationLineDistance
         let newRect_y = markRect.origin.y
         let newRect_height = markRect.height
-        let newRect_width: CGFloat = 1.0
+        let newRect_width: CGFloat = lineThickness
         return NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
     }
     
