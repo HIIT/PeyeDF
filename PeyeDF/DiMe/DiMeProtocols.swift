@@ -16,7 +16,7 @@ protocol Dictionariable {
     func getDict() -> [String: AnyObject]
 }
 
-extension CGSize: Dictionariable {
+extension NSSize: Dictionariable {
     /// Returns width and height in a dictionary with their values as
     /// numbers (both as JSONableItem enums).
     func getDict() -> [String : AnyObject] {
@@ -27,7 +27,7 @@ extension CGSize: Dictionariable {
     }
 }
 
-extension CGPoint: Dictionariable {
+extension NSPoint: Dictionariable {
     /// Returns x and y in a dictionary with their values as
     /// numbers (both as JSONableItem enums).
     func getDict() -> [String : AnyObject] {

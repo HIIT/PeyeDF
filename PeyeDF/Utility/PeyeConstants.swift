@@ -198,27 +198,6 @@ struct PeyeConstants {
     }
 }
 
-// MARK: - Rectangle reading classes
-
-/// How important is a paragraph
-public enum ReadingClass: Int {
-    case Unset = 0
-    case Viewport = 10
-    case Paragraph_floating = 13
-    case Paragraph_united = 14
-    case Read = 20
-    case Interesting = 30
-    case Critical = 40
-}
-
-/// What decided that a paragraph is important
-public enum ClassSource: Int {
-    case Unset = 0
-    case Viewport = 1
-    case Click = 2
-    case Eye = 3
-}
-
 /// Midas raw channel numbers
 public enum midasRawChanNumbers: Int {
     case timestamp = 0, leftGazeX, leftGazeY, leftDiam, leftEyePositionX, leftEyePositionY, leftEyePositionZ, rightGazeX, rightGazeY, rightDiam, rightEyePositionX, rightEyePositionY, rightEyePositionZ
