@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9059" systemVersion="15B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="8191"/>
-        <plugIn identifier="com.apple.pdfkit.ibplugin" version="8191"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9059"/>
+        <plugIn identifier="com.apple.pdfkit.ibplugin" version="9059"/>
     </dependencies>
     <scenes>
         <!--Window Controller-->
@@ -67,7 +67,7 @@
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                             <tableColumns>
-                                                <tableColumn editable="NO" width="344" minWidth="300" maxWidth="1000" id="rmq-fB-KzP">
+                                                <tableColumn identifier="HistoryList" editable="NO" width="344" minWidth="300" maxWidth="1000" id="rmq-fB-KzP">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -80,7 +80,7 @@
                                                     </textFieldCell>
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
-                                                        <tableCellView id="zzU-uF-wqW" customClass="HistoryTableCell" customModule="PeyeDF" customModuleProvider="target">
+                                                        <tableCellView identifier="HistoryListItem" id="zzU-uF-wqW" customClass="HistoryTableCell" customModule="PeyeDF" customModuleProvider="target">
                                                             <rect key="frame" x="1" y="1" width="344" height="162"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
@@ -123,21 +123,30 @@
                                                                 <customView translatesAutoresizingMaskIntoConstraints="NO" id="xHO-2n-oO8">
                                                                     <rect key="frame" x="178" y="28" width="163" height="81"/>
                                                                     <subviews>
-                                                                        <progressIndicator wantsLayer="YES" fixedFrame="YES" maxValue="100" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="6jm-Xw-dux">
-                                                                            <rect key="frame" x="0.0" y="51" width="163" height="20"/>
+                                                                        <progressIndicator wantsLayer="YES" misplaced="YES" maxValue="100" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="hdi-js-GXN">
+                                                                            <rect key="frame" x="1" y="49" width="163" height="20"/>
                                                                             <animations/>
                                                                         </progressIndicator>
-                                                                        <progressIndicator wantsLayer="YES" fixedFrame="YES" maxValue="100" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="Su6-N8-0rh">
-                                                                            <rect key="frame" x="0.0" y="30" width="163" height="20"/>
+                                                                        <progressIndicator wantsLayer="YES" misplaced="YES" maxValue="100" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="9qv-Z1-Ro2">
+                                                                            <rect key="frame" x="1" y="30" width="163" height="20"/>
                                                                             <animations/>
                                                                         </progressIndicator>
-                                                                        <progressIndicator wantsLayer="YES" fixedFrame="YES" maxValue="100" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="rLX-iJ-uhT">
-                                                                            <rect key="frame" x="0.0" y="9" width="163" height="20"/>
+                                                                        <progressIndicator wantsLayer="YES" misplaced="YES" maxValue="100" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="b7m-Wb-o0p">
+                                                                            <rect key="frame" x="1" y="12" width="163" height="20"/>
                                                                             <animations/>
                                                                         </progressIndicator>
                                                                     </subviews>
                                                                     <constraints>
+                                                                        <constraint firstItem="hdi-js-GXN" firstAttribute="top" secondItem="xHO-2n-oO8" secondAttribute="top" constant="13" id="5Hs-Bi-aZS"/>
+                                                                        <constraint firstItem="b7m-Wb-o0p" firstAttribute="centerX" secondItem="xHO-2n-oO8" secondAttribute="centerX" id="Geh-92-5Hf"/>
+                                                                        <constraint firstAttribute="trailing" secondItem="hdi-js-GXN" secondAttribute="trailing" id="H0e-FW-OeJ"/>
+                                                                        <constraint firstItem="9qv-Z1-Ro2" firstAttribute="centerY" secondItem="xHO-2n-oO8" secondAttribute="centerY" id="O70-OL-xPf"/>
+                                                                        <constraint firstAttribute="trailing" secondItem="9qv-Z1-Ro2" secondAttribute="trailing" id="OI2-MJ-olH"/>
+                                                                        <constraint firstAttribute="bottom" secondItem="b7m-Wb-o0p" secondAttribute="bottom" constant="13" id="ca7-KV-fvn"/>
+                                                                        <constraint firstAttribute="trailing" secondItem="b7m-Wb-o0p" secondAttribute="trailing" id="ecn-wP-CRR"/>
                                                                         <constraint firstAttribute="height" constant="81" id="ixd-kx-iFG"/>
+                                                                        <constraint firstItem="hdi-js-GXN" firstAttribute="centerX" secondItem="xHO-2n-oO8" secondAttribute="centerX" id="jyY-Jc-X6S"/>
+                                                                        <constraint firstItem="9qv-Z1-Ro2" firstAttribute="centerX" secondItem="xHO-2n-oO8" secondAttribute="centerX" id="mDg-BX-1Kx"/>
                                                                     </constraints>
                                                                     <animations/>
                                                                 </customView>
@@ -161,10 +170,20 @@
                                                                 <constraint firstItem="KSp-Fg-dFn" firstAttribute="leading" secondItem="zzU-uF-wqW" secondAttribute="leading" constant="3" id="zpp-27-eEA"/>
                                                             </constraints>
                                                             <animations/>
+                                                            <connections>
+                                                                <outlet property="authorsLab" destination="wKU-WM-7j0" id="IWN-fY-Bzy"/>
+                                                                <outlet property="dateLab" destination="S1R-Ca-60F" id="b4c-bL-yy4"/>
+                                                                <outlet property="filenameLab" destination="KSp-Fg-dFn" id="2uq-FV-FOq"/>
+                                                                <outlet property="titleLab" destination="vDe-Po-ZzU" id="KZ5-QN-meT"/>
+                                                            </connections>
                                                         </tableCellView>
                                                     </prototypeCellViews>
                                                 </tableColumn>
                                             </tableColumns>
+                                            <connections>
+                                                <outlet property="dataSource" destination="GuY-65-HiL" id="KYN-4i-4hh"/>
+                                                <outlet property="delegate" destination="GuY-65-HiL" id="CpR-pL-4EC"/>
+                                            </connections>
                                         </tableView>
                                     </subviews>
                                     <animations/>
@@ -191,6 +210,9 @@
                         </constraints>
                         <animations/>
                     </view>
+                    <connections>
+                        <outlet property="historyTable" destination="WGv-dD-r3A" id="lJI-Fq-3eb"/>
+                    </connections>
                 </viewController>
                 <customObject id="zYa-50-W9u" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>

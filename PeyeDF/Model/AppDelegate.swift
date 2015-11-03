@@ -21,6 +21,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// Refinder window
     var refinderWindow: NSWindowController?
     
+    /// Counts how many open document windows there are. If >0 PeyeDF refuses to quit
+    var openPDFs = 0
+    
     /// Creates default preferences
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         var defaultPrefs = [String: AnyObject]()
@@ -101,6 +104,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationShouldOpenUntitledFile(sender: NSApplication) -> Bool {
         return false
+    }
+    
+    func applicationShouldTerminate(sender: NSApplication) -> NSApplicationTerminateReply {
+        if openPDFs > 0 {
+            AppSingleton.alertUser("Please close all open documents before qutting")
+            return .TerminateCancel
+        } else {
+            return .TerminateNow
+        }
     }
     
     /// MARK: - Notification callbacks

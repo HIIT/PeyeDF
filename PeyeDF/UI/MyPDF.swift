@@ -40,10 +40,10 @@ class MyPDF: PDFView, ScreenToPageConverter {
     var sciDoc: ScientificDocument?
     
     /// Stores all rects at which the user looked at (via screenToPage(_, true))
-    var gazedRects = [PDFPage: [NSRect]]()
+    private(set) var gazedRects = [PDFPage: [NSRect]]()
 
     /// Stores all manually entered markings
-    var manualMarks = PDFMarkings(withSource: ClassSource.Click)
+    private(set) var manualMarks = PDFMarkings(withSource: ClassSource.Click)
     
     /// Delegate for clicks gesture recognizer
     var clickDelegate: ClickRecognizerDelegate?
@@ -516,7 +516,8 @@ class MyPDF: PDFView, ScreenToPageConverter {
     
     /// Returns all rectangles with their corresponding class, marked by the user (and basic eye tracking)
     func getUserRectStatus() -> ReadingEvent {
-        fatalError("not implemented")
+        // TODO: add basic eye tracking
+        return ReadingEvent(asSummaryWithMarkings: manualMarks, plainTextContent: getVisibleString(), infoElemId: sciDoc!.getId())
     }
     
     /// Get the rectangle of the pdf view, in screen coordinates

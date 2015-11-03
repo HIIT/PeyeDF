@@ -18,6 +18,7 @@ class AppSingleton {
     
     static let mainStoryboard = NSStoryboard(name: "Main", bundle: nil)
     static let refinderStoryboard = NSStoryboard(name: "Refinder", bundle: nil)
+    static let appDelegate = NSApplication.sharedApplication().delegate! as! AppDelegate
     
     static let log = AppSingleton.createLog()
     

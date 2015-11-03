@@ -10,7 +10,7 @@
 
 import Foundation
 
-/// Represents all markings in a given PDF Document. Essentially, it uses PDFPages to index all rectangles (paragraphs) of a given importance
+/// Represents all markings in a given PDF Document. Essentially, it uses PDF Page indices to index all rectangles (paragraphs) of a given importance
 struct PDFMarkings {
     
     /// All rectangles (markings) for the given document.
@@ -39,12 +39,36 @@ struct PDFMarkings {
         }
     }
     
+    /// Return all rectangles in an array of ReadingRects
+    func getAllReadingRects() -> [ReadingRect] {
+        var retVal = [ReadingRect]()
+        for cl in allRects.keys {
+            for pi in allRects[cl]!.keys {
+                for r in allRects[cl]![pi]! {
+                    let newRR = ReadingRect(pageIndex: pi, rect: r, readingClass: cl, classSource: source)
+                    retVal.append(newRR)
+                }
+            }
+        }
+        return retVal
+    }
+    
     /// Add a rect of the given class to the given page
     mutating func addRect(rect: NSRect, ofClass: ReadingClass, forPage: Int) {
         if allRects[ofClass]![forPage] == nil {
             allRects[ofClass]![forPage] = [NSRect]()
         }
         allRects[ofClass]![forPage]!.append(rect)
+    }
+    
+    /// Add a rect of the given class to the given page
+    mutating func addRect(readingRect: ReadingRect) {
+        let cl = readingRect.readingClass
+        let pi = readingRect.pageIndex as Int
+        if allRects[cl]![pi] == nil {
+            allRects[cl]![pi] = [NSRect]()
+        }
+        allRects[cl]![pi]!.append(readingRect.rect)
     }
     
     /// Returns all rectangles for a given class

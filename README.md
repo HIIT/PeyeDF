@@ -16,4 +16,4 @@ The following GitHub projects are incorporated into PeyeDF (no additional downlo
 
 [XCGLogger version 3.0](https://github.com/DaveWoodCom/XCGLogger/releases/tag/Version_3.0) - To output logs to terminal and files.
 
-[Swifty JSON version 2.3.0](https://github.com/SwiftyJSON/SwiftyJSON/releases/tag/2.3.0) - To easily parse JSON **from** DiMe.
+[Swifty JSON version 2.3.1](https://github.com/SwiftyJSON/SwiftyJSON/releases/tag/2.3.1) - To easily parse JSON **from** DiMe.

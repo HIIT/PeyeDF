@@ -10,12 +10,27 @@ import Foundation
 
 class DocumentInformationElement: DiMeBase {
     
+    let uri: String
+    let title: String?
+    let plainTextContent: String?
+    let id: String
+    
     /// Creates this information element. The id is set to the hash of the plaintext, or hash of uri if no text was found.
     ///
     /// - parameter uri: Path on file or web
     /// - parameter plainTextContent: Contents of whole file
     /// - parameter title: Title of the PDF
     init(uri: String, plainTextContent: String?, title: String?) {
+        self.uri = uri
+        self.plainTextContent = plainTextContent
+        self.title = title
+        
+        if let ptc = plainTextContent {
+            self.id = ptc.sha1()
+        } else {
+            self.id = uri.sha1()
+        }
+        
         super.init()
         
         theDictionary["uri"] = uri
@@ -33,6 +48,14 @@ class DocumentInformationElement: DiMeBase {
         // dime-required
         theDictionary["@type"] = "Document"
         theDictionary["type"] = "http://www.hiit.fi/ontologies/dime/#Document"
+    }
+    
+    /// Creates information element from json
+    init(fromJson json: JSON) {
+        self.uri = json["uri"].stringValue
+        self.title = json["title"].string
+        self.plainTextContent = json["plainTextContent"].string
+        self.id = json["id"].stringValue
     }
     
     /// Returns id using own dictionary

@@ -43,6 +43,8 @@
 		A97230761B8B60C8005D29E0 /* DiMeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97230751B8B60C8005D29E0 /* DiMeData.swift */; };
 		A974ADD81BD169E0008AB977 /* DocumentWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A974ADD71BD169E0008AB977 /* DocumentWindow.swift */; };
 		A981F69D1B42FC4C00E7E9BD /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A981F69C1B42FC4C00E7E9BD /* Utils.swift */; };
+		A99C22FB1BE8EC9D005EDFD9 /* WaitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99C22FA1BE8EC9D005EDFD9 /* WaitViewController.swift */; };
+		A99C23031BE92536005EDFD9 /* DiMeFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99C23021BE92536005EDFD9 /* DiMeFetcher.swift */; };
 		A9A2DFC61BC427BE006C07FD /* MetadataWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A2DFC51BC427BE006C07FD /* MetadataWindowController.swift */; };
 		A9A2DFCC1BC427D2006C07FD /* MetadataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A2DFCB1BC427D2006C07FD /* MetadataViewController.swift */; };
 		A9C8F0251BC2B309007ABE1A /* Fixation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C8F0241BC2B309007ABE1A /* Fixation.swift */; };
@@ -164,6 +166,8 @@
 		A974ADD71BD169E0008AB977 /* DocumentWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentWindow.swift; sourceTree = "<group>"; };
 		A97F7B951B8CB32700013E26 /* PeyeDF-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PeyeDF-Bridging-Header.h"; sourceTree = "<group>"; };
 		A981F69C1B42FC4C00E7E9BD /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		A99C22FA1BE8EC9D005EDFD9 /* WaitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaitViewController.swift; sourceTree = "<group>"; };
+		A99C23021BE92536005EDFD9 /* DiMeFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiMeFetcher.swift; sourceTree = "<group>"; };
 		A9A2DFC51BC427BE006C07FD /* MetadataWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetadataWindowController.swift; sourceTree = "<group>"; };
 		A9A2DFCB1BC427D2006C07FD /* MetadataViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetadataViewController.swift; sourceTree = "<group>"; };
 		A9C8F0241BC2B309007ABE1A /* Fixation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fixation.swift; sourceTree = "<group>"; };
@@ -214,6 +218,7 @@
 				A95A8CF11B94407D0093119E /* ThumbSideController.swift */,
 				A9A2DFC51BC427BE006C07FD /* MetadataWindowController.swift */,
 				A9A2DFCB1BC427D2006C07FD /* MetadataViewController.swift */,
+				A99C22FA1BE8EC9D005EDFD9 /* WaitViewController.swift */,
 			);
 			name = UI;
 			path = PeyeDF/UI;
@@ -238,6 +243,7 @@
 			isa = PBXGroup;
 			children = (
 				A93C53DB1B8DCEFB00179C72 /* HistoryManager.swift */,
+				A99C23021BE92536005EDFD9 /* DiMeFetcher.swift */,
 				A9677F911BA806F700DC48CC /* MidasManager.swift */,
 				A9F335721B3ABC090042BFB3 /* AppSingleton.swift */,
 				A91CB96C1B332FB700671868 /* PeyeDocument.swift */,
@@ -507,8 +513,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A99C23031BE92536005EDFD9 /* DiMeFetcher.swift in Sources */,
 				A9260F571BA4CD10005B1556 /* MyOverlay.swift in Sources */,
 				A935F0C61B8CC5FD00587C99 /* DesktopEvent.swift in Sources */,
+				A99C22FB1BE8EC9D005EDFD9 /* WaitViewController.swift in Sources */,
 				A974ADD81BD169E0008AB977 /* DocumentWindow.swift in Sources */,
 				A91CB96F1B332FB700671868 /* EyeFormulas.swift in Sources */,
 				A9D833AD1BA868520046B21F /* PageEyeData.swift in Sources */,

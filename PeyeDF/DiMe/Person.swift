@@ -85,4 +85,14 @@ class Person: DiMeBase {
         theDictionary["type"] = "http://www.hiit.fi/ontologies/dime/#Person"
     }
     
+    /// Creates a person from dime's json
+    init(fromJson json: JSON) {
+        self.firstName = json["firstName"].stringValue
+        self.lastName = json["lastName"].stringValue
+        if let midnames = json["middleNames"].array {
+            for midname in midnames {
+                self.middleNames.append(midname.stringValue)
+            }
+        }
+    }
 }

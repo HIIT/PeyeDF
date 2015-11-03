@@ -34,6 +34,16 @@ public struct ReadingRect: Equatable, Dictionariable {
         self.rect = rect
     }
     
+    /// Creates a rect from a (dime-used) json object
+    init(fromJson json: JSON) {
+        let origin = NSPoint(x: json["origin"]["x"].doubleValue, y: json["origin"]["y"].doubleValue)
+        let size = NSSize(width: json["size"]["width"].doubleValue, height: json["size"]["height"].doubleValue)
+        self.rect = NSRect(origin: origin, size: size)
+        self.readingClass = ReadingClass(rawValue: json["readingClass"].intValue)!
+        self.classSource = ClassSource(rawValue: json["classSource"].intValue)!
+        self.pageIndex = json["pageIndex"].intValue
+    }
+    
     mutating func setClass(newClass: ReadingClass) {
         self.readingClass = newClass
     }

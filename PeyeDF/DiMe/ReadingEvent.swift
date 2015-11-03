@@ -14,6 +14,8 @@ import Foundation
 class ReadingEvent: Event {
     
     var pageEyeData = [[String: AnyObject]]()
+    let infoElemId: NSString
+    var manualMarkings: PDFMarkings!
     
     /**
         Creates this reading event.
@@ -27,6 +29,7 @@ class ReadingEvent: Event {
         - parameter infoElemId: id referring to the info element referenced by this event (document id)
     */
     init(multiPage: Bool, pageNumbers: [Int], pageLabels: [String], pageRects: [ReadingRect], isSummary: Bool, scaleFactor: NSNumber, plainTextContent: NSString, infoElemId: NSString) {
+        self.infoElemId = infoElemId
         super.init()
         
         theDictionary["multiPage"] = multiPage
@@ -42,6 +45,36 @@ class ReadingEvent: Event {
         }
         theDictionary["pageRects"] = rectArray
         
+        var infoElemDict = [String: AnyObject]()
+        infoElemDict["@type"] = "ScientificDocument"
+        infoElemDict["type"] = "http://www.hiit.fi/ontologies/dime/#ScientificDocument"
+        infoElemDict["id"] = infoElemId
+        
+        theDictionary["targettedResource"] = infoElemDict
+        
+        // dime-required
+        theDictionary["@type"] = ("ReadingEvent")
+        theDictionary["type"] = ("http://www.hiit.fi/ontologies/dime/#ReadingEvent")
+    }
+    
+    /** Creates a summary reading event, which contains all "markings" in form of rectangles
+    */
+    init(asSummaryWithMarkings markings: PDFMarkings, plainTextContent: NSString?, infoElemId: NSString) {
+        self.infoElemId = infoElemId
+        super.init()
+        
+        theDictionary["isSummary"] = true
+        
+        // create a rectangle array for all PDF markings
+        var rectArray = [[String: AnyObject]]()
+        for rect in markings.getAllReadingRects() {
+            rectArray.append(rect.getDict())
+        }
+        theDictionary["pageRects"] = rectArray
+        
+        if let ptc = plainTextContent {
+            theDictionary["plainTextContent"] = ptc
+        }
         
         var infoElemDict = [String: AnyObject]()
         infoElemDict["@type"] = "ScientificDocument"
@@ -53,6 +86,19 @@ class ReadingEvent: Event {
         // dime-required
         theDictionary["@type"] = ("ReadingEvent")
         theDictionary["type"] = ("http://www.hiit.fi/ontologies/dime/#ReadingEvent")
+    }
+    
+    /// Creates event from dime. NOTE: such events cannot be sent back to dime
+    init(asManualSummaryFromDime json: JSON) {
+        infoElemId = json["targettedResource"]["id"].stringValue
+        let dateCreated: NSDate = NSDate(timeIntervalSince1970: NSTimeInterval(json["timeCreated"].intValue / 1000))
+        self.manualMarkings = PDFMarkings(withSource: ClassSource.Click)
+        for pageRect in json["pageRects"].arrayValue {
+            if pageRect["classSource"].intValue == ClassSource.Click.rawValue {
+                self.manualMarkings.addRect(ReadingRect(fromJson: pageRect))
+            }
+        }
+        super.init(withStartDate: dateCreated)
     }
     
     /// Adds eye tracking data to this reading event

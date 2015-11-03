@@ -11,7 +11,9 @@ import Cocoa
 class RefinderWindowController: NSWindowController {
 
     @IBAction func reloadData(sender: AnyObject) {
-        Swift.print("reloading nothing...")
+        let svc = self.contentViewController as! NSSplitViewController
+        let vc = svc.childViewControllers[0] as! AllHistoryController
+        vc.reloadData()
     }
 
 }

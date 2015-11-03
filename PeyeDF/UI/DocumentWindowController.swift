@@ -134,11 +134,6 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     // MARK: - DiMe communication
     
-    /// Sends all rectangles (gazed, interesting, critical, etc.) to DiMe
-    func sendUserRects() {
-        let sciDoc = myPdf!.sciDoc!
-    }
-    
     /// Sends a desktop event directly (which includes doc metadata) for the currently displayed pdf
     func sendDeskEvent() {
         let sciDoc = myPdf!.sciDoc!
@@ -376,12 +371,34 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     // DocumentWindowController is the delegate of DocumentWindow
     
     /// This window is going to close, send exit event and send all paragraph data to HistoryManager as summary
-    func windowWillClose(notification: NSNotification) {
-        HistoryManager.sharedManager.exit(self)  // TODO: send all outgoing interesting rects
+    func windowShouldClose(sender: AnyObject) -> Bool {
+        HistoryManager.sharedManager.exit(self)
         unSetObservers()
         debugController?.unSetMonitors(myPdf!, docWindow: self.window!)
         debugController?.view.window?.close()
         metadataWindowController?.close()
+        if HistoryManager.sharedManager.dimeAvailable {
+            let ww = NSWindow()
+            let wvc = AppSingleton.mainStoryboard.instantiateControllerWithIdentifier("WaitVC") as! WaitViewController
+            ww.contentViewController = wvc
+            wvc.someText = "Sending data to DiMe..."
+            self.window!.beginSheet(ww, completionHandler: nil)
+            // send data to dime
+            dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
+                if let mpdf = self.myPdf {
+                    HistoryManager.sharedManager.sendToDiMe(mpdf.getUserRectStatus())
+                }
+                dispatch_sync(dispatch_get_main_queue()) {
+                    AppSingleton.appDelegate.openPDFs--
+                    ww.close()
+                    self.window!.close()
+                }
+            }
+            return false
+        } else {
+            AppSingleton.appDelegate.openPDFs--
+            return true
+        }
     }
     
     

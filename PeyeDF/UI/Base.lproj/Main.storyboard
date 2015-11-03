@@ -1171,7 +1171,7 @@
                                     <animations/>
                                 </scroller>
                                 <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="yXb-ko-u85">
-                                    <rect key="frame" x="444" y="1" width="15" height="152"/>
+                                    <rect key="frame" x="443" y="1" width="16" height="152"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <animations/>
                                 </scroller>
@@ -1783,6 +1783,45 @@
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-64" y="477.5"/>
+        </scene>
+        <!--Wait View Controller-->
+        <scene sceneID="PU0-4T-130">
+            <objects>
+                <viewController storyboardIdentifier="WaitVC" id="05V-39-yEo" customClass="WaitViewController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="v4d-kn-swW">
+                        <rect key="frame" x="0.0" y="0.0" width="480" height="97"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <progressIndicator wantsLayer="YES" maxValue="100" indeterminate="YES" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="8fk-mH-Xeb">
+                                <rect key="frame" x="224" y="45" width="32" height="32"/>
+                                <animations/>
+                            </progressIndicator>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="TLZ-OX-lEh">
+                                <rect key="frame" x="194" y="20" width="92" height="17"/>
+                                <animations/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="doing nothing" id="XGz-Tn-DxW">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="TLZ-OX-lEh" firstAttribute="top" secondItem="8fk-mH-Xeb" secondAttribute="bottom" constant="8" symbolic="YES" id="1OV-hE-KDQ"/>
+                            <constraint firstItem="8fk-mH-Xeb" firstAttribute="centerX" secondItem="v4d-kn-swW" secondAttribute="centerX" id="GSv-5g-iWP"/>
+                            <constraint firstItem="8fk-mH-Xeb" firstAttribute="top" secondItem="v4d-kn-swW" secondAttribute="top" constant="20" symbolic="YES" id="PAy-U5-N7H"/>
+                            <constraint firstItem="TLZ-OX-lEh" firstAttribute="centerX" secondItem="v4d-kn-swW" secondAttribute="centerX" id="wTZ-CV-eKF"/>
+                        </constraints>
+                        <animations/>
+                    </view>
+                    <connections>
+                        <outlet property="progBar" destination="8fk-mH-Xeb" id="vKT-jf-KTJ"/>
+                        <outlet property="progLab" destination="TLZ-OX-lEh" id="vTh-5j-4YT"/>
+                    </connections>
+                </viewController>
+                <customObject id="NDe-Pc-3zY" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1091" y="-985.5"/>
         </scene>
     </scenes>
     <resources>

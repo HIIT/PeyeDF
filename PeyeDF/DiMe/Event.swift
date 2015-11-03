@@ -11,18 +11,37 @@ import Foundation
 /// Note: this class is for subclassing and should not be used directly.
 /// subclasses must implement the DiMeAble protocol.
 class Event: DiMeBase {
+    let startDate: NSDate
     
-    /// Must be called by subclasses
+    /// Must be called by subclasses that create an event starting now
     override init() {
+        startDate = NSDate()
         super.init()
         
         // Make creation date
-        theDictionary["start"] = PeyeConstants.diMeDateFormatter.stringFromDate(NSDate())
+        theDictionary["start"] = PeyeConstants.diMeDateFormatter.stringFromDate(startDate)
         theDictionary["actor"] = "PeyeDF"
         if let hostname = NSHost.currentHost().name {
             theDictionary["origin"] = hostname
         }
         
+        // set dime-required fields (these are defaults that can be overwritten by subclasses)
+        theDictionary["@type"] = "Event"
+        theDictionary["type"] = "http://www.hiit.fi/ontologies/dime/#Event"
+    }
+    
+    /// Must be called by subclasses that create an event with a specific starting date
+    init(withStartDate date: NSDate) {
+        startDate = date
+        super.init()
+        
+        // Make creation date
+        theDictionary["start"] = PeyeConstants.diMeDateFormatter.stringFromDate(startDate)
+        theDictionary["actor"] = "PeyeDF"
+        if let hostname = NSHost.currentHost().name {
+            theDictionary["origin"] = hostname
+        }
+    
         // set dime-required fields (these are defaults that can be overwritten by subclasses)
         theDictionary["@type"] = "Event"
         theDictionary["type"] = "http://www.hiit.fi/ontologies/dime/#Event"

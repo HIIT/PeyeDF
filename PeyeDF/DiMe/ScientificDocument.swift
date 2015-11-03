@@ -10,8 +10,8 @@ import Foundation
 
 class ScientificDocument: DocumentInformationElement {
     
-    var authors: [Person]?
-    var keywords: [String]?
+    private(set) var authors: [Person]?
+    private(set) var keywords: [String]?
     
     /// Creates this scientific document
     ///
@@ -31,6 +31,19 @@ class ScientificDocument: DocumentInformationElement {
         theDictionary["type"] = "http://www.hiit.fi/ontologies/dime/#ScientificDocument"
     }
     
+    /// Create document from dime's json. NOTE: these documents cannot be sent back to dime
+    override init(fromJson json: JSON) {
+        super.init(fromJson: json)
+        if let authors = json["authors"].array {
+            if authors.count > 0 {
+                self.authors = [Person]()
+                for author in authors {
+                    self.authors!.append(Person(fromJson: author))
+                }
+            }
+        }
+    }
+    
     /// Get dict for scientific document is overridden to allow for just-in-time creation of sub-dicts
     override func getDict() -> [String : AnyObject] {
         if let authors = authors {
@@ -46,4 +59,5 @@ class ScientificDocument: DocumentInformationElement {
         
         return theDictionary
     }
+    
 }

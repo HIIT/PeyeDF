@@ -84,6 +84,11 @@ extension String {
         }
     }
     
+    /// Skips the first x characters
+    func skipPrefix(nOfChars: Int) -> String {
+        return self.substringFromIndex(self.startIndex.advancedBy(nOfChars))
+    }
+    
 }
 
 extension NSSize {
