@@ -24,7 +24,7 @@ class HistoryTableCell: NSTableCellView {
         interestingBar.setProgress(readingEvent.proportionInteresting!, forClass: .Interesting)
         criticalBar.setProgress(readingEvent.proportionCritical!, forClass: .Critical)
         
-        let fnameUrl = sciDoc.getURL()
+        let fnameUrl = NSURL(fileURLWithPath: sciDoc.uri)
         filenameLab.stringValue = fnameUrl.lastPathComponent!
         if let tit = sciDoc.title {
             titleLab.stringValue = tit

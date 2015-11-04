@@ -101,6 +101,11 @@ struct PeyeConstants {
                                        PeyeConstants.annotationColourInteresting,
                                        PeyeConstants.annotationColourCritical]
     
+    /// Dictionary of annotation colours for their given "importance"
+    static let annotationColours: [ReadingClass: NSColor] = [.Read: annotationColourRead,
+                                                             .Interesting: annotationColourInteresting,
+                                                             .Critical: annotationColourCritical]
+    
     // MARK: - Other globals
     
     /// Default window width. Make sure this is above min document window width in storyboard.

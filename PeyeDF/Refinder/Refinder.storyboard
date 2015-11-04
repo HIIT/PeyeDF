@@ -93,7 +93,7 @@
                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
                                                                 </textField>
-                                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wKU-WM-7j0">
+                                                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" preferredMaxLayoutWidth="338" translatesAutoresizingMaskIntoConstraints="NO" id="wKU-WM-7j0">
                                                                     <rect key="frame" x="1" y="117" width="342" height="35"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="height" constant="35" id="TQ2-1n-1rD"/>
@@ -166,7 +166,9 @@
                                                             <constraints>
                                                                 <constraint firstItem="xHO-2n-oO8" firstAttribute="width" secondItem="vDe-Po-ZzU" secondAttribute="width" id="6yj-97-SUN"/>
                                                                 <constraint firstItem="KSp-Fg-dFn" firstAttribute="top" secondItem="zzU-uF-wqW" secondAttribute="top" constant="3" id="AN6-mZ-KMs"/>
+                                                                <constraint firstAttribute="trailing" secondItem="wKU-WM-7j0" secondAttribute="trailing" constant="3" id="APo-Xe-Nf0"/>
                                                                 <constraint firstItem="S1R-Ca-60F" firstAttribute="leading" secondItem="zzU-uF-wqW" secondAttribute="leading" constant="3" id="AeA-wT-OJK"/>
+                                                                <constraint firstItem="wKU-WM-7j0" firstAttribute="leading" secondItem="zzU-uF-wqW" secondAttribute="leading" constant="3" id="BtP-iS-3Qw"/>
                                                                 <constraint firstItem="wKU-WM-7j0" firstAttribute="leading" secondItem="zzU-uF-wqW" secondAttribute="leading" constant="3" id="ILX-Ek-ODt"/>
                                                                 <constraint firstItem="xHO-2n-oO8" firstAttribute="top" secondItem="vDe-Po-ZzU" secondAttribute="top" id="OHz-AM-krb"/>
                                                                 <constraint firstItem="xHO-2n-oO8" firstAttribute="height" secondItem="vDe-Po-ZzU" secondAttribute="height" id="P8a-Jn-uWg"/>
@@ -244,7 +246,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="1076" height="575"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <pdfView autoresizesSubviews="NO" wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Pp2-ez-teK">
+                            <pdfView autoresizesSubviews="NO" wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Pp2-ez-teK" customClass="MyPDFOverview" customModule="PeyeDF" customModuleProvider="target">
                                 <rect key="frame" x="20" y="20" width="200" height="535"/>
                                 <constraints>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="400" id="0MM-Vw-NO0"/>
@@ -252,11 +254,11 @@
                                 </constraints>
                                 <animations/>
                             </pdfView>
-                            <pdfView autoresizesSubviews="NO" wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Qs2-8R-88d">
+                            <pdfView autoresizesSubviews="NO" wantsLayer="YES" autoScales="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Qs2-8R-88d" customClass="MyPDFDetail" customModule="PeyeDF" customModuleProvider="target">
                                 <rect key="frame" x="228" y="20" width="828" height="535"/>
                                 <constraints>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="400" id="jen-Sz-bd1"/>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="200" id="sgb-oH-7Ra"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="600" id="sgb-oH-7Ra"/>
                                 </constraints>
                                 <animations/>
                             </pdfView>
@@ -272,6 +274,10 @@
                         </constraints>
                         <animations/>
                     </view>
+                    <connections>
+                        <outlet property="pdfDetail" destination="Qs2-8R-88d" id="0qD-JL-DDU"/>
+                        <outlet property="pdfOverview" destination="Pp2-ez-teK" id="ImH-kR-w3L"/>
+                    </connections>
                 </viewController>
                 <customObject id="qVZ-W2-7RL" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>

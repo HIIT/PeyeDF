@@ -33,7 +33,7 @@ class DocumentInformationElement: DiMeBase {
         
         super.init()
         
-        theDictionary["uri"] = uri
+        theDictionary["uri"] = "file://" + uri
         theDictionary["id"] = self.id
         if let ptc = plainTextContent {
             theDictionary["plainTextContent"] = ptc
@@ -50,7 +50,7 @@ class DocumentInformationElement: DiMeBase {
     
     /// Creates information element from json
     init(fromJson json: JSON) {
-        self.uri = json["uri"].stringValue
+        self.uri = json["uri"].stringValue.skipPrefix(7) // skip file:// prefix when importing
         self.title = json["title"].string
         self.plainTextContent = json["plainTextContent"].string
         self.id = json["id"].stringValue

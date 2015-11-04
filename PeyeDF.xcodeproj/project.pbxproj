@@ -49,6 +49,9 @@
 		A9A2DFCC1BC427D2006C07FD /* MetadataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A2DFCB1BC427D2006C07FD /* MetadataViewController.swift */; };
 		A9B36CA31BEA0FE300A27861 /* RefinderProgressIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B36CA21BEA0FE300A27861 /* RefinderProgressIndicator.swift */; };
 		A9B36CA91BEA2E0800A27861 /* HistoryDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B36CA81BEA2E0800A27861 /* HistoryDetailController.swift */; };
+		A9B36CAB1BEA30BF00A27861 /* MyPDFOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B36CAA1BEA30BF00A27861 /* MyPDFOverview.swift */; };
+		A9B36CAD1BEA30D800A27861 /* MyPDFDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B36CAC1BEA30D800A27861 /* MyPDFDetail.swift */; };
+		A9B36CB01BEA4A3A00A27861 /* MyPDFBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B36CAF1BEA4A3A00A27861 /* MyPDFBase.swift */; };
 		A9C8F0251BC2B309007ABE1A /* Fixation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C8F0241BC2B309007ABE1A /* Fixation.swift */; };
 		A9C8F0271BC2B31A007ABE1A /* Raw.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C8F0261BC2B31A007ABE1A /* Raw.swift */; };
 		A9CDB2E91B3AC49800347398 /* PeyeConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CDB2E81B3AC49800347398 /* PeyeConstants.swift */; };
@@ -174,6 +177,9 @@
 		A9A2DFCB1BC427D2006C07FD /* MetadataViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetadataViewController.swift; sourceTree = "<group>"; };
 		A9B36CA21BEA0FE300A27861 /* RefinderProgressIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefinderProgressIndicator.swift; sourceTree = "<group>"; };
 		A9B36CA81BEA2E0800A27861 /* HistoryDetailController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryDetailController.swift; sourceTree = "<group>"; };
+		A9B36CAA1BEA30BF00A27861 /* MyPDFOverview.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPDFOverview.swift; sourceTree = "<group>"; };
+		A9B36CAC1BEA30D800A27861 /* MyPDFDetail.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPDFDetail.swift; sourceTree = "<group>"; };
+		A9B36CAF1BEA4A3A00A27861 /* MyPDFBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPDFBase.swift; sourceTree = "<group>"; };
 		A9C8F0241BC2B309007ABE1A /* Fixation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fixation.swift; sourceTree = "<group>"; };
 		A9C8F0261BC2B31A007ABE1A /* Raw.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Raw.swift; sourceTree = "<group>"; };
 		A9CDB2E81B3AC49800347398 /* PeyeConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeyeConstants.swift; sourceTree = "<group>"; };
@@ -253,6 +259,7 @@
 				A91CB96C1B332FB700671868 /* PeyeDocument.swift */,
 				A91CB9491B332EDB00671868 /* AppDelegate.swift */,
 				A9CEAA7F1BE7793500E23964 /* Paragraphs.swift */,
+				A9B36CAF1BEA4A3A00A27861 /* MyPDFBase.swift */,
 			);
 			name = Model;
 			path = PeyeDF/Model;
@@ -326,6 +333,8 @@
 				A957951A1BD6A35F0083525C /* HistoryTableCell.swift */,
 				A9B36CA21BEA0FE300A27861 /* RefinderProgressIndicator.swift */,
 				A9B36CA81BEA2E0800A27861 /* HistoryDetailController.swift */,
+				A9B36CAA1BEA30BF00A27861 /* MyPDFOverview.swift */,
+				A9B36CAC1BEA30D800A27861 /* MyPDFDetail.swift */,
 			);
 			name = Refinder;
 			path = PeyeDF/Refinder;
@@ -521,6 +530,7 @@
 			files = (
 				A99C23031BE92536005EDFD9 /* DiMeFetcher.swift in Sources */,
 				A9260F571BA4CD10005B1556 /* MyOverlay.swift in Sources */,
+				A9B36CAB1BEA30BF00A27861 /* MyPDFOverview.swift in Sources */,
 				A935F0C61B8CC5FD00587C99 /* DesktopEvent.swift in Sources */,
 				A99C22FB1BE8EC9D005EDFD9 /* WaitViewController.swift in Sources */,
 				A974ADD81BD169E0008AB977 /* DocumentWindow.swift in Sources */,
@@ -549,6 +559,7 @@
 				A95A8CF41B94407D0093119E /* DocumentWindowController.swift in Sources */,
 				A9F335731B3ABC090042BFB3 /* AppSingleton.swift in Sources */,
 				A918F8101BC2D71500345448 /* eyeBox.swift in Sources */,
+				A9B36CAD1BEA30D800A27861 /* MyPDFDetail.swift in Sources */,
 				A9677F921BA806F700DC48CC /* MidasManager.swift in Sources */,
 				A9038F7B1B8F634200A7D183 /* DiMeProtocols.swift in Sources */,
 				A957950D1BD66A600083525C /* ScientificDocument.swift in Sources */,
@@ -561,6 +572,7 @@
 				A9C8F0251BC2B309007ABE1A /* Fixation.swift in Sources */,
 				A912D8A51B8B5C3A006F0657 /* ReadingEvent.swift in Sources */,
 				A9DFF1721B7E3D1A008CFF0C /* XCGLogger.swift in Sources */,
+				A9B36CB01BEA4A3A00A27861 /* MyPDFBase.swift in Sources */,
 				A981F69D1B42FC4C00E7E9BD /* Utils.swift in Sources */,
 				A95DF5651BC511A400EA1157 /* PDFDocumentExtensions.swift in Sources */,
 				A9C8F0271BC2B31A007ABE1A /* Raw.swift in Sources */,

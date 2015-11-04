@@ -33,7 +33,9 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     
     @objc private func newHistoryTableSelection(notification: NSNotification) {
         let selectedRow = historyTable.selectedRow
-        delegate?.historyElementSelected((ev: allHistoryTuples[selectedRow].ev, ie: allHistoryTuples[selectedRow].ie!))
+        if selectedRow >= 0 {
+            delegate?.historyElementSelected((ev: allHistoryTuples[selectedRow].ev, ie: allHistoryTuples[selectedRow].ie!))
+        }
     }
     
     // MARK: - DiMe communication
