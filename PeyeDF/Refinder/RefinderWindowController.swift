@@ -9,11 +9,17 @@
 import Cocoa
 
 class RefinderWindowController: NSWindowController {
-
-    @IBAction func reloadData(sender: AnyObject) {
+    
+    weak var allHistoryController: AllHistoryController?
+    
+    override func windowDidLoad() {
         let svc = self.contentViewController as! NSSplitViewController
-        let vc = svc.childViewControllers[0] as! AllHistoryController
-        vc.reloadData()
+        allHistoryController = (svc.childViewControllers[0] as! AllHistoryController)
+        allHistoryController?.reloadData()
+    }
+    
+    @IBAction func reloadData(sender: AnyObject) {
+        allHistoryController?.reloadData()
     }
 
 }

@@ -60,4 +60,9 @@ class ScientificDocument: DocumentInformationElement {
         return theDictionary
     }
     
+    /// Returns NSURL for file, removing file:// prefix
+    func getURL() -> NSURL {
+        return NSURL(fileURLWithPath: uri.skipPrefix(7))
+    }
+    
 }

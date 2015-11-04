@@ -51,9 +51,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Dime/Midas down/up observers
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "dimeConnectionChanged:", name: PeyeConstants.diMeConnectionNotification, object: HistoryManager.sharedManager)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "midasConnectionChanged:", name: PeyeConstants.midasConnectionNotification, object: MidasManager.sharedInstance)
-        
-        // TODO: remove debugging creation of refinder
-        refinderWindow = (AppSingleton.refinderStoryboard.instantiateControllerWithIdentifier("RefinderWindowController") as! NSWindowController)
+    }
+    
+    /// Show refinder window (creating it, if needed)
+    @IBAction func showRefinderWindor(sender: AnyObject) {
+        if refinderWindow == nil {
+            refinderWindow = (AppSingleton.refinderStoryboard.instantiateControllerWithIdentifier("RefinderWindowController") as! NSWindowController)
+        }
         refinderWindow!.showWindow(self)
     }
     

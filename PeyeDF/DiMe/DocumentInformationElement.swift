@@ -34,11 +34,9 @@ class DocumentInformationElement: DiMeBase {
         super.init()
         
         theDictionary["uri"] = uri
+        theDictionary["id"] = self.id
         if let ptc = plainTextContent {
             theDictionary["plainTextContent"] = ptc
-            theDictionary["id"] = ptc.sha1()
-        } else {
-            theDictionary["id"] = uri.sha1()
         }
         if let title = title {
             theDictionary["title"] = title

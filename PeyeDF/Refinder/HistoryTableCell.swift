@@ -15,28 +15,30 @@ class HistoryTableCell: NSTableCellView {
     @IBOutlet weak var authorsLab: NSTextField!
     @IBOutlet weak var dateLab: NSTextField!
     
-    func setValues(fromReadingEvent readingEvent: ReadingEvent, sciDoc: ScientificDocument?) {
-        if let sciDoc = sciDoc {
-            // TODO: remove debugging checks
-            for page in readingEvent.manualMarkings.get(ReadingClass.Interesting).keys {
-                Swift.print("On page \(page) there are \(readingEvent.manualMarkings.get(.Interesting)[page]!.count) interesting rectangles")
-            }
-            let fnameUrl = NSURL(fileURLWithPath: sciDoc.uri.skipPrefix(7)) // skip file://: 7 chars
-            filenameLab.stringValue = fnameUrl.lastPathComponent!
-            if let tit = sciDoc.title {
-                titleLab.stringValue = tit
-            } else {
-                titleLab.stringValue = sciDoc.uri
-            }
-            if let authors = sciDoc.authors {
-                authorsLab.stringValue = authors.description
-            } else {
-                authorsLab.stringValue = ""
-            }
-            let dateFormatter = NSDateFormatter()
-            dateFormatter.dateStyle = .FullStyle
-            dateFormatter.timeStyle = .MediumStyle
-            dateLab.stringValue = dateFormatter.stringFromDate(readingEvent.startDate)
+    @IBOutlet weak var readBar: RefinderProgressIndicator!
+    @IBOutlet weak var interestingBar: RefinderProgressIndicator!
+    @IBOutlet weak var criticalBar: RefinderProgressIndicator!
+    
+    func setValues(fromReadingEvent readingEvent: ReadingEvent, sciDoc: ScientificDocument) {
+        readBar.setProgress(readingEvent.proportionRead!, forClass: .Read)
+        interestingBar.setProgress(readingEvent.proportionInteresting!, forClass: .Interesting)
+        criticalBar.setProgress(readingEvent.proportionCritical!, forClass: .Critical)
+        
+        let fnameUrl = sciDoc.getURL()
+        filenameLab.stringValue = fnameUrl.lastPathComponent!
+        if let tit = sciDoc.title {
+            titleLab.stringValue = tit
+        } else {
+            titleLab.stringValue = sciDoc.uri
         }
+        if let authors = sciDoc.authors {
+            authorsLab.stringValue = authors.description
+        } else {
+            authorsLab.stringValue = ""
+        }
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateStyle = .FullStyle
+        dateFormatter.timeStyle = .MediumStyle
+        dateLab.stringValue = dateFormatter.stringFromDate(readingEvent.startDate)
     }
 }

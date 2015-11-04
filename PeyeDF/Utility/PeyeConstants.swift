@@ -54,6 +54,9 @@ struct PeyeConstants {
     /// Date format used for DiMe submission
     static let diMeDateFormat = "Y'-'MM'-'d'T'HH':'mm':'ssZ"
     
+    /// Page area is multiplied by this constant, to reduce total area size (to remove margins, etc)
+    static let pageAreaMultiplier = 0.25
+    
     // MARK: - Midas
     
     /// Name of the midas node containing raw (gaze) data

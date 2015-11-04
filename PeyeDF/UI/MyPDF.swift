@@ -477,6 +477,44 @@ class MyPDF: PDFView, ScreenToPageConverter {
         return (x: pointOnPage.x, y: pointOnPage.y, pageIndex: pageIndex)
     }
     
+    /// Calculate proportion of Read, Interesting and Critical markings.
+    /// This is done by calculating the total area of each page and multiplying it by a constant.
+    /// All rectangles (assumed which will be united) are then cycled and the area of each is subtracted
+    /// to calculate a proportion.
+    func calculateProportions(var manualMarks: PDFMarkings) -> (proportionRead: Double, proportionInteresting: Double, proportionCritical: Double) {
+        manualMarks.flattenRectangles_relevance()
+        var totalSurface = 0.0
+        var readSurface = 0.0
+        var interestingSurface = 0.0
+        var criticalSurface = 0.0
+        for pageI in 0..<document().pageCount() {
+            let thePage = document().pageAtIndex(pageI)
+            let pageRect = getPageRect(thePage)
+            let pageSurface = Double(pageRect.size.height * pageRect.size.width)
+            totalSurface += pageSurface
+            if let rectArray = manualMarks.get(.Read)[pageI] {
+                for rect in rectArray {
+                    readSurface += Double(rect.size.height * rect.size.width)
+                }
+            }
+            if let rectArray = manualMarks.get(.Interesting)[pageI] {
+                for rect in rectArray {
+                    interestingSurface += Double(rect.size.height * rect.size.width)
+                }
+            }
+            if let rectArray = manualMarks.get(.Critical)[pageI] {
+                for rect in rectArray {
+                    criticalSurface += Double(rect.size.height * rect.size.width)
+                }
+            }
+        }
+        totalSurface *= PeyeConstants.pageAreaMultiplier
+        let proportionRead = readSurface / totalSurface
+        let proportionInteresting = interestingSurface / totalSurface
+        let proportionCritical = criticalSurface / totalSurface
+        return (proportionRead: proportionRead, proportionInteresting: proportionInteresting, proportionCritical: proportionCritical)
+    }
+    
     // MARK: - General accessor methods
     
     /// Converts the current viewport to a reading event.
@@ -517,7 +555,11 @@ class MyPDF: PDFView, ScreenToPageConverter {
     /// Returns all rectangles with their corresponding class, marked by the user (and basic eye tracking)
     func getUserRectStatus() -> ReadingEvent {
         // TODO: add basic eye tracking
-        return ReadingEvent(asSummaryWithMarkings: manualMarks, plainTextContent: getVisibleString(), infoElemId: sciDoc!.getId())
+        
+        
+        // Calculate proportion for Read, Critical and Interesting rectangles
+        let proportionTriple = calculateProportions(self.manualMarks)
+        return ReadingEvent(asSummaryWithMarkings: manualMarks, plainTextContent: getVisibleString(), infoElemId: sciDoc!.getId(), proportionTriple: proportionTriple)
     }
     
     /// Get the rectangle of the pdf view, in screen coordinates

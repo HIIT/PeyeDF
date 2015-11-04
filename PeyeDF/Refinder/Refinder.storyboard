@@ -9,7 +9,7 @@
         <scene sceneID="CAJ-wk-Xh4">
             <objects>
                 <windowController storyboardIdentifier="RefinderWindowController" showSeguePresentationStyle="single" id="DIc-Fe-P6x" customClass="RefinderWindowController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
-                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="hne-YZ-8tQ">
+                    <window key="window" title="Refinder" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="hne-YZ-8tQ">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="425" y="461" width="480" height="270"/>
@@ -53,13 +53,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="349" height="575"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <scrollView autohidesScrollers="YES" horizontalLineScroll="193" horizontalPageScroll="10" verticalLineScroll="193" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PiP-7z-YlQ">
+                            <scrollView autohidesScrollers="YES" horizontalLineScroll="182" horizontalPageScroll="10" verticalLineScroll="182" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PiP-7z-YlQ">
                                 <rect key="frame" x="0.0" y="0.0" width="349" height="575"/>
                                 <clipView key="contentView" id="nxx-8l-Vpa">
                                     <rect key="frame" x="1" y="1" width="347" height="573"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="191" viewBased="YES" id="WGv-dD-r3A">
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="180" viewBased="YES" id="WGv-dD-r3A">
                                             <rect key="frame" x="0.0" y="0.0" width="347" height="0.0"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <animations/>
@@ -81,11 +81,11 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="HistoryListItem" id="zzU-uF-wqW" customClass="HistoryTableCell" customModule="PeyeDF" customModuleProvider="target">
-                                                            <rect key="frame" x="1" y="1" width="344" height="162"/>
+                                                            <rect key="frame" x="1" y="1" width="344" height="180"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KSp-Fg-dFn">
-                                                                    <rect key="frame" x="1" y="142" width="342" height="17"/>
+                                                                    <rect key="frame" x="1" y="160" width="342" height="17"/>
                                                                     <animations/>
                                                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="&lt;&lt;Filename.pdf&gt;&gt;" id="zWR-rc-Cy9">
                                                                         <font key="font" metaFont="systemBold"/>
@@ -94,19 +94,13 @@
                                                                     </textFieldCell>
                                                                 </textField>
                                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wKU-WM-7j0">
-                                                                    <rect key="frame" x="1" y="117" width="342" height="17"/>
+                                                                    <rect key="frame" x="1" y="117" width="342" height="35"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="height" constant="35" id="TQ2-1n-1rD"/>
+                                                                    </constraints>
                                                                     <animations/>
-                                                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="&lt;&lt;Authors&gt;&gt;" id="R99-SJ-ZOB">
+                                                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="&lt;&lt;Authors&gt;&gt;" id="R99-SJ-ZOB">
                                                                         <font key="font" metaFont="system"/>
-                                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                                    </textFieldCell>
-                                                                </textField>
-                                                                <textField autoresizesSubviews="NO" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vDe-Po-ZzU">
-                                                                    <rect key="frame" x="1" y="28" width="168" height="81"/>
-                                                                    <animations/>
-                                                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="&lt;&lt; title title title title title title title title &gt;&gt;" id="DwF-ho-gSE">
-                                                                        <font key="font" size="13" name="HelveticaNeue-LightItalic"/>
                                                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                     </textFieldCell>
@@ -123,33 +117,51 @@
                                                                 <customView translatesAutoresizingMaskIntoConstraints="NO" id="xHO-2n-oO8">
                                                                     <rect key="frame" x="178" y="28" width="163" height="81"/>
                                                                     <subviews>
-                                                                        <progressIndicator wantsLayer="YES" misplaced="YES" maxValue="100" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="hdi-js-GXN">
-                                                                            <rect key="frame" x="1" y="49" width="163" height="20"/>
+                                                                        <customView translatesAutoresizingMaskIntoConstraints="NO" id="uxf-5M-f67" customClass="RefinderProgressIndicator" customModule="PeyeDF" customModuleProvider="target">
+                                                                            <rect key="frame" x="0.0" y="57" width="164" height="10"/>
+                                                                            <constraints>
+                                                                                <constraint firstAttribute="height" constant="10" id="MtW-7b-ugx"/>
+                                                                            </constraints>
                                                                             <animations/>
-                                                                        </progressIndicator>
-                                                                        <progressIndicator wantsLayer="YES" misplaced="YES" maxValue="100" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="9qv-Z1-Ro2">
-                                                                            <rect key="frame" x="1" y="30" width="163" height="20"/>
+                                                                        </customView>
+                                                                        <customView translatesAutoresizingMaskIntoConstraints="NO" id="tjU-ki-EBz" customClass="RefinderProgressIndicator" customModule="PeyeDF" customModuleProvider="target">
+                                                                            <rect key="frame" x="0.0" y="35" width="164" height="10"/>
+                                                                            <constraints>
+                                                                                <constraint firstAttribute="height" constant="10" id="RqG-YJ-HH9"/>
+                                                                            </constraints>
                                                                             <animations/>
-                                                                        </progressIndicator>
-                                                                        <progressIndicator wantsLayer="YES" misplaced="YES" maxValue="100" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="b7m-Wb-o0p">
-                                                                            <rect key="frame" x="1" y="12" width="163" height="20"/>
+                                                                        </customView>
+                                                                        <customView translatesAutoresizingMaskIntoConstraints="NO" id="WJD-ll-AgO" customClass="RefinderProgressIndicator" customModule="PeyeDF" customModuleProvider="target">
+                                                                            <rect key="frame" x="0.0" y="13" width="164" height="10"/>
+                                                                            <constraints>
+                                                                                <constraint firstAttribute="height" constant="10" id="NhO-HB-EDa"/>
+                                                                            </constraints>
                                                                             <animations/>
-                                                                        </progressIndicator>
+                                                                        </customView>
                                                                     </subviews>
                                                                     <constraints>
-                                                                        <constraint firstItem="hdi-js-GXN" firstAttribute="top" secondItem="xHO-2n-oO8" secondAttribute="top" constant="13" id="5Hs-Bi-aZS"/>
-                                                                        <constraint firstItem="b7m-Wb-o0p" firstAttribute="centerX" secondItem="xHO-2n-oO8" secondAttribute="centerX" id="Geh-92-5Hf"/>
-                                                                        <constraint firstAttribute="trailing" secondItem="hdi-js-GXN" secondAttribute="trailing" id="H0e-FW-OeJ"/>
-                                                                        <constraint firstItem="9qv-Z1-Ro2" firstAttribute="centerY" secondItem="xHO-2n-oO8" secondAttribute="centerY" id="O70-OL-xPf"/>
-                                                                        <constraint firstAttribute="trailing" secondItem="9qv-Z1-Ro2" secondAttribute="trailing" id="OI2-MJ-olH"/>
-                                                                        <constraint firstAttribute="bottom" secondItem="b7m-Wb-o0p" secondAttribute="bottom" constant="13" id="ca7-KV-fvn"/>
-                                                                        <constraint firstAttribute="trailing" secondItem="b7m-Wb-o0p" secondAttribute="trailing" id="ecn-wP-CRR"/>
+                                                                        <constraint firstItem="uxf-5M-f67" firstAttribute="leading" secondItem="xHO-2n-oO8" secondAttribute="leading" id="0UV-Ok-IIX"/>
+                                                                        <constraint firstItem="tjU-ki-EBz" firstAttribute="centerY" secondItem="xHO-2n-oO8" secondAttribute="centerY" id="1wQ-aq-9nf"/>
+                                                                        <constraint firstItem="tjU-ki-EBz" firstAttribute="leading" secondItem="xHO-2n-oO8" secondAttribute="leading" id="46x-jl-JFA"/>
+                                                                        <constraint firstAttribute="trailing" secondItem="WJD-ll-AgO" secondAttribute="trailing" id="AXk-Dp-XBm"/>
+                                                                        <constraint firstItem="tjU-ki-EBz" firstAttribute="top" secondItem="uxf-5M-f67" secondAttribute="bottom" constant="12" id="I48-Mn-YTd"/>
+                                                                        <constraint firstItem="WJD-ll-AgO" firstAttribute="top" secondItem="tjU-ki-EBz" secondAttribute="bottom" constant="12" id="Ky2-ls-bmr"/>
+                                                                        <constraint firstAttribute="trailing" secondItem="uxf-5M-f67" secondAttribute="trailing" id="OfT-jg-TIn"/>
+                                                                        <constraint firstItem="WJD-ll-AgO" firstAttribute="leading" secondItem="xHO-2n-oO8" secondAttribute="leading" id="ZKA-e3-2c6"/>
                                                                         <constraint firstAttribute="height" constant="81" id="ixd-kx-iFG"/>
-                                                                        <constraint firstItem="hdi-js-GXN" firstAttribute="centerX" secondItem="xHO-2n-oO8" secondAttribute="centerX" id="jyY-Jc-X6S"/>
-                                                                        <constraint firstItem="9qv-Z1-Ro2" firstAttribute="centerX" secondItem="xHO-2n-oO8" secondAttribute="centerX" id="mDg-BX-1Kx"/>
+                                                                        <constraint firstAttribute="trailing" secondItem="tjU-ki-EBz" secondAttribute="trailing" id="lGe-h4-lIR"/>
                                                                     </constraints>
                                                                     <animations/>
                                                                 </customView>
+                                                                <textField autoresizesSubviews="NO" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vDe-Po-ZzU">
+                                                                    <rect key="frame" x="1" y="28" width="168" height="81"/>
+                                                                    <animations/>
+                                                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="&lt;&lt; title title title title title title title title &gt;&gt;" id="DwF-ho-gSE">
+                                                                        <font key="font" size="13" name="HelveticaNeue-LightItalic"/>
+                                                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                    </textFieldCell>
+                                                                </textField>
                                                             </subviews>
                                                             <constraints>
                                                                 <constraint firstItem="xHO-2n-oO8" firstAttribute="width" secondItem="vDe-Po-ZzU" secondAttribute="width" id="6yj-97-SUN"/>
@@ -172,8 +184,11 @@
                                                             <animations/>
                                                             <connections>
                                                                 <outlet property="authorsLab" destination="wKU-WM-7j0" id="IWN-fY-Bzy"/>
+                                                                <outlet property="criticalBar" destination="WJD-ll-AgO" id="PeE-2w-QzK"/>
                                                                 <outlet property="dateLab" destination="S1R-Ca-60F" id="b4c-bL-yy4"/>
                                                                 <outlet property="filenameLab" destination="KSp-Fg-dFn" id="2uq-FV-FOq"/>
+                                                                <outlet property="interestingBar" destination="tjU-ki-EBz" id="7Ri-oW-LrS"/>
+                                                                <outlet property="readBar" destination="uxf-5M-f67" id="Xop-pQ-r7q"/>
                                                                 <outlet property="titleLab" destination="vDe-Po-ZzU" id="KZ5-QN-meT"/>
                                                             </connections>
                                                         </tableCellView>
@@ -189,6 +204,9 @@
                                     <animations/>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </clipView>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="349" id="cV4-C6-BA1"/>
+                                </constraints>
                                 <animations/>
                                 <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="fez-Vz-4al">
                                     <rect key="frame" x="1" y="558" width="347" height="16"/>
@@ -218,10 +236,10 @@
             </objects>
             <point key="canvasLocation" x="353.5" y="930.5"/>
         </scene>
-        <!--DocumentSpecificController-->
+        <!--History Detail Controller-->
         <scene sceneID="SIW-q7-MYI">
             <objects>
-                <viewController id="dw0-Ff-K13" userLabel="DocumentSpecificController" sceneMemberID="viewController">
+                <viewController id="dw0-Ff-K13" customClass="HistoryDetailController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="jMU-mc-1pg">
                         <rect key="frame" x="0.0" y="0.0" width="1076" height="575"/>
                         <autoresizingMask key="autoresizingMask"/>

@@ -17,6 +17,10 @@ class ReadingEvent: Event {
     let infoElemId: NSString
     var manualMarkings: PDFMarkings!
     
+    var proportionRead: Double?
+    var proportionCritical: Double?
+    var proportionInteresting: Double?
+    
     /**
         Creates this reading event.
     
@@ -59,9 +63,18 @@ class ReadingEvent: Event {
     
     /** Creates a summary reading event, which contains all "markings" in form of rectangles
     */
-    init(asSummaryWithMarkings markings: PDFMarkings, plainTextContent: NSString?, infoElemId: NSString) {
+    init(asSummaryWithMarkings markings: PDFMarkings, plainTextContent: NSString?, infoElemId: NSString, proportionTriple: (proportionRead: Double, proportionInteresting: Double, proportionCritical: Double)) {
         self.infoElemId = infoElemId
+        
+        self.proportionRead = proportionTriple.proportionRead
+        self.proportionCritical = proportionTriple.proportionCritical
+        self.proportionInteresting = proportionTriple.proportionInteresting
+        
         super.init()
+        
+        theDictionary["proportionRead"] = proportionTriple.proportionRead
+        theDictionary["proportionInteresting"] = proportionTriple.proportionInteresting
+        theDictionary["proportionCritical"] = proportionTriple.proportionCritical
         
         theDictionary["isSummary"] = true
         
@@ -91,6 +104,9 @@ class ReadingEvent: Event {
     /// Creates event from dime. NOTE: such events cannot be sent back to dime
     init(asManualSummaryFromDime json: JSON) {
         infoElemId = json["targettedResource"]["id"].stringValue
+        proportionRead = json["proportionRead"].doubleValue
+        proportionInteresting = json["proportionInteresting"].doubleValue
+        proportionCritical = json["proportionCritical"].doubleValue
         let dateCreated: NSDate = NSDate(timeIntervalSince1970: NSTimeInterval(json["timeCreated"].intValue / 1000))
         self.manualMarkings = PDFMarkings(withSource: ClassSource.Click)
         for pageRect in json["pageRects"].arrayValue {

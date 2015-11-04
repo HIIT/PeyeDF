@@ -63,8 +63,8 @@
                                     <rect key="frame" x="1" y="1" width="423" height="47"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <slider verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="E15-lK-fvD">
-                                            <rect key="frame" x="16" y="9" width="339" height="25"/>
+                                        <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="E15-lK-fvD">
+                                            <rect key="frame" x="16" y="9" width="339" height="26"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="335" id="dtF-MU-gHK"/>
                                             </constraints>
@@ -74,7 +74,7 @@
                                                 <action selector="thicknessSlided:" target="62w-oK-rf7" id="Re0-xj-aMp"/>
                                             </connections>
                                         </slider>
-                                        <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uRt-4J-vlE">
+                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uRt-4J-vlE">
                                             <rect key="frame" x="359" y="13" width="53" height="22"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="53" id="N2Q-Hu-YTx"/>
@@ -409,6 +409,13 @@
                                                     </menuItem>
                                                 </items>
                                             </menu>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="3Dw-Rk-ZW0"/>
+                                        <menuItem title="Show refinder" id="pCf-Ki-POQ">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="showRefinderWindor:" target="Ady-hI-5gd" id="W3s-P1-3TE"/>
+                                            </connections>
                                         </menuItem>
                                         <menuItem title="This doc metadata..." id="GCK-AT-nyU">
                                             <modifierMask key="keyEquivalentModifierMask"/>
@@ -1171,7 +1178,7 @@
                                     <animations/>
                                 </scroller>
                                 <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="yXb-ko-u85">
-                                    <rect key="frame" x="443" y="1" width="16" height="152"/>
+                                    <rect key="frame" x="444" y="1" width="15" height="152"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <animations/>
                                 </scroller>
@@ -1301,6 +1308,11 @@
                                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     </box>
                                 </toolbarItem>
+                                <toolbarItem implicitItemIdentifier="821AC73D-FAA2-481C-A38D-F0B6FB4147A7" label="Refinder" paletteLabel="Refinder" tag="-1" image="Refinder" id="YKD-Fb-cHD">
+                                    <connections>
+                                        <action selector="showRefinderWindor:" target="H3y-Bk-Ofi" id="Pca-hR-277"/>
+                                    </connections>
+                                </toolbarItem>
                             </allowedToolbarItems>
                             <defaultToolbarItems>
                                 <toolbarItem reference="8zr-Hg-gf0"/>
@@ -1312,6 +1324,8 @@
                                 <toolbarItem reference="6Ts-EH-w4Q"/>
                                 <toolbarItem reference="jQD-2x-7zh"/>
                                 <toolbarItem reference="QlV-kx-zkO"/>
+                                <toolbarItem reference="4ce-Bv-Fl8"/>
+                                <toolbarItem reference="YKD-Fb-cHD"/>
                                 <toolbarItem reference="4ce-Bv-Fl8"/>
                                 <toolbarItem reference="aNh-Te-Qhf"/>
                             </defaultToolbarItems>
@@ -1832,6 +1846,7 @@
         <image name="NSInfo" width="32" height="32"/>
         <image name="NSStatusNone" width="16" height="16"/>
         <image name="Redo" width="64" height="64"/>
+        <image name="Refinder" width="64" height="64"/>
         <image name="TB_AnnotateD" width="64" height="64"/>
         <image name="TB_SearchU" width="64" height="64"/>
         <image name="TB_ThumbU" width="32" height="32"/>
