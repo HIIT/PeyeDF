@@ -16,6 +16,7 @@ class ReadingEvent: Event {
     var pageEyeData = [[String: AnyObject]]()
     let infoElemId: NSString
     var manualMarkings: PDFMarkings!
+    var smiMarkings: PDFMarkings!
     
     var proportionRead: Double?
     var proportionCritical: Double?
@@ -63,7 +64,7 @@ class ReadingEvent: Event {
     
     /** Creates a summary reading event, which contains all "markings" in form of rectangles
     */
-    init(asSummaryWithMarkings markings: PDFMarkings, plainTextContent: NSString?, infoElemId: NSString, proportionTriple: (proportionRead: Double, proportionInteresting: Double, proportionCritical: Double)) {
+    init(asSummaryWithMarkings markings: [PDFMarkings], plainTextContent: NSString?, infoElemId: NSString, proportionTriple: (proportionRead: Double, proportionInteresting: Double, proportionCritical: Double)) {
         self.infoElemId = infoElemId
         
         self.proportionRead = proportionTriple.proportionRead
@@ -80,8 +81,10 @@ class ReadingEvent: Event {
         
         // create a rectangle array for all PDF markings
         var rectArray = [[String: AnyObject]]()
-        for rect in markings.getAllReadingRects() {
-            rectArray.append(rect.getDict())
+        for marking in markings {
+            for rect in marking.getAllReadingRects() {
+                rectArray.append(rect.getDict())
+            }
         }
         theDictionary["pageRects"] = rectArray
         
@@ -109,9 +112,12 @@ class ReadingEvent: Event {
         proportionCritical = json["proportionCritical"].doubleValue
         let dateCreated: NSDate = NSDate(timeIntervalSince1970: NSTimeInterval(json["timeCreated"].intValue / 1000))
         self.manualMarkings = PDFMarkings(withSource: ClassSource.Click)
+        self.smiMarkings = PDFMarkings(withSource: ClassSource.SMI)
         for pageRect in json["pageRects"].arrayValue {
             if pageRect["classSource"].intValue == ClassSource.Click.rawValue {
                 self.manualMarkings.addRect(ReadingRect(fromJson: pageRect))
+            } else if pageRect["classSource"].intValue == ClassSource.SMI.rawValue {
+                self.smiMarkings.addRect(ReadingRect(fromJson: pageRect))
             }
         }
         super.init(withStartDate: dateCreated)

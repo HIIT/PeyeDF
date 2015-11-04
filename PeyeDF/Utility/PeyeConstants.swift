@@ -21,6 +21,9 @@ struct PeyeConstants {
     /// Use midas on start
     static let prefUseMidas = "midas.use"
     
+    /// Draw gazed-upon paragraphs in refinder
+    static let prefRefinderDrawGazedUpon = "refinder.drawGazedUpon"
+    
     /// Monitor DPI
     static let prefMonitorDPI = "monitor.DPI"
     
@@ -96,6 +99,13 @@ struct PeyeConstants {
     /// Default color of the "critical" annotation lines
     static let annotationColourCritical: NSColor = NSColor(red: 0.99, green: 0.24, blue: 0.26, alpha: 0.75)
     
+    /// Default color for "floating" paragraphs detected using fixations
+    static let markColourSMI_Floating: NSColor = NSColor(red: 0.40, green: 0.40, blue: 0.40, alpha: 0.75)
+    
+    /// Default color for "united" paragraphs detected using fixations
+    static let markColourSMI_United: NSColor = NSColor(red: 0.30, green: 0.30, blue: 0.30, alpha: 0.75)
+    
+    
     /// Array of all annotation colours, in ascending order of importance
     static let annotationAllColours = [PeyeConstants.annotationColourRead,
                                        PeyeConstants.annotationColourInteresting,
@@ -105,6 +115,10 @@ struct PeyeConstants {
     static let annotationColours: [ReadingClass: NSColor] = [.Read: annotationColourRead,
                                                              .Interesting: annotationColourInteresting,
                                                              .Critical: annotationColourCritical]
+    
+    /// Dictionary of annotation colours for smi
+    static let smiColours: [ReadingClass: NSColor] = [.Paragraph_floating: markColourSMI_Floating,
+                                                      .Paragraph_united: markColourSMI_United]
     
     // MARK: - Other globals
     

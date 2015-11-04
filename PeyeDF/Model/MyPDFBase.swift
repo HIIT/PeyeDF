@@ -17,6 +17,9 @@ class MyPDFBase: PDFView {
     /// Stores all manually entered markings
     var manualMarks = PDFMarkings(withSource: ClassSource.Click)
     
+    /// Stores all markings from smi (to check all rects the user fixated upon)
+    var smiMarks = PDFMarkings(withSource: ClassSource.SMI)
+    
     // MARK: - External functions
     
     /// Get media box for page, representing coordinates which take into account if

@@ -39,9 +39,6 @@ class MyPDF: MyPDFBase, ScreenToPageConverter {
     /// Set by DocumentWindowController.loadDocument()
     var sciDoc: ScientificDocument?
     
-    /// Stores all rects at which the user looked at (via screenToPage(_, true))
-    private(set) var gazedRects = [PDFPage: [NSRect]]()
-
     /// Delegate for clicks gesture recognizer
     var clickDelegate: ClickRecognizerDelegate?
     
@@ -286,10 +283,7 @@ class MyPDF: MyPDFBase, ScreenToPageConverter {
         // create rect for gazed-at paragraph
         if fromEye {
             if let seenRect = pointToParagraphRect(pointOnPage, forPage: page) {
-                if gazedRects[page] == nil {
-                    gazedRects[page] = [NSRect]()
-                }
-                gazedRects[page]!.append(seenRect)
+                smiMarks.addRect(seenRect, ofClass: ReadingClass.Paragraph_floating, forPage: self.document().indexForPage(page))
             }
         }
         
@@ -336,12 +330,11 @@ class MyPDF: MyPDFBase, ScreenToPageConverter {
     
     /// Returns all rectangles with their corresponding class, marked by the user (and basic eye tracking)
     func getUserRectStatus() -> ReadingEvent {
-        // TODO: add basic eye tracking
-        
+        smiMarks.flattenRectangles_eye()
         
         // Calculate proportion for Read, Critical and Interesting rectangles
         let proportionTriple = calculateProportions_manual()
-        return ReadingEvent(asSummaryWithMarkings: manualMarks, plainTextContent: getVisibleString(), infoElemId: sciDoc!.getId(), proportionTriple: proportionTriple)
+        return ReadingEvent(asSummaryWithMarkings: [manualMarks, smiMarks], plainTextContent: getVisibleString(), infoElemId: sciDoc!.getId(), proportionTriple: proportionTriple)
     }
     
     /// Get the rectangle of the pdf view, in screen coordinates

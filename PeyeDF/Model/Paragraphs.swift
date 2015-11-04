@@ -30,14 +30,17 @@ struct PDFMarkings {
                 allRects[rc] = [Int: [NSRect]]()
             }
         } else if source == .SMI {
-            // midas / smi eye tracking is only related to floating rectangles when initialized
+            // midas / smi eye tracking is only related to floating and united rectangles when initialized
             allRects[ReadingClass.Paragraph_floating] = [Int: [NSRect]]()
+            allRects[ReadingClass.Paragraph_united] = [Int: [NSRect]]()
         } else {
             for rc in [ReadingClass.Paragraph_floating, ReadingClass.Paragraph_united, ReadingClass.Read, ReadingClass.Interesting, ReadingClass.Critical] {
                 allRects[rc] = [Int: [NSRect]]()
             }
         }
     }
+    
+    // MARK: - Accessors
     
     /// Return all rectangles in an array of ReadingRects
     func getAllReadingRects() -> [ReadingRect] {
@@ -52,6 +55,13 @@ struct PDFMarkings {
         }
         return retVal
     }
+    
+    /// Returns all rectangles for a given class
+    func get(theClass: ReadingClass) -> [Int: [NSRect]] {
+        return allRects[theClass]!
+    }
+    
+    // MARK: - Mutators
     
     /// Add a rect of the given class to the given page
     mutating func addRect(rect: NSRect, ofClass: ReadingClass, forPage: Int) {
@@ -69,11 +79,6 @@ struct PDFMarkings {
             allRects[cl]![pi] = [NSRect]()
         }
         allRects[cl]![pi]!.append(readingRect.rect)
-    }
-    
-    /// Returns all rectangles for a given class
-    func get(theClass: ReadingClass) -> [Int: [NSRect]] {
-        return allRects[theClass]!
     }
     
     /// Sets rects of a given class to the given dictionary
@@ -99,6 +104,14 @@ struct PDFMarkings {
         subtractRectsOfClass(minuend: .Read, subtrahend: .Interesting)
         
         uniteRectangles(.Read)
+    }
+    
+    /// Unite all floating eye rectangles into bigger rectangles that enclose them and put them
+    /// in their place in the allRects dictionary (under .Paragraph_united)
+    mutating func flattenRectangles_eye() {
+        for page in allRects[.Paragraph_floating]!.keys {
+            allRects[.Paragraph_united]![page] = uniteCollidingRects(allRects[.Paragraph_floating]![page]!)
+        }
     }
     
     /// Unite all rectangles of the given class

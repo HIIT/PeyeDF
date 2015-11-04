@@ -54,9 +54,25 @@
             <objects>
                 <viewController title="General Settings" showSeguePresentationStyle="single" id="62w-oK-rf7" customClass="GeneralSettingsController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="WGw-LJ-0lD">
-                        <rect key="frame" x="0.0" y="0.0" width="459" height="228"/>
+                        <rect key="frame" x="0.0" y="0.0" width="459" height="248"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="BVV-hH-JyH">
+                                <rect key="frame" x="18" y="212" width="440" height="18"/>
+                                <animations/>
+                                <buttonCell key="cell" type="check" title="Automatically attempt to connect to MIDAS on start (requires restart)" bezelStyle="regularSquare" imagePosition="left" inset="2" id="7Or-3q-KEa">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="GFc-xH-ekV">
+                                <rect key="frame" x="18" y="192" width="374" height="18"/>
+                                <animations/>
+                                <buttonCell key="cell" type="check" title="Draw gazed-upon paragraphs in refinder (requires restart)" bezelStyle="regularSquare" imagePosition="left" inset="2" id="Boz-tG-XcV">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
                             <box title="Annotation line thickness" borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="UC7-V4-Wrp">
                                 <rect key="frame" x="17" y="23" width="425" height="66"/>
                                 <view key="contentView" id="cbh-La-9jU">
@@ -123,14 +139,6 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <button translatesAutoresizingMaskIntoConstraints="NO" id="BVV-hH-JyH">
-                                <rect key="frame" x="18" y="192" width="334" height="18"/>
-                                <animations/>
-                                <buttonCell key="cell" type="check" title="Automatically attempt to connect to MIDAS on start" bezelStyle="regularSquare" imagePosition="left" inset="2" id="7Or-3q-KEa">
-                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                            </button>
                             <box title="Dominant Eye" borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="afp-6T-41F">
                                 <rect key="frame" x="17" y="121" width="234" height="65"/>
                                 <view key="contentView" id="59u-gM-x6L">
@@ -184,11 +192,13 @@
                             <constraint firstItem="kwa-ow-smM" firstAttribute="top" secondItem="afp-6T-41F" secondAttribute="bottom" constant="8" symbolic="YES" id="F5Z-PG-XBm"/>
                             <constraint firstItem="UC7-V4-Wrp" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" id="GDs-Qo-G4q"/>
                             <constraint firstItem="UC7-V4-Wrp" firstAttribute="top" secondItem="gxa-Hp-eF0" secondAttribute="bottom" constant="8" symbolic="YES" id="My0-gm-Agt"/>
-                            <constraint firstItem="afp-6T-41F" firstAttribute="top" secondItem="BVV-hH-JyH" secondAttribute="bottom" constant="8" symbolic="YES" id="YHp-9p-g1S"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="gxa-Hp-eF0" secondAttribute="trailing" constant="254" id="ZTB-dj-bam"/>
                             <constraint firstItem="afp-6T-41F" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" symbolic="YES" id="am1-DD-o8Q"/>
                             <constraint firstItem="BVV-hH-JyH" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" symbolic="YES" id="fXk-kY-jPK"/>
                             <constraint firstItem="gxa-Hp-eF0" firstAttribute="leading" secondItem="kwa-ow-smM" secondAttribute="trailing" constant="15" id="jDD-qL-Gav"/>
+                            <constraint firstItem="GFc-xH-ekV" firstAttribute="top" secondItem="BVV-hH-JyH" secondAttribute="bottom" constant="6" symbolic="YES" id="jSb-WS-XYW"/>
+                            <constraint firstItem="afp-6T-41F" firstAttribute="top" secondItem="GFc-xH-ekV" secondAttribute="bottom" constant="8" symbolic="YES" id="lUC-la-RCf"/>
+                            <constraint firstItem="GFc-xH-ekV" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" symbolic="YES" id="mwV-8m-hy7"/>
                             <constraint firstAttribute="trailing" secondItem="UC7-V4-Wrp" secondAttribute="trailing" constant="20" id="rwf-WJ-HtQ"/>
                             <constraint firstItem="kwa-ow-smM" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" id="spo-cJ-rCU"/>
                         </constraints>
@@ -198,6 +208,7 @@
                         <outlet property="dpiField" destination="gxa-Hp-eF0" id="Ag9-HG-C3H"/>
                         <outlet property="leftDomEyeButton" destination="I21-cq-meB" id="xHI-t6-wUf"/>
                         <outlet property="midasCheckCell" destination="7Or-3q-KEa" id="uQA-7a-iu5"/>
+                        <outlet property="refinderDrawGazedCheckCell" destination="Boz-tG-XcV" id="DpV-AS-Kms"/>
                         <outlet property="rightDomEyeButton" destination="8qy-dl-5fN" id="hNA-b5-fpP"/>
                         <outlet property="thicknessField" destination="uRt-4J-vlE" id="X4Y-Zs-osl"/>
                         <outlet property="thicknessSlider" destination="E15-lK-fvD" id="Zdy-es-hyr"/>
@@ -205,7 +216,7 @@
                 </viewController>
                 <customObject id="ThY-Hh-P4H" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="508.5" y="-1820"/>
+            <point key="canvasLocation" x="508.5" y="-1810"/>
         </scene>
         <!--DiMe Preferences-->
         <scene sceneID="JFC-Eo-9Mb">
@@ -1178,7 +1189,7 @@
                                     <animations/>
                                 </scroller>
                                 <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="yXb-ko-u85">
-                                    <rect key="frame" x="444" y="1" width="15" height="152"/>
+                                    <rect key="frame" x="443" y="1" width="16" height="152"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <animations/>
                                 </scroller>
