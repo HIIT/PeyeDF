@@ -49,7 +49,7 @@ class eyeBox: NSBox {
         let userInfo = notification.userInfo!
         dist = userInfo["zpos"] as! CGFloat
         xdelta = userInfo["xpos"] as! CGFloat
-        ydelta = -1.0 * (userInfo["ypos"] as! CGFloat)  // flip y because SMI vs OS X
+        ydelta = (userInfo["ypos"] as! CGFloat)
         self.needsDisplay = true
     }
 
@@ -68,7 +68,7 @@ class eyeBox: NSBox {
         
         // 1 is mapped to circleMinSize
         // maxProp is mapped to innerpathsize
-        let circleSize = translate(dist, leftMin: minDist, leftMax: maxDist, rightMin: circleMinSize, rightMax: innerPathSize)
+        let circleSize = translate(dist, leftMin: maxDist, leftMax: minDist, rightMin: circleMinSize, rightMax: innerPathSize / 2)
         
         
         

@@ -54,11 +54,11 @@
             <objects>
                 <viewController title="General Settings" showSeguePresentationStyle="single" id="62w-oK-rf7" customClass="GeneralSettingsController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="WGw-LJ-0lD">
-                        <rect key="frame" x="0.0" y="0.0" width="459" height="248"/>
+                        <rect key="frame" x="0.0" y="0.0" width="459" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="BVV-hH-JyH">
-                                <rect key="frame" x="18" y="212" width="440" height="18"/>
+                                <rect key="frame" x="18" y="264" width="440" height="18"/>
                                 <animations/>
                                 <buttonCell key="cell" type="check" title="Automatically attempt to connect to MIDAS on start (requires restart)" bezelStyle="regularSquare" imagePosition="left" inset="2" id="7Or-3q-KEa">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -66,15 +66,15 @@
                                 </buttonCell>
                             </button>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="GFc-xH-ekV">
-                                <rect key="frame" x="18" y="192" width="374" height="18"/>
+                                <rect key="frame" x="18" y="244" width="326" height="18"/>
                                 <animations/>
-                                <buttonCell key="cell" type="check" title="Draw gazed-upon paragraphs in refinder (requires restart)" bezelStyle="regularSquare" imagePosition="left" inset="2" id="Boz-tG-XcV">
+                                <buttonCell key="cell" type="check" title="Draw gazed-upon paragraphs in refinder overview" bezelStyle="regularSquare" imagePosition="left" inset="2" id="Boz-tG-XcV">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
                             <box title="Annotation line thickness" borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="UC7-V4-Wrp">
-                                <rect key="frame" x="17" y="23" width="425" height="66"/>
+                                <rect key="frame" x="17" y="55" width="425" height="66"/>
                                 <view key="contentView" id="cbh-La-9jU">
                                     <rect key="frame" x="1" y="1" width="423" height="47"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -119,7 +119,7 @@
                                 <font key="titleFont" metaFont="system"/>
                             </box>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="kwa-ow-smM">
-                                <rect key="frame" x="18" y="100" width="76" height="17"/>
+                                <rect key="frame" x="18" y="132" width="76" height="17"/>
                                 <animations/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Monitor DPI" id="H12-Iy-AxQ">
                                     <font key="font" metaFont="system"/>
@@ -128,7 +128,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gxa-Hp-eF0">
-                                <rect key="frame" x="107" y="97" width="96" height="22"/>
+                                <rect key="frame" x="107" y="129" width="96" height="22"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="96" id="muS-6h-TCJ"/>
                                 </constraints>
@@ -140,7 +140,7 @@
                                 </textFieldCell>
                             </textField>
                             <box title="Dominant Eye" borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="afp-6T-41F">
-                                <rect key="frame" x="17" y="121" width="234" height="65"/>
+                                <rect key="frame" x="17" y="153" width="234" height="65"/>
                                 <view key="contentView" id="59u-gM-x6L">
                                     <rect key="frame" x="1" y="1" width="232" height="46"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -185,11 +185,22 @@
                                 <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <font key="titleFont" metaFont="system"/>
                             </box>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="S1W-xx-0w2">
+                                <rect key="frame" x="18" y="224" width="300" height="18"/>
+                                <animations/>
+                                <buttonCell key="cell" type="check" title="Draw debug circle on fixated-at point on page" bezelStyle="regularSquare" imagePosition="left" inset="2" id="qEt-ZY-ZQF">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="afp-6T-41F" firstAttribute="top" secondItem="S1W-xx-0w2" secondAttribute="bottom" constant="8" symbolic="YES" id="5Ka-dp-EXl"/>
                             <constraint firstItem="BVV-hH-JyH" firstAttribute="top" secondItem="WGw-LJ-0lD" secondAttribute="top" constant="20" symbolic="YES" id="A9l-CU-HT2"/>
                             <constraint firstItem="kwa-ow-smM" firstAttribute="centerY" secondItem="gxa-Hp-eF0" secondAttribute="centerY" constant="-0.5" id="AMn-gO-zt9"/>
+                            <constraint firstItem="S1W-xx-0w2" firstAttribute="top" secondItem="GFc-xH-ekV" secondAttribute="bottom" constant="6" symbolic="YES" id="D74-0d-whb"/>
                             <constraint firstItem="kwa-ow-smM" firstAttribute="top" secondItem="afp-6T-41F" secondAttribute="bottom" constant="8" symbolic="YES" id="F5Z-PG-XBm"/>
+                            <constraint firstItem="S1W-xx-0w2" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" symbolic="YES" id="Fe1-0s-bZy"/>
                             <constraint firstItem="UC7-V4-Wrp" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" id="GDs-Qo-G4q"/>
                             <constraint firstItem="UC7-V4-Wrp" firstAttribute="top" secondItem="gxa-Hp-eF0" secondAttribute="bottom" constant="8" symbolic="YES" id="My0-gm-Agt"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="gxa-Hp-eF0" secondAttribute="trailing" constant="254" id="ZTB-dj-bam"/>
@@ -197,7 +208,6 @@
                             <constraint firstItem="BVV-hH-JyH" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" symbolic="YES" id="fXk-kY-jPK"/>
                             <constraint firstItem="gxa-Hp-eF0" firstAttribute="leading" secondItem="kwa-ow-smM" secondAttribute="trailing" constant="15" id="jDD-qL-Gav"/>
                             <constraint firstItem="GFc-xH-ekV" firstAttribute="top" secondItem="BVV-hH-JyH" secondAttribute="bottom" constant="6" symbolic="YES" id="jSb-WS-XYW"/>
-                            <constraint firstItem="afp-6T-41F" firstAttribute="top" secondItem="GFc-xH-ekV" secondAttribute="bottom" constant="8" symbolic="YES" id="lUC-la-RCf"/>
                             <constraint firstItem="GFc-xH-ekV" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" symbolic="YES" id="mwV-8m-hy7"/>
                             <constraint firstAttribute="trailing" secondItem="UC7-V4-Wrp" secondAttribute="trailing" constant="20" id="rwf-WJ-HtQ"/>
                             <constraint firstItem="kwa-ow-smM" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" id="spo-cJ-rCU"/>
@@ -206,6 +216,7 @@
                     </view>
                     <connections>
                         <outlet property="dpiField" destination="gxa-Hp-eF0" id="Ag9-HG-C3H"/>
+                        <outlet property="drawDebugCircleCheckCell" destination="qEt-ZY-ZQF" id="IEe-IU-hs7"/>
                         <outlet property="leftDomEyeButton" destination="I21-cq-meB" id="xHI-t6-wUf"/>
                         <outlet property="midasCheckCell" destination="7Or-3q-KEa" id="uQA-7a-iu5"/>
                         <outlet property="refinderDrawGazedCheckCell" destination="Boz-tG-XcV" id="DpV-AS-Kms"/>
@@ -216,7 +227,7 @@
                 </viewController>
                 <customObject id="ThY-Hh-P4H" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="508.5" y="-1810"/>
+            <point key="canvasLocation" x="508.5" y="-1784"/>
         </scene>
         <!--DiMe Preferences-->
         <scene sceneID="JFC-Eo-9Mb">
@@ -1050,7 +1061,7 @@
             <objects>
                 <viewController storyboardIdentifier="MetadataView" id="Tob-nv-EUI" userLabel="Metadata View" customClass="MetadataViewController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="PIX-7T-EOz">
-                        <rect key="frame" x="0.0" y="0.0" width="579" height="331"/>
+                        <rect key="frame" x="0.0" y="0.0" width="594" height="331"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="47S-8U-JiS">
@@ -1081,7 +1092,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NEN-ou-gAo" userLabel="Title field">
-                                <rect key="frame" x="100" y="289" width="459" height="22"/>
+                                <rect key="frame" x="100" y="289" width="474" height="22"/>
                                 <animations/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" usesSingleLineMode="YES" id="cvm-mA-21R">
                                     <font key="font" metaFont="system"/>
@@ -1093,7 +1104,7 @@
                                 </connections>
                             </textField>
                             <textField verticalHuggingPriority="750" verticalCompressionResistancePriority="752" translatesAutoresizingMaskIntoConstraints="NO" id="R2a-EL-IQ3" userLabel="Subject field">
-                                <rect key="frame" x="100" y="257" width="459" height="22"/>
+                                <rect key="frame" x="100" y="257" width="474" height="22"/>
                                 <animations/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" usesSingleLineMode="YES" id="WET-rY-nyA">
                                     <font key="font" metaFont="system"/>
@@ -1105,7 +1116,7 @@
                                 </connections>
                             </textField>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="RIk-28-FIi" userLabel="Author field">
-                                <rect key="frame" x="100" y="225" width="459" height="22"/>
+                                <rect key="frame" x="100" y="225" width="474" height="22"/>
                                 <animations/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" usesSingleLineMode="YES" id="0QS-2b-B4E">
                                     <font key="font" metaFont="system"/>
@@ -1117,7 +1128,7 @@
                                 </connections>
                             </textField>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="NCt-Rx-KJJ" userLabel="New keyword field">
-                                <rect key="frame" x="100" y="193" width="459" height="22"/>
+                                <rect key="frame" x="100" y="193" width="474" height="22"/>
                                 <animations/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" usesSingleLineMode="YES" id="5YM-fZ-0Jz">
                                     <font key="font" metaFont="system"/>
@@ -1147,9 +1158,9 @@
                                 </textFieldCell>
                             </textField>
                             <scrollView horizontalCompressionResistancePriority="749" verticalCompressionResistancePriority="749" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" translatesAutoresizingMaskIntoConstraints="NO" id="70D-xN-OKv" userLabel="Scroll view">
-                                <rect key="frame" x="99" y="20" width="460" height="154"/>
+                                <rect key="frame" x="99" y="20" width="475" height="154"/>
                                 <clipView key="contentView" id="hVe-xD-ghp">
-                                    <rect key="frame" x="1" y="1" width="458" height="152"/>
+                                    <rect key="frame" x="1" y="1" width="458" height="137"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <view translatesAutoresizingMaskIntoConstraints="NO" id="S4s-dV-cpl">
@@ -1184,12 +1195,12 @@
                                 </clipView>
                                 <animations/>
                                 <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="3jp-Dq-eYf">
-                                    <rect key="frame" x="1" y="137" width="458" height="16"/>
+                                    <rect key="frame" x="1" y="138" width="458" height="15"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <animations/>
                                 </scroller>
                                 <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="yXb-ko-u85">
-                                    <rect key="frame" x="443" y="1" width="16" height="152"/>
+                                    <rect key="frame" x="459" y="1" width="15" height="137"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <animations/>
                                 </scroller>
@@ -1408,11 +1419,11 @@
                             <scrollView verticalCompressionResistancePriority="250" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ObA-9X-EOe">
                                 <rect key="frame" x="375" y="20" width="324" height="135"/>
                                 <clipView key="contentView" id="yba-wA-5fo">
-                                    <rect key="frame" x="1" y="0.0" width="322" height="134"/>
+                                    <rect key="frame" x="1" y="0.0" width="322" height="119"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" horizontalCompressionResistancePriority="730" verticalCompressionResistancePriority="730" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="hYF-Uy-3Rx" viewBased="YES" id="LHf-eC-4mj">
-                                            <rect key="frame" x="0.0" y="0.0" width="336" height="111"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="336" height="96"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <animations/>
                                             <size key="intercellSpacing" width="3" height="2"/>

@@ -26,6 +26,10 @@ func getAllFixationsAfter(previousTime: Int, forEye eye: Eye, fromJSON json: JSO
     // find index to start from
     let timeArray = json[0]["return"]["startTime"]["data"].arrayObject as! [Int]
     
+    if timeArray.count == 0 {
+        return nil
+    }
+    
     var i = binaryGreaterOrEqOnSortedArray(timeArray, target: previousTime + 1)
     
     // The end was returned, it means nothing is new

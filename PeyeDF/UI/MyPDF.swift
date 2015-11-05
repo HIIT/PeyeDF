@@ -33,6 +33,11 @@ class MyPDF: MyPDFBase, ScreenToPageConverter {
     /// Whether we want to annotate by clicking
     private var clickAnnotationEnabled = true
     
+    /// Whether we want to draw debug circle
+    lazy var drawDebugCirle: Bool = {
+        return NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDrawDebugCircle) as! Bool
+    }()
+    
     var containsRawString = false  // this stores whether the document actually contains scanned text
     
     /// Stores all strings searched for and found by user
@@ -145,25 +150,27 @@ class MyPDF: MyPDFBase, ScreenToPageConverter {
     override func drawPage(page: PDFPage!) {
     	// Let PDFView do most of the hard work.
         super.drawPage(page)
-        
-    	// Save.
-        NSGraphicsContext.saveGraphicsState()
-	
-        // Draw.
-        if let circlePosition = circlePosition {
-            // Draw what you need
-            let circleRect = NSRect(origin: circlePosition, size: circleSize)
+       
+        if drawDebugCirle {
+        	// Save.
+            NSGraphicsContext.saveGraphicsState()
     	
-            let borderColor = NSColor(red: 0.9, green: 0.0, blue: 0.0, alpha: 0.8)
-            borderColor.set()
+            // Draw.
+            if let circlePosition = circlePosition {
+                // Draw what you need
+                let circleRect = NSRect(origin: circlePosition, size: circleSize)
+        	
+                let borderColor = NSColor(red: 0.9, green: 0.0, blue: 0.0, alpha: 0.8)
+                borderColor.set()
+                
+                let circlePath: NSBezierPath = NSBezierPath(ovalInRect: circleRect)
+                circlePath.lineWidth = 3.0
+                circlePath.stroke()
+            }
             
-            let circlePath: NSBezierPath = NSBezierPath(ovalInRect: circleRect)
-            circlePath.lineWidth = 3.0
-            circlePath.stroke()
+        	// Restore.
+        	NSGraphicsContext.restoreGraphicsState()
         }
-        
-    	// Restore.
-    	NSGraphicsContext.restoreGraphicsState()
     }
     
     
@@ -284,19 +291,19 @@ class MyPDF: MyPDFBase, ScreenToPageConverter {
         }
         let pointOnPage = self.convertPoint(pointInView, toPage: page)
         
-        // TODO: remove debug-circle
         // start debug- circle
-        
-        if let oldPosition = circlePosition {
-            let oldPageRect = NSRect(origin: oldPosition, size: circleSize)
-            let screenRect = convertRect(oldPageRect, fromPage: currentPage())
+        if drawDebugCirle {
+            if let oldPosition = circlePosition {
+                let oldPageRect = NSRect(origin: oldPosition, size: circleSize)
+                let screenRect = convertRect(oldPageRect, fromPage: currentPage())
+                setNeedsDisplayInRect(screenRect.addTo(scaleFactor()))
+            }
+            
+            circlePosition = pointOnPage
+            var screenRect = NSRect(origin: circlePosition!, size: circleSize)
+            screenRect = convertRect(screenRect, fromPage: currentPage())
             setNeedsDisplayInRect(screenRect.addTo(scaleFactor()))
         }
-        
-        circlePosition = pointOnPage
-        var screenRect = NSRect(origin: circlePosition!, size: circleSize)
-        screenRect = convertRect(screenRect, fromPage: currentPage())
-        setNeedsDisplayInRect(screenRect.addTo(scaleFactor()))
         // End debug - circle
         
         // create rect for gazed-at paragraph
@@ -362,7 +369,9 @@ class MyPDF: MyPDFBase, ScreenToPageConverter {
         totProportion += proportionTriple.proportionInteresting
         totProportion += proportionTriple.proportionCritical
         
-        if totProportion < PeyeConstants.minProportion {
+        let proportionGazed = calculateProportion_smi()
+        
+        if totProportion < PeyeConstants.minProportion && proportionGazed < PeyeConstants.minProportion {
             return nil
         } else {
             return ReadingEvent(asSummaryWithMarkings: [manualMarks, smiMarks, searchMarks], plainTextContent: getVisibleString(), infoElemId: sciDoc!.getId(), foundStrings: foundStrings, proportionTriple: proportionTriple)

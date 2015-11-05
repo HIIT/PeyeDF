@@ -150,7 +150,7 @@ class MyPDFBase: PDFView {
     
     /// Calculate proportion of Read, Interesting and Critical markings.
     /// This is done by calculating the total area of each page and multiplying it by a constant.
-    /// All rectangles (assumed which will be united) are then cycled and the area of each is subtracted
+    /// All rectangles (which will be united) are then cycled and the area of each is subtracted
     /// to calculate a proportion.
     func calculateProportions_manual() -> (proportionRead: Double, proportionInteresting: Double, proportionCritical: Double) {
         manualMarks.flattenRectangles_relevance()
@@ -186,6 +186,29 @@ class MyPDFBase: PDFView {
         return (proportionRead: proportionRead, proportionInteresting: proportionInteresting, proportionCritical: proportionCritical)
     }
     
+    /// Calculate proportion of gazed-at united rectangles.
+    /// This is done by calculating the total area of each page and multiplying it by a constant.
+    /// All rectangles (which will be united) are then cycled and the area of each is subtracted
+    /// to calculate a proportion.
+    func calculateProportion_smi() -> Double {
+        smiMarks.flattenRectangles_eye()
+        var totalSurface = 0.0
+        var gazedSurface = 0.0
+        for pageI in 0..<document().pageCount() {
+            let thePage = document().pageAtIndex(pageI)
+            let pageRect = getPageRect(thePage)
+            let pageSurface = Double(pageRect.size.height * pageRect.size.width)
+            totalSurface += pageSurface
+            if let rectArray = smiMarks.get(.Paragraph_united)[pageI] {
+                for rect in rectArray {
+                    gazedSurface += Double(rect.size.height * rect.size.width)
+                }
+            }
+        }
+        totalSurface *= PeyeConstants.pageAreaMultiplier
+        let proportionGazed = gazedSurface / totalSurface
+        return proportionGazed
+    }
     
     // MARK: - Internal functions
     

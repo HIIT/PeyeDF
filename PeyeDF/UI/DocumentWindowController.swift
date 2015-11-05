@@ -231,7 +231,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             let url: NSURL = document.fileURL!
             
             pdfDoc = PDFDocument(URL: url)
-            myPdf?.setDocument(pdfDoc)
+            myPdf!.setDocument(pdfDoc)
             dispatch_async(dispatch_get_main_queue()) {
                 NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.documentChangeNotification, object: self.document)
             }
@@ -241,7 +241,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             peyeDoc.pdfDoc = pdfDoc
             // check if there is text
             if let _ = pdfDoc.getText() {
-                myPdf?.containsRawString = true
+                myPdf!.containsRawString = true
                 tbMetadata.image = NSImage(named: "NSStatusAvailable")
             } else {
                 tbMetadata.image = NSImage(named: "NSStatusUnavailable")
@@ -249,7 +249,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             
             // Associate PDF view to info element
             let sciDoc = ScientificDocument(uri: url.path!, plainTextContent: pdfDoc.getText(), title: pdfDoc.getTitle(), authors: pdfDoc.getAuthorsAsArray(), keywords: pdfDoc.getKeywordsAsArray())
-            myPdf?.sciDoc = sciDoc
+            myPdf!.sciDoc = sciDoc
             
             // Tell app singleton which screen size we are using
             if let screen = window?.screen {
@@ -427,11 +427,8 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             let avail = uInfo["available"] as! Bool
             if avail {
                 HistoryManager.sharedManager.entry(self)
-                // TODO: remove debug
-                Swift.print(self.window!.title + " gained gaze")
             } else {
                 HistoryManager.sharedManager.exit(self)
-                Swift.print(self.window!.title + " lost gaze")
             }
         }
     }

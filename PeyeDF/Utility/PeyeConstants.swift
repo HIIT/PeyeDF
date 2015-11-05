@@ -24,6 +24,9 @@ struct PeyeConstants {
     /// Draw gazed-upon paragraphs in refinder
     static let prefRefinderDrawGazedUpon = "refinder.drawGazedUpon"
     
+    /// Draw debug circle
+    static let prefDrawDebugCircle = "debug.drawCircle"
+    
     /// Monitor DPI
     static let prefMonitorDPI = "monitor.DPI"
     
@@ -45,7 +48,7 @@ struct PeyeConstants {
     /// MARK: - History-specific constants
     
     /// Amount of seconds that are needed before we assume user is reading (after, we start recording the current readingevent).
-    static let minReadTime: NSTimeInterval = 2.5
+    static let minReadTime: NSTimeInterval = 2.0
     
     /// Amount of seconds after which we always close a reading event.
     /// (It is assumed the user went away from keyboard).
