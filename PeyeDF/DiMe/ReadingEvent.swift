@@ -17,10 +17,13 @@ class ReadingEvent: Event {
     let infoElemId: NSString
     var manualMarkings: PDFMarkings!
     var smiMarkings: PDFMarkings!
+    var searchMarkings: PDFMarkings!
     
     var proportionRead: Double?
     var proportionCritical: Double?
     var proportionInteresting: Double?
+    
+    var foundStrings = [String]()
     
     /**
         Creates this reading event.
@@ -64,12 +67,13 @@ class ReadingEvent: Event {
     
     /** Creates a summary reading event, which contains all "markings" in form of rectangles
     */
-    init(asSummaryWithMarkings markings: [PDFMarkings], plainTextContent: NSString?, infoElemId: NSString, proportionTriple: (proportionRead: Double, proportionInteresting: Double, proportionCritical: Double)) {
+    init(asSummaryWithMarkings markings: [PDFMarkings], plainTextContent: NSString?, infoElemId: NSString, foundStrings: [String], proportionTriple: (proportionRead: Double, proportionInteresting: Double, proportionCritical: Double)) {
         self.infoElemId = infoElemId
         
         self.proportionRead = proportionTriple.proportionRead
         self.proportionCritical = proportionTriple.proportionCritical
         self.proportionInteresting = proportionTriple.proportionInteresting
+        self.foundStrings = foundStrings
         
         super.init()
         
@@ -92,6 +96,10 @@ class ReadingEvent: Event {
             theDictionary["plainTextContent"] = ptc
         }
         
+        if foundStrings.count > 0 {
+            theDictionary["foundStrings"] = foundStrings
+        }
+        
         var infoElemDict = [String: AnyObject]()
         infoElemDict["@type"] = "ScientificDocument"
         infoElemDict["type"] = "http://www.hiit.fi/ontologies/dime/#ScientificDocument"
@@ -110,14 +118,22 @@ class ReadingEvent: Event {
         proportionRead = json["proportionRead"].doubleValue
         proportionInteresting = json["proportionInteresting"].doubleValue
         proportionCritical = json["proportionCritical"].doubleValue
+        if let fStrings = json["foundStrings"].array {
+            for fString in fStrings {
+                foundStrings.append(fString.stringValue)
+            }
+        }
         let dateCreated: NSDate = NSDate(timeIntervalSince1970: NSTimeInterval(json["timeCreated"].intValue / 1000))
         self.manualMarkings = PDFMarkings(withSource: ClassSource.Click)
         self.smiMarkings = PDFMarkings(withSource: ClassSource.SMI)
+        self.searchMarkings = PDFMarkings(withSource: ClassSource.Search)
         for pageRect in json["pageRects"].arrayValue {
             if pageRect["classSource"].intValue == ClassSource.Click.rawValue {
                 self.manualMarkings.addRect(ReadingRect(fromJson: pageRect))
             } else if pageRect["classSource"].intValue == ClassSource.SMI.rawValue {
                 self.smiMarkings.addRect(ReadingRect(fromJson: pageRect))
+            } else if pageRect["classSource"].intValue == ClassSource.Search.rawValue {
+                self.searchMarkings.addRect(ReadingRect(fromJson: pageRect))
             }
         }
         super.init(withStartDate: dateCreated)
@@ -128,6 +144,5 @@ class ReadingEvent: Event {
         pageEyeData.append(newData.getDict())
         theDictionary["pageEyeData"] = pageEyeData
     }
-    
 }
 

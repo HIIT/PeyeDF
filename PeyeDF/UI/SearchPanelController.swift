@@ -286,9 +286,7 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
         let rowIndex = tabView.selectedRow
         if rowIndex >= 0 {
             let selectedResult = foundSelections[rowIndex]
-            pdfView?.setCurrentSelection(selectedResult, animate: false)
-            pdfView?.scrollSelectionToVisible(self)
-            pdfView?.setCurrentSelection(selectedResult, animate: true)
+            pdfView?.foundResult(selectedResult)
         }
     }
 }

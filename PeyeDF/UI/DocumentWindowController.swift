@@ -385,8 +385,8 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             self.window!.beginSheet(ww, completionHandler: nil)
             // send data to dime
             dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
-                if let mpdf = self.myPdf {
-                    HistoryManager.sharedManager.sendToDiMe(mpdf.getUserRectStatus())
+                if let mpdf = self.myPdf, userRectStatus = mpdf.getUserRectStatus() {
+                    HistoryManager.sharedManager.sendToDiMe(userRectStatus)
                 }
                 dispatch_sync(dispatch_get_main_queue()) {
                     AppSingleton.appDelegate.openPDFs--

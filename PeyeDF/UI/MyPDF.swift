@@ -35,6 +35,9 @@ class MyPDF: MyPDFBase, ScreenToPageConverter {
     
     var containsRawString = false  // this stores whether the document actually contains scanned text
     
+    /// Stores all strings searched for and found by user
+    private lazy var foundStrings = { return [String]() }()
+    
     /// Stores the information element for the current document.
     /// Set by DocumentWindowController.loadDocument()
     var sciDoc: ScientificDocument?
@@ -103,13 +106,13 @@ class MyPDF: MyPDFBase, ScreenToPageConverter {
                     if let oldPosition = circlePosition {
                         let oldPageRect = NSRect(origin: oldPosition, size: circleSize)
                         let screenRect = convertRect(oldPageRect, fromPage: currentPage())
-                        setNeedsDisplayInRect(screenRect.scale(scaleFactor()))
+                        setNeedsDisplayInRect(screenRect.addTo(scaleFactor()))
                     }
                     
                     circlePosition = convertPoint(mouseInView.origin, toPage: currentPage())
                     var screenRect = NSRect(origin: circlePosition!, size: circleSize)
                     screenRect = convertRect(screenRect, fromPage: currentPage())
-                    setNeedsDisplayInRect(screenRect.scale(scaleFactor()))
+                    setNeedsDisplayInRect(screenRect.addTo(scaleFactor()))
 
                 }
             }
@@ -118,6 +121,22 @@ class MyPDF: MyPDFBase, ScreenToPageConverter {
             super.mouseDown(theEvent)
             
         }
+    }
+    
+    // MARK: - Received actions
+    
+    /// Looks up a found selection, used when a user selects a search result
+    func foundResult(selectedResult: PDFSelection) {
+        setCurrentSelection(selectedResult, animate: false)
+        scrollSelectionToVisible(self)
+        setCurrentSelection(selectedResult, animate: true)
+        let foundString = selectedResult.string().lowercaseString
+        if foundStrings.indexOf(foundString) == nil {
+            foundStrings.append(foundString)
+        }
+        let foundOnPage = selectedResult.pages()[0] as! PDFPage
+        let pageIndex = document().indexForPage(foundOnPage)
+        searchMarks.addRect(selectedResult.boundsForPage(foundOnPage), ofClass: .FoundString, forPage: pageIndex)
     }
     
     // MARK: - Page drawing override
@@ -271,13 +290,13 @@ class MyPDF: MyPDFBase, ScreenToPageConverter {
         if let oldPosition = circlePosition {
             let oldPageRect = NSRect(origin: oldPosition, size: circleSize)
             let screenRect = convertRect(oldPageRect, fromPage: currentPage())
-            setNeedsDisplayInRect(screenRect.scale(scaleFactor()))
+            setNeedsDisplayInRect(screenRect.addTo(scaleFactor()))
         }
         
         circlePosition = pointOnPage
         var screenRect = NSRect(origin: circlePosition!, size: circleSize)
         screenRect = convertRect(screenRect, fromPage: currentPage())
-        setNeedsDisplayInRect(screenRect.scale(scaleFactor()))
+        setNeedsDisplayInRect(screenRect.addTo(scaleFactor()))
         // End debug - circle
         
         // create rect for gazed-at paragraph
@@ -329,12 +348,25 @@ class MyPDF: MyPDFBase, ScreenToPageConverter {
     }
     
     /// Returns all rectangles with their corresponding class, marked by the user (and basic eye tracking)
-    func getUserRectStatus() -> ReadingEvent {
+    ///
+    /// - returns: A summary reading event corresponding to all marks, nil if proportion read / interesting
+    ///            etc was less than a minimum amount (suggesting the document wasn't actually read)
+    func getUserRectStatus() -> ReadingEvent? {
         smiMarks.flattenRectangles_eye()
         
         // Calculate proportion for Read, Critical and Interesting rectangles
         let proportionTriple = calculateProportions_manual()
-        return ReadingEvent(asSummaryWithMarkings: [manualMarks, smiMarks], plainTextContent: getVisibleString(), infoElemId: sciDoc!.getId(), proportionTriple: proportionTriple)
+        
+        var totProportion = 0.0
+        totProportion += proportionTriple.proportionRead
+        totProportion += proportionTriple.proportionInteresting
+        totProportion += proportionTriple.proportionCritical
+        
+        if totProportion < PeyeConstants.minProportion {
+            return nil
+        } else {
+            return ReadingEvent(asSummaryWithMarkings: [manualMarks, smiMarks, searchMarks], plainTextContent: getVisibleString(), infoElemId: sciDoc!.getId(), foundStrings: foundStrings, proportionTriple: proportionTriple)
+        }
     }
     
     /// Get the rectangle of the pdf view, in screen coordinates

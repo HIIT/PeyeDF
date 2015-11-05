@@ -201,8 +201,21 @@ extension NSRect {
         return ary
     }
     
-    /// Scale this rect by a given factor (by addition) and return a new rect.
+    /// Scale this rect by a given factor (by multiplication) and return a new rect.
     func scale(scale: CGFloat) -> NSRect {
+        let newWidth = self.size.width * scale
+        let newHeight = self.size.height * scale
+        let widthDiff = newWidth - self.size.width
+        let heightDiff = newHeight - self.size.height
+        
+        let newx = self.origin.x - widthDiff / 2
+        let newy = self.origin.y - heightDiff / 2
+        
+        return NSMakeRect(newx, newy, newWidth, newHeight);
+    }
+    
+    /// Scale this rect by a given factor (by addition) and return a new rect.
+    func addTo(scale: CGFloat) -> NSRect {
         var newOrigin = NSPoint()
     
         let maxX = CGFloat(ceilf(Float(self.origin.x + self.size.width))) + scale

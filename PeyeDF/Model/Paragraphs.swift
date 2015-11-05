@@ -33,8 +33,10 @@ struct PDFMarkings {
             // midas / smi eye tracking is only related to floating and united rectangles when initialized
             allRects[ReadingClass.Paragraph_floating] = [Int: [NSRect]]()
             allRects[ReadingClass.Paragraph_united] = [Int: [NSRect]]()
+        } else if source == .Search {
+            allRects[ReadingClass.FoundString] = [Int: [NSRect]]()
         } else {
-            for rc in [ReadingClass.Paragraph_floating, ReadingClass.Paragraph_united, ReadingClass.Read, ReadingClass.Interesting, ReadingClass.Critical] {
+            for rc in [ReadingClass.Paragraph_floating, ReadingClass.Paragraph_united, ReadingClass.Read, ReadingClass.Interesting, ReadingClass.Critical, ReadingClass.FoundString] {
                 allRects[rc] = [Int: [NSRect]]()
             }
         }
@@ -227,6 +229,7 @@ public enum ReadingClass: Int {
     case Paragraph_floating = 13
     case Paragraph_united = 14
     case Read = 20
+    case FoundString = 25
     case Interesting = 30
     case Critical = 40
 }
@@ -238,4 +241,5 @@ public enum ClassSource: Int {
     case Click = 2
     case SMI = 3
     case ML = 4
+    case Search = 5
 }

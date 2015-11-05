@@ -26,9 +26,11 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
         pdfOverview.scrollToBeginningOfDocument(self)
         pdfOverview.manualMarks = tuple.ev.manualMarkings
         pdfOverview.smiMarks = tuple.ev.smiMarkings
+        pdfOverview.searchMarks = tuple.ev.searchMarkings
         pdfDetail.setDocument(pdfDoc2)
         pdfDetail.manualMarks = tuple.ev.manualMarkings
         pdfDetail.smiMarks = tuple.ev.smiMarkings
+        pdfDetail.searchMarks = tuple.ev.searchMarkings
         pdfDetail.autoAnnotate()
         pdfOverview.pdfDetail = pdfDetail
     }

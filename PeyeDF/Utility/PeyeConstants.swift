@@ -87,6 +87,10 @@ struct PeyeConstants {
     
     // MARK: - Annotations
     
+    /// Documents which have been seen / read / marked as interesting less than this amount won't be sent
+    /// as summary events to DiMe
+    static let minProportion = 0.05
+    
     /// Space between the "selection" (seen paragraph) rectangle and its line (in page points)
     static let annotationLineDistance: CGFloat = 7
     
@@ -105,6 +109,8 @@ struct PeyeConstants {
     /// Default color for "united" paragraphs detected using fixations
     static let markColourSMI_United: NSColor = NSColor(red: 0.30, green: 0.30, blue: 0.30, alpha: 0.75)
     
+    /// Default color for searched, found and looked at string queries
+    static let markColourFoundStrings: NSColor = NSColor(red: 0.88, green: 0.89, blue: 0.0, alpha: 0.85)
     
     /// Array of all annotation colours, in ascending order of importance
     static let annotationAllColours = [PeyeConstants.annotationColourRead,

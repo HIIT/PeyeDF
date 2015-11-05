@@ -48,6 +48,24 @@ class MyPDFOverview: MyPDFBase {
             }
         }
         
+        // draw found search queries
+        if let rectsToDraw = searchMarks.get(.FoundString)[pageIndex] {
+            	// Save.
+                NSGraphicsContext.saveGraphicsState()
+        	
+                // Draw.
+                for rect in rectsToDraw {
+                    let rectCol = PeyeConstants.markColourFoundStrings
+                    // scale rect up to make it more visible
+                    let rectPath: NSBezierPath = NSBezierPath(rect: rect.scale(3))
+                    rectCol.setFill()
+                    rectPath.fill()
+                }
+                
+            	// Restore.
+            	NSGraphicsContext.restoreGraphicsState()
+        }
+        
         // draw gazed upon rects if desired
         if drawGazedRects {
             let eyeClasses = [ReadingClass.Paragraph_united]
