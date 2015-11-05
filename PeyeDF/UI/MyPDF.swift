@@ -343,7 +343,7 @@ class MyPDF: MyPDFBase, ScreenToPageConverter {
             var vpi = 0
             for rect in pageRects {
                 let visiblePageNum = visiblePageNums[vpi]
-                let newRect = ReadingRect(pageIndex: visiblePageNum, rect: rect, readingClass: ReadingClass.Viewport, classSource: ClassSource.Viewport)
+                let newRect = ReadingRect(pageIndex: visiblePageNum, rect: rect, readingClass: ReadingClass.Viewport, classSource: ClassSource.Viewport, plainTextContent: plainTextContent as String)
                 readingRects.append(newRect)
                 vpi++
             }
@@ -374,7 +374,7 @@ class MyPDF: MyPDFBase, ScreenToPageConverter {
         if totProportion < PeyeConstants.minProportion && proportionGazed < PeyeConstants.minProportion {
             return nil
         } else {
-            return ReadingEvent(asSummaryWithMarkings: [manualMarks, smiMarks, searchMarks], plainTextContent: getVisibleString(), infoElemId: sciDoc!.getId(), foundStrings: foundStrings, proportionTriple: proportionTriple)
+            return ReadingEvent(asSummaryWithMarkings: [manualMarks, smiMarks, searchMarks], plainTextContent: getVisibleString(), infoElemId: sciDoc!.getId(), foundStrings: foundStrings, myPdf: self, proportionTriple: proportionTriple)
         }
     }
     
@@ -425,6 +425,21 @@ class MyPDF: MyPDFBase, ScreenToPageConverter {
         return nil
     }
    
+    /// Returns a string corresponding to the text contained within the given rect at the given page index
+    ///
+    /// - parameter rect: The rect for which we want the string for
+    /// - parameter onPage: Index starting from 0 on which the rect is
+    /// - returns: A string if it was possible to generate it, nil if not
+    func stringForRect(rect: NSRect, onPage: Int) -> String? {
+        if containsRawString {
+            let page = document().pageAtIndex(onPage)
+            let selection = page.selectionForRect(rect)
+            return selection.string()
+        } else {
+            return nil
+        }
+    }
+    
     
     // MARK: - Debug functions
     

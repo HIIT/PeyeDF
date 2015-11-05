@@ -14,24 +14,34 @@ public struct ReadingRect: Equatable, Dictionariable {
     var rect: NSRect
     var readingClass: ReadingClass = ReadingClass.Unset
     var classSource: ClassSource = ClassSource.Unset
+    var plainTextContent: String?
     
-    init(pageIndex: Int, origin: NSPoint, size: NSSize, readingClass: ReadingClass , classSource: ClassSource) {
+    init(pageIndex: Int, origin: NSPoint, size: NSSize, readingClass: ReadingClass , classSource: ClassSource, plainTextContent: String?) {
         self.pageIndex = pageIndex
         self.rect = NSRect(origin: origin, size: size)
         self.readingClass = readingClass
         self.classSource = classSource
+        if let ptc = plainTextContent {
+            self.plainTextContent = ptc
+        }
     }
     
-    init(pageIndex: Int, rect: NSRect, readingClass: ReadingClass, classSource: ClassSource) {
+    init(pageIndex: Int, rect: NSRect, readingClass: ReadingClass, classSource: ClassSource, plainTextContent: String?) {
         self.pageIndex = pageIndex
         self.rect = rect
         self.readingClass = readingClass
         self.classSource = classSource
+        if let ptc = plainTextContent {
+            self.plainTextContent = ptc
+        }
     }
     
-    init(pageIndex: Int, rect: NSRect) {
+    init(pageIndex: Int, rect: NSRect, plainTextContent: String?) {
         self.pageIndex = pageIndex
         self.rect = rect
+        if let ptc = plainTextContent {
+            self.plainTextContent = ptc
+        }
     }
     
     /// Creates a rect from a (dime-used) json object
@@ -42,6 +52,9 @@ public struct ReadingRect: Equatable, Dictionariable {
         self.readingClass = ReadingClass(rawValue: json["readingClass"].intValue)!
         self.classSource = ClassSource(rawValue: json["classSource"].intValue)!
         self.pageIndex = json["pageIndex"].intValue
+        if let ptc = json["plainTextContent"].string {
+            self.plainTextContent = ptc
+        }
     }
     
     mutating func setClass(newClass: ReadingClass) {
@@ -59,6 +72,9 @@ public struct ReadingRect: Equatable, Dictionariable {
         retDict["size"] = self.rect.size.getDict()
         retDict["readingClass"] = self.readingClass.rawValue
         retDict["classSource"] = self.classSource.rawValue
+        if let ptc = plainTextContent {
+            retDict["plainTextContent"] = ptc
+        }
         return retDict
     }
 }

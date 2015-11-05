@@ -67,7 +67,7 @@ class ReadingEvent: Event {
     
     /** Creates a summary reading event, which contains all "markings" in form of rectangles
     */
-    init(asSummaryWithMarkings markings: [PDFMarkings], plainTextContent: NSString?, infoElemId: NSString, foundStrings: [String], proportionTriple: (proportionRead: Double, proportionInteresting: Double, proportionCritical: Double)) {
+    init(asSummaryWithMarkings markings: [PDFMarkings], plainTextContent: NSString?, infoElemId: NSString, foundStrings: [String], myPdf: MyPDF?, proportionTriple: (proportionRead: Double, proportionInteresting: Double, proportionCritical: Double)) {
         self.infoElemId = infoElemId
         
         self.proportionRead = proportionTriple.proportionRead
@@ -86,7 +86,7 @@ class ReadingEvent: Event {
         // create a rectangle array for all PDF markings
         var rectArray = [[String: AnyObject]]()
         for marking in markings {
-            for rect in marking.getAllReadingRects() {
+            for rect in marking.getAllReadingRects(myPdf) {
                 rectArray.append(rect.getDict())
             }
         }
