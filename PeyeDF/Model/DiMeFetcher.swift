@@ -85,12 +85,21 @@ class DiMeFetcher {
             if response.isFailure {
                 AppSingleton.log.error("Error fetching information element: \(response.debugDescription)")
             } else {
-                let newScidoc = ScientificDocument(fromJson: JSON(response.value!))
-                self.outgoing[forIndex].ie = newScidoc
-                self.missingInfoElems--
-                // all data has been fetched, send it
-                if self.missingInfoElems == 0 {
-                    self.receiver.receiveAllSummaries(self.outgoing)
+                let json = JSON(response.value!)
+                if let appId = json.string {
+                    if appId == infoElemId {
+                        let newScidoc = ScientificDocument(fromJson: json)
+                        self.outgoing[forIndex].ie = newScidoc
+                        self.missingInfoElems--
+                        // all data has been fetched, send it
+                        if self.missingInfoElems == 0 {
+                            self.receiver.receiveAllSummaries(self.outgoing)
+                        }
+                    } else {
+                        AppSingleton.log.error("Retrieved info element id does not match requested id: \(response.value!)")
+                    }
+                } else {
+                    AppSingleton.log.error("Failed to retrieve a valid info element: \(response.value!)")
                 }
             }
         }
