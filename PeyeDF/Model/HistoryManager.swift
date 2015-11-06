@@ -150,10 +150,14 @@ class HistoryManager: FixationDataDelegate {
                     } else {
                         // AppSingleton.log.debug("Data pushed to DiMe")
                         // print(response.value!)  // to see what dime replied
+                        let json = JSON(response.value!)
+                        if let error = json["error"].string {
+                            AppSingleton.log.error("DiMe reply to submission contains error:\n\(error)")
+                        }
                     }
                 }
             } catch {
-                AppSingleton.log.error("Error while deserializing json! This should never happen. \(error)")
+                AppSingleton.log.error("Error while deserializing json - no data sent:\n \(error)")
             }
             
         }

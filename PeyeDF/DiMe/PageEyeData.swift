@@ -94,7 +94,7 @@ struct PageEyeData: Dictionariable {
             arraysToCheck.append(self.Ps!)
         }
         
-        // remove invalid nsnumbers from array
+        // remove invalid nsnumbers from array (if any)
         var i = 0
         while i < startTimes.count {
             var foundInvalid = false
@@ -104,6 +104,7 @@ struct PageEyeData: Dictionariable {
                         arraysToCheck[aa].removeAtIndex(i)
                     }
                     foundInvalid = true
+                    AppSingleton.log.error("Found invalid NSNumber")
                     break
                 }
             }
@@ -124,9 +125,15 @@ struct PageEyeData: Dictionariable {
         retDict["endTimes"] = arraysToCheck[3]
         retDict["durations"] = arraysToCheck[4]
         if let pi = pageIndex {
-            retDict["pageIndex"] = pi
+            if pi >= 0 && pi <= PeyeConstants.maxAcceptablePageIndex {
+                retDict["pageIndex"] = pi
+            } else {
+                retDict["pageIndex"] = -1
+                AppSingleton.log.error("Found out of range page index")
+            }
         } else {
             retDict["pageIndex"] = -1
+            AppSingleton.log.error("Found nil page index")
         }
         
         return retDict

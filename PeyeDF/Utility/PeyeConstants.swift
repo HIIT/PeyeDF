@@ -200,6 +200,10 @@ struct PeyeConstants {
     /// Default size of thumbnail side view (set when pressing button)
     static let defaultThumbSideViewWidth: CGFloat = 150
     
+    /// Sometimes page numbers are returned out of range from PdfView instances.
+    /// To correct this issue, this constant specifies an (arbitrary) maximum acceptable page index.
+    static let maxAcceptablePageIndex: Int = 50000
+    
     // MARK: - Notifications
     
     /// String notifying that something changed in the dime connection.

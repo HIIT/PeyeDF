@@ -350,6 +350,14 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         // If the relevant preference is set, send a DesktopEvent for the current document
         if (NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefSendEventOnFocusSwitch) as! Bool) {
             sendDeskEvent()
+        } else {
+        // otherwise, just send an information element for the given document if the current document
+        // does not have already an associated info elemen in dime
+            // TODO: use new function in dimefetcher
+//            DiMeFetcher.retrieveScientificDocument("52910dc4392885aac733bb5d8670bb044fd093d4") {
+//                scidoc in
+//                Swift.print(scidoc)
+//            }
         }
         
         // Tell the history manager to "start recording"

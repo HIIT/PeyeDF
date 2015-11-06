@@ -51,6 +51,45 @@ class DiMeFetcher {
             }
         }
     }
+    
+    /// Attempt to retrieve a single ScientificDocument from a given info element id.
+    /// Calls the given callback function once retrieval is complete.
+    /// Called-back function will contain nil if retrieval failed.
+    static func retrieveScientificDocument(infoElemId: String, callback: (ScientificDocument?) -> Void) {
+        let server_url: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerURL) as! String
+        let user: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerUserName) as! String
+        let password: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerPassword) as! String
+        
+        let credentialData = "\(user):\(password)".dataUsingEncoding(NSUTF8StringEncoding)!
+        let base64Credentials = credentialData.base64EncodedStringWithOptions([])
+        
+        let headers = ["Authorization": "Basic \(base64Credentials)"]
+        
+        Alamofire.request(.GET, server_url + "/data/informationelement/" + infoElemId, headers: headers).responseJSON() {
+            _, _, response in
+            if response.isFailure {
+                AppSingleton.log.error("Error fetching information element: \(response.debugDescription)")
+                callback(nil)
+            } else {
+                let json = JSON(response.value!)
+                if let error = json["error"].string {
+                    AppSingleton.log.error("Dime fetched json contains error:\n\(error)")
+                }
+                if let appId = json[PeyeConstants.iId].string {
+                    if appId == infoElemId {
+                        let newScidoc = ScientificDocument(fromJson: json)
+                        callback(newScidoc)
+                    } else {
+                        AppSingleton.log.error("Retrieved info element id does not match requested id: \(response.value!)")
+                        callback(nil)
+                    }
+                } else {
+                    AppSingleton.log.error("Failed to retrieve a valid info element: \(response.value!)")
+                    callback(nil)
+                }
+            }
+        }
+    }
    
     private func convertJsonSummary(json: JSON) {
         missingInfoElems = 0
@@ -71,37 +110,15 @@ class DiMeFetcher {
     
     /// Gets a scientific document for a given index (referring to the outgoing tuple) and puts it in the appropriate place
     private func getScientificDocument(forIndex: Int, infoElemId: String) {
-        let server_url: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerURL) as! String
-        let user: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerUserName) as! String
-        let password: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerPassword) as! String
-        
-        let credentialData = "\(user):\(password)".dataUsingEncoding(NSUTF8StringEncoding)!
-        let base64Credentials = credentialData.base64EncodedStringWithOptions([])
-        
-        let headers = ["Authorization": "Basic \(base64Credentials)"]
-        
-        Alamofire.request(.GET, server_url + "/data/informationelement/" + infoElemId, headers: headers).responseJSON() {
-            _, _, response in
-            if response.isFailure {
-                AppSingleton.log.error("Error fetching information element: \(response.debugDescription)")
-            } else {
-                let json = JSON(response.value!)
-                if let appId = json[PeyeConstants.iId].string {
-                    if appId == infoElemId {
-                        let newScidoc = ScientificDocument(fromJson: json)
-                        self.outgoing[forIndex].ie = newScidoc
-                        self.missingInfoElems--
-                        // all data has been fetched, send it
-                        if self.missingInfoElems == 0 {
-                            self.receiver.receiveAllSummaries(self.outgoing)
-                        }
-                    } else {
-                        AppSingleton.log.error("Retrieved info element id does not match requested id: \(response.value!)")
-                    }
-                } else {
-                    AppSingleton.log.error("Failed to retrieve a valid info element: \(response.value!)")
+        DiMeFetcher.retrieveScientificDocument(infoElemId) {
+            newScidoc in
+            
+            self.outgoing[forIndex].ie = newScidoc
+            self.missingInfoElems--
+            // all data has been fetched, send it
+            if self.missingInfoElems == 0 {
+                self.receiver.receiveAllSummaries(self.outgoing)
                 }
             }
-        }
     }
 }
