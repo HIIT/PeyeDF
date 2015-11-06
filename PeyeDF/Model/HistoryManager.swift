@@ -126,41 +126,34 @@ class HistoryManager: FixationDataDelegate {
        
         if dimeAvailable {
             
-            let server_url: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerURL) as! String
-            let user: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerUserName) as! String
-            let password: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerPassword) as! String
-            
-            let credentialData = "\(user):\(password)".dataUsingEncoding(NSUTF8StringEncoding)!
-            let base64Credentials = credentialData.base64EncodedStringWithOptions([])
-            
-            let headers = ["Authorization": "Basic \(base64Credentials)"]
-            
-            let error = NSErrorPointer()
-            let options = NSJSONWritingOptions.PrettyPrinted
-
-            let jsonData: NSData?
             do {
-                jsonData = try NSJSONSerialization.dataWithJSONObject(dimeData.getDict(), options: options)
-            } catch let error1 as NSError {
-                error.memory = error1
-                jsonData = nil
-            }
-            
-            if jsonData == nil {
-                AppSingleton.log.error("Error while deserializing json! This should never happen. \(error)")
-                return
-            }
-            
-            Alamofire.request(Alamofire.Method.POST, server_url + "/data/event", parameters: dimeData.getDict(), encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON {
-                _, _, response in
-                if response.isFailure {
-                    AppSingleton.log.error("Error while reading json response from DiMe: \(response.debugDescription)")
-                    AppSingleton.alertUser("Error while communcating with dime. Dime has now been disconnected", infoText: "Message from dime:\n\(response.debugDescription)")
-                    self.dimeConnectState(false)
-                } else {
-                    // AppSingleton.log.debug("Data pushed to DiMe")
-                    // print(response.value!)  // to see what dime replied
+                // attempt to translate json
+                let options = NSJSONWritingOptions.PrettyPrinted
+                try NSJSONSerialization.dataWithJSONObject(dimeData.getDict(), options: options)
+                
+                // assume json conversion was a success, hence send to dime
+                let server_url: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerURL) as! String
+                let user: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerUserName) as! String
+                let password: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerPassword) as! String
+                
+                let credentialData = "\(user):\(password)".dataUsingEncoding(NSUTF8StringEncoding)!
+                let base64Credentials = credentialData.base64EncodedStringWithOptions([])
+                
+                let headers = ["Authorization": "Basic \(base64Credentials)"]
+                
+                Alamofire.request(Alamofire.Method.POST, server_url + "/data/event", parameters: dimeData.getDict(), encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON {
+                    _, _, response in
+                    if response.isFailure {
+                        AppSingleton.log.error("Error while reading json response from DiMe: \(response.debugDescription)")
+                        AppSingleton.alertUser("Error while communcating with dime. Dime has now been disconnected", infoText: "Message from dime:\n\(response.debugDescription)")
+                        self.dimeConnectState(false)
+                    } else {
+                        // AppSingleton.log.debug("Data pushed to DiMe")
+                        // print(response.value!)  // to see what dime replied
+                    }
                 }
+            } catch {
+                AppSingleton.log.error("Error while deserializing json! This should never happen. \(error)")
             }
             
         }

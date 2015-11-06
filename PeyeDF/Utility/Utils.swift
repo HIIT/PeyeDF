@@ -91,6 +91,21 @@ extension String {
     
 }
 
+extension NSNumber {
+    
+    /// Make sure this number of not equal to infinity or nan
+    func isValid() -> Bool {
+        let posInf = NSNumber(double: 1.0/0.0)
+        if self == posInf {
+            return false
+        }
+        if self == NSDecimalNumber.notANumber() {
+            return false
+        }
+        return true
+    }
+}
+
 extension NSSize {
     
     /// Returns true if both height and width are within a specified reference

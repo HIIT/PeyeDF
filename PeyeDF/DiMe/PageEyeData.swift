@@ -88,18 +88,46 @@ struct PageEyeData: Dictionariable {
     
     func getDict() -> [String : AnyObject] {
         
-        var retDict = [String: AnyObject]()
-        
-        if let Ps = self.Ps {
-            retDict["Ps"] = Ps
+        // save numbers here to remove invalid ones
+        var arraysToCheck = [Xs, Ys, startTimes, endTimes, durations]
+        if let _ = self.Ps {
+            arraysToCheck.append(self.Ps!)
         }
         
-        retDict["Xs"] = Xs
-        retDict["Ys"] = Ys
-        retDict["startTimes"] = startTimes
-        retDict["endTimes"] = endTimes
-        retDict["durations"] = durations
-        retDict["pageIndex"] = pageIndex!
+        // remove invalid nsnumbers from array
+        var i = 0
+        while i < startTimes.count {
+            var foundInvalid = false
+            for a in 0 ..< arraysToCheck.count {
+                if !arraysToCheck[a][i].isValid() {
+                    for aa in 0 ..< arraysToCheck.count {
+                        arraysToCheck[aa].removeAtIndex(i)
+                    }
+                    foundInvalid = true
+                    break
+                }
+            }
+            if !foundInvalid {
+                i++
+            }
+        }
+        
+        var retDict = [String: AnyObject]()
+        
+        if let _ = self.Ps {
+            retDict["Ps"] = arraysToCheck[5]
+        }
+        
+        retDict["Xs"] = arraysToCheck[0]
+        retDict["Ys"] = arraysToCheck[1]
+        retDict["startTimes"] = arraysToCheck[2]
+        retDict["endTimes"] = arraysToCheck[3]
+        retDict["durations"] = arraysToCheck[4]
+        if let pi = pageIndex {
+            retDict["pageIndex"] = pi
+        } else {
+            retDict["pageIndex"] = -1
+        }
         
         return retDict
         
