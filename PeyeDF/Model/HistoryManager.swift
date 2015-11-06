@@ -158,8 +158,8 @@ class HistoryManager: FixationDataDelegate {
                     AppSingleton.alertUser("Error while communcating with dime. Dime has now been disconnected", infoText: "Message from dime:\n\(response.debugDescription)")
                     self.dimeConnectState(false)
                 } else {
-                    AppSingleton.log.debug("Data pushed to DiMe")
-                    //print(response.value!)  // to see what dime replied
+                    // AppSingleton.log.debug("Data pushed to DiMe")
+                    // print(response.value!)  // to see what dime replied
                 }
             }
             

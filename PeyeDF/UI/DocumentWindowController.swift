@@ -396,11 +396,13 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             }
             return false
         } else {
-            AppSingleton.appDelegate.openPDFs--
             return true
         }
     }
     
+    func windowWillClose(notification: NSNotification) {
+        AppSingleton.appDelegate.openPDFs--
+    }
     
     /// Ensures that the document window never gets bigger than the maximum
     /// allowed size when midas is active and stays within its boundaries.

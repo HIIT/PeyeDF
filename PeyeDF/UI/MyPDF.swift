@@ -293,16 +293,18 @@ class MyPDF: MyPDFBase, ScreenToPageConverter {
         
         // start debug- circle
         if drawDebugCirle {
-            if let oldPosition = circlePosition {
-                let oldPageRect = NSRect(origin: oldPosition, size: circleSize)
-                let screenRect = convertRect(oldPageRect, fromPage: currentPage())
+            for visiblePage in visiblePages() as! [PDFPage] {
+                if let oldPosition = circlePosition {
+                    let oldPageRect = NSRect(origin: oldPosition, size: circleSize)
+                    let screenRect = convertRect(oldPageRect, fromPage: visiblePage)
+                    setNeedsDisplayInRect(screenRect.addTo(scaleFactor()))
+                }
+                
+                circlePosition = pointOnPage
+                var screenRect = NSRect(origin: circlePosition!, size: circleSize)
+                screenRect = convertRect(screenRect, fromPage: visiblePage)
                 setNeedsDisplayInRect(screenRect.addTo(scaleFactor()))
             }
-            
-            circlePosition = pointOnPage
-            var screenRect = NSRect(origin: circlePosition!, size: circleSize)
-            screenRect = convertRect(screenRect, fromPage: currentPage())
-            setNeedsDisplayInRect(screenRect.addTo(scaleFactor()))
         }
         // End debug - circle
         
@@ -332,11 +334,6 @@ class MyPDF: MyPDFBase, ScreenToPageConverter {
             
             if let textContent = getVisibleString() {
                 plainTextContent = textContent
-            }
-            
-            // TODO: remove this debugging check
-            if visiblePageNums.count != pageRects.count {
-                fatalError("Number of visible pages and visible rectangles does not match")
             }
             
             var readingRects = [ReadingRect]()
