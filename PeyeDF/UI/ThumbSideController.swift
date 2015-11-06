@@ -20,7 +20,7 @@ class ThumbSideController: NSViewController {
     
     override func viewDidAppear() {
         let docSplit = self.parentViewController as! DocumentSplitController
-        myThumb.setPDFView(docSplit.myPDFSideController!.myPDF)
+        myThumb.setPDFView(docSplit.myPDFSideController!.pdfReader)
     }
     
     override func awakeFromNib() {

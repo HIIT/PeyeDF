@@ -55,7 +55,7 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     var searchString: String = ""
     weak var selectedSelection: PDFSelection?
     
-    weak var pdfView: MyPDF?
+    weak var pdfReader: MyPDFReader?
     
     /// Keeps track of the number of results found
     var numberOfResultsFound = 0
@@ -98,12 +98,12 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
         resultTable.setDelegate(self)
         
         // set up search notifications
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "foundOneMatch:", name: PDFDocumentDidFindMatchNotification, object: pdfView!.document())
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "foundOneMatch:", name: PDFDocumentDidFindMatchNotification, object: pdfReader!.document())
     }
     
     override func viewWillDisappear() {
         // unset search notifications
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: PDFDocumentDidFindMatchNotification, object: pdfView!.document())
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: PDFDocumentDidFindMatchNotification, object: pdfReader!.document())
         
         // table unset
         resultTable.setDataSource(nil)
@@ -115,7 +115,7 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     
     /// Show label column if needed
     func labelColumnCheck() {
-        if pdfView!.pageNumbersSameAsLabels() {
+        if pdfReader!.pageNumbersSameAsLabels() {
             labelColumn.width = 0
         } else {
             labelColumn.width = kLabelColumnWidth
@@ -203,7 +203,7 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
         resultTable.reloadData()
         selectedSelection = nil
         
-        pdfView!.document().beginFindString(theString, withOptions: Int(NSStringCompareOptions.CaseInsensitiveSearch.rawValue))
+        pdfReader!.document().beginFindString(theString, withOptions: Int(NSStringCompareOptions.CaseInsensitiveSearch.rawValue))
         
         previousButton.enabled = false
         nextButton.enabled = false
@@ -213,8 +213,8 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     
     /// Some text has been entered in the search field
     @IBAction func startSearch(sender: NSSearchField) {
-        if pdfView!.document().isFinding() {
-            pdfView!.document().cancelFindString()
+        if pdfReader!.document().isFinding() {
+            pdfReader!.document().cancelFindString()
         }
         
         doSearch(sender.stringValue)
@@ -286,7 +286,7 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
         let rowIndex = tabView.selectedRow
         if rowIndex >= 0 {
             let selectedResult = foundSelections[rowIndex]
-            pdfView?.foundResult(selectedResult)
+            pdfReader?.foundResult(selectedResult)
         }
     }
 }

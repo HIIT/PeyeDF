@@ -21,7 +21,7 @@ protocol ClickRecognizerDelegate {
 /// Controller for the PDF-side Document split view
 class PDFSideController: NSViewController, ClickRecognizerDelegate {
     
-    @IBOutlet weak var myPDF: MyPDF!
+    @IBOutlet weak var pdfReader: MyPDFReader!
     @IBOutlet weak var overlay: MyOverlay!
     
     @IBOutlet weak var doubleClickRecognizer: NSClickGestureRecognizer!
@@ -29,7 +29,7 @@ class PDFSideController: NSViewController, ClickRecognizerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        overlay.otherView = myPDF  // tell circleOverlay to be transparent
+        overlay.otherView = pdfReader  // tell circleOverlay to be transparent
     }
 
     override var representedObject: AnyObject? {
@@ -40,12 +40,12 @@ class PDFSideController: NSViewController, ClickRecognizerDelegate {
     
     /// Target for the gesture recognizer used to detect double clicks
     @IBAction func doubleClick(sender: NSClickGestureRecognizer) {
-        myPDF.markAndAnnotate(sender.locationInView(myPDF), importance: ReadingClass.Interesting)
+        pdfReader.markAndAnnotate(sender.locationInView(pdfReader), importance: ReadingClass.Interesting)
     }
     
     /// Target for the gesture recognizer used to detect double clicks
     @IBAction func tripleClick(sender: NSClickGestureRecognizer) {
-        myPDF.markAndAnnotate(sender.locationInView(myPDF), importance: ReadingClass.Critical)
+        pdfReader.markAndAnnotate(sender.locationInView(pdfReader), importance: ReadingClass.Critical)
     }
     
     /// Set the enabled state of the recognizer to the given value

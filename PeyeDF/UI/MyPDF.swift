@@ -28,7 +28,7 @@ protocol ScreenToPageConverter: class {
 
 /// Implementation of a custom PDFView class, used to implement additional function related to
 /// psychophysiology and user activity tracking
-class MyPDF: MyPDFBase, ScreenToPageConverter {
+class MyPDFReader: MyPDFBase, ScreenToPageConverter {
     
     /// Whether we want to annotate by clicking
     private var clickAnnotationEnabled = true
@@ -371,7 +371,7 @@ class MyPDF: MyPDFBase, ScreenToPageConverter {
         if totProportion < PeyeConstants.minProportion && proportionGazed < PeyeConstants.minProportion {
             return nil
         } else {
-            return ReadingEvent(asSummaryWithMarkings: [manualMarks, smiMarks, searchMarks], plainTextContent: getVisibleString(), infoElemId: sciDoc!.getId(), foundStrings: foundStrings, myPdf: self, proportionTriple: proportionTriple)
+            return ReadingEvent(asSummaryWithMarkings: [manualMarks, smiMarks, searchMarks], plainTextContent: getVisibleString(), infoElemId: sciDoc!.getId(), foundStrings: foundStrings, pdfReader: self, proportionTriple: proportionTriple)
         }
     }
     

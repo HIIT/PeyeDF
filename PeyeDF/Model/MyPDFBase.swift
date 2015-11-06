@@ -10,7 +10,7 @@ import Cocoa
 import Foundation
 import Quartz
 
-/// Base class extended by all PDF renderers (MyPDF, MyPDFOverview, MyPDFDetail) used in PeyeDF
+/// Base class extended by all PDF renderers (MyPDFReader, MyPDFOverview, MyPDFDetail) used in PeyeDF
 /// support custom "markings" and their writing to annotation
 class MyPDFBase: PDFView {
 

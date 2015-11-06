@@ -13,7 +13,7 @@ import Quartz
 /// Manages the "Document Window", which comprises two split views, one inside the other
 class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollapseToggleDelegate, SearchPanelCollapseDelegate {
     
-    weak var myPdf: MyPDF?
+    weak var pdfReader: MyPDFReader?
     weak var docSplitController: DocumentSplitController?
     weak var mainSplitController: MainSplitController?
     var debugController: DebugController?
@@ -37,7 +37,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         case NSFindPanelAction.Previous.rawValue:
             mainSplitController?.searchProvider?.selectPreviousResult(nil)
         case NSFindPanelAction.SetFindString.rawValue:
-            if let currentSelection = myPdf!.currentSelection() {
+            if let currentSelection = pdfReader!.currentSelection() {
                 mainSplitController?.searchProvider?.doSearch(currentSelection.string())
                 mainSplitController?.openSearchPanel()
             }
@@ -63,7 +63,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             
         // we allow use selection if something is selected in the pdf view
         case NSFindPanelAction.SetFindString.rawValue:
-            if let _ = myPdf!.currentSelection() {
+            if let _ = pdfReader!.currentSelection() {
                 return true
             }
             return false
@@ -136,25 +136,25 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     /// Sends a desktop event directly (which includes doc metadata) for the currently displayed pdf
     func sendDeskEvent() {
-        let sciDoc = myPdf!.sciDoc!
+        let sciDoc = pdfReader!.sciDoc!
         let deskEvent = DesktopEvent(sciDoc: sciDoc)
         HistoryManager.sharedManager.sendToDiMe(deskEvent)
     }
     
     /// Retrieves current ReadingEvent (for HistoryManager)
     func getCurrentStatus() -> ReadingEvent? {
-        return myPdf!.getViewportStatus() as ReadingEvent?
+        return pdfReader!.getViewportStatus() as ReadingEvent?
     }
     
     // MARK: - Debug functions
     
     @IBAction func sendToDiMe(sender: AnyObject?) {
-        let readingEvent:ReadingEvent = myPdf!.getViewportStatus()!  // assuming there is a non-nil status if we press the button
+        let readingEvent:ReadingEvent = pdfReader!.getViewportStatus()!  // assuming there is a non-nil status if we press the button
         HistoryManager.sharedManager.sendToDiMe(readingEvent)
     }
     
     @IBAction func selectVisibleText(sender: AnyObject?) {
-        myPdf?.selectVisibleText(sender)
+        pdfReader?.selectVisibleText(sender)
     }
     
     @IBAction func thisDocMdata(sender: AnyObject?) {
@@ -165,7 +165,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         
         // show window controller for metadata and send data
         metadataWindowController?.showWindow(self)
-        metadataWindowController?.setDoc(myPdf!.document())
+        metadataWindowController?.setDoc(pdfReader!.document())
     }
     
     
@@ -179,7 +179,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         let panel = NSSavePanel()
         panel.allowedFileTypes = ["pdf", "PDF"]
         if panel.runModal() == NSFileHandlingPanelOKButton {
-            myPdf?.document().writeToURL(panel.URL)
+            pdfReader?.document().writeToURL(panel.URL)
             let documentController = NSDocumentController.sharedDocumentController() 
             documentController.openDocumentWithContentsOfURL(panel.URL!, display: true) { _ in
                 // empty, nothing else to do (NSDocumentController will automacally link URL to NSDocument (pdf file)
@@ -195,11 +195,11 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         let oldFrame = NSRect(origin: self.window!.frame.origin, size: NSSize(width: PeyeConstants.docWindowWidth, height: PeyeConstants.docWindowHeight))
         self.window!.setFrame(oldFrame, display: true)
         
-        // Set reference to myPdf for convenience by using references to children of this window
+        // Set reference to pdfReader for convenience by using references to children of this window
         let splV: NSSplitViewController = self.window?.contentViewController as! NSSplitViewController
         docSplitController = splV.childViewControllers[1] as? DocumentSplitController
         docSplitController?.sideCollapseDelegate = self
-        myPdf = docSplitController?.myPDFSideController?.myPDF
+        pdfReader = docSplitController?.myPDFSideController?.pdfReader
         
         // Reference for click gesture recognizers
         clickDelegate = docSplitController?.myPDFSideController
@@ -207,15 +207,15 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         // Set reference to main split controller
         self.mainSplitController = self.contentViewController as? MainSplitController
         self.mainSplitController?.searchCollapseDelegate = self
-        self.mainSplitController?.searchPanelController?.pdfView = myPdf
+        self.mainSplitController?.searchPanelController?.pdfReader = pdfReader
         
-        myPdf?.setAutoScales(true)
+        pdfReader?.setAutoScales(true)
         
         // Create debug window
         debugWindowController = AppSingleton.mainStoryboard.instantiateControllerWithIdentifier("DebugWindow") as? NSWindowController
         debugWindowController?.showWindow(self)
         debugController = (debugWindowController?.contentViewController as! DebugController)
-        debugController?.setUpMonitors(myPdf!, docWindow: self.window!)
+        debugController?.setUpMonitors(pdfReader!, docWindow: self.window!)
         
         // Prepare to receive events
         setUpObservers()
@@ -231,7 +231,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             let url: NSURL = document.fileURL!
             
             pdfDoc = PDFDocument(URL: url)
-            myPdf!.setDocument(pdfDoc)
+            pdfReader!.setDocument(pdfDoc)
             dispatch_async(dispatch_get_main_queue()) {
                 NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.documentChangeNotification, object: self.document)
             }
@@ -241,7 +241,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             peyeDoc.pdfDoc = pdfDoc
             // check if there is text
             if let _ = pdfDoc.getText() {
-                myPdf!.containsRawString = true
+                pdfReader!.containsRawString = true
                 tbMetadata.image = NSImage(named: "NSStatusAvailable")
             } else {
                 tbMetadata.image = NSImage(named: "NSStatusUnavailable")
@@ -249,7 +249,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             
             // Associate PDF view to info element
             let sciDoc = ScientificDocument(uri: url.path!, plainTextContent: pdfDoc.getText(), title: pdfDoc.getTitle(), authors: pdfDoc.getAuthorsAsArray(), keywords: pdfDoc.getKeywordsAsArray())
-            myPdf!.sciDoc = sciDoc
+            pdfReader!.sciDoc = sciDoc
             
             // Tell app singleton which screen size we are using
             if let screen = window?.screen {
@@ -272,11 +272,11 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         
         // Get notifications from pdfview for window
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "autoAnnotateComplete:", name: PeyeConstants.autoAnnotationComplete, object: self.myPdf!)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "zoomChanged:", name: PDFViewScaleChangedNotification, object: self.myPdf!)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "frameChanged:", name: NSViewFrameDidChangeNotification, object: self.myPdf!)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "autoAnnotateComplete:", name: PeyeConstants.autoAnnotationComplete, object: self.pdfReader!)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "zoomChanged:", name: PDFViewScaleChangedNotification, object: self.pdfReader!)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "frameChanged:", name: NSViewFrameDidChangeNotification, object: self.pdfReader!)
         // Note: forced downcast below relies on "undocumented" view tree
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "scrollingChanged:", name: NSViewBoundsDidChangeNotification, object: self.myPdf!.subviews[0].subviews[0] as! NSClipView)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "scrollingChanged:", name: NSViewBoundsDidChangeNotification, object: self.pdfReader!.subviews[0].subviews[0] as! NSClipView)
         
         // Get notifications from managed window
         
@@ -297,11 +297,11 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         
         // Remove notifications from pdfView
         
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: PeyeConstants.autoAnnotationComplete, object: self.myPdf!)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: PDFViewScaleChangedNotification, object: self.myPdf!)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSViewFrameDidChangeNotification, object: self.myPdf!)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: PeyeConstants.autoAnnotationComplete, object: self.pdfReader!)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: PDFViewScaleChangedNotification, object: self.pdfReader!)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSViewFrameDidChangeNotification, object: self.pdfReader!)
         // Note: forced downcast, etc.
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSViewBoundsDidChangeNotification, object: self.myPdf!.subviews[0].subviews[0] as! NSClipView)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSViewBoundsDidChangeNotification, object: self.pdfReader!.subviews[0].subviews[0] as! NSClipView)
         
         // Remove notifications from managed window
         
@@ -374,7 +374,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     func windowShouldClose(sender: AnyObject) -> Bool {
         HistoryManager.sharedManager.exit(self)
         unSetObservers()
-        debugController?.unSetMonitors(myPdf!, docWindow: self.window!)
+        debugController?.unSetMonitors(pdfReader!, docWindow: self.window!)
         debugController?.view.window?.close()
         metadataWindowController?.close()
         if HistoryManager.sharedManager.dimeAvailable {
@@ -385,7 +385,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             self.window!.beginSheet(ww, completionHandler: nil)
             // send data to dime
             dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
-                if let mpdf = self.myPdf, userRectStatus = mpdf.getUserRectStatus() {
+                if let mpdf = self.pdfReader, userRectStatus = mpdf.getUserRectStatus() {
                     HistoryManager.sharedManager.sendToDiMe(userRectStatus)
                 }
                 dispatch_sync(dispatch_get_main_queue()) {

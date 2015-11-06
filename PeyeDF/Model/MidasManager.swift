@@ -54,6 +54,9 @@ class MidasManager {
     /// Fixation data delegate, to which fixation data will be sent
     private var fixationDelegate: FixationDataDelegate?
     
+    /// SMI-type last timestamp of valid data received
+    private var lastValidSMITime: Int = -1
+    
     /// Dominant eye
     lazy private var dominantEye: Eye = {
         return AppSingleton.getDominantEye()
@@ -181,7 +184,7 @@ class MidasManager {
                 NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.midasEyePositionNotification, object: self, userInfo: lastPos.asDict())
                 
                 // check if the entry buffer is all zeros (i.e. eye lost for 1 whole second, assuming a kBufferLength of 1)
-                zeroEyeCheck(json)
+                newDataCheck(json)
             }
         case .Fixations:
             let newFixations = getAllFixationsAfter(lastFixationStartTime, forEye: dominantEye, fromJSON: json)
@@ -192,10 +195,10 @@ class MidasManager {
         }
     }
     
-    /// Checks if eye buffer is zeroed. If the eyes were lost, checks how long ago they were first lost. If they were lost for long enough, sends a notification.
+    /// Checks if eye buffer contains old timestamps, or if it is zeroed. If the eyes were lost, checks how long ago they were first lost. If they were lost for long enough, sends a notification.
     /// Sends a notification also if the eyes were previously lost, and are now found
     /// - parameter json: the json object from alamofire
-    private func zeroEyeCheck(json: JSON) {
+    private func newDataCheck(json: JSON) {
         var eyeString: String
         switch dominantEye {
         case .left:
@@ -204,15 +207,28 @@ class MidasManager {
             eyeString = "right"
         }
         
-        let Xs = json[0]["return"]["\(eyeString)EyePositionX"]["data"].arrayValue
-        let Ys = json[0]["return"]["\(eyeString)EyePositionY"]["data"].arrayValue
         var eyesFound = false
-        for i in 0 ..< Xs.count {
-            if !(Xs[i].doubleValue == 0 && Ys[i].doubleValue == 0) {
-                eyesFound = true
-                break
+        
+        let timestamps = json[0]["return"]["timestamp"]["data"].arrayValue
+        let latestTimestamp = timestamps.last!.intValue
+        
+        // if the latest timestamp is not greater (newer) than latest recorded one, assume eyes were lost, otherwise check for zeroes
+        
+        if latestTimestamp > lastValidSMITime {
+            // check for zeroes
+            let Xs = json[0]["return"]["\(eyeString)EyePositionX"]["data"].arrayValue
+            let Ys = json[0]["return"]["\(eyeString)EyePositionY"]["data"].arrayValue
+            
+            // cycle through array and check if all zeroes
+            for i in 0 ..< Xs.count {
+                if !(Xs[i].doubleValue == 0 && Ys[i].doubleValue == 0) {
+                    eyesFound = true
+                    break
+                }
             }
         }
+        
+        lastValidSMITime = latestTimestamp
         
         if self.eyesLost && eyesFound {
             // send found notification

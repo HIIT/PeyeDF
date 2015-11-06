@@ -40,7 +40,7 @@ class HistoryManager: FixationDataDelegate {
     /// A boolean indicating that the user is (probably) reading. Essentially, it means we are after entry timer but before exit timer (or exit event).
     private(set) var userIsReading = false
     
-    /// The current thing the user is probably looking at (MyPDF instance), which will be used to convert screen to page coordinates
+    /// The current thing the user is probably looking at (MyPDFReader instance), which will be used to convert screen to page coordinates
     private var currentEyeReceiver: ScreenToPageConverter?
     
     /// A dictionary, one entry per page (indexed by page number) containing all page eye tracking data
@@ -202,7 +202,7 @@ class HistoryManager: FixationDataDelegate {
         self.currentReadingEvent = docWindow.getCurrentStatus()
         
         // prepare to convert eye coordinates
-        self.currentEyeReceiver = docWindow.myPdf
+        self.currentEyeReceiver = docWindow.pdfReader
         
         // prepare exit timer, which will fire when the user is inactive long enough (or will be canceled if there is another exit event).
         if let _ = self.currentReadingEvent {

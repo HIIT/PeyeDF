@@ -46,14 +46,14 @@ struct PDFMarkings {
     
     /// Return all rectangles in an array of ReadingRects
     ///
-    /// - parameter myPdf: Translator from rect to string, used to associate text to rects
-    func getAllReadingRects(myPdf: MyPDF?) -> [ReadingRect] {
+    /// - parameter pdfReader: Translator from rect to string, used to associate text to rects
+    func getAllReadingRects(pdfReader: MyPDFReader?) -> [ReadingRect] {
         var retVal = [ReadingRect]()
         for cl in allRects.keys {
             for pi in allRects[cl]!.keys {
                 for r in allRects[cl]![pi]! {
                     var plainTextContent: String?
-                    if let translator = myPdf {
+                    if let translator = pdfReader {
                         plainTextContent = translator.stringForRect(r, onPage: pi)
                     }
                     let newRR = ReadingRect(pageIndex: pi, rect: r, readingClass: cl, classSource: source, plainTextContent: plainTextContent)
