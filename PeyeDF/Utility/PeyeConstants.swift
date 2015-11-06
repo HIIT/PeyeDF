@@ -63,6 +63,27 @@ struct PeyeConstants {
     /// Page area is multiplied by this constant, to reduce total area size (to remove margins, etc)
     static let pageAreaMultiplier = 0.25
     
+    // MARK: - DiMe
+    
+    /// Enum identifying dime branches
+    enum DiMeBranch {
+        case mongodb
+        case sql
+    }
+    
+    /// Default DiMe branch
+    static let dimeBranch = DiMeBranch.mongodb
+    
+    /// String that identifies the key used to retrieve stuff from DiMe
+    static let iId: String = {
+        switch PeyeConstants.dimeBranch {
+        case .mongodb:
+            return "id"
+        case .sql:
+            return "appId"
+        }
+    }()
+    
     // MARK: - Midas
     
     /// Name of the midas node containing raw (gaze) data

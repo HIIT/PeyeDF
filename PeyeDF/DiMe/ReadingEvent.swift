@@ -56,7 +56,7 @@ class ReadingEvent: Event {
         var infoElemDict = [String: AnyObject]()
         infoElemDict["@type"] = "ScientificDocument"
         infoElemDict["type"] = "http://www.hiit.fi/ontologies/dime/#ScientificDocument"
-        infoElemDict["id"] = infoElemId
+        infoElemDict[PeyeConstants.iId] = infoElemId
         
         theDictionary["targettedResource"] = infoElemDict
         
@@ -103,7 +103,7 @@ class ReadingEvent: Event {
         var infoElemDict = [String: AnyObject]()
         infoElemDict["@type"] = "ScientificDocument"
         infoElemDict["type"] = "http://www.hiit.fi/ontologies/dime/#ScientificDocument"
-        infoElemDict["id"] = infoElemId
+        infoElemDict[PeyeConstants.iId] = infoElemId
         
         theDictionary["targettedResource"] = infoElemDict
         
@@ -114,7 +114,7 @@ class ReadingEvent: Event {
     
     /// Creates event from dime. NOTE: such events cannot be sent back to dime
     init(asManualSummaryFromDime json: JSON) {
-        infoElemId = json["targettedResource"]["id"].stringValue
+        infoElemId = json["targettedResource"][PeyeConstants.iId].stringValue
         proportionRead = json["proportionRead"].doubleValue
         proportionInteresting = json["proportionInteresting"].doubleValue
         proportionCritical = json["proportionCritical"].doubleValue

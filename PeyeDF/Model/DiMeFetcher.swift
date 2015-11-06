@@ -86,7 +86,7 @@ class DiMeFetcher {
                 AppSingleton.log.error("Error fetching information element: \(response.debugDescription)")
             } else {
                 let json = JSON(response.value!)
-                if let appId = json.string {
+                if let appId = json[PeyeConstants.iId].string {
                     if appId == infoElemId {
                         let newScidoc = ScientificDocument(fromJson: json)
                         self.outgoing[forIndex].ie = newScidoc
