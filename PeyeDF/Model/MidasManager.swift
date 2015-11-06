@@ -120,7 +120,6 @@ class MidasManager {
     func stop() {
         // take note
         self.midasAvailable = false
-        NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.midasConnectionNotification, object: self, userInfo: ["available": false])
         
         // stop timer
         if let timer = fetchTimer {
@@ -129,6 +128,9 @@ class MidasManager {
                }
             fetchTimer = nil
         }
+        
+        // post notification
+        NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.midasConnectionNotification, object: self, userInfo: ["available": false])
     }
     
     /// Sets dominant eye

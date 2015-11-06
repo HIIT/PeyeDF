@@ -70,8 +70,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     /// Callback for connect to midas menu action
     @IBAction func connectMidas(sender: NSMenuItem) {
-        MidasManager.sharedInstance.start()
-        MidasManager.sharedInstance.setFixationDelegate(HistoryManager.sharedManager)
+        if connectMidas.state == NSOffState {
+            MidasManager.sharedInstance.start()
+            MidasManager.sharedInstance.setFixationDelegate(HistoryManager.sharedManager)
+        } else {
+            MidasManager.sharedInstance.stop()
+            MidasManager.sharedInstance.unsetFixationDelegate(HistoryManager.sharedManager)
+        }
     }
     
     /// Find menu item is linked to this global function
@@ -144,11 +149,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         if midasAvailable {
             connectMidas.state = NSOnState
-            connectMidas.enabled = false
             connectMidas.title = "Connected to Midas"
         } else {
             connectMidas.state = NSOffState
-            connectMidas.enabled = true
             connectMidas.title = "Connect to Midas"
         }
     }
