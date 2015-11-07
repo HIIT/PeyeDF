@@ -17,6 +17,7 @@ struct SMIFixationEvent {
     var duration: Int
     var positionX: Double
     var positionY: Double
+    var unixtime: Int
 }
 
 /// Returns an array of fixations that happened after the given startTime (startTime + 1), for the given eye, using the given json
@@ -43,6 +44,7 @@ func getAllFixationsAfter(previousTime: Int, forEye eye: Eye, fromJSON json: JSO
     let allDurations = json[0]["return"]["duration"]["data"].arrayObject as! [Int]
     let allXs = json[0]["return"]["positionX"]["data"].arrayObject as! [Double]
     let allYs = json[0]["return"]["positionY"]["data"].arrayObject as! [Double]
+    let allMarcotimes = json[0]["return"]["marcotime"]["data"].arrayObject as! [Int]
     
     var retVal = [SMIFixationEvent]()
     
@@ -50,7 +52,9 @@ func getAllFixationsAfter(previousTime: Int, forEye eye: Eye, fromJSON json: JSO
     while i < timeArray.count {
         if allEyes[i] == eye.rawValue {
             if allDurations[i] > 0 {
-                retVal.append(SMIFixationEvent(eye: eye, startTime: allStartTimes[i], endTime: allEndTimes[i], duration: allDurations[i], positionX: allXs[i], positionY: allYs[i]))
+                /// marco time was unix time minus a constant
+                let unixtime = allMarcotimes[i] + 1446909066675
+                retVal.append(SMIFixationEvent(eye: eye, startTime: allStartTimes[i], endTime: allEndTimes[i], duration: allDurations[i], positionX: allXs[i], positionY: allYs[i], unixtime: unixtime))
             }
         }
         

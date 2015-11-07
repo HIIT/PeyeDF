@@ -137,6 +137,8 @@ class ReadingEvent: Event {
             }
         }
         super.init(withStartDate: dateCreated)
+        
+        // create dictionary directly from json (result untested)
         theDictionary = json.dictionaryObject!
     }
     

@@ -18,16 +18,22 @@ struct PageEyeData: Dictionariable {
     var durations: [NSNumber]
     var pageIndex: Int?
     
-    init(Xs: [NSNumber], Ys: [NSNumber], startTimes: [NSNumber], endTimes: [NSNumber], durations: [NSNumber], pageIndex: Int) {
+    /// unixtimes are not sent to dime, but are used to filter fixations
+    /// so that those recorded around a specific time are not sent to dime
+    var unixtimes: [Int]
+    
+
+    init(Xs: [NSNumber], Ys: [NSNumber], startTimes: [NSNumber], endTimes: [NSNumber], durations: [NSNumber], unixtimes: [Int], pageIndex: Int) {
         self.Xs = Xs
         self.Ys = Ys
         self.startTimes = startTimes
         self.endTimes = endTimes
         self.durations = durations
         self.pageIndex = pageIndex
+        self.unixtimes = unixtimes
     }
     
-    init(Xs: [NSNumber], Ys: [NSNumber], Ps: [NSNumber], startTimes: [NSNumber], endTimes: [NSNumber], durations: [NSNumber], pageIndex: Int) {
+    init(Xs: [NSNumber], Ys: [NSNumber], Ps: [NSNumber], startTimes: [NSNumber], endTimes: [NSNumber], durations: [NSNumber], unixtimes: [Int], pageIndex: Int) {
         self.Xs = Xs
         self.Ys = Ys
         self.Ps = Ps
@@ -35,40 +41,45 @@ struct PageEyeData: Dictionariable {
         self.endTimes = endTimes
         self.durations = durations
         self.pageIndex = pageIndex
+        self.unixtimes = unixtimes
     }
     
-    mutating func appendEvent(x: NSNumber, y: NSNumber, startTime: NSNumber, endTime: NSNumber, duration: NSNumber) {
+    mutating func appendEvent(x: NSNumber, y: NSNumber, startTime: NSNumber, endTime: NSNumber, duration: NSNumber, unixtime: Int) {
         self.Xs.append(x)
         self.Ys.append(y)
         self.startTimes.append(startTime)
         self.endTimes.append(endTime)
         self.durations.append(duration)
+        self.unixtimes.append(unixtime)
     }
     
-    mutating func appendEvent(x: NSNumber, y: NSNumber, p: NSNumber, startTime: NSNumber, endTime: NSNumber, duration: NSNumber) {
+    mutating func appendEvent(x: NSNumber, y: NSNumber, p: NSNumber, startTime: NSNumber, endTime: NSNumber, duration: NSNumber, unixtime: Int) {
         self.Xs.append(x)
         self.Ys.append(y)
         self.Ps!.append(p)
         self.startTimes.append(startTime)
         self.endTimes.append(endTime)
         self.durations.append(duration)
+        self.unixtimes.append(unixtime)
     }
     
-    mutating func appendData(Xs: [NSNumber], Ys: [NSNumber], startTimes: [NSNumber], endTimes: [NSNumber], durations: [NSNumber]) {
+    mutating func appendData(Xs: [NSNumber], Ys: [NSNumber], startTimes: [NSNumber], endTimes: [NSNumber], durations: [NSNumber], unixtimes: [Int]) {
         self.Xs.appendContentsOf(Xs)
         self.Ys.appendContentsOf(Ys)
         self.startTimes.appendContentsOf(startTimes)
         self.endTimes.appendContentsOf(endTimes)
         self.durations.appendContentsOf(durations)
+        self.unixtimes.appendContentsOf(unixtimes)
     }
     
-    mutating func appendData(Xs: [NSNumber], Ys: [NSNumber], Ps: [NSNumber], startTimes: [NSNumber], endTimes: [NSNumber], durations: [NSNumber]) {
+    mutating func appendData(Xs: [NSNumber], Ys: [NSNumber], Ps: [NSNumber], startTimes: [NSNumber], endTimes: [NSNumber], durations: [NSNumber], unixtimes: [Int]) {
         self.Xs.appendContentsOf(Xs)
         self.Ys.appendContentsOf(Ys)
         self.Ps!.appendContentsOf(Ps)
         self.startTimes.appendContentsOf(startTimes)
         self.endTimes.appendContentsOf(endTimes)
         self.durations.appendContentsOf(durations)
+        self.unixtimes.appendContentsOf(unixtimes)
     }
     
     /// Check if xs, ys and timepoints are all the same length, traps if not.
@@ -82,6 +93,32 @@ struct PageEyeData: Dictionariable {
             if !(Xs.count == Ys.count && Ys.count == startTimes.count) {
                 let exception = NSException(name: "Incorrect count", reason: nil, userInfo: nil)
                 exception.raise()
+            }
+        }
+    }
+    
+    /// the passed unixtimes will cause eye data with a unixtime within a range of
+    /// excludeEyeUnixTimeMs of the given paramter to be removed from the current eye data
+    mutating func filterData(excludeUnixtimes: [Int]) {
+        for i in 0 ..< excludeUnixtimes.count {
+            var j = 0
+            while j < unixtimes.count {
+                if unixtimes[j] > excludeUnixtimes[i] - PeyeConstants.excludeEyeUnixTimeMs &&
+                    unixtimes[j] < excludeUnixtimes[i] + PeyeConstants.excludeEyeUnixTimeMs {
+                        
+                    unixtimes.removeAtIndex(j)
+                    Xs.removeAtIndex(j)
+                    Ys.removeAtIndex(j)
+                    if let _ = Ps {
+                        Ps!.removeAtIndex(j)
+                    }
+                    startTimes.removeAtIndex(j)
+                    endTimes.removeAtIndex(j)
+                    durations.removeAtIndex(j)
+                        
+                } else {
+                    j++
+                }
             }
         }
     }

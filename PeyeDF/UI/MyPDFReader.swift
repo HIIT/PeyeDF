@@ -205,7 +205,8 @@ class MyPDFReader: MyPDFBase, ScreenToPageConverter {
         }
     }
     
-    /// Create a marking (and subsequently a rect) at the given point, and make annotations
+    /// Create a marking (and subsequently a rect) at the given point, and make annotations.
+    /// Sends a notification that a marking was done.
     ///
     /// - parameter location: The point for which a rect will be created (in view coordinates)
     /// - parameter importance: The importance of the rect that will be created
@@ -222,6 +223,8 @@ class MyPDFReader: MyPDFBase, ScreenToPageConverter {
                 autoAnnotate()
             }
         }
+        let unixtimeDict = ["unixtime": NSDate().unixTime]
+        NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.manualParagraphMarkNotification, object: self, userInfo: unixtimeDict)
     }
     
     /// Manually tell that a point (and hence the paragraph/subparagraph related to it

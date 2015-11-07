@@ -96,7 +96,12 @@ struct PeyeConstants {
     static let midasRawChannelNames = ["timestamp", "leftGazeX", "leftGazeY", "leftDiam", "leftEyePositionX", "leftEyePositionY", "leftEyePositionZ", "rightGazeX", "rightGazeY", "rightDiam", "rightEyePositionX", "rightEyePositionY", "rightEyePositionZ"]
     
     /// List of all channel names in event stream, in order
-    static let midasEventChannelNames = ["eye", "startTime", "endTime", "duration", "positionX", "positionY"]
+    static let midasEventChannelNames = ["eye", "startTime", "endTime", "duration", "positionX", "positionY", "marcotime"]
+    
+    /// Eye fixation data which has a unix time within this range of its own exclude
+    /// unixtimes won't be sent to dime (used to reject data gathered close to paragraph
+    /// marking events
+    static let excludeEyeUnixTimeMs = 1000
     
     // MARK: - Debug
     
@@ -236,6 +241,12 @@ struct PeyeConstants {
     /// - "zpos": last seen position, z (distance from camera)
     static let midasEyePositionNotification = "hiit.PeyeDF.midasEyePosition"
     
+    /// String idenfitying the notification sent when a user manually marks a paragraph
+    ///
+    /// **UserInfo dictionary fields**:
+    /// - "unixtime": the unixtime associated to the marking event
+    static let manualParagraphMarkNotification = "hiit.PeyeDF.manualMarkEvent"
+    
     /// String identifying the notification sent when auto annotation is complete
     static let autoAnnotationComplete = "hiit.PeyeDF.autoAnnotationComplete"
     
@@ -261,7 +272,7 @@ public enum midasRawChanNumbers: Int {
 
 /// Midas event channel numbers
 public enum midasEventChanNumber: Int {
-    case eye = 0, startTime, endTime, duration, positionX, positionY
+    case eye = 0, startTime, endTime, duration, positionX, positionY, marcotime
 }
 
 /// Eye (left or right). Using same coding as SMI_LSL data streaming.

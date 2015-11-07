@@ -46,6 +46,15 @@ class HistoryManager: FixationDataDelegate {
     /// A dictionary, one entry per page (indexed by page number) containing all page eye tracking data
     private var currentEyeData = [Int: PageEyeData]()
     
+    /// A dictionary indicating when the user marked a paragraph in unix time
+    private var manualMarkUnixtimes: [Int]
+    
+    /// Creates the history manager and listens for manual marks notifications
+    init() {
+        manualMarkUnixtimes = [Int]()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "manualParagraphMark:", name: PeyeConstants.manualParagraphMarkNotification, object: nil)
+    }
+    
     // MARK: - External functions
     
     /// Attempts to connect to dime. Sends a notification if we succeeded / failed
@@ -110,9 +119,9 @@ class HistoryManager: FixationDataDelegate {
                 
                 if let triple = eyeReceiver.screenToPage(screenPoint, fromEye: true) {
                     if currentEyeData[triple.pageIndex] != nil {
-                        currentEyeData[triple.pageIndex]!.appendEvent(triple.x, y: triple.y, startTime: fixEv.startTime, endTime: fixEv.endTime, duration: fixEv.duration)
+                        currentEyeData[triple.pageIndex]!.appendEvent(triple.x, y: triple.y, startTime: fixEv.startTime, endTime: fixEv.endTime, duration: fixEv.duration, unixtime: fixEv.unixtime)
                     } else {
-                        currentEyeData[triple.pageIndex] = PageEyeData(Xs: [triple.x], Ys: [triple.y], startTimes: [fixEv.startTime], endTimes: [fixEv.endTime], durations: [fixEv.duration], pageIndex: triple.pageIndex)
+                        currentEyeData[triple.pageIndex] = PageEyeData(Xs: [triple.x], Ys: [triple.y], startTimes: [fixEv.startTime], endTimes: [fixEv.endTime], durations: [fixEv.duration], unixtimes: [fixEv.unixtime], pageIndex: triple.pageIndex)
                     }
                 }
             }
@@ -232,14 +241,24 @@ class HistoryManager: FixationDataDelegate {
             currentStatus.setEnd(NSDate())
             // check if there is page eye data, and append it if so
             for k in self.currentEyeData.keys {
+                // clean eye data before adding it
+                self.currentEyeData[k]!.filterData(manualMarkUnixtimes)
+                
                 currentStatus.addEyeData(self.currentEyeData[k]!)
             }
             sendToDiMe(currentStatus, endPoint: .Event)
             self.currentReadingEvent = nil
             self.currentEyeData = [Int: PageEyeData]()
         }
+        // reset unix times
+        manualMarkUnixtimes = [Int]()
     }
     
+    /// Records that the user marked a pagraph at the given unix time
+    @objc private func manualParagraphMark(notification: NSNotification) {
+        let unixtime = notification.userInfo!["unixtime"]! as! Int
+        manualMarkUnixtimes.append(unixtime)
+    }
 }
 
 enum DiMeEndpoint: String {

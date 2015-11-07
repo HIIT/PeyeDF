@@ -36,6 +36,8 @@ from iViewXAPIReturnCodes import *
 import time
 import pylsl as lsl
 
+def marcoTime():
+    return int(round(time.time() * 1000) - 1446909066675)
 
 # ---------------------------------------------
 # ---- connect to iViewX
@@ -65,7 +67,7 @@ k_EyeUnknown = 0  # number of eye when unkown
 # -- lsl constants --
 
 k_nchans_raw = 13  # raw stream channels
-k_nchans_event = 6  # event stream channels
+k_nchans_event = 7  # event stream channels
 
 k_chunkSize = 32  # size of chunks (using example given by lsl)
 k_maxBuff = 30  # maximum buffer size in seconds
@@ -129,6 +131,12 @@ for c in ["positionX", "positionY"]:
         .append_child_value("unit", "pixels")\
         .append_child_value("type", "Event")
 
+for c in ["marcotime"]:
+    eventChannels.append_child("channel")\
+        .append_child_value("label", c)\
+        .append_child_value("unit", "milliseconds")\
+        .append_child_value("type", "Event")
+
 # ---------------------------------------------
 # ---- lsl outlets
 # ---------------------------------------------
@@ -189,6 +197,7 @@ def EventCallback(event):
     data[3] = event.duration
     data[4] = event.positionX
     data[5] = event.positionY
+    data[6] = marcoTime()
     eventOutlet.push_sample(data)
     
     return 0

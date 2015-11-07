@@ -12,10 +12,11 @@ stop = False
 global time_of_start
 time_of_start = time.time()
 
+def marcoTime():
+    return int(round(time.time() * 1000) - 1446909066675)
 
 def microSsinceStart():
     return round((time.time() - time_of_start) * 1000000)
-
 
 def randFakeDelay():
     return round(random.random() * (656216 - 86098) + 86098)
@@ -23,7 +24,7 @@ def randFakeDelay():
 # -- lsl constants --
 
 k_nchans_raw = 13  # raw stream channels
-k_nchans_event = 6  # event stream channels
+k_nchans_event = 7  # event stream channels
 
 k_chunkSize = 32  # size of chunks (using example given by lsl)
 k_maxBuff = 30  # maximum buffer size in seconds
@@ -110,6 +111,12 @@ for c in ["positionX", "positionY"]:
         .append_child_value("unit", "pixels")\
         .append_child_value("type", "Event")
 
+for c in ["marcotime"]:
+    eventChannels.append_child("channel")\
+        .append_child_value("label", c)\
+        .append_child_value("unit", "milliseconds")\
+        .append_child_value("type", "Event")
+
 # ---------------------------------------------
 # ---- lsl outlets
 # ---------------------------------------------
@@ -148,6 +155,7 @@ def FakeEvent():
         data = [None] * k_nchans_event
         data[0] = fakeEv[0]
         data[1] = microSsinceStart()
+
         if fakeEv[2] == -888:
             data[2] = data[1] + randFakeDelay()
             data[3] = data[2] - data[1]
@@ -156,6 +164,8 @@ def FakeEvent():
             data[3] = fakeEv[3]
         data[4] = fakeEv[4]
         data[5] = fakeEv[5]
+        data[6] = marcoTime()
+
         eventOutlet.push_sample(data)
         
         time.sleep(0.002)  # note: minimum sleep on win seems to be 13ms
