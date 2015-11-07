@@ -190,7 +190,10 @@ class MidasManager {
             let newFixations = getAllFixationsAfter(lastFixationStartTime, forEye: dominantEye, fromJSON: json)
             if let newFixations = newFixations {
                 lastFixationStartTime = newFixations.last!.startTime
-                fixationDelegate?.receiveNewFixationData(newFixations)
+                // only send fixations if user is reading
+                if HistoryManager.sharedManager.userIsReading {
+                    fixationDelegate?.receiveNewFixationData(newFixations)
+                }
             }
         }
     }

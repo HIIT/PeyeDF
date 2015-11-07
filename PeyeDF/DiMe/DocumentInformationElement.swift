@@ -33,6 +33,11 @@ class DocumentInformationElement: DiMeBase {
         
         super.init()
         
+    }
+    
+    /// Returns a dime-compatible dictionary for this information element
+    /// Sublasses must call this before editing their dictionary.
+    override func getDict() -> [String : AnyObject] {
         theDictionary["uri"] = "file://" + uri
         theDictionary[PeyeConstants.iId] = self.id
         if let ptc = plainTextContent {
@@ -46,6 +51,8 @@ class DocumentInformationElement: DiMeBase {
         // dime-required
         theDictionary["@type"] = "Document"
         theDictionary["type"] = "http://www.hiit.fi/ontologies/dime/#Document"
+        
+        return theDictionary
     }
     
     /// Creates information element from json

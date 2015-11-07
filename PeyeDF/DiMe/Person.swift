@@ -74,15 +74,6 @@ class Person: DiMeBase {
             }
         }
         
-        theDictionary["firstName"] = firstName
-        theDictionary["lastName"] = lastName
-        if middleNames.count > 0 {
-            theDictionary["middleNames"] = middleNames
-        }
-        
-        // dime-required
-        theDictionary["@type"] = "Person"
-        theDictionary["type"] = "http://www.hiit.fi/ontologies/dime/#Person"
     }
     
     /// Creates a person from dime's json
@@ -94,5 +85,19 @@ class Person: DiMeBase {
                 self.middleNames.append(midname.stringValue)
             }
         }
+    }
+    
+    override func getDict() -> [String : AnyObject] {
+        theDictionary["firstName"] = firstName
+        theDictionary["lastName"] = lastName
+        if middleNames.count > 0 {
+            theDictionary["middleNames"] = middleNames
+        }
+        
+        // dime-required
+        theDictionary["@type"] = "Person"
+        theDictionary["type"] = "http://www.hiit.fi/ontologies/dime/#Person"
+        
+        return theDictionary
     }
 }

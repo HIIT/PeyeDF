@@ -84,7 +84,7 @@ class DiMeFetcher {
                         callback(nil)
                     }
                 } else {
-                    AppSingleton.log.error("Failed to retrieve a valid info element: \(response.value!)")
+                    AppSingleton.log.debug("Failed to retrieve a valid info element: \(response.value!)")
                     callback(nil)
                 }
             }

@@ -22,6 +22,8 @@ class DiMeBase: NSObject, Dictionariable {
         super.init()
     }
     
+    /// Simply returns the dictionary. Can be overridden by subclasses that want
+    /// to edit the dictionary before sending it.
     func getDict() -> [String : AnyObject] {
         return theDictionary
     }

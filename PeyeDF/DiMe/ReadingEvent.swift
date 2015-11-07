@@ -112,7 +112,7 @@ class ReadingEvent: Event {
         theDictionary["type"] = ("http://www.hiit.fi/ontologies/dime/#ReadingEvent")
     }
     
-    /// Creates event from dime. NOTE: such events cannot be sent back to dime
+    /// Creates event from dime. NOTE: sending these events back to dime is untested.
     init(asManualSummaryFromDime json: JSON) {
         infoElemId = json["targettedResource"][PeyeConstants.iId].stringValue
         proportionRead = json["proportionRead"].doubleValue
@@ -137,6 +137,7 @@ class ReadingEvent: Event {
             }
         }
         super.init(withStartDate: dateCreated)
+        theDictionary = json.dictionaryObject!
     }
     
     /// Adds eye tracking data to this reading event

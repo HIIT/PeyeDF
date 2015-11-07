@@ -138,7 +138,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     func sendDeskEvent() {
         let sciDoc = pdfReader!.sciDoc!
         let deskEvent = DesktopEvent(sciDoc: sciDoc)
-        HistoryManager.sharedManager.sendToDiMe(deskEvent)
+        HistoryManager.sharedManager.sendToDiMe(deskEvent, endPoint: .Event)
     }
     
     /// Retrieves current ReadingEvent (for HistoryManager)
@@ -146,16 +146,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         return pdfReader!.getViewportStatus() as ReadingEvent?
     }
     
-    // MARK: - Debug functions
-    
-    @IBAction func sendToDiMe(sender: AnyObject?) {
-        let readingEvent:ReadingEvent = pdfReader!.getViewportStatus()!  // assuming there is a non-nil status if we press the button
-        HistoryManager.sharedManager.sendToDiMe(readingEvent)
-    }
-    
-    @IBAction func selectVisibleText(sender: AnyObject?) {
-        pdfReader?.selectVisibleText(sender)
-    }
+    // MARK: - Metadata window
     
     @IBAction func thisDocMdata(sender: AnyObject?) {
         // create metadata window, if currently nil
@@ -351,13 +342,14 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         if (NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefSendEventOnFocusSwitch) as! Bool) {
             sendDeskEvent()
         } else {
-        // otherwise, just send an information element for the given document if the current document
-        // does not have already an associated info elemen in dime
-            // TODO: use new function in dimefetcher
-//            DiMeFetcher.retrieveScientificDocument("52910dc4392885aac733bb5d8670bb044fd093d4") {
-//                scidoc in
-//                Swift.print(scidoc)
-//            }
+            // otherwise just send an information element for the given document if the current document
+            // does not have already an associated info elemen in dime
+            DiMeFetcher.retrieveScientificDocument(pdfReader!.sciDoc!.id) {
+                scidoc in
+                if scidoc == nil {
+                    HistoryManager.sharedManager.sendToDiMe(self.pdfReader!.sciDoc!, endPoint: .InformationElement)
+                }
+            }
         }
         
         // Tell the history manager to "start recording"
@@ -394,7 +386,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             // send data to dime
             dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
                 if let mpdf = self.pdfReader, userRectStatus = mpdf.getUserRectStatus() {
-                    HistoryManager.sharedManager.sendToDiMe(userRectStatus)
+                    HistoryManager.sharedManager.sendToDiMe(userRectStatus, endPoint: .Event)
                 }
                 dispatch_sync(dispatch_get_main_queue()) {
                     AppSingleton.appDelegate.openPDFs--

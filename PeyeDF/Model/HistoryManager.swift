@@ -122,7 +122,7 @@ class HistoryManager: FixationDataDelegate {
     // MARK: - External functions
     
     /// Send the given data to dime
-    func sendToDiMe(dimeData: DiMeBase) {
+    func sendToDiMe(dimeData: DiMeBase, endPoint: DiMeEndpoint) {
        
         if dimeAvailable {
             
@@ -141,15 +141,13 @@ class HistoryManager: FixationDataDelegate {
                 
                 let headers = ["Authorization": "Basic \(base64Credentials)"]
                 
-                Alamofire.request(Alamofire.Method.POST, server_url + "/data/event", parameters: dimeData.getDict(), encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON {
+                Alamofire.request(Alamofire.Method.POST, server_url + "/data/\(endPoint.rawValue)", parameters: dimeData.getDict(), encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON {
                     _, _, response in
                     if response.isFailure {
                         AppSingleton.log.error("Error while reading json response from DiMe: \(response.debugDescription)")
                         AppSingleton.alertUser("Error while communcating with dime. Dime has now been disconnected", infoText: "Message from dime:\n\(response.debugDescription)")
                         self.dimeConnectState(false)
                     } else {
-                        // AppSingleton.log.debug("Data pushed to DiMe")
-                        // print(response.value!)  // to see what dime replied
                         let json = JSON(response.value!)
                         if let error = json["error"].string {
                             AppSingleton.log.error("DiMe reply to submission contains error:\n\(error)")
@@ -236,10 +234,15 @@ class HistoryManager: FixationDataDelegate {
             for k in self.currentEyeData.keys {
                 currentStatus.addEyeData(self.currentEyeData[k]!)
             }
-            sendToDiMe(currentStatus)
+            sendToDiMe(currentStatus, endPoint: .Event)
             self.currentReadingEvent = nil
             self.currentEyeData = [Int: PageEyeData]()
         }
     }
     
+}
+
+enum DiMeEndpoint: String {
+    case Event = "event"
+    case InformationElement = "informationelement"
 }

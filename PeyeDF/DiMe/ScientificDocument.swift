@@ -26,12 +26,9 @@ class ScientificDocument: DocumentInformationElement {
         
         super.init(uri: uri, plainTextContent: plainTextContent, title: title)
         
-        // dime-required
-        theDictionary["@type"] = "ScientificDocument"
-        theDictionary["type"] = "http://www.hiit.fi/ontologies/dime/#ScientificDocument"
     }
     
-    /// Create document from dime's json. NOTE: these documents cannot be sent back to dime
+    /// Create document from dime's json.
     override init(fromJson json: JSON) {
         super.init(fromJson: json)
         if let authors = json["authors"].array {
@@ -46,6 +43,12 @@ class ScientificDocument: DocumentInformationElement {
     
     /// Get dict for scientific document is overridden to allow for just-in-time creation of sub-dicts
     override func getDict() -> [String : AnyObject] {
+        theDictionary = super.getDict()
+        
+        // dime-required
+        theDictionary["@type"] = "ScientificDocument"
+        theDictionary["type"] = "http://www.hiit.fi/ontologies/dime/#ScientificDocument"
+        
         if let authors = authors {
             var authArray = [[String: AnyObject]]()
             for auth in authors {
