@@ -13,6 +13,8 @@ import Foundation
 
 class ReadingEvent: Event {
     
+    let sessionId: String
+    
     var pageEyeData = [[String: AnyObject]]()
     let infoElemId: NSString
     var manualMarkings: PDFMarkings!
@@ -36,11 +38,13 @@ class ReadingEvent: Event {
         - parameter scaleFactor: Sale factor of page on screen
         - parameter infoElemId: id referring to the info element referenced by this event (document id)
     */
-    init(multiPage: Bool, pageNumbers: [Int], pageLabels: [String], pageRects: [ReadingRect], isSummary: Bool, scaleFactor: NSNumber, plainTextContent: NSString, infoElemId: NSString) {
+    init(multiPage: Bool, sessionId: String, pageNumbers: [Int], pageLabels: [String], pageRects: [ReadingRect], isSummary: Bool, scaleFactor: NSNumber, plainTextContent: NSString, infoElemId: NSString) {
         self.infoElemId = infoElemId
+        self.sessionId = sessionId
         super.init()
         
         theDictionary["multiPage"] = multiPage
+        theDictionary["sessionId"] = sessionId
         theDictionary["pageNumbers"] = pageNumbers
         theDictionary["pageLabels"] = pageLabels
         theDictionary["isSummary"] = isSummary
@@ -67,8 +71,9 @@ class ReadingEvent: Event {
     
     /** Creates a summary reading event, which contains all "markings" in form of rectangles
     */
-    init(asSummaryWithMarkings markings: [PDFMarkings], plainTextContent: NSString?, infoElemId: NSString, foundStrings: [String], pdfReader: MyPDFReader?, proportionTriple: (proportionRead: Double, proportionInteresting: Double, proportionCritical: Double)) {
+    init(asSummaryWithMarkings markings: [PDFMarkings], sessionId: String, plainTextContent: NSString?, infoElemId: NSString, foundStrings: [String], pdfReader: MyPDFReader?, proportionTriple: (proportionRead: Double, proportionInteresting: Double, proportionCritical: Double)) {
         self.infoElemId = infoElemId
+        self.sessionId = sessionId
         
         self.proportionRead = proportionTriple.proportionRead
         self.proportionCritical = proportionTriple.proportionCritical
@@ -76,6 +81,8 @@ class ReadingEvent: Event {
         self.foundStrings = foundStrings
         
         super.init()
+        
+        theDictionary["sessionId"] = sessionId
         
         theDictionary["proportionRead"] = proportionTriple.proportionRead
         theDictionary["proportionInteresting"] = proportionTriple.proportionInteresting
@@ -115,6 +122,7 @@ class ReadingEvent: Event {
     /// Creates event from dime. NOTE: sending these events back to dime is untested.
     init(asManualSummaryFromDime json: JSON) {
         infoElemId = json["targettedResource"][PeyeConstants.iId].stringValue
+        sessionId = json["sessionId"].stringValue
         proportionRead = json["proportionRead"].doubleValue
         proportionInteresting = json["proportionInteresting"].doubleValue
         proportionCritical = json["proportionCritical"].doubleValue

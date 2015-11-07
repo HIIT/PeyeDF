@@ -40,6 +40,9 @@ class MyPDFReader: MyPDFBase, ScreenToPageConverter {
     
     var containsRawString = false  // this stores whether the document actually contains scanned text
     
+    /// Id for this reading session, all events sent by this instance should have the same value
+    let sessionId: String = { return NSUUID().UUIDString.sha1() }()
+    
     /// Stores all strings searched for and found by user
     private lazy var foundStrings = { return [String]() }()
     
@@ -348,7 +351,7 @@ class MyPDFReader: MyPDFBase, ScreenToPageConverter {
                 vpi++
             }
             
-            return ReadingEvent(multiPage: multiPage, pageNumbers: visiblePageNums, pageLabels: visiblePageLabels, pageRects: readingRects, isSummary: false, scaleFactor: self.scaleFactor(), plainTextContent: plainTextContent, infoElemId: sciDoc!.getId())
+            return ReadingEvent(multiPage: multiPage, sessionId: sessionId, pageNumbers: visiblePageNums, pageLabels: visiblePageLabels, pageRects: readingRects, isSummary: false, scaleFactor: self.scaleFactor(), plainTextContent: plainTextContent, infoElemId: sciDoc!.getId())
         } else {
             return nil
         }
@@ -374,7 +377,7 @@ class MyPDFReader: MyPDFBase, ScreenToPageConverter {
         if totProportion < PeyeConstants.minProportion && proportionGazed < PeyeConstants.minProportion {
             return nil
         } else {
-            return ReadingEvent(asSummaryWithMarkings: [manualMarks, smiMarks, searchMarks], plainTextContent: getVisibleString(), infoElemId: sciDoc!.getId(), foundStrings: foundStrings, pdfReader: self, proportionTriple: proportionTriple)
+            return ReadingEvent(asSummaryWithMarkings: [manualMarks, smiMarks, searchMarks], sessionId: sessionId, plainTextContent: getVisibleString(), infoElemId: sciDoc!.getId(), foundStrings: foundStrings, pdfReader: self, proportionTriple: proportionTriple)
         }
     }
     
