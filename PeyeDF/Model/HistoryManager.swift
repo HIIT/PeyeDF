@@ -40,6 +40,9 @@ class HistoryManager: FixationDataDelegate {
     /// A boolean indicating that the user is (probably) reading. Essentially, it means we are after entry timer but before exit timer (or exit event).
     private(set) var userIsReading = false
     
+    /// A unix timestamp indicating when the user started reading
+    private(set) var readingUnixTime = 0
+    
     /// The current thing the user is probably looking at (MyPDFReader instance), which will be used to convert screen to page coordinates
     private var currentEyeReceiver: ScreenToPageConverter?
     
@@ -138,6 +141,7 @@ class HistoryManager: FixationDataDelegate {
             do {
                 // attempt to translate json
                 let options = NSJSONWritingOptions.PrettyPrinted
+                // TODO: remove this o
                 try NSJSONSerialization.dataWithJSONObject(dimeData.getDict(), options: options)
                 
                 // assume json conversion was a success, hence send to dime
@@ -197,6 +201,7 @@ class HistoryManager: FixationDataDelegate {
     
     /// The document has been "seen" long enough, request information and prepare second (exit) timer
     @objc private func entryTimerFire(entryTimer: NSTimer) {
+        readingUnixTime = NSDate().unixTime
         userIsReading = true
         
         let docWindow = entryTimer.userInfo as! DocumentWindowController

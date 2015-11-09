@@ -30,8 +30,8 @@ class MidasManager {
     /// Whether there is a midas connection available
     private(set) var midasAvailable: Bool = false
     
-    /// Last SMI timestamp for last recorded fixation
-    private var lastFixationStartTime: Int = 0
+    /// Last time for last recorded fixation
+    private var lastFixationUnixtime: Int = 0
     
     /// Length of buffer in seconds
     private let kBufferLength: Int = 1
@@ -187,13 +187,14 @@ class MidasManager {
                 newDataCheck(json)
             }
         case .Fixations:
-            let newFixations = getAllFixationsAfter(lastFixationStartTime, forEye: dominantEye, fromJSON: json)
-            if let newFixations = newFixations {
-                lastFixationStartTime = newFixations.last!.startTime
+            // fetch fixations which arrived after last recorded fixation and after the user started reading, whichever comes latest
+            let minUnixTime = max(lastFixationUnixtime, HistoryManager.sharedManager.readingUnixTime)
+            if let (newFixations, lut) = getTimedFixationsAfter(unixtime: minUnixTime, forEye: dominantEye, fromJSON: json) {
                 // only send fixations if user is reading
                 if HistoryManager.sharedManager.userIsReading {
                     fixationDelegate?.receiveNewFixationData(newFixations)
                 }
+                lastFixationUnixtime = lut
             }
         }
     }

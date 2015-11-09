@@ -131,7 +131,7 @@ class ReadingEvent: Event {
                 foundStrings.append(fString.stringValue)
             }
         }
-        let dateCreated: NSDate = NSDate(timeIntervalSince1970: NSTimeInterval(json["timeCreated"].intValue / 1000))
+        let dateCreated: NSDate = NSDate(timeIntervalSince1970: NSTimeInterval(json["start"].intValue / 1000))
         self.manualMarkings = PDFMarkings(withSource: ClassSource.Click)
         self.smiMarkings = PDFMarkings(withSource: ClassSource.SMI)
         self.searchMarkings = PDFMarkings(withSource: ClassSource.Search)
@@ -148,6 +148,10 @@ class ReadingEvent: Event {
         
         // create dictionary directly from json (result untested)
         theDictionary = json.dictionaryObject!
+        
+        // dime-required
+        theDictionary["@type"] = ("ReadingEvent")
+        theDictionary["type"] = ("http://www.hiit.fi/ontologies/dime/#ReadingEvent")
     }
     
     /// Adds eye tracking data to this reading event

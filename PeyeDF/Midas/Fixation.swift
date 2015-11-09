@@ -10,7 +10,7 @@
 
 import Foundation
 
-struct SMIFixationEvent {
+struct SMIFixationEvent: Equatable {
     var eye: Eye
     var startTime: Int
     var endTime: Int
@@ -20,21 +20,25 @@ struct SMIFixationEvent {
     var unixtime: Int
 }
 
-/// Returns an array of fixations that happened after the given startTime (startTime + 1), for the given eye, using the given json
+func == (lhs: SMIFixationEvent, rhs: SMIFixationEvent) -> Bool {
+    return lhs.eye == rhs.eye &&
+           lhs.startTime == rhs.startTime &&
+           lhs.endTime == rhs.endTime &&
+           lhs.duration == rhs.duration &&
+           lhs.positionX == rhs.positionX &&
+           lhs.positionY == rhs.positionY &&
+           lhs.unixtime == rhs.unixtime
+}
+
+/// Returns an array of fixations for the given eye **which have duration > 0**, using the given json
 ///
-/// - returns: nil if nothing is new since last time, or an array of events containing all new events for the given eye
-func getAllFixationsAfter(previousTime: Int, forEye eye: Eye, fromJSON json: JSON) -> [SMIFixationEvent]? {
+/// - returns: an array of fixation events and if some value was found and the last valid unix time
+///            of the last fixation found (nil if no new values were found)
+func getTimedFixationsAfter(unixtime minUnixtime: Int, forEye eye: Eye, fromJSON json: JSON) -> (array: [SMIFixationEvent], lastUnixtime: Int)? {
     // find index to start from
     let timeArray = json[0]["return"]["startTime"]["data"].arrayObject as! [Int]
     
     if timeArray.count == 0 {
-        return nil
-    }
-    
-    var i = binaryGreaterOrEqOnSortedArray(timeArray, target: previousTime + 1)
-    
-    // The end was returned, it means nothing is new
-    if i >= timeArray.count {
         return nil
     }
     
@@ -48,13 +52,20 @@ func getAllFixationsAfter(previousTime: Int, forEye eye: Eye, fromJSON json: JSO
     
     var retVal = [SMIFixationEvent]()
     
+    var i = 0
+    var lastUnixtime: Int?
     // loop all remaining items and add if they match eye and have duration
     while i < timeArray.count {
         if allEyes[i] == eye.rawValue {
             if allDurations[i] > 0 {
                 /// marco time was unix time minus a constant
                 let unixtime = allMarcotimes[i] + 1446909066675
-                retVal.append(SMIFixationEvent(eye: eye, startTime: allStartTimes[i], endTime: allEndTimes[i], duration: allDurations[i], positionX: allXs[i], positionY: allYs[i], unixtime: unixtime))
+                if unixtime > minUnixtime {
+                    retVal.append(SMIFixationEvent(eye: eye, startTime: allStartTimes[i], endTime: allEndTimes[i], duration: allDurations[i], positionX: allXs[i], positionY: allYs[i], unixtime: unixtime))
+                }
+                if lastUnixtime == nil || unixtime > lastUnixtime! {
+                    lastUnixtime = unixtime
+                }
             }
         }
         
@@ -62,7 +73,7 @@ func getAllFixationsAfter(previousTime: Int, forEye eye: Eye, fromJSON json: JSO
     }
     
     if retVal.count > 0 {
-        return retVal
+        return (array: retVal, lastUnixtime: lastUnixtime!)
     } else {
         return nil
     }

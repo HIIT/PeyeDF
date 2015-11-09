@@ -147,23 +147,40 @@ eventOutlet = lsl.StreamOutlet(eventStream_info, k_chunkSize, k_maxBuff)
 # ---------------------------------------------
 # ---- configure and start calibration
 # ---------------------------------------------
+minAccuracy = 1.0
+accLX = 1000
+accLY = 1000
+accRX = 1000
+accRY = 1000
+inkey = "x"
 
-displayDevice = 1
-calibrationData = CCalibration(5, 1, displayDevice, 0, 1, 250, 220, 2, 20, b"")
+while (accLX > minAccuracy or accLY > minAccuracy or accRX > minAccuracy or accRY > minAccuracy) and inkey != "s":
 
-res = iViewXAPI.iV_SetupCalibration(byref(calibrationData))
-print "iV_SetupCalibration " + str(res)
+	displayDevice = 1
+	calibrationData = CCalibration(5, 1, displayDevice, 0, 1, 250, 220, 2, 20, b"")
 
-res = iViewXAPI.iV_Calibrate()
-print "iV_Calibrate " + str(res)
+	res = iViewXAPI.iV_SetupCalibration(byref(calibrationData))
+	print "iV_SetupCalibration " + str(res)
 
-res = iViewXAPI.iV_Validate()
-print "iV_Validate " + str(res)
+	res = iViewXAPI.iV_Calibrate()
+	print "iV_Calibrate " + str(res)
 
-res = iViewXAPI.iV_GetAccuracy(byref(accuracyData), 0)
-print "iV_GetAccuracy " + str(res)
-print "deviationXLeft " + str(accuracyData.deviationLX) + " deviationYLeft " + str(accuracyData.deviationLY)
-print "deviationXRight " + str(accuracyData.deviationRX) + " deviationYRight " + str(accuracyData.deviationRY)
+	res = iViewXAPI.iV_Validate()
+	print "iV_Validate " + str(res)
+
+	res = iViewXAPI.iV_GetAccuracy(byref(accuracyData), 0)
+	print "iV_GetAccuracy " + str(res)
+	print "deviationXLeft " + str(accuracyData.deviationLX) + " deviationYLeft " + str(accuracyData.deviationLY)
+	print "deviationXRight " + str(accuracyData.deviationRX) + " deviationYRight " + str(accuracyData.deviationRY)
+	
+	accLX = accuracyData.deviationLX
+	accLY = accuracyData.deviationLY
+	accRX = accuracyData.deviationRX
+	accRY = accuracyData.deviationRY
+	
+	if accLX > minAccuracy or accLY > minAccuracy or accRX > minAccuracy or accRY > minAccuracy:
+		print("One or more accuracies were above " + str(minAccuracy))
+		inkey = raw_input('Enter to continue, or s + enter to skip: ')
 
 # ---------------------------------------------
 # ---- define the callback functions. Also see the enum and string arrays in PeyeConstants for input/output formats.

@@ -65,13 +65,28 @@ class DiMeFetcher {
         
         let headers = ["Authorization": "Basic \(base64Credentials)"]
         
-        Alamofire.request(.GET, server_url + "/data/informationelement/" + infoElemId, headers: headers).responseJSON() {
+        var reqString: String
+        switch PeyeConstants.dimeBranch {
+        case .mongodb:
+            reqString = server_url + "/data/informationelement/" + infoElemId
+        case .sql:
+            reqString = server_url + "/data/informationelements?appId=" + infoElemId
+        }
+        
+        Alamofire.request(.GET, reqString, headers: headers).responseJSON() {
             _, _, response in
             if response.isFailure {
                 AppSingleton.log.error("Error fetching information element: \(response.debugDescription)")
                 callback(nil)
             } else {
-                let json = JSON(response.value!)
+                // if this sql branch, assume first returned item is the one we are looking for
+                let json: JSON
+                switch PeyeConstants.dimeBranch {
+                case .mongodb:
+                    json = JSON(response.value!)
+                case .sql:
+                    json = JSON(response.value!)[0]
+                }
                 if let error = json["error"].string {
                     AppSingleton.log.error("Dime fetched json contains error:\n\(error)")
                 }
