@@ -26,8 +26,12 @@ class HistoryManager: FixationDataDelegate {
     /// The timer that fires after a certain amount of time passed, and generates an "exit event"
     private var exitTimer: NSTimer?
     
-    /// The GDC queue in which all timers are created / destroyed (to prevent potential memory leaks, they all run here)
+    /// The GCD queue in which all timers are created / destroyed (to prevent potential memory leaks, they all run here)
     private let timerQueue = dispatch_queue_create("hiit.PeyeDF.HistoryManager.timerQueue", DISPATCH_QUEUE_SERIAL)
+    
+    /// Eye tracking events are converted / sent to dime on this queue, to avoid conflicts
+    /// between exit events and fixation receipt events
+    private let eyeQueue = dispatch_queue_create("hiit.PeyeDF.HistoryManager.eyeQueue", DISPATCH_QUEUE_SERIAL)
     
     /// Is true if there is a connection to DiMe, and can be used
     private(set) var dimeAvailable: Bool = false
@@ -116,16 +120,27 @@ class HistoryManager: FixationDataDelegate {
         if let eyeReceiver = currentEyeReceiver {
             // translate all fixations to page points, and insert to corresponding data in the main dictionary
             for fixEv in newData {
-                // convert to screen point and flip it (smi and os x have y coordinate flipped.
-                var screenPoint = NSPoint(x: fixEv.positionX, y: fixEv.positionY)
-                screenPoint.y = AppSingleton.screenRect.height - screenPoint.y
                 
-                if let triple = eyeReceiver.screenToPage(screenPoint, fromEye: true) {
-                    if currentEyeData[triple.pageIndex] != nil {
-                        currentEyeData[triple.pageIndex]!.appendEvent(triple.x, y: triple.y, startTime: fixEv.startTime, endTime: fixEv.endTime, duration: fixEv.duration, unixtime: fixEv.unixtime)
-                    } else {
-                        currentEyeData[triple.pageIndex] = PageEyeData(Xs: [triple.x], Ys: [triple.y], startTimes: [fixEv.startTime], endTimes: [fixEv.endTime], durations: [fixEv.duration], unixtimes: [fixEv.unixtime], pageIndex: triple.pageIndex)
+                // run only on eye serial queue, and check if user is reading
+                
+                dispatch_sync(eyeQueue) {
+
+                    if self.userIsReading {
+                    
+                        // convert to screen point and flip it (smi and os x have y coordinate flipped.
+                        var screenPoint = NSPoint(x: fixEv.positionX, y: fixEv.positionY)
+                        screenPoint.y = AppSingleton.screenRect.height - screenPoint.y
+                        
+                        if let triple = eyeReceiver.screenToPage(screenPoint, fromEye: true) {
+                            if self.currentEyeData[triple.pageIndex] != nil {
+                                self.currentEyeData[triple.pageIndex]!.appendEvent(triple.x, y: triple.y, startTime: fixEv.startTime, endTime: fixEv.endTime, duration: fixEv.duration, unixtime: fixEv.unixtime)
+                            } else {
+                                self.currentEyeData[triple.pageIndex] = PageEyeData(Xs: [triple.x], Ys: [triple.y], startTimes: [fixEv.startTime], endTimes: [fixEv.endTime], durations: [fixEv.duration], unixtimes: [fixEv.unixtime], pageIndex: triple.pageIndex)
+                            }
+                        }
+                        
                     }
+                    
                 }
             }
         }
@@ -244,16 +259,24 @@ class HistoryManager: FixationDataDelegate {
         // if there's something to send, send it
         if let currentStatus = self.currentReadingEvent {
             currentStatus.setEnd(NSDate())
-            // check if there is page eye data, and append it if so
-            for k in self.currentEyeData.keys {
-                // clean eye data before adding it
-                self.currentEyeData[k]!.filterData(manualMarkUnixtimes)
+            
+            // run on eye serial queue
+            
+            dispatch_sync(eyeQueue) {
+            
+                // check if there is page eye data, and append it if so
+                for k in self.currentEyeData.keys {
+                    // clean eye data before adding it
+                    self.currentEyeData[k]!.filterData(self.manualMarkUnixtimes)
+                    
+                    currentStatus.addEyeData(self.currentEyeData[k]!)
+                }
+                self.sendToDiMe(currentStatus, endPoint: .Event)
+                self.currentReadingEvent = nil
+                self.currentEyeData = [Int: PageEyeData]()
                 
-                currentStatus.addEyeData(self.currentEyeData[k]!)
             }
-            sendToDiMe(currentStatus, endPoint: .Event)
-            self.currentReadingEvent = nil
-            self.currentEyeData = [Int: PageEyeData]()
+            
         }
         // reset unix times
         manualMarkUnixtimes = [Int]()
@@ -264,6 +287,7 @@ class HistoryManager: FixationDataDelegate {
         let unixtime = notification.userInfo!["unixtime"]! as! Int
         manualMarkUnixtimes.append(unixtime)
     }
+    
 }
 
 enum DiMeEndpoint: String {

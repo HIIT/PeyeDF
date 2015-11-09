@@ -53,7 +53,7 @@ class DiMeFetcher {
     }
     
     /// Attempt to retrieve a single ScientificDocument from a given info element id.
-    /// Calls the given callback function once retrieval is complete.
+    /// **Asynchronously** calls the given callback function once retrieval is complete.
     /// Called-back function will contain nil if retrieval failed.
     static func retrieveScientificDocument(infoElemId: String, callback: (ScientificDocument?) -> Void) {
         let server_url: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerURL) as! String
