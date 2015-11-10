@@ -62,7 +62,7 @@ class MyPDFReader: MyPDFBase, ScreenToPageConverter {
     var circleSize = NSSize(width: 20, height: 20)
     
     /// What single click does
-    var singleClickMode: SingleClickMode = SingleClickMode.MarkAsRead
+    var singleClickMode: SingleClickMode = SingleClickMode.Default
     
     // MARK: - Event callbacks
     
@@ -377,7 +377,7 @@ class MyPDFReader: MyPDFBase, ScreenToPageConverter {
         if totProportion < PeyeConstants.minProportion && proportionGazed < PeyeConstants.minProportion {
             return nil
         } else {
-            return ReadingEvent(asSummaryWithMarkings: [manualMarks, smiMarks, searchMarks], sessionId: sessionId, plainTextContent: getVisibleString(), infoElemId: sciDoc!.getId(), foundStrings: foundStrings, pdfReader: self, proportionTriple: proportionTriple)
+            return ReadingEvent(asSummaryWithMarkings: [manualMarks, smiMarks, searchMarks], sessionId: sessionId, plainTextContent: nil, infoElemId: sciDoc!.getId(), foundStrings: foundStrings, pdfReader: self, proportionTriple: proportionTriple)
         }
     }
     

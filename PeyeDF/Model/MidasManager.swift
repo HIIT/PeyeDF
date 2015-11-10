@@ -46,7 +46,7 @@ class MidasManager {
     private(set) var eyesLost: Bool = true
     
     /// How often a request is made to midas (seconds)
-    private let kFetchInterval: NSTimeInterval = 0.5
+    private let kFetchInterval: NSTimeInterval = 0.250
     
     /// Testing url used by midas
     private let kTestURL = "http://\(kMidasAddress):\(kMidasPort)/test"

@@ -72,7 +72,7 @@ struct PeyeConstants {
     }
     
     /// Default DiMe branch
-    static let dimeBranch = DiMeBranch.mongodb
+    static let dimeBranch = DiMeBranch.sql
     
     /// String that identifies the key used to retrieve stuff from DiMe
     static let iId: String = {

@@ -54,19 +54,25 @@
             <objects>
                 <viewController title="General Settings" showSeguePresentationStyle="single" id="62w-oK-rf7" customClass="GeneralSettingsController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="WGw-LJ-0lD">
-                        <rect key="frame" x="0.0" y="0.0" width="459" height="300"/>
+                        <rect key="frame" x="0.0" y="0.0" width="459" height="261"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="BVV-hH-JyH">
-                                <rect key="frame" x="18" y="264" width="440" height="18"/>
+                                <rect key="frame" x="18" y="225" width="440" height="18"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="14" id="Shn-cO-s2n"/>
+                                </constraints>
                                 <animations/>
-                                <buttonCell key="cell" type="check" title="Automatically attempt to connect to MIDAS on start (requires restart)" bezelStyle="regularSquare" imagePosition="left" inset="2" id="7Or-3q-KEa">
+                                <buttonCell key="cell" type="check" title="Automatically attempt to connect to MIDAS on start (requires restart)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="7Or-3q-KEa">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="GFc-xH-ekV">
-                                <rect key="frame" x="18" y="244" width="326" height="18"/>
+                                <rect key="frame" x="18" y="205" width="326" height="18"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="14" id="6F4-sE-tBv"/>
+                                </constraints>
                                 <animations/>
                                 <buttonCell key="cell" type="check" title="Draw gazed-upon paragraphs in refinder overview" bezelStyle="regularSquare" imagePosition="left" inset="2" id="Boz-tG-XcV">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -74,7 +80,7 @@
                                 </buttonCell>
                             </button>
                             <box title="Annotation line thickness" borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="UC7-V4-Wrp">
-                                <rect key="frame" x="17" y="55" width="425" height="66"/>
+                                <rect key="frame" x="17" y="16" width="425" height="66"/>
                                 <view key="contentView" id="cbh-La-9jU">
                                     <rect key="frame" x="1" y="1" width="423" height="47"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -119,7 +125,7 @@
                                 <font key="titleFont" metaFont="system"/>
                             </box>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="kwa-ow-smM">
-                                <rect key="frame" x="18" y="132" width="76" height="17"/>
+                                <rect key="frame" x="18" y="93" width="76" height="17"/>
                                 <animations/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Monitor DPI" id="H12-Iy-AxQ">
                                     <font key="font" metaFont="system"/>
@@ -128,7 +134,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gxa-Hp-eF0">
-                                <rect key="frame" x="107" y="129" width="96" height="22"/>
+                                <rect key="frame" x="107" y="90" width="96" height="22"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="96" id="muS-6h-TCJ"/>
                                 </constraints>
@@ -140,7 +146,7 @@
                                 </textFieldCell>
                             </textField>
                             <box title="Dominant Eye" borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="afp-6T-41F">
-                                <rect key="frame" x="17" y="153" width="234" height="65"/>
+                                <rect key="frame" x="17" y="114" width="234" height="65"/>
                                 <view key="contentView" id="59u-gM-x6L">
                                     <rect key="frame" x="1" y="1" width="232" height="46"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -186,7 +192,10 @@
                                 <font key="titleFont" metaFont="system"/>
                             </box>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="S1W-xx-0w2">
-                                <rect key="frame" x="18" y="224" width="300" height="18"/>
+                                <rect key="frame" x="18" y="185" width="300" height="18"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="14" id="B6H-4d-R2y"/>
+                                </constraints>
                                 <animations/>
                                 <buttonCell key="cell" type="check" title="Draw debug circle on fixated-at point on page" bezelStyle="regularSquare" imagePosition="left" inset="2" id="qEt-ZY-ZQF">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -203,6 +212,7 @@
                             <constraint firstItem="S1W-xx-0w2" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" symbolic="YES" id="Fe1-0s-bZy"/>
                             <constraint firstItem="UC7-V4-Wrp" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" id="GDs-Qo-G4q"/>
                             <constraint firstItem="UC7-V4-Wrp" firstAttribute="top" secondItem="gxa-Hp-eF0" secondAttribute="bottom" constant="8" symbolic="YES" id="My0-gm-Agt"/>
+                            <constraint firstAttribute="bottom" secondItem="UC7-V4-Wrp" secondAttribute="bottom" constant="20" symbolic="YES" id="YhJ-Bc-HLK"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="gxa-Hp-eF0" secondAttribute="trailing" constant="254" id="ZTB-dj-bam"/>
                             <constraint firstItem="afp-6T-41F" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" symbolic="YES" id="am1-DD-o8Q"/>
                             <constraint firstItem="BVV-hH-JyH" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" symbolic="YES" id="fXk-kY-jPK"/>
@@ -1163,11 +1173,11 @@
                                     <rect key="frame" x="1" y="1" width="473" height="152"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <view misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="S4s-dV-cpl">
-                                            <rect key="frame" x="0.0" y="150" width="458" height="17"/>
+                                        <view translatesAutoresizingMaskIntoConstraints="NO" id="S4s-dV-cpl">
+                                            <rect key="frame" x="0.0" y="135" width="473" height="17"/>
                                             <subviews>
-                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vvQ-96-JrI" userLabel="Plain text label">
-                                                    <rect key="frame" x="-2" y="0.0" width="462" height="17"/>
+                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vvQ-96-JrI" userLabel="Plain text label">
+                                                    <rect key="frame" x="-2" y="0.0" width="477" height="17"/>
                                                     <animations/>
                                                     <textFieldCell key="cell" controlSize="mini" selectable="YES" sendsActionOnEndEditing="YES" title="Multiline Label" id="FMJ-w1-hWT">
                                                         <font key="font" metaFont="system"/>
@@ -1200,7 +1210,7 @@
                                     <animations/>
                                 </scroller>
                                 <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="yXb-ko-u85">
-                                    <rect key="frame" x="458" y="1" width="16" height="152"/>
+                                    <rect key="frame" x="459" y="1" width="15" height="152"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <animations/>
                                 </scroller>

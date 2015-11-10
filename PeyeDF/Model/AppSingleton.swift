@@ -55,19 +55,21 @@ class AppSingleton {
     
     /// Set up console and file log
     private static func createLog() -> XCGLogger {
-        var error: NSError? = nil
+        let dateFormat = "Y'-'MM'-'d'T'HH':'mm':'ssZ"  // date format for string appended to log
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = dateFormat
+        let appString = dateFormatter.stringFromDate(NSDate())
+        
         var firstLine: String = "Log directory succesfully created / present"
         let tempURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).URLByAppendingPathComponent(NSBundle.mainBundle().bundleIdentifier!)
-        let tempDirBase = tempURL.URLString
         do {
-            try NSFileManager.defaultManager().createDirectoryAtPath(tempDirBase, withIntermediateDirectories: true, attributes: nil)
-        } catch let error1 as NSError {
-            error = error1
-            firstLine = "Error creating log directory: " + error!.description
+            try NSFileManager.defaultManager().createDirectoryAtURL(tempURL, withIntermediateDirectories: true, attributes: nil)
+        } catch {
+            firstLine = "Error creating log directory: \(error)"
         }
-        let logFilePathURL = tempURL.URLByAppendingPathComponent("XCGLog.log")
+        let logFilePathURL = tempURL.URLByAppendingPathComponent("XCGLog_\(appString).log")
         let newLog = XCGLogger.defaultInstance()
-        newLog.setup(.Debug, showThreadName: true, showLogLevel: true, showFileNames: true, showLineNumbers: true, writeToFile: logFilePathURL.URLString, fileLogLevel: .Debug)
+        newLog.setup(.Debug, showThreadName: true, showLogLevel: true, showFileNames: true, showLineNumbers: true, writeToFile: logFilePathURL, fileLogLevel: .Debug)
         newLog.debug(firstLine)
         return newLog
     }

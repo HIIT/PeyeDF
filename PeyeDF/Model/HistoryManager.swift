@@ -156,7 +156,8 @@ class HistoryManager: FixationDataDelegate {
             do {
                 // attempt to translate json
                 let options = NSJSONWritingOptions.PrettyPrinted
-                // TODO: remove this o
+                
+                //AppSingleton.log.debug("***********\n\(dimeData.getDict().debugDescription)")  // log sent data
                 try NSJSONSerialization.dataWithJSONObject(dimeData.getDict(), options: options)
                 
                 // assume json conversion was a success, hence send to dime
@@ -183,7 +184,7 @@ class HistoryManager: FixationDataDelegate {
                     }
                 }
             } catch {
-                AppSingleton.log.error("Error while deserializing json - no data sent:\n \(error)")
+                AppSingleton.log.error("Error while deserializing json - no data sent:\n\(error)")
             }
             
         }
