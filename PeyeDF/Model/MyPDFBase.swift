@@ -13,6 +13,9 @@ import Quartz
 /// Base class extended by all PDF renderers (MyPDFReader, MyPDFOverview, MyPDFDetail) used in PeyeDF
 /// support custom "markings" and their writing to annotation
 class MyPDFBase: PDFView {
+    
+    let extraLineAmount = 2 // 1/this number is the amount of extra lines that we want to discard
+    // if we are at beginning or end of paragraph
 
     /// Stores all manually entered markings
     var manualMarks = PDFMarkings(withSource: ClassSource.Click)
@@ -218,6 +221,14 @@ class MyPDFBase: PDFView {
     /// - parameter forPage: the page of interest
     /// - returns: A rectangle corresponding to the point, nil if there is no paragraph
     internal func pointToParagraphRect(pagePoint: NSPoint, forPage activePage: PDFPage) -> NSRect? {
+        
+        let pageRect = getPageRect(activePage)
+        let maxH = pageRect.size.width - 5.0  // maximum horizontal size for line
+        let maxV = pageRect.size.height / 3.0  // maximum vertical size for line
+        
+        let minH: CGFloat = 2.0
+        let minV: CGFloat = 5.0
+        
         let pointArray = verticalFocalPoints(fromPoint: pagePoint, zoomLevel: self.scaleFactor(), pageRect: self.getPageRect(activePage))
         
         // if using columns, selection can "bleed" into footers and headers
@@ -225,7 +236,28 @@ class MyPDFBase: PDFView {
         // everything which is lineAutoSelectionTolerance bigger than that
         var selections = [PDFSelection]()
         for point in pointArray {
-            selections.append(activePage.selectionForLineAtPoint(point))
+            let sel = activePage.selectionForLineAtPoint(point)
+            let selRect = sel.boundsForPage(activePage)
+            let seenRect = getSeenRect(fromPoint: pagePoint, zoomLevel: self.scaleFactor())
+            // only add selection if its rect intersect estimated seen rect
+            // and if selection rect is less than maximum h and v size but more than minimum
+            if selRect.intersects(seenRect) && selRect.size.width < maxH &&
+               selRect.size.height < maxV && selRect.size.width > minH &&
+               selRect.size.height > minV {
+                    
+                // only add selection if it wasn't added before
+                var foundsel = false
+                for oldsel in selections {
+                    if sel.equalsTo(oldsel) {
+                        foundsel = true
+                        break
+                    }
+                }
+                if foundsel {
+                    continue
+                }
+                selections.append(sel)
+            }
         }
         
         if selections.count == 0 {
@@ -291,6 +323,10 @@ class MyPDFBase: PDFView {
                         lineEndIndex = i
                         break
                     }
+                }
+                
+                if lineEndIndex < lineStartIndex {
+                    return nil
                 }
                 
                 // generate new selection not taking into account excluded parts

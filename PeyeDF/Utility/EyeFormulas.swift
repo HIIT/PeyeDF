@@ -15,7 +15,7 @@ func verticalFocalPoints(fromPoint point: NSPoint, zoomLevel: CGFloat, pageRect:
     let defaultMargin: CGFloat = 28
     let defaultStep: CGFloat = 2
     
-    let pointSpan = defaultInchSpan() * AppSingleton.getMonitorDPI() / zoomLevel
+    let pointSpan = inchSpan() * AppSingleton.getMonitorDPI() / zoomLevel
     let fitInRect = NSInsetRect(pageRect, defaultMargin, defaultMargin)
     
     var pointArray = [NSPoint]()
@@ -36,10 +36,21 @@ func verticalFocalPoints(fromPoint point: NSPoint, zoomLevel: CGFloat, pageRect:
 
 
 /// Returns how many inches should be covered by the participant's fovea at a predefined distance
-func defaultInchSpan() -> CGFloat {
-    let defaultDistance: CGFloat = 24  // assuming to be approx. 60cm away from screen
+func inchSpan() -> CGFloat {
+    let inchFromScreen: CGFloat = CGFloat(MidasManager.sharedInstance.lastValidDistance * 0.039370)
     let defaultAngle: CGFloat = degToRad(3)  // fovea's covered angle
-    return 2 * defaultDistance * tan(defaultAngle/2)
+    return 2 * inchFromScreen * tan(defaultAngle/2)
+}
+
+/// Returns a rectangle representing what should be seen by the participant's fovea
+func getSeenRect(fromPoint point: NSPoint, zoomLevel: CGFloat) -> NSRect {
+    let pointSpan = inchSpan() * AppSingleton.getMonitorDPI() / zoomLevel
+    
+    var newOrigin = point
+    newOrigin.x -= pointSpan / 2
+    newOrigin.y -= pointSpan / 2
+    let size = NSSize(width: pointSpan, height: pointSpan)
+    return NSRect(origin: newOrigin, size: size)
 }
 
 /// Converts degrees to radians (xcode tan function is in radians)

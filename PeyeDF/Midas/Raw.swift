@@ -14,7 +14,7 @@ struct SMIEyePosition {
     var timestamp: Int
     var EyePositionX: Double
     var EyePositionY: Double
-    var EyePositionZ: Double
+    var EyePositionZ: Double  // eye distance from screen in mm
     
     /// Creates a new eye position, using the last available element in the json
     init(fromLastInJSON json: JSON, dominantEye: Eye) {

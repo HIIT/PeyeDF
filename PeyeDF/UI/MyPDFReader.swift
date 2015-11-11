@@ -10,10 +10,6 @@ import Foundation
 import Cocoa
 import Quartz
 
-// Constants
-let extraLineAmount = 3 // 1/this number is the amount of extra lines that we want to discard
-                        // if we are at beginning or end of paragraph
-
 /// Used to convert points on screen to points on a page
 protocol ScreenToPageConverter: class {
     

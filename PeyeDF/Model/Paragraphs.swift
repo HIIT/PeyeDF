@@ -71,22 +71,27 @@ struct PDFMarkings {
     
     // MARK: - Mutators
     
-    /// Add a rect of the given class to the given page
+    /// Add a rect of the given class to the given page. Does not add
+    /// duplicates.
     mutating func addRect(rect: NSRect, ofClass: ReadingClass, forPage: Int) {
         if allRects[ofClass]![forPage] == nil {
             allRects[ofClass]![forPage] = [NSRect]()
         }
-        allRects[ofClass]![forPage]!.append(rect)
+        if !(allRects[ofClass]![forPage]!.contains(rect)) {
+            allRects[ofClass]![forPage]!.append(rect)
+        }
     }
     
-    /// Add a rect of the given class to the given page
+    /// Add a rect of the given class to the given page. Does not add duplicates.
     mutating func addRect(readingRect: ReadingRect) {
         let cl = readingRect.readingClass
         let pi = readingRect.pageIndex as Int
         if allRects[cl]![pi] == nil {
             allRects[cl]![pi] = [NSRect]()
         }
-        allRects[cl]![pi]!.append(readingRect.rect)
+        if !(allRects[cl]![pi]!.contains(readingRect.rect)) {
+            allRects[cl]![pi]!.append(readingRect.rect)
+        }
     }
     
     /// Sets rects of a given class to the given dictionary

@@ -30,6 +30,9 @@ class MidasManager {
     /// Whether there is a midas connection available
     private(set) var midasAvailable: Bool = false
     
+    /// Last valid distance from screen in mm (defaults to 60 cm)
+    private(set) var lastValidDistance: Double = 600.0
+    
     /// Last time for last recorded fixation
     private var lastFixationUnixtime: Int = 0
     
@@ -185,6 +188,11 @@ class MidasManager {
                 
                 // check if the entry buffer is all zeros (i.e. eye lost for 1 whole second, assuming a kBufferLength of 1)
                 newDataCheck(json)
+                
+                // save last eye position, if valid
+                if lastPos.EyePositionZ > 0 {
+                    self.lastValidDistance = lastPos.EyePositionZ
+                }
             }
         case .Fixations:
             // fetch fixations which arrived after last recorded fixation and after the user started reading, whichever comes latest
@@ -235,18 +243,20 @@ class MidasManager {
         lastValidSMITime = latestTimestamp
         
         if self.eyesLost && eyesFound {
-            // send found notification
-            NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.eyesAvailabilityNotification, object: self, userInfo: ["available": true])
             self.eyesLost = false
             self.eyesLastSeen = nil
+            
+            // send found notification
+            NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.eyesAvailabilityNotification, object: self, userInfo: ["available": true])
         } else if !self.eyesLost && !eyesFound {
             // check when eyes were lost before (if so) if period exceeds constant, send notification
             if let prevLostDate = self.eyesLastSeen {
                 let shiftedDate = prevLostDate.dateByAddingTimeInterval(kEyesMaxLostDuration)
                 // if the current date comes after the shifted date, send notification
                 if NSDate().compare(shiftedDate) == NSComparisonResult.OrderedDescending {
+                    
+                        self.eyesLost = true
                     NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.eyesAvailabilityNotification, object: self, userInfo: ["available": false])
-                    self.eyesLost = true
                 }
             } else {
                 self.eyesLastSeen = NSDate()

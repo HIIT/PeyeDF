@@ -145,3 +145,23 @@ extension PDFDocument {
         setDocumentAttributes(docAttrib)
     }
 }
+
+extension PDFSelection {
+    
+    /// Returns true if two selections are "practically the same".
+    /// Empty selections are always equal.
+    func equalsTo(rhs: PDFSelection) -> Bool {
+        if self.pages().count == 0 {
+            return true
+        } else if self.pages().count != rhs.pages().count {
+            return false
+        }
+        for p in self.pages() {
+            let pp = p as! PDFPage
+            if self.boundsForPage(pp) != rhs.boundsForPage(pp) {
+                return false
+            }
+        }
+        return true
+    }
+}

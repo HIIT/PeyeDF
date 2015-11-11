@@ -16,7 +16,7 @@ class MyPDFDetail: MyPDFBase {
     /// Adds a half the frame size to y to center the desired point in the view.
     func scrollToRect(var rect: NSRect, onPageIndex: Int) {
         let thePage = document().pageAtIndex(onPageIndex)
-        rect.origin.y += frame.size.height / 2
+        rect.origin.y += frame.size.height / 3
         goToRect(rect, onPage: thePage)
     }
     

@@ -93,28 +93,21 @@ class MyPDFOverview: MyPDFBase {
     
     /// Single click to scroll pdfDetail to the desired point
     override func mouseDown(theEvent: NSEvent) {
-        let mouseLoc = NSEvent.mouseLocation()
-        for screen in NSScreen.screens() as [NSScreen]! {
-            if NSMouseInRect(mouseLoc, screen.frame, false) {
-                let tinySize = NSSize(width: 1, height: 1)
-                let mouseRect = NSRect(origin: mouseLoc, size: tinySize)
-                let mouseInWindow = self.window!.convertRectFromScreen(mouseRect)
-                let mouseInView = self.convertRect(mouseInWindow, fromView: self.window!.contentViewController!.view)
-                
-                // Page we're on.
-                let activePage = self.pageForPoint(mouseInView.origin, nearest: true)
-                
-                // Index for current page
-                let pageIndex = self.document().indexForPage(activePage)
+        let piw = theEvent.locationInWindow
+        let mouseInView = self.convertPoint(piw, fromView: nil)
         
-                // Get location in "page space".
-                let pagePoint = self.convertPoint(mouseInView.origin, toPage: activePage)
-                
-                // Get tiny rect of selected position
-                let pointRect = NSRect(origin: pagePoint, size: tinySize)
-                
-                pdfDetail?.scrollToRect(pointRect, onPageIndex: pageIndex)
-            }
-        }
+        // Page we're on.
+        let activePage = self.pageForPoint(mouseInView, nearest: true)
+        
+        // Index for current page
+        let pageIndex = self.document().indexForPage(activePage)
+
+        // Get location in "page space".
+        let pagePoint = self.convertPoint(mouseInView, toPage: activePage)
+        
+        // Get tiny rect of selected position
+        let pointRect = NSRect(origin: pagePoint, size: NSSize())
+        
+        pdfDetail?.scrollToRect(pointRect, onPageIndex: pageIndex)
     }
 }
