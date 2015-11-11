@@ -68,8 +68,18 @@ class MyPDFBase: PDFView {
             visibleRect.insetInPlace(dx: PeyeConstants.extraMargin, dy: PeyeConstants.extraMargin)
             
             visibleRect = self.convertRect(visibleRect, toPage: visiblePage)  // Convert rect to page coordinates
+            
             visibleRect.intersectInPlace(pageRect)  // Intersect to get seen portion
-            visibleRects.append(visibleRect)
+            
+            // make sure rect size is >0, <page size and origin > 0 < page size 
+            if visibleRect.origin.x >= 0 && visibleRect.origin.y >= 0 &&
+               visibleRect.origin.x < pageRect.size.width &&
+               visibleRect.origin.y < pageRect.size.height &&
+               visibleRect.size.width > 0 && visibleRect.size.height > 0 &&
+               visibleRect.size.width <= pageRect.size.width &&
+               visibleRect.size.height <= pageRect.size.height {
+                visibleRects.append(visibleRect)
+            }
             
         }
         return visibleRects
