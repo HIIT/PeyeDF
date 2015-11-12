@@ -169,6 +169,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     func saveDocumentAs(sender: AnyObject) {
         let panel = NSSavePanel()
         panel.allowedFileTypes = ["pdf", "PDF"]
+        panel.nameFieldStringValue = (document as? NSDocument)?.fileURL?.lastPathComponent ?? "Untitled"
         if panel.runModal() == NSFileHandlingPanelOKButton {
             pdfReader?.document().writeToURL(panel.URL)
             let documentController = NSDocumentController.sharedDocumentController() 
