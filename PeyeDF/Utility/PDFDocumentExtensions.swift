@@ -113,10 +113,25 @@ extension PDFDocument {
     func getKeywords() -> String? {
         let docAttrib = documentAttributes()
         if let keywords: AnyObject = docAttrib[PDFDocumentKeywordsAttribute] {
-            // sometimes keywords are all contained in the first element of the array as a string
+            // some times keywords are in an array
+            // other times keywords are all contained in the first element of the array as a string
             // other times they are a string
             if let keywarray = keywords as? [AnyObject] {
-                return (keywarray[0] as? String)
+                if keywarray.count == 1 {
+                    return (keywarray[0] as? String)
+                } else {
+                    var outStr = ""
+                    outStr += keywarray[0] as? String ?? ""
+                    for nkw in keywarray {
+                        outStr += "; "
+                        outStr +=  nkw as? String ?? ""
+                    }
+                    if outStr == "" {
+                        return nil
+                    } else {
+                        return outStr
+                    }
+                }
             } else {
                 return keywords as? String
             }
