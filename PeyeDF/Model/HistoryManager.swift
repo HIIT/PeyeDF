@@ -157,7 +157,8 @@ class HistoryManager: FixationDataDelegate {
                 // attempt to translate json
                 let options = NSJSONWritingOptions.PrettyPrinted
                 
-                //AppSingleton.log.debug("***********\n\(dimeData.getDict().debugDescription)")  // log sent data
+                AppSingleton.log.debug("***********\n\(dimeData.getDict().debugDescription)")  // log sent data
+                
                 try NSJSONSerialization.dataWithJSONObject(dimeData.getDict(), options: options)
                 
                 // assume json conversion was a success, hence send to dime

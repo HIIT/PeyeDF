@@ -89,6 +89,20 @@ extension String {
         return self.substringFromIndex(self.startIndex.advancedBy(nOfChars))
     }
     
+    /// Retun a string that contains the text within the two strings,
+    /// so that no text is repeated.
+    /// othterString is assumed to come **after** this string.
+    func unite(otherString: String) -> String {
+        // given that otherString always comes after this one,
+        // there are 4 possible cases
+        // - this string is all before the other string (no match at all)
+        // - the two string are equal
+        // - the other string is all contained within this one
+        // - the other string starts within this string and continues
+        
+        // TODO: finish this
+        return "NOTDONE"
+    }
 }
 
 extension NSNumber {

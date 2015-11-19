@@ -26,6 +26,29 @@ class MyPDFOverview: MyPDFBase {
     	// Let PDFView do most of the hard work.
         super.drawPage(page)
         
+        // draw gazed upon rects if desired
+        if drawGazedRects {
+            let eyeClasses = [ReadingClass.Paragraph_united]
+            let pageIndex = self.document().indexForPage(page)
+            for rc in eyeClasses {
+                if let rectsToDraw = smiMarks.get(rc)[pageIndex] {
+                    // Save.
+                    NSGraphicsContext.saveGraphicsState()
+                    
+                    // Draw.
+                    for rect in rectsToDraw {
+                        let rectCol = PeyeConstants.smiColours[rc]!.colorWithAlphaComponent(0.9)
+                        let rectPath: NSBezierPath = NSBezierPath(rect: rect)
+                        rectCol.setFill()
+                        rectPath.fill()
+                    }
+                    
+                    // Restore.
+                    NSGraphicsContext.restoreGraphicsState()
+                }
+            }
+        }
+        
         // cycle through annotation classes
         let cycleClasses = [ReadingClass.Read, ReadingClass.Interesting, ReadingClass.Critical]
         
@@ -66,28 +89,7 @@ class MyPDFOverview: MyPDFBase {
             	NSGraphicsContext.restoreGraphicsState()
         }
         
-        // draw gazed upon rects if desired
-        if drawGazedRects {
-            let eyeClasses = [ReadingClass.Paragraph_united]
-            let pageIndex = self.document().indexForPage(page)
-            for rc in eyeClasses {
-                if let rectsToDraw = smiMarks.get(rc)[pageIndex] {
-                	// Save.
-                    NSGraphicsContext.saveGraphicsState()
-            	
-                    // Draw.
-                    for rect in rectsToDraw {
-                        let rectCol = PeyeConstants.smiColours[rc]!.colorWithAlphaComponent(0.9)
-                        let rectPath: NSBezierPath = NSBezierPath(rect: rect)
-                        rectCol.setFill()
-                        rectPath.fill()
-                    }
-                    
-                	// Restore.
-                	NSGraphicsContext.restoreGraphicsState()
-                }
-            }
-        }
+
     }
     
     
