@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# requires appdmg
+# see https://github.com/LinusU/node-appdmg
+# to install appdmg:
+# npm install -g appdmg
+
+# requires PeyeDF.app in the current folder (latest binary)
+
+appdmg appdmg.json PeyeDF.dmg
