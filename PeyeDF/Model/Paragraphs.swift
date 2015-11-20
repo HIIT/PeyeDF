@@ -133,7 +133,7 @@ struct PDFMarkings {
         // create set of all possible page indices
         var pis = Set<Int>()
         for rrect in allRects {
-            if rrect.readingClass == lhs && rrect.readingClass == rhs {
+            if rrect.readingClass == lhs || rrect.readingClass == rhs {
                 pis.insert(rrect.pageIndex.integerValue)
             }
         }
@@ -141,10 +141,11 @@ struct PDFMarkings {
             // only continue if there is something to subtract in rhs
             let subtrahends = allRects.filter({$0.readingClass == rhs && $0.pageIndex == page})
             if subtrahends.count > 0 {
+                // assign minuends and remove them from allRects
                 let minuends = allRects.filter({$0.readingClass == lhs && $0.pageIndex == page})
-                allRects = allRects.filter({!($0.readingClass == rhs && $0.pageIndex == page)})
                 allRects = allRects.filter({!($0.readingClass == lhs && $0.pageIndex == page)})
                 let subtractedRects = subtractRectangles(forPage: page, minuends: minuends, subtrahends: subtrahends)
+                // add result of subtraction back to allRects
                 allRects.appendContentsOf(subtractedRects)
             }
         }

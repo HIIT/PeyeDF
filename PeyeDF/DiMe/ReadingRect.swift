@@ -83,7 +83,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable {
     /// Unites these two rectangles and appends the unxtimes of the second rectangle to this rectangle.
     /// Uses a MyPDFBase instance to get the underlying plain text of united
     /// rect (if passed, otherwise simply appends the two strings.
-    func unite(otherRect: ReadingRect, pdfBase: MyPDFBase?) -> ReadingRect {
+    mutating func unite(otherRect: ReadingRect, pdfBase: MyPDFBase?) {
         var newRect = self
         newRect.floating = false
         
@@ -116,7 +116,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable {
             }
         }
         
-        return newRect
+        self = newRect
     }
     
     /// Shrinks the underlying rectangle using another rectangle
