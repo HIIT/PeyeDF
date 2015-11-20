@@ -1,6 +1,10 @@
-Under heavy development, only able to open PDFs and select paragraphs (to debug future eye tracking detection) for now.
+# Usage
 
-To see what data is pushed to DiMe, see the wiki: https://github.com/HIIT/PeyeDF/wiki/Data-Format 
+PeyeDF track the user's reading history, at the paragraph level. Currently it support manual marking of paragraphs by double and triple clicking. To mark a paragraph as "Interesting", double click. Triple click marks it as "Critical" (red). Make sure "annotate" is enable on the toolbar for this to work.
+
+After some documents have been marked, the "Refinder" function shows a history fetched from dime. It can be opened from the toolbar or the `File` menu.
+
+To see what data is pushed to DiMe, see the [wiki](https://github.com/HIIT/PeyeDF/wiki/Data-Format).
 
 # Setup
 
