@@ -1,8 +1,8 @@
 # Usage
 
-PeyeDF track the user's reading history, at the paragraph level. Currently it support manual marking of paragraphs by double and triple clicking. To mark a paragraph as "Interesting", double click. Triple click marks it as "Critical" (red). Make sure "annotate" is enable on the toolbar for this to work.
+PeyeDF track the user's reading history, at the paragraph level. Currently it support manual marking of paragraphs by double and triple clicking. To mark a paragraph as "Interesting", double click. To mark it as "Critical" (red), triple click. Make sure "annotate" is enabled on the toolbar for this to work (which normally is, by default).
 
-After some documents have been marked, the "Refinder" function shows a history fetched from dime. It can be opened from the toolbar or the `File` menu.
+After some documents have been marked, the "Refinder" function shows the user's history fetched from dime. It can be opened from the toolbar or the `File` menu. Note that a document is added to this history only once it has been closed (this is because the refinder shows information from summary "ReadingEvents", which are sent on document close).
 
 To see what data is pushed to DiMe, see the [wiki](https://github.com/HIIT/PeyeDF/wiki/Data-Format).
 
