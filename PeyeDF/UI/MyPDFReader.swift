@@ -58,7 +58,7 @@ class MyPDFReader: MyPDFBase, ScreenToPageConverter {
     var circleSize = NSSize(width: 20, height: 20)
     
     /// What single click does
-    var singleClickMode: SingleClickMode = SingleClickMode.Default
+    var singleClickMode: SingleClickMode = SingleClickMode.MarkAsRead
     
     // MARK: - Event callbacks
     
@@ -313,7 +313,7 @@ class MyPDFReader: MyPDFBase, ScreenToPageConverter {
         // create rect for gazed-at paragraph
         if fromEye {
             if let seenRect = pointToParagraphRect(pointOnPage, forPage: page) {
-                smiMarks.addRect(seenRect, ofClass: ReadingClass.Paragraph_floating, forPage: self.document().indexForPage(page))
+                smiMarks.addRect(seenRect, ofClass: ReadingClass.Paragraph, forPage: self.document().indexForPage(page))
             }
         }
         
@@ -342,7 +342,7 @@ class MyPDFReader: MyPDFBase, ScreenToPageConverter {
             var vpi = 0
             for rect in pageRects {
                 let visiblePageNum = visiblePageNums[vpi]
-                let newRect = ReadingRect(pageIndex: visiblePageNum, rect: rect, readingClass: ReadingClass.Viewport, classSource: ClassSource.Viewport, plainTextContent: plainTextContent as String)
+                let newRect = ReadingRect(pageIndex: visiblePageNum, rect: rect, readingClass: ReadingClass.Viewport, classSource: ClassSource.Viewport, pdfBase: self)
                 readingRects.append(newRect)
                 vpi++
             }
@@ -424,22 +424,6 @@ class MyPDFReader: MyPDFBase, ScreenToPageConverter {
         return nil
     }
    
-    /// Returns a string corresponding to the text contained within the given rect at the given page index
-    ///
-    /// - parameter rect: The rect for which we want the string for
-    /// - parameter onPage: Index starting from 0 on which the rect is
-    /// - returns: A string if it was possible to generate it, nil if not
-    func stringForRect(rect: NSRect, onPage: Int) -> String? {
-        if containsRawString {
-            let page = document().pageAtIndex(onPage)
-            let selection = page.selectionForRect(rect)
-            return selection.string()
-        } else {
-            return nil
-        }
-    }
-    
-    
     // MARK: - Debug functions
     
     /// Debug function to test "seen text"

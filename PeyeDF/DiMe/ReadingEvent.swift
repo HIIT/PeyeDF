@@ -93,7 +93,7 @@ class ReadingEvent: Event {
         // create a rectangle array for all PDF markings
         var rectArray = [[String: AnyObject]]()
         for marking in markings {
-            for rect in marking.getAllReadingRects(pdfReader) {
+            for rect in marking.getAllReadingRects() {
                 rectArray.append(rect.getDict())
             }
         }
@@ -132,9 +132,9 @@ class ReadingEvent: Event {
             }
         }
         let dateCreated: NSDate = NSDate(timeIntervalSince1970: NSTimeInterval(json["start"].intValue / 1000))
-        self.manualMarkings = PDFMarkings(withSource: ClassSource.Click)
-        self.smiMarkings = PDFMarkings(withSource: ClassSource.SMI)
-        self.searchMarkings = PDFMarkings(withSource: ClassSource.Search)
+        self.manualMarkings = PDFMarkings(withSource: ClassSource.Click, pdfBase: nil)
+        self.smiMarkings = PDFMarkings(withSource: ClassSource.SMI, pdfBase: nil)
+        self.searchMarkings = PDFMarkings(withSource: ClassSource.Search, pdfBase: nil)
         for pageRect in json["pageRects"].arrayValue {
             if pageRect["classSource"].intValue == ClassSource.Click.rawValue {
                 self.manualMarkings.addRect(ReadingRect(fromJson: pageRect))

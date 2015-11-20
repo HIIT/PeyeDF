@@ -133,10 +133,7 @@ struct PeyeConstants {
     static let annotationColourCritical: NSColor = NSColor(red: 0.99, green: 0.24, blue: 0.26, alpha: 0.75)
     
     /// Default color for "floating" paragraphs detected using fixations
-    static let markColourSMI_Floating: NSColor = NSColor(red: 0.40, green: 0.40, blue: 0.40, alpha: 0.75)
-    
-    /// Default color for "united" paragraphs detected using fixations
-    static let markColourSMI_United: NSColor = NSColor(red: 0.30, green: 0.30, blue: 0.30, alpha: 0.75)
+    static let markColourParagraph: NSColor = NSColor(red: 0.40, green: 0.40, blue: 0.40, alpha: 0.75)
     
     /// Default color for searched, found and looked at string queries
     static let markColourFoundStrings: NSColor = NSColor(red: 0.88, green: 0.89, blue: 0.0, alpha: 0.85)
@@ -152,8 +149,7 @@ struct PeyeConstants {
                                                              .Critical: annotationColourCritical]
     
     /// Dictionary of annotation colours for smi
-    static let smiColours: [ReadingClass: NSColor] = [.Paragraph_floating: markColourSMI_Floating,
-                                                      .Paragraph_united: markColourSMI_United]
+    static let smiColours: [ReadingClass: NSColor] = [.Paragraph: markColourParagraph]
     
     // MARK: - Other globals
     

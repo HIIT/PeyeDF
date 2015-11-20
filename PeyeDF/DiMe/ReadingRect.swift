@@ -18,49 +18,49 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable {
     var unixt: [NSNumber]
     var floating: Bool
     
-    init(pageIndex: Int, origin: NSPoint, size: NSSize, readingClass: ReadingClass , classSource: ClassSource, plainTextContent: String?) {
+    init(pageIndex: Int, origin: NSPoint, size: NSSize, readingClass: ReadingClass , classSource: ClassSource, pdfBase: MyPDFBase?) {
         let newUnixt = NSDate().unixTime
         self.unixt = [NSNumber]()
         self.unixt.append(newUnixt)
         
-        self.floating = false
+        self.floating = true
         
         self.pageIndex = pageIndex
         self.rect = NSRect(origin: origin, size: size)
         self.readingClass = readingClass
         self.classSource = classSource
-        if let ptc = plainTextContent {
-            self.plainTextContent = ptc
+        if let pdfb = pdfBase {
+            self.plainTextContent = pdfb.stringForRect(self.rect, onPage: pageIndex)
         }
     }
     
-    init(pageIndex: Int, rect: NSRect, readingClass: ReadingClass, classSource: ClassSource, plainTextContent: String?) {
+    init(pageIndex: Int, rect: NSRect, readingClass: ReadingClass, classSource: ClassSource, pdfBase: MyPDFBase?) {
         let newUnixt = NSDate().unixTime
         self.unixt = [NSNumber]()
         self.unixt.append(newUnixt)
         
-        self.floating = false
+        self.floating = true
         
         self.pageIndex = pageIndex
         self.rect = rect
         self.readingClass = readingClass
         self.classSource = classSource
-        if let ptc = plainTextContent {
-            self.plainTextContent = ptc
+        if let pdfb = pdfBase {
+            self.plainTextContent = pdfb.stringForRect(self.rect, onPage: pageIndex)
         }
     }
     
-    init(pageIndex: Int, rect: NSRect, plainTextContent: String?) {
+    init(pageIndex: Int, rect: NSRect, pdfBase: MyPDFBase?) {
         let newUnixt = NSDate().unixTime
         self.unixt = [NSNumber]()
         self.unixt.append(newUnixt)
         
-        self.floating = false
+        self.floating = true
         
         self.pageIndex = pageIndex
         self.rect = rect
-        if let ptc = plainTextContent {
-            self.plainTextContent = ptc
+        if let pdfb = pdfBase {
+            self.plainTextContent = pdfb.stringForRect(self.rect, onPage: pageIndex)
         }
     }
     
@@ -98,25 +98,35 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable {
         let unitedR = NSUnionRect(newRect.rect, otherRect.rect)
         newRect.rect = unitedR
         
-        
-        if newRect.plainTextContent != nil {
-            if otherRect.plainTextContent != nil {
-                // if they both have text, unite them using MyPDFBase
-                // if no pdfBase is given, simply append the second string to this one
-                if let pdfb = pdfBase {
-                    pdfb.textForRect(newRect.rect)
-                } else {
-                    newRect.plainTextContent! += otherRect.plainTextContent!
-                }
+        if let pdfb = pdfBase {
+            if pdfb.document().getText() != nil {
+                newRect.plainTextContent = pdfb.stringForReadingRect(newRect)
             }
         } else {
-            if otherRect.plainTextContent != nil {
-                newRect.plainTextContent = otherRect.plainTextContent!
+            if newRect.plainTextContent != nil {
+                if otherRect.plainTextContent != nil {
+                    // if they both have text, unite them using MyPDFBase instance
+                    // if no pdfBase is given, simply append the second string to this one
+                    newRect.plainTextContent! += otherRect.plainTextContent!
+                }
+            } else {
+                if otherRect.plainTextContent != nil {
+                    newRect.plainTextContent = otherRect.plainTextContent!
+                }
             }
         }
         
-        // TODO: finish this
         return newRect
+    }
+    
+    /// Shrinks the underlying rectangle using another rectangle
+    func subtractRect(rhs: ReadingRect, pdfBase: MyPDFBase?) -> [ReadingRect] {
+        let result = self.rect.subtractRect(rhs.rect)
+        var retVal = [ReadingRect]()
+        for rect in result {
+            retVal.append(ReadingRect(pageIndex: pageIndex.integerValue, rect: rect, readingClass: readingClass, classSource: classSource, pdfBase: pdfBase))
+        }
+        return retVal
     }
     
     /// Returns true if these two rectangles intersect and are on the same page.

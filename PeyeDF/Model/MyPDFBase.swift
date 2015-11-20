@@ -18,13 +18,27 @@ class MyPDFBase: PDFView {
     // if we are at beginning or end of paragraph
 
     /// Stores all manually entered markings
-    var manualMarks = PDFMarkings(withSource: ClassSource.Click)
+    var manualMarks: PDFMarkings!
     
     /// Stores all markings from smi (to check all rects the user fixated upon)
-    var smiMarks = PDFMarkings(withSource: ClassSource.SMI)
+    var smiMarks: PDFMarkings!
     
     /// Stores all markings from searches
-    var searchMarks = PDFMarkings(withSource: ClassSource.Search)
+    var searchMarks: PDFMarkings!
+    
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        manualMarks = PDFMarkings(withSource: ClassSource.Click, pdfBase: self)
+        smiMarks = PDFMarkings(withSource: ClassSource.SMI, pdfBase: self)
+        searchMarks = PDFMarkings(withSource: ClassSource.Search, pdfBase: self)
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        manualMarks = PDFMarkings(withSource: ClassSource.Click, pdfBase: self)
+        smiMarks = PDFMarkings(withSource: ClassSource.SMI, pdfBase: self)
+        searchMarks = PDFMarkings(withSource: ClassSource.Search, pdfBase: self)
+    }
     
     // MARK: - External functions
     
@@ -85,6 +99,26 @@ class MyPDFBase: PDFView {
         return visibleRects
     }
     
+    /// Returns a string corresponding to the text contained within the given rect at the given page index
+    ///
+    /// - parameter rect: The rect for which we want the string for
+    /// - parameter onPage: Index starting from 0 on which the rect is
+    /// - returns: A string if it was possible to generate it, nil if not
+    func stringForRect(rect: NSRect, onPage: Int) -> String? {
+        if self.document().getText() != nil {
+            let page = document().pageAtIndex(onPage)
+            let selection = page.selectionForRect(rect)
+            return selection.string()
+        } else {
+            return nil
+        }
+    }
+    
+    /// Convenience function to get a string from a readingrect
+    func stringForReadingRect(theRect: ReadingRect) -> String? {
+        return stringForRect(theRect.rect, onPage: theRect.pageIndex.integerValue)
+    }
+    
     /// Manually set all rectangles to the given parameters, and annotate them.
     func setMarksAndAnnotate(newManualMarks: PDFMarkings) {
         manualMarks = newManualMarks
@@ -114,21 +148,19 @@ class MyPDFBase: PDFView {
         let myBord = PDFBorder()
         myBord.setLineWidth(lineThickness)
         
-        for page in manualMarks.get(forClass).keys {
-            for rect in manualMarks.get(forClass)[page]! {
-                let newRect = annotationRectForMark(rect)
-                let annotation = PDFAnnotationSquare(bounds: newRect)
-                annotation.setColor(colour)
-                annotation.setBorder(myBord)
-                
-                let pdfPage = self.document().pageAtIndex(page)
-                
-                pdfPage.addAnnotation(annotation)
-                
-                // tell the view to immediately refresh itself in an area which includes the
-                // line's "border"
-                setNeedsDisplayInRect(convertRect(newRect, fromPage: pdfPage))
-            }
+        for rect in manualMarks.get(forClass) {
+            let newRect = annotationRectForMark(rect.rect)
+            let annotation = PDFAnnotationSquare(bounds: newRect)
+            annotation.setColor(colour)
+            annotation.setBorder(myBord)
+            
+            let pdfPage = self.document().pageAtIndex(rect.pageIndex.integerValue)
+            
+            pdfPage.addAnnotation(annotation)
+            
+            // tell the view to immediately refresh itself in an area which includes the
+            // line's "border"
+            setNeedsDisplayInRect(convertRect(newRect, fromPage: pdfPage))
         }
     }
     
@@ -176,20 +208,14 @@ class MyPDFBase: PDFView {
             let pageRect = getPageRect(thePage)
             let pageSurface = Double(pageRect.size.height * pageRect.size.width)
             totalSurface += pageSurface
-            if let rectArray = manualMarks.get(.Read)[pageI] {
-                for rect in rectArray {
-                    readSurface += Double(rect.size.height * rect.size.width)
-                }
+            for rect in manualMarks.get(.Read, forPage: pageI) {
+                readSurface += Double(rect.rect.size.height * rect.rect.size.width)
             }
-            if let rectArray = manualMarks.get(.Interesting)[pageI] {
-                for rect in rectArray {
-                    interestingSurface += Double(rect.size.height * rect.size.width)
-                }
+            for rect in manualMarks.get(.Interesting, forPage: pageI) {
+                interestingSurface += Double(rect.rect.size.height * rect.rect.size.width)
             }
-            if let rectArray = manualMarks.get(.Critical)[pageI] {
-                for rect in rectArray {
-                    criticalSurface += Double(rect.size.height * rect.size.width)
-                }
+            for rect in manualMarks.get(.Critical, forPage: pageI) {
+                criticalSurface += Double(rect.rect.size.height * rect.rect.size.width)
             }
         }
         totalSurface *= PeyeConstants.pageAreaMultiplier
@@ -212,10 +238,8 @@ class MyPDFBase: PDFView {
             let pageRect = getPageRect(thePage)
             let pageSurface = Double(pageRect.size.height * pageRect.size.width)
             totalSurface += pageSurface
-            if let rectArray = smiMarks.get(.Paragraph_united)[pageI] {
-                for rect in rectArray {
-                    gazedSurface += Double(rect.size.height * rect.size.width)
-                }
+            for rect in smiMarks.get(.Paragraph) {
+                gazedSurface += Double(rect.rect.size.height * rect.rect.size.width)
             }
         }
         totalSurface *= PeyeConstants.pageAreaMultiplier

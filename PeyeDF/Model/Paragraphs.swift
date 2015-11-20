@@ -14,59 +14,35 @@ import Foundation
 struct PDFMarkings {
     
     /// All rectangles (markings) for the given document.
-    /// They are a dictionary of dictionaries, in which a reading classes indexes a dictionary.
-    /// The second dictionary has a page indexing all rects on the given page (as an index from 0)
-    private var allRects = [ReadingClass: [Int: [NSRect]]]()
+    private var allRects = [ReadingRect]()
+    
+    /// Reference to mypdfbase is used to get text within reading rects
+    private var pdfBase: MyPDFBase?
     
     /// What is the source of this group of markings
     var source: ClassSource
     
-    /// Create an empty state with markings of a given source
-    init(withSource source: ClassSource) {
+    /// Create an empty state with markings of a given source using the given pdfBase to get text
+    init(withSource source: ClassSource, pdfBase: MyPDFBase?) {
         self.source = source
-        if source == .Click {
-            // manually entered markings can only have these three classes (read is even for debug)
-            for rc in [ReadingClass.Read, ReadingClass.Interesting, ReadingClass.Critical] {
-                allRects[rc] = [Int: [NSRect]]()
-            }
-        } else if source == .SMI {
-            // midas / smi eye tracking is only related to floating and united rectangles when initialized
-            allRects[ReadingClass.Paragraph_floating] = [Int: [NSRect]]()
-            allRects[ReadingClass.Paragraph_united] = [Int: [NSRect]]()
-        } else if source == .Search {
-            allRects[ReadingClass.FoundString] = [Int: [NSRect]]()
-        } else {
-            for rc in [ReadingClass.Paragraph_floating, ReadingClass.Paragraph_united, ReadingClass.Read, ReadingClass.Interesting, ReadingClass.Critical, ReadingClass.FoundString] {
-                allRects[rc] = [Int: [NSRect]]()
-            }
-        }
+        self.pdfBase = pdfBase
     }
     
     // MARK: - Accessors
     
     /// Return all rectangles in an array of ReadingRects
-    ///
-    /// - parameter pdfReader: Translator from rect to string, used to associate text to rects
-    func getAllReadingRects(pdfReader: MyPDFReader?) -> [ReadingRect] {
-        var retVal = [ReadingRect]()
-        for cl in allRects.keys {
-            for pi in allRects[cl]!.keys {
-                for r in allRects[cl]![pi]! {
-                    var plainTextContent: String?
-                    if let translator = pdfReader {
-                        plainTextContent = translator.stringForRect(r, onPage: pi)
-                    }
-                    let newRR = ReadingRect(pageIndex: pi, rect: r, readingClass: cl, classSource: source, plainTextContent: plainTextContent)
-                    retVal.append(newRR)
-                }
-            }
-        }
-        return retVal
+    func getAllReadingRects() -> [ReadingRect] {
+        return allRects
     }
     
     /// Returns all rectangles for a given class
-    func get(theClass: ReadingClass) -> [Int: [NSRect]] {
-        return allRects[theClass]!
+    func get(theClass: ReadingClass) -> [ReadingRect] {
+        return allRects.filter({$0.readingClass == theClass})
+    }
+    
+    /// Returns all rectangles for a given class, on a given page
+    func get(theClass: ReadingClass, forPage: Int) -> [ReadingRect] {
+        return allRects.filter({$0.readingClass == theClass && $0.pageIndex.integerValue == forPage})
     }
     
     // MARK: - Mutators
@@ -74,29 +50,36 @@ struct PDFMarkings {
     /// Add a rect of the given class to the given page. Does not add
     /// duplicates.
     mutating func addRect(rect: NSRect, ofClass: ReadingClass, forPage: Int) {
-        if allRects[ofClass]![forPage] == nil {
-            allRects[ofClass]![forPage] = [NSRect]()
-        }
-        if !(allRects[ofClass]![forPage]!.contains(rect)) {
-            allRects[ofClass]![forPage]!.append(rect)
+        let newRect = ReadingRect(pageIndex: forPage, rect: rect, readingClass: ofClass, classSource: self.source, pdfBase: pdfBase)
+        if !(allRects.contains(newRect)) {
+            allRects.append(newRect)
         }
     }
     
-    /// Add a rect of the given class to the given page. Does not add duplicates.
+    /// Add a reading rect to the array. Does not add duplicates. Traps if added rect's source does not match
+    /// this instance's source
     mutating func addRect(readingRect: ReadingRect) {
-        let cl = readingRect.readingClass
-        let pi = readingRect.pageIndex as Int
-        if allRects[cl]![pi] == nil {
-            allRects[cl]![pi] = [NSRect]()
+        if readingRect.classSource != self.source {
+            fatalError("Adding a reading rect of a reading source different from pdfmarking's source")
         }
-        if !(allRects[cl]![pi]!.contains(readingRect.rect)) {
-            allRects[cl]![pi]!.append(readingRect.rect)
+        if !(allRects.contains(readingRect)) {
+            allRects.append(readingRect)
         }
     }
     
-    /// Sets rects of a given class to the given dictionary
-    mutating func set(theClass: ReadingClass, _ rects: [Int: [NSRect]]) {
-        allRects[theClass] = rects
+    /// Sets rects of a given class to the given dictionary. Traps if given reading class does not match this
+    /// instance's class
+    mutating func set(theClass: ReadingClass, _ rects: [ReadingRect]) {
+        // remove all rects of the given class
+        allRects = allRects.filter({$0.readingClass != theClass})
+        for newRect in rects {
+            if newRect.readingClass != theClass {
+                fatalError("Added reading rect class does not match requested class")
+            }
+            if !allRects.contains(newRect) {
+                allRects.append(newRect)
+            }
+        }
     }
     
     /// "Flatten" all "relevant" rectangles so that:
@@ -122,15 +105,23 @@ struct PDFMarkings {
     /// Unite all floating eye rectangles into bigger rectangles that enclose them and put them
     /// in their place in the allRects dictionary (under .Paragraph_united)
     mutating func flattenRectangles_eye() {
-        for page in allRects[.Paragraph_floating]!.keys {
-            allRects[.Paragraph_united]![page] = uniteCollidingRects(allRects[.Paragraph_floating]![page]!)
-        }
+        uniteRectangles(.Paragraph)
     }
     
     /// Unite all rectangles of the given class
     mutating func uniteRectangles(ofClass: ReadingClass) {
-        for page in allRects[ofClass]!.keys {
-            allRects[ofClass]![page]! = uniteCollidingRects(allRects[ofClass]![page]!)
+        // create set of all possible page indices
+        var pis = Set<Int>()
+        for rrect in allRects {
+            if rrect.readingClass == ofClass {
+                pis.insert(rrect.pageIndex.integerValue)
+            }
+        }
+        for page in pis {
+            let rectsToUnite = allRects.filter({$0.readingClass == ofClass && $0.pageIndex == page})
+            allRects = allRects.filter({!($0.readingClass == ofClass && $0.pageIndex == page)})
+            let unitedRects = uniteCollidingRects(forPage: page, inputArray: rectsToUnite)
+            allRects.appendContentsOf(unitedRects)
         }
     }
     
@@ -139,68 +130,82 @@ struct PDFMarkings {
     /// - parameter minuend: The class of rectangles to subtract from
     /// - parameter subtrahend: The class of rectangles that will be subtracted
     mutating func subtractRectsOfClass(minuend lhs: ReadingClass, subtrahend rhs: ReadingClass) {
-        for page in allRects[lhs]!.keys {
+        // create set of all possible page indices
+        var pis = Set<Int>()
+        for rrect in allRects {
+            if rrect.readingClass == lhs && rrect.readingClass == rhs {
+                pis.insert(rrect.pageIndex.integerValue)
+            }
+        }
+        for page in pis {
             // only continue if there is something to subtract in rhs
-            if let sRects = allRects[rhs]![page] {
-                // set lhs to result of subtraction
-                allRects[lhs]![page]! = subtractRectangles(allRects[lhs]![page]!, subtrahends: sRects)
+            let subtrahends = allRects.filter({$0.readingClass == rhs && $0.pageIndex == page})
+            if subtrahends.count > 0 {
+                let minuends = allRects.filter({$0.readingClass == lhs && $0.pageIndex == page})
+                allRects = allRects.filter({!($0.readingClass == rhs && $0.pageIndex == page)})
+                allRects = allRects.filter({!($0.readingClass == lhs && $0.pageIndex == page)})
+                let subtractedRects = subtractRectangles(forPage: page, minuends: minuends, subtrahends: subtrahends)
+                allRects.appendContentsOf(subtractedRects)
             }
         }
     }
-}
 
-/// Given an array of rectangles, return a sorted version of the array
-/// (sorted so that elements coming first should have been read first in western order)
-/// with the colliding rectangles united (two rects collide when their intersection is not zero).
-public func uniteCollidingRects(inputArray: [NSRect]) -> [NSRect] {
-    var ary = inputArray
-    ary.sortInPlace()
-    var i = 0
-    while i + 1 < ary.count {
-        if NSIntersectsRect(ary[i], ary[i+1]) {
-            ary[i] = NSUnionRect(ary[i], ary[i+1])
-            ary.removeAtIndex(i+1)
-        } else {
+    /// Given an array of reading rectangles, return a sorted version of the array
+    /// (sorted so that elements coming first should have been read first in western order)
+    /// with the colliding rectangles united (two rects collide when their intersection is not zero).
+    func uniteCollidingRects(forPage forPage: Int, inputArray: [ReadingRect]) -> [ReadingRect] {
+        var ary = inputArray
+        ary.sortInPlace()
+        var i = 0
+        while i + 1 < ary.count {
+            if ary[i].pageIndex != forPage {
+                fatalError("Page indices for rects that have to be united do not match")
+            }
+            if NSIntersectsRect(ary[i].rect, ary[i+1].rect) {
+                ary[i].unite(ary[i+1], pdfBase: pdfBase)
+                ary.removeAtIndex(i+1)
+            } else {
+                ++i
+            }
+        }
+        return ary
+    }
+
+    /// Given two sorted arrays of rectangles, assumed to be on the same page,
+    /// subtract them (minuend-subtrahend). The subtrahend stays the same and
+    /// is not returned. Returned is an array of minuends.
+    ///
+    /// - parameter minuends: The array of rectangles from which the other will be subtracted (lhs)
+    /// - parameter subtrahends: The array of rectangles that will be subtracted from minuends (rhs)
+    /// - returns: An array of rectangles which is the result of minuends - subtrahends
+    func subtractRectangles(forPage forPage: Int, minuends: [ReadingRect], subtrahends: [ReadingRect]) -> [ReadingRect] {
+        var collidingRects: [(lhsRect: ReadingRect, rhsRect: ReadingRect)] = [] // tuples with minuend rect and subtrahend rects which intersect (must be on the same page)
+        
+        // return the same result if there is nothing to subtract from / to
+        if minuends.count == 0 || subtrahends.count == 0 {
+            return minuends
+        }
+        
+        var i = 0
+        var result = minuends
+        while i < result.count {
+            let minuendRect = result[i]
+            for subtrahendRect in subtrahends {
+                if NSIntersectsRect(minuendRect.rect, subtrahendRect.rect) {
+                    collidingRects.append((lhsRect: minuendRect, rhsRect: subtrahendRect))
+                    result.removeAtIndex(i)
+                    continue
+                }
+            }
             ++i
         }
-    }
-    return ary
-}
-
-/// Given two sorted arrays of rectangles, assumed to be on the same page,
-/// subtract them (minuend-subtrahend). The subtrahend stays the same and
-/// is not returned. Returned is an array of minuends.
-///
-/// - parameter minuends: The array of rectangles from which the other will be subtracted (lhs)
-/// - parameter subtrahends: The array of rectangles that will be subtracted from minuends (rhs)
-/// - returns: An array of rectangles which is the result of minuends - subtrahends
-public func subtractRectangles(minuends: [NSRect], subtrahends: [NSRect]) -> [NSRect] {
-    var collidingRects: [(lhsRect: NSRect, rhsRect: NSRect)] = [] // tuples with minuend rect and subtrahend rects which intersect (assumed to be on the same page)
-    
-    // return the same result if there is nothing to subtract from / to
-    if minuends.count == 0 || minuends.count == 0 {
-        return minuends
-    }
-    
-    var i = 0
-    var result = minuends
-    while i < result.count {
-        let minuendRect = result[i]
-        for subtrahendRect in subtrahends {
-            if NSIntersectsRect(minuendRect, subtrahendRect) {
-                collidingRects.append((lhsRect: minuendRect, rhsRect: subtrahendRect))
-                result.removeAtIndex(i)
-                continue
-            }
+        for (minuendRect, subtrahendRect) in collidingRects {
+            result.appendContentsOf(minuendRect.subtractRect(subtrahendRect, pdfBase: pdfBase))
         }
-        ++i
+        return result
     }
-    for (minuendRect, subtrahendRect) in collidingRects {
-        result.appendContentsOf(minuendRect.subtractRect(subtrahendRect))
-    }
-    return result
+    
 }
-
 /// This class represents a "marking state", that is a selection of importance rectangles and the last rectangle and
 /// last page that were edited. It is used to store states in undo operations.
 class PDFMarkingsState: NSObject {
@@ -237,8 +242,7 @@ class PDFMarkingsState: NSObject {
 public enum ReadingClass: Int {
     case Unset = 0
     case Viewport = 10
-    case Paragraph_floating = 13
-    case Paragraph_united = 14
+    case Paragraph = 15
     case Read = 20
     case FoundString = 25
     case Interesting = 30

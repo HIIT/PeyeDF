@@ -28,25 +28,24 @@ class MyPDFOverview: MyPDFBase {
         
         // draw gazed upon rects if desired
         if drawGazedRects {
-            let eyeClasses = [ReadingClass.Paragraph_united]
             let pageIndex = self.document().indexForPage(page)
-            for rc in eyeClasses {
-                if let rectsToDraw = smiMarks.get(rc)[pageIndex] {
-                    // Save.
-                    NSGraphicsContext.saveGraphicsState()
-                    
-                    // Draw.
-                    for rect in rectsToDraw {
-                        let rectCol = PeyeConstants.smiColours[rc]!.colorWithAlphaComponent(0.9)
-                        let rectPath: NSBezierPath = NSBezierPath(rect: rect)
-                        rectCol.setFill()
-                        rectPath.fill()
-                    }
-                    
-                    // Restore.
-                    NSGraphicsContext.restoreGraphicsState()
+            let rectsToDraw = smiMarks.get(.Paragraph, forPage: pageIndex)
+            if rectsToDraw.count > 0 {
+                // Save.
+                NSGraphicsContext.saveGraphicsState()
+                
+                // Draw.
+                for rect in rectsToDraw {
+                    let rectCol = PeyeConstants.smiColours[.Paragraph]!.colorWithAlphaComponent(0.9)
+                    let rectPath: NSBezierPath = NSBezierPath(rect: rect.rect)
+                    rectCol.setFill()
+                    rectPath.fill()
                 }
+                
+                // Restore.
+                NSGraphicsContext.restoreGraphicsState()
             }
+            
         }
         
         // cycle through annotation classes
@@ -54,14 +53,15 @@ class MyPDFOverview: MyPDFBase {
         
         let pageIndex = self.document().indexForPage(page)
         for rc in cycleClasses {
-            if let rectsToDraw = manualMarks.get(rc)[pageIndex] {
+            let rectsToDraw = manualMarks.get(rc, forPage: pageIndex)
+            if rectsToDraw.count > 0 {
             	// Save.
                 NSGraphicsContext.saveGraphicsState()
         	
                 // Draw.
                 for rect in rectsToDraw {
                     let rectCol = PeyeConstants.annotationColours[rc]!.colorWithAlphaComponent(0.9)
-                    let rectPath: NSBezierPath = NSBezierPath(rect: rect)
+                    let rectPath: NSBezierPath = NSBezierPath(rect: rect.rect)
                     rectCol.setFill()
                     rectPath.fill()
                 }
@@ -72,21 +72,22 @@ class MyPDFOverview: MyPDFBase {
         }
         
         // draw found search queries
-        if let rectsToDraw = searchMarks.get(.FoundString)[pageIndex] {
-            	// Save.
-                NSGraphicsContext.saveGraphicsState()
-        	
-                // Draw.
-                for rect in rectsToDraw {
-                    let rectCol = PeyeConstants.markColourFoundStrings
-                    // scale rect up to make it more visible
-                    let rectPath: NSBezierPath = NSBezierPath(rect: rect.scale(3))
-                    rectCol.setFill()
-                    rectPath.fill()
-                }
-                
-            	// Restore.
-            	NSGraphicsContext.restoreGraphicsState()
+        let rectsToDraw = searchMarks.get(.FoundString, forPage: pageIndex)
+        if rectsToDraw.count > 0{
+        	// Save.
+            NSGraphicsContext.saveGraphicsState()
+    	
+            // Draw.
+            for rect in rectsToDraw {
+                let rectCol = PeyeConstants.markColourFoundStrings
+                // scale rect up to make it more visible
+                let rectPath: NSBezierPath = NSBezierPath(rect: rect.rect.scale(3))
+                rectCol.setFill()
+                rectPath.fill()
+            }
+            
+        	// Restore.
+        	NSGraphicsContext.restoreGraphicsState()
         }
         
 
