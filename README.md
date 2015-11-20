@@ -1,6 +1,10 @@
 Under heavy development, only able to open PDFs and select paragraphs (to debug future eye tracking detection) for now.
 
-Data passed to DiMe in the wiki: https://github.com/HIIT/PeyeDF/wiki/Data-Format 
+To see what data is pushed to DiMe, see the wiki: https://github.com/HIIT/PeyeDF/wiki/Data-Format 
+
+# Setup
+
+PeyeDF can be installed like any app. After running, open the preferences window by click on PeyeDF > Preferences, or press command + comma ( **&#8984;** + **,** ). Make sure the DiMe preferences (username, password) are correct.
 
 # Addional software
 
