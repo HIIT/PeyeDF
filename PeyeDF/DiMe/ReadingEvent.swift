@@ -17,15 +17,18 @@ class ReadingEvent: Event {
     
     var pageEyeData = [[String: AnyObject]]()
     let infoElemId: NSString
-    var manualMarkings: PDFMarkings!
-    var smiMarkings: PDFMarkings!
-    var searchMarkings: PDFMarkings!
+    var pageRects: [ReadingRect]
     
     var proportionRead: Double?
     var proportionCritical: Double?
     var proportionInteresting: Double?
     
     var foundStrings = [String]()
+    var isSummary: Bool
+    
+    var pageLabels: [String]?
+    var pageNumbers: [Int]?
+    var scaleFactor: NSNumber?
     
     /**
         Creates this reading event.
@@ -41,37 +44,20 @@ class ReadingEvent: Event {
     init(multiPage: Bool, sessionId: String, pageNumbers: [Int], pageLabels: [String], pageRects: [ReadingRect], isSummary: Bool, scaleFactor: NSNumber, plainTextContent: NSString, infoElemId: NSString) {
         self.infoElemId = infoElemId
         self.sessionId = sessionId
+        self.pageLabels = pageLabels
+        self.pageNumbers = pageNumbers
+        self.pageRects = pageRects
+        self.scaleFactor = scaleFactor
+        self.isSummary = isSummary
         super.init()
         
-        theDictionary["multiPage"] = multiPage
-        theDictionary["sessionId"] = sessionId
-        theDictionary["pageNumbers"] = pageNumbers
-        theDictionary["pageLabels"] = pageLabels
-        theDictionary["isSummary"] = isSummary
-        theDictionary["scaleFactor"] = scaleFactor
         theDictionary["plainTextContent"] = plainTextContent
         
-        var rectArray = [[String: AnyObject]]()
-        for rect in pageRects {
-            rectArray.append(rect.getDict())
-        }
-        theDictionary["pageRects"] = rectArray
-        
-        var infoElemDict = [String: AnyObject]()
-        infoElemDict["@type"] = "ScientificDocument"
-        infoElemDict["type"] = "http://www.hiit.fi/ontologies/dime/#ScientificDocument"
-        infoElemDict[PeyeConstants.iId] = infoElemId
-        
-        theDictionary["targettedResource"] = infoElemDict
-        
-        // dime-required
-        theDictionary["@type"] = ("ReadingEvent")
-        theDictionary["type"] = ("http://www.hiit.fi/ontologies/dime/#ReadingEvent")
     }
     
     /** Creates a summary reading event, which contains all "markings" in form of rectangles
     */
-    init(asSummaryWithMarkings markings: [PDFMarkings], sessionId: String, plainTextContent: NSString?, infoElemId: NSString, foundStrings: [String], pdfReader: MyPDFReader?, proportionTriple: (proportionRead: Double, proportionInteresting: Double, proportionCritical: Double)) {
+    init(asSummaryWithRects rects: [ReadingRect], sessionId: String, plainTextContent: NSString?, infoElemId: NSString, foundStrings: [String], pdfReader: MyPDFReader?, proportionTriple: (proportionRead: Double, proportionInteresting: Double, proportionCritical: Double)) {
         self.infoElemId = infoElemId
         self.sessionId = sessionId
         
@@ -79,50 +65,23 @@ class ReadingEvent: Event {
         self.proportionCritical = proportionTriple.proportionCritical
         self.proportionInteresting = proportionTriple.proportionInteresting
         self.foundStrings = foundStrings
+        self.pageRects = rects
+        self.isSummary = true
         
         super.init()
-        
-        theDictionary["sessionId"] = sessionId
-        
-        theDictionary["proportionRead"] = proportionTriple.proportionRead
-        theDictionary["proportionInteresting"] = proportionTriple.proportionInteresting
-        theDictionary["proportionCritical"] = proportionTriple.proportionCritical
-        
-        theDictionary["isSummary"] = true
-        
-        // create a rectangle array for all PDF markings
-        var rectArray = [[String: AnyObject]]()
-        for marking in markings {
-            for rect in marking.getAllReadingRects() {
-                rectArray.append(rect.getDict())
-            }
-        }
-        theDictionary["pageRects"] = rectArray
         
         if let ptc = plainTextContent {
             theDictionary["plainTextContent"] = ptc
         }
         
-        if foundStrings.count > 0 {
-            theDictionary["foundStrings"] = foundStrings
-        }
-        
-        var infoElemDict = [String: AnyObject]()
-        infoElemDict["@type"] = "ScientificDocument"
-        infoElemDict["type"] = "http://www.hiit.fi/ontologies/dime/#ScientificDocument"
-        infoElemDict[PeyeConstants.iId] = infoElemId
-        
-        theDictionary["targettedResource"] = infoElemDict
-        
-        // dime-required
-        theDictionary["@type"] = ("ReadingEvent")
-        theDictionary["type"] = ("http://www.hiit.fi/ontologies/dime/#ReadingEvent")
+        self.foundStrings.appendContentsOf(foundStrings)
     }
     
     /// Creates event from dime. NOTE: sending these events back to dime is untested.
     init(asManualSummaryFromDime json: JSON) {
         infoElemId = json["targettedResource"][PeyeConstants.iId].stringValue
         sessionId = json["sessionId"].stringValue
+        isSummary = json["isSummary"].boolValue
         proportionRead = json["proportionRead"].doubleValue
         proportionInteresting = json["proportionInteresting"].doubleValue
         proportionCritical = json["proportionCritical"].doubleValue
@@ -132,32 +91,78 @@ class ReadingEvent: Event {
             }
         }
         let dateCreated: NSDate = NSDate(timeIntervalSince1970: NSTimeInterval(json["start"].intValue / 1000))
-        self.manualMarkings = PDFMarkings(withSource: ClassSource.Click, pdfBase: nil)
-        self.smiMarkings = PDFMarkings(withSource: ClassSource.SMI, pdfBase: nil)
-        self.searchMarkings = PDFMarkings(withSource: ClassSource.Search, pdfBase: nil)
+        self.pageRects = [ReadingRect]()
         for pageRect in json["pageRects"].arrayValue {
-            if pageRect["classSource"].intValue == ClassSource.Click.rawValue {
-                self.manualMarkings.addRect(ReadingRect(fromJson: pageRect))
-            } else if pageRect["classSource"].intValue == ClassSource.SMI.rawValue {
-                self.smiMarkings.addRect(ReadingRect(fromJson: pageRect))
-            } else if pageRect["classSource"].intValue == ClassSource.Search.rawValue {
-                self.searchMarkings.addRect(ReadingRect(fromJson: pageRect))
-            }
+            self.pageRects.append(ReadingRect(fromJson: pageRect))
         }
         super.init(withStartDate: dateCreated)
         
         // create dictionary directly from json (result untested)
         theDictionary = json.dictionaryObject!
         
-        // dime-required
-        theDictionary["@type"] = ("ReadingEvent")
-        theDictionary["type"] = ("http://www.hiit.fi/ontologies/dime/#ReadingEvent")
     }
     
     /// Adds eye tracking data to this reading event
     func addEyeData(newData: PageEyeData) {
         pageEyeData.append(newData.getDict())
         theDictionary["pageEyeData"] = pageEyeData
+    }
+    
+    /// Adds a reading rect to the current rectangle list of
+    /// manually - entered markings
+    func addRect(newRect: ReadingRect) {
+        self.pageRects.append(newRect)
+    }
+    
+    /// Returns dictionary for this reading event. Overridden to allow custom values
+    override func getDict() -> [String : AnyObject] {
+        var retDict = theDictionary
+        
+        retDict["sessionId"] = sessionId
+        retDict["isSummary"] = isSummary
+        
+        if let plabels = self.pageLabels {
+            retDict["pageLabels"] = plabels
+        }
+        if let pnumbers = self.pageNumbers {
+            retDict["pageNumbers"] = pnumbers
+        }
+        if let sfactor = self.scaleFactor {
+            retDict["scaleFactor"] = sfactor
+        }
+        
+        if let pread = proportionRead {
+            retDict["proportionRead"] = pread
+        }
+        if let pinter = proportionInteresting {
+            retDict["proportionInteresting"] = pinter
+        }
+        if let pcrit = proportionCritical {
+            retDict["proportionCritical"] = pcrit
+        }
+        
+        if foundStrings.count > 0 {
+            theDictionary["foundStrings"] = foundStrings
+        }
+        
+        var rectArray = [[String: AnyObject]]()
+        for rect in pageRects {
+            rectArray.append(rect.getDict())
+        }
+        retDict["pageRects"] = rectArray
+        
+        var infoElemDict = [String: AnyObject]()
+        infoElemDict["@type"] = "ScientificDocument"
+        infoElemDict["type"] = "http://www.hiit.fi/ontologies/dime/#ScientificDocument"
+        infoElemDict[PeyeConstants.iId] = infoElemId
+        
+        retDict["targettedResource"] = infoElemDict
+        
+        // dime-required
+        retDict["@type"] = ("ReadingEvent")
+        retDict["type"] = ("http://www.hiit.fi/ontologies/dime/#ReadingEvent")
+        
+        return retDict
     }
 }
 

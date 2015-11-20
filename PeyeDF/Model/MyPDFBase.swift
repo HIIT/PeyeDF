@@ -17,27 +17,17 @@ class MyPDFBase: PDFView {
     let extraLineAmount = 2 // 1/this number is the amount of extra lines that we want to discard
     // if we are at beginning or end of paragraph
 
-    /// Stores all manually entered markings
-    var manualMarks: PDFMarkings!
-    
-    /// Stores all markings from smi (to check all rects the user fixated upon)
-    var smiMarks: PDFMarkings!
-    
-    /// Stores all markings from searches
-    var searchMarks: PDFMarkings!
+    /// Stores all markings
+    var markings: PDFMarkings!
     
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
-        manualMarks = PDFMarkings(withSource: ClassSource.Click, pdfBase: self)
-        smiMarks = PDFMarkings(withSource: ClassSource.SMI, pdfBase: self)
-        searchMarks = PDFMarkings(withSource: ClassSource.Search, pdfBase: self)
+        markings = PDFMarkings(pdfBase: self)
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        manualMarks = PDFMarkings(withSource: ClassSource.Click, pdfBase: self)
-        smiMarks = PDFMarkings(withSource: ClassSource.SMI, pdfBase: self)
-        searchMarks = PDFMarkings(withSource: ClassSource.Search, pdfBase: self)
+        markings = PDFMarkings(pdfBase: self)
     }
     
     // MARK: - External functions
@@ -120,8 +110,8 @@ class MyPDFBase: PDFView {
     }
     
     /// Manually set all rectangles to the given parameters, and annotate them.
-    func setMarksAndAnnotate(newManualMarks: PDFMarkings) {
-        manualMarks = newManualMarks
+    func setManualMarksAndAnnotate(newManualMarks: [ReadingRect]) {
+        markings.setAll(forSource: .Click, newRects: newManualMarks)
         autoAnnotate()
     }
     
@@ -148,7 +138,7 @@ class MyPDFBase: PDFView {
         let myBord = PDFBorder()
         myBord.setLineWidth(lineThickness)
         
-        for rect in manualMarks.get(forClass) {
+        for rect in markings.get(forSource: ClassSource.Click, ofClass: forClass) {
             let newRect = annotationRectForMark(rect.rect)
             let annotation = PDFAnnotationSquare(bounds: newRect)
             annotation.setColor(colour)
@@ -186,7 +176,7 @@ class MyPDFBase: PDFView {
     /// intersect with "higher-class" rectangles
     func autoAnnotate() {
         removeAllAnnotations()
-        manualMarks.flattenRectangles_relevance()
+        markings.flattenRectangles_relevance()
         outputAnnotations(.Critical, colour: PeyeConstants.annotationColourCritical)
         outputAnnotations(.Interesting, colour: PeyeConstants.annotationColourInteresting)
         outputAnnotations(.Read, colour: PeyeConstants.annotationColourRead)
@@ -198,7 +188,7 @@ class MyPDFBase: PDFView {
     /// All rectangles (which will be united) are then cycled and the area of each is subtracted
     /// to calculate a proportion.
     func calculateProportions_manual() -> (proportionRead: Double, proportionInteresting: Double, proportionCritical: Double) {
-        manualMarks.flattenRectangles_relevance()
+        markings.flattenRectangles_relevance()
         var totalSurface = 0.0
         var readSurface = 0.0
         var interestingSurface = 0.0
@@ -208,13 +198,13 @@ class MyPDFBase: PDFView {
             let pageRect = getPageRect(thePage)
             let pageSurface = Double(pageRect.size.height * pageRect.size.width)
             totalSurface += pageSurface
-            for rect in manualMarks.get(.Read, forPage: pageI) {
+            for rect in markings.get(ofClass: .Read, forPage: pageI) {
                 readSurface += Double(rect.rect.size.height * rect.rect.size.width)
             }
-            for rect in manualMarks.get(.Interesting, forPage: pageI) {
+            for rect in markings.get(ofClass: .Interesting, forPage: pageI) {
                 interestingSurface += Double(rect.rect.size.height * rect.rect.size.width)
             }
-            for rect in manualMarks.get(.Critical, forPage: pageI) {
+            for rect in markings.get(ofClass: .Critical, forPage: pageI) {
                 criticalSurface += Double(rect.rect.size.height * rect.rect.size.width)
             }
         }
@@ -230,7 +220,7 @@ class MyPDFBase: PDFView {
     /// All rectangles (which will be united) are then cycled and the area of each is subtracted
     /// to calculate a proportion.
     func calculateProportion_smi() -> Double {
-        smiMarks.flattenRectangles_eye()
+        markings.flattenRectangles_eye()
         var totalSurface = 0.0
         var gazedSurface = 0.0
         for pageI in 0..<document().pageCount() {
@@ -238,7 +228,7 @@ class MyPDFBase: PDFView {
             let pageRect = getPageRect(thePage)
             let pageSurface = Double(pageRect.size.height * pageRect.size.width)
             totalSurface += pageSurface
-            for rect in smiMarks.get(.Paragraph) {
+            for rect in markings.get(ofClass: .Paragraph) {
                 gazedSurface += Double(rect.rect.size.height * rect.rect.size.width)
             }
         }

@@ -19,12 +19,8 @@ struct PDFMarkings {
     /// Reference to mypdfbase is used to get text within reading rects
     private var pdfBase: MyPDFBase?
     
-    /// What is the source of this group of markings
-    var source: ClassSource
-    
     /// Create an empty state with markings of a given source using the given pdfBase to get text
-    init(withSource source: ClassSource, pdfBase: MyPDFBase?) {
-        self.source = source
+    init(pdfBase: MyPDFBase?) {
         self.pdfBase = pdfBase
     }
     
@@ -35,13 +31,23 @@ struct PDFMarkings {
         return allRects
     }
     
+    /// Return all rectangles made from the given source
+    func getAll(forSource source: ClassSource) -> [ReadingRect] {
+        return allRects.filter({$0.classSource == source})
+    }
+    
+    /// Return all rectangles made from the given source, of the given class
+    func get(forSource source: ClassSource, ofClass: ReadingClass) -> [ReadingRect] {
+        return allRects.filter({$0.classSource == source && $0.readingClass == ofClass})
+    }
+    
     /// Returns all rectangles for a given class
-    func get(theClass: ReadingClass) -> [ReadingRect] {
+    func get(ofClass theClass: ReadingClass) -> [ReadingRect] {
         return allRects.filter({$0.readingClass == theClass})
     }
     
     /// Returns all rectangles for a given class, on a given page
-    func get(theClass: ReadingClass, forPage: Int) -> [ReadingRect] {
+    func get(ofClass theClass: ReadingClass, forPage: Int) -> [ReadingRect] {
         return allRects.filter({$0.readingClass == theClass && $0.pageIndex.integerValue == forPage})
     }
     
@@ -49,8 +55,8 @@ struct PDFMarkings {
     
     /// Add a rect of the given class to the given page. Does not add
     /// duplicates.
-    mutating func addRect(rect: NSRect, ofClass: ReadingClass, forPage: Int) {
-        let newRect = ReadingRect(pageIndex: forPage, rect: rect, readingClass: ofClass, classSource: self.source, pdfBase: pdfBase)
+    mutating func addRect(rect: NSRect, ofClass: ReadingClass, withSource: ClassSource, forPage: Int) {
+        let newRect = ReadingRect(pageIndex: forPage, rect: rect, readingClass: ofClass, classSource: withSource, pdfBase: pdfBase)
         if !(allRects.contains(newRect)) {
             allRects.append(newRect)
         }
@@ -59,9 +65,6 @@ struct PDFMarkings {
     /// Add a reading rect to the array. Does not add duplicates. Traps if added rect's source does not match
     /// this instance's source
     mutating func addRect(readingRect: ReadingRect) {
-        if readingRect.classSource != self.source {
-            fatalError("Adding a reading rect of a reading source different from pdfmarking's source")
-        }
         if !(allRects.contains(readingRect)) {
             allRects.append(readingRect)
         }
@@ -80,6 +83,24 @@ struct PDFMarkings {
                 allRects.append(newRect)
             }
         }
+    }
+    
+    /// Set all rect with the given source to a new list of rects.
+    /// Traps if not all rects passed have the given source.
+    mutating func setAll(forSource source: ClassSource, newRects: [ReadingRect]) {
+        allRects = allRects.filter({$0.classSource != source})
+        for rect in newRects {
+            if rect.classSource != source {
+                fatalError("Passed rect with source \(rect.classSource) does not match \(source)")
+            } else {
+                allRects.append(rect)
+            }
+        }
+    }
+    
+    /// Set all underlying rects to the given array
+    mutating func setAll(newRects: [ReadingRect]) {
+        self.allRects = newRects
     }
     
     /// "Flatten" all "relevant" rectangles so that:
@@ -211,29 +232,22 @@ struct PDFMarkings {
 /// last page that were edited. It is used to store states in undo operations.
 class PDFMarkingsState: NSObject {
     /// All rectangles, prior to addition / deletion
-    var rectState: PDFMarkings
-    /// The page on which the last modification was made
-    private var lastPage: Int?
+    var rectState: [ReadingRect]
     /// The rectangle on which the last modification was made
-    private var lastRect: NSRect?
+    private var lastRect: ReadingRect?
     
-    init(oldState: PDFMarkings) {
+    init(oldState: [ReadingRect]) {
         self.rectState = oldState
     }
     
     /// Sets the last rectangle (and on which page) that was added / removed
-    func setLastRect(lastRect: NSRect, lastPage: Int) {
+    func setLastRect(lastRect: ReadingRect) {
         self.lastRect = lastRect
-        self.lastPage = lastPage
     }
     
     /// Returns the last rectangle (if it exists). In the current implementation, this should never return nil.
-    func getLastRect() -> (lastRect: NSRect, lastPage: Int)? {
-        if let _ = self.lastPage {
-            return (self.lastRect!, self.lastPage!)
-        } else {
-            return nil
-        }
+    func getLastRect() -> ReadingRect? {
+        return lastRect
     }
 }
 

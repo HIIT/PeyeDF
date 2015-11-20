@@ -21,6 +21,7 @@ class AppSingleton {
     static let appDelegate = NSApplication.sharedApplication().delegate! as! AppDelegate
     
     static let log = AppSingleton.createLog()
+    static private(set) var logsURL = NSURL()
     
     /// The dimensions of the screen the application is running within.
     /// It is assumed there is only one screen when using eye tracking.
@@ -67,10 +68,12 @@ class AppSingleton {
         } catch {
             firstLine = "Error creating log directory: \(error)"
         }
+        AppSingleton.logsURL = tempURL
         let logFilePathURL = tempURL.URLByAppendingPathComponent("XCGLog_\(appString).log")
         let newLog = XCGLogger.defaultInstance()
         newLog.setup(.Debug, showThreadName: true, showLogLevel: true, showFileNames: true, showLineNumbers: true, writeToFile: logFilePathURL, fileLogLevel: .Debug)
         newLog.debug(firstLine)
+        
         return newLog
     }
     

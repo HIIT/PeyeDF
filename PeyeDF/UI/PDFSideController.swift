@@ -19,7 +19,7 @@ protocol ClickRecognizerDelegate {
 }
 
 /// Controller for the PDF-side Document split view
-class PDFSideController: NSViewController, ClickRecognizerDelegate {
+class PDFSideController: NSViewController, ClickRecognizerDelegate, NSGestureRecognizerDelegate {
     
     @IBOutlet weak var pdfReader: MyPDFReader!
     @IBOutlet weak var overlay: MyOverlay!
@@ -30,6 +30,7 @@ class PDFSideController: NSViewController, ClickRecognizerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         overlay.otherView = pdfReader  // tell circleOverlay to be transparent
+        doubleClickRecognizer.delegate = self  // to prevent immediate double click recognition
     }
 
     override var representedObject: AnyObject? {
@@ -57,6 +58,17 @@ class PDFSideController: NSViewController, ClickRecognizerDelegate {
     /// Check if recognizers are enabled
     func getRecognizersState() -> Bool {
         return doubleClickRecognizer.enabled && tripleClickRecognizer.enabled
+    }
+    
+    // MARK: Delegation
+    
+    /// Overriding this method to prevent double clicks from registering immediately
+    func gestureRecognizer(gestureRecognizer: NSGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: NSGestureRecognizer) -> Bool {
+        if otherGestureRecognizer === tripleClickRecognizer {
+            return true
+        } else {
+            return false
+        }
     }
 }
 

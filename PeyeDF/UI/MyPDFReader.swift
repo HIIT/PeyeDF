@@ -58,7 +58,7 @@ class MyPDFReader: MyPDFBase, ScreenToPageConverter {
     var circleSize = NSSize(width: 20, height: 20)
     
     /// What single click does
-    var singleClickMode: SingleClickMode = SingleClickMode.MarkAsRead
+    var singleClickMode: SingleClickMode = SingleClickMode.Default
     
     // MARK: - Event callbacks
     
@@ -140,7 +140,9 @@ class MyPDFReader: MyPDFBase, ScreenToPageConverter {
         }
         let foundOnPage = selectedResult.pages()[0] as! PDFPage
         let pageIndex = document().indexForPage(foundOnPage)
-        searchMarks.addRect(selectedResult.boundsForPage(foundOnPage), ofClass: .FoundString, forPage: pageIndex)
+        let newRect = ReadingRect(pageIndex: pageIndex, rect: selectedResult.boundsForPage(foundOnPage), readingClass: .FoundString, classSource: .Search, pdfBase: self)
+        markings.addRect(newRect)
+        HistoryManager.sharedManager.addReadingRect(newRect)
     }
     
     // MARK: - Page drawing override
@@ -180,22 +182,22 @@ class MyPDFReader: MyPDFBase, ScreenToPageConverter {
     /// added / removed rectangle can be seen appearing / disappearing immediately).
     @objc func undoMarkAndAnnotate(previousState: PDFMarkingsState) {
         // a last tuple must be present, otherwise it should not have been added in the first place
-        if let lastTuple = previousState.getLastRect() {
+        if let lastRect = previousState.getLastRect() {
             
             // store previous state before making any modification
-            let evenPreviousState = PDFMarkingsState(oldState: manualMarks)
+            let evenPreviousState = PDFMarkingsState(oldState: markings.getAll(forSource: .Click))
             
             // apply previous state and perform annotations
-            manualMarks = previousState.rectState
+            markings.setAll(forSource: .Click, newRects: previousState.rectState)
             autoAnnotate()
         
             // show this change
-            let annotRect = annotationRectForMark(lastTuple.lastRect)
-            setNeedsDisplayInRect(convertRect(annotRect, fromPage: self.document().pageAtIndex( lastTuple.lastPage)))
+            let annotRect = annotationRectForMark(lastRect.rect)
+            setNeedsDisplayInRect(convertRect(annotRect, fromPage: self.document().pageAtIndex(lastRect.pageIndex.integerValue)))
             
             // create an undo operation for this operation
             let lastR = previousState.getLastRect()!
-            evenPreviousState.setLastRect(lastR.lastRect, lastPage: lastR.lastPage)
+            evenPreviousState.setLastRect(lastR)
             undoManager?.registerUndoWithTarget(self, selector: "undoMarkAndAnnotate:", object: evenPreviousState)
             undoManager?.setActionName(NSLocalizedString("actions.annotate", value: "Mark Text", comment: "Some text was marked as importance by clicking"))
         } else {
@@ -212,11 +214,11 @@ class MyPDFReader: MyPDFBase, ScreenToPageConverter {
     func markAndAnnotate(location: NSPoint, importance: ReadingClass) {
         if containsRawString {
             // prepare a marking state to store this operation
-            let previousState = PDFMarkingsState(oldState: self.manualMarks)
-            let newTuple = mark(location, importance: importance)
+            let previousState = PDFMarkingsState(oldState: self.markings.getAll(forSource: .Click))
+            let newMaybeMark = mark(location, importance: importance)
             // if noting was done (i.e. no paragraph at point) do nothing, otherwise store state and annotate
-            if let newMark = newTuple {
-                previousState.setLastRect(newMark.newRect, lastPage: newMark.onPage)
+            if let newMark = newMaybeMark {
+                previousState.setLastRect(newMark)
                 undoManager?.registerUndoWithTarget(self, selector: "undoMarkAndAnnotate:", object: previousState)
                 undoManager?.setActionName(NSLocalizedString("actions.annotate", value: "Mark Text", comment: "Some text was marked as importance by clicking"))
                 autoAnnotate()
@@ -230,7 +232,7 @@ class MyPDFReader: MyPDFBase, ScreenToPageConverter {
     /// should be marked as somehow important
     ///
     /// - returns: A triplet containing the rectangle that was created, on which page it was created and what importance
-    func mark(locationInView: NSPoint, importance: ReadingClass) -> (newRect: NSRect, onPage: Int, importance: ReadingClass)? {
+    func mark(locationInView: NSPoint, importance: ReadingClass) -> ReadingRect? {
         
         // Page we're on.
         let activePage = self.pageForPoint(locationInView, nearest: true)
@@ -251,9 +253,12 @@ class MyPDFReader: MyPDFBase, ScreenToPageConverter {
             exception.raise()
         }
         
-        manualMarks.addRect(markRect, ofClass: importance, forPage: pageIndex)
+        // Create new reading rect using given parameters and put in history for dime submission
+        let newRect = ReadingRect(pageIndex: pageIndex, rect: markRect, readingClass: importance, classSource: .Click, pdfBase: self)
+        markings.addRect(newRect)
+        HistoryManager.sharedManager.addReadingRect(newRect)
         
-        return (markRect, pageIndex, importance)
+        return newRect
     }
     
     /// Returns wheter annotation by click is enabled
@@ -313,7 +318,9 @@ class MyPDFReader: MyPDFBase, ScreenToPageConverter {
         // create rect for gazed-at paragraph
         if fromEye {
             if let seenRect = pointToParagraphRect(pointOnPage, forPage: page) {
-                smiMarks.addRect(seenRect, ofClass: ReadingClass.Paragraph, forPage: self.document().indexForPage(page))
+                let newRect = ReadingRect(pageIndex: self.document().indexForPage(page), rect: seenRect, readingClass: .Paragraph, classSource: .SMI, pdfBase: self)
+                markings.addRect(newRect)
+                HistoryManager.sharedManager.addReadingRect(newRect)
             }
         }
         
@@ -358,7 +365,7 @@ class MyPDFReader: MyPDFBase, ScreenToPageConverter {
     /// - returns: A summary reading event corresponding to all marks, nil if proportion read / interesting
     ///            etc was less than a minimum amount (suggesting the document wasn't actually read)
     func getUserRectStatus() -> ReadingEvent? {
-        smiMarks.flattenRectangles_eye()
+        markings.flattenRectangles_eye()
         
         // Calculate proportion for Read, Critical and Interesting rectangles
         let proportionTriple = calculateProportions_manual()
@@ -373,7 +380,7 @@ class MyPDFReader: MyPDFBase, ScreenToPageConverter {
         if totProportion < PeyeConstants.minProportion && proportionGazed < PeyeConstants.minProportion {
             return nil
         } else {
-            return ReadingEvent(asSummaryWithMarkings: [manualMarks, smiMarks, searchMarks], sessionId: sessionId, plainTextContent: nil, infoElemId: sciDoc!.getId(), foundStrings: foundStrings, pdfReader: self, proportionTriple: proportionTriple)
+            return ReadingEvent(asSummaryWithRects: markings.getAllReadingRects(), sessionId: sessionId, plainTextContent: nil, infoElemId: sciDoc!.getId(), foundStrings: foundStrings, pdfReader: self, proportionTriple: proportionTriple)
         }
     }
     

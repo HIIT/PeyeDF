@@ -87,6 +87,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
     }
+    
+    /// Shows logs menu
+    @IBAction func showLogsPath(sender: AnyObject) {
+        let logsPath = AppSingleton.logsURL.path!
+        NSPasteboard.generalPasteboard().declareTypes([NSStringPboardType], owner: self)
+        NSPasteboard.generalPasteboard().setString(logsPath, forType: NSStringPboardType)
+        AppSingleton.alertUser("Logs file path copied to clipboard.", infoText: logsPath)
+    }
 
     @IBAction func allDocMetadata(sender: AnyObject) {
         let doci = NSDocumentController.sharedDocumentController().documents
@@ -126,7 +134,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    /// MARK: - Notification callbacks
+    // MARK: - Notification callbacks
     
     @objc func dimeConnectionChanged(notification: NSNotification) {
         let userInfo = notification.userInfo as! [String: Bool]

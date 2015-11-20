@@ -29,7 +29,7 @@ class MyPDFOverview: MyPDFBase {
         // draw gazed upon rects if desired
         if drawGazedRects {
             let pageIndex = self.document().indexForPage(page)
-            let rectsToDraw = smiMarks.get(.Paragraph, forPage: pageIndex)
+            let rectsToDraw = markings.get(ofClass: .Paragraph, forPage: pageIndex)
             if rectsToDraw.count > 0 {
                 // Save.
                 NSGraphicsContext.saveGraphicsState()
@@ -53,7 +53,7 @@ class MyPDFOverview: MyPDFBase {
         
         let pageIndex = self.document().indexForPage(page)
         for rc in cycleClasses {
-            let rectsToDraw = manualMarks.get(rc, forPage: pageIndex)
+            let rectsToDraw = markings.get(ofClass: rc, forPage: pageIndex)
             if rectsToDraw.count > 0 {
             	// Save.
                 NSGraphicsContext.saveGraphicsState()
@@ -72,7 +72,7 @@ class MyPDFOverview: MyPDFBase {
         }
         
         // draw found search queries
-        let rectsToDraw = searchMarks.get(.FoundString, forPage: pageIndex)
+        let rectsToDraw = markings.get(ofClass: .FoundString, forPage: pageIndex)
         if rectsToDraw.count > 0{
         	// Save.
             NSGraphicsContext.saveGraphicsState()

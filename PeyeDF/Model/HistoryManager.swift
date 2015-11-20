@@ -192,6 +192,13 @@ class HistoryManager: FixationDataDelegate {
         
     }
     
+    
+    /// Adds a reading rect to the current outgoing readingevent (to add manual markings)
+    func addReadingRect(theRect: ReadingRect) {
+        if let cre = self.currentReadingEvent {
+            cre.addRect(theRect)
+        }
+    }
 
     // MARK: - Internal functions
     
