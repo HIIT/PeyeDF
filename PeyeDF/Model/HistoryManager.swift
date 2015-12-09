@@ -84,7 +84,7 @@ class HistoryManager: FixationDataDelegate {
             response in
             if response.result.isFailure {
                 // connection failed
-                AppSingleton.alertUser("Error while communcating with dime. Dime has now been disconnected", infoText: "Debug error message:\n\(response.result.debugDescription)")
+                AppSingleton.alertUser("Error while communcating with dime. Dime has now been disconnected", infoText: "Error message:\n\(response.result.error!)")
                 
                 self.dimeConnectState(false)
             } else {
@@ -168,8 +168,6 @@ class HistoryManager: FixationDataDelegate {
                 // attempt to translate json
                 let options = NSJSONWritingOptions.PrettyPrinted
                 
-                //AppSingleton.log.debug("***********\n\(dimeData.getDict().debugDescription)")  // log sent data
-                
                 try NSJSONSerialization.dataWithJSONObject(dimeData.getDict(), options: options)
                 
                 // assume json conversion was a success, hence send to dime
@@ -185,8 +183,8 @@ class HistoryManager: FixationDataDelegate {
                 Alamofire.request(Alamofire.Method.POST, server_url + "/data/\(endPoint.rawValue)", parameters: dimeData.getDict(), encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON {
                     response in
                     if response.result.isFailure {
-                        AppSingleton.log.error("Error while reading json response from DiMe: \(response.result.debugDescription)")
-                        AppSingleton.alertUser("Error while communcating with dime. Dime has now been disconnected", infoText: "Message from dime:\n\(response.result.debugDescription)")
+                        AppSingleton.log.error("Error while reading json response from DiMe: \(response.result.error)")
+                        AppSingleton.alertUser("Error while communcating with dime. Dime has now been disconnected", infoText: "Message from dime:\n\(response.result.error!)")
                         self.dimeConnectState(false)
                     } else {
                         let json = JSON(response.result.value!)

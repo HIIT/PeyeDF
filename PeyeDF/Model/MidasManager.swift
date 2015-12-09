@@ -108,7 +108,7 @@ class MidasManager {
                 
                 if response.result.isFailure {
                     self.midasAvailable = false
-                    AppSingleton.log.error("Midas is down: \(response.result.debugDescription)")
+                    AppSingleton.log.error("Midas is down: \(response.result.error!)")
                     AppSingleton.alertUser("Midas is down", infoText: "Initial connection to midas failed")
                 } else if self.fetchTimer == nil {
                     NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.midasConnectionNotification, object: self, userInfo: ["available": true])
@@ -169,8 +169,8 @@ class MidasManager {
             response in
             if response.result.isFailure {
                 self.stop()
-                AppSingleton.log.error("Error while reading json response from Midas: \(response.debugDescription)")
-                AppSingleton.alertUser("Error while reading json response from Midas", infoText: "Message from midas:\n\(response.debugDescription)")
+                AppSingleton.log.error("Error while reading json response from Midas: \(response.result.error!)")
+                AppSingleton.alertUser("Error while reading json response from Midas", infoText: "Message:\n\(response.result.error!)")
             } else {
                 self.gotData(ofKind: fetchKind, json: JSON(response.result.value!))
             }

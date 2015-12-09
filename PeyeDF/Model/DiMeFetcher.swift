@@ -45,7 +45,7 @@ class DiMeFetcher {
         Alamofire.request(.GET, server_url + "/data/events?actor=PeyeDF&type=http://www.hiit.fi/ontologies/dime/%23ReadingEvent", headers: headers).responseJSON() {
             response in
             if response.result.isFailure {
-                AppSingleton.log.error("Error fetching list of PeyeDF events: \(response.debugDescription)")
+                AppSingleton.log.error("Error fetching list of PeyeDF events: \(response.result.error!)")
             } else {
                 self.convertJsonSummary(JSON(response.result.value!))
             }
@@ -76,7 +76,7 @@ class DiMeFetcher {
         Alamofire.request(.GET, reqString, headers: headers).responseJSON() {
             response in
             if response.result.isFailure {
-                AppSingleton.log.error("Error fetching information element: \(response.result.debugDescription)")
+                AppSingleton.log.error("Error fetching information element: \(response.result.error!)")
                 callback(nil)
             } else {
                 // if this sql branch, assume first returned item is the one we are looking for
