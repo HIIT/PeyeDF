@@ -104,11 +104,11 @@ class MidasManager {
         if !midasAvailable {
             // Checks if midas is available, if not doesn't start
             Alamofire.request(.GET, kTestURL).responseJSON {
-                _, _, response in
+                response in
                 
-                if response.isFailure {
+                if response.result.isFailure {
                     self.midasAvailable = false
-                    AppSingleton.log.error("Midas is down: \(response.debugDescription)")
+                    AppSingleton.log.error("Midas is down: \(response.result.debugDescription)")
                     AppSingleton.alertUser("Midas is down", infoText: "Initial connection to midas failed")
                 } else if self.fetchTimer == nil {
                     NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.midasConnectionNotification, object: self, userInfo: ["available": true])
@@ -166,13 +166,13 @@ class MidasManager {
         let request = manager.request(urlRequest)
         
         request.responseJSON {
-            _, _, response in
-            if response.isFailure {
+            response in
+            if response.result.isFailure {
                 self.stop()
                 AppSingleton.log.error("Error while reading json response from Midas: \(response.debugDescription)")
                 AppSingleton.alertUser("Error while reading json response from Midas", infoText: "Message from midas:\n\(response.debugDescription)")
             } else {
-                self.gotData(ofKind: fetchKind, json: JSON(response.value!))
+                self.gotData(ofKind: fetchKind, json: JSON(response.result.value!))
             }
         }
     }

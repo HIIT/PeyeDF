@@ -43,11 +43,11 @@ class DiMeFetcher {
         let headers = ["Authorization": "Basic \(base64Credentials)"]
         
         Alamofire.request(.GET, server_url + "/data/events?actor=PeyeDF&type=http://www.hiit.fi/ontologies/dime/%23ReadingEvent", headers: headers).responseJSON() {
-            _, _, response in
-            if response.isFailure {
+            response in
+            if response.result.isFailure {
                 AppSingleton.log.error("Error fetching list of PeyeDF events: \(response.debugDescription)")
             } else {
-                self.convertJsonSummary(JSON(response.value!))
+                self.convertJsonSummary(JSON(response.result.value!))
             }
         }
     }
@@ -74,18 +74,18 @@ class DiMeFetcher {
         }
         
         Alamofire.request(.GET, reqString, headers: headers).responseJSON() {
-            _, _, response in
-            if response.isFailure {
-                AppSingleton.log.error("Error fetching information element: \(response.debugDescription)")
+            response in
+            if response.result.isFailure {
+                AppSingleton.log.error("Error fetching information element: \(response.result.debugDescription)")
                 callback(nil)
             } else {
                 // if this sql branch, assume first returned item is the one we are looking for
                 let json: JSON
                 switch PeyeConstants.dimeBranch {
                 case .mongodb:
-                    json = JSON(response.value!)
+                    json = JSON(response.result.value!)
                 case .sql:
-                    json = JSON(response.value!)[0]
+                    json = JSON(response.result.value!)[0]
                 }
                 if let error = json["error"].string {
                     AppSingleton.log.error("Dime fetched json contains error:\n\(error)")
@@ -95,11 +95,11 @@ class DiMeFetcher {
                         let newScidoc = ScientificDocument(fromJson: json)
                         callback(newScidoc)
                     } else {
-                        AppSingleton.log.error("Retrieved info element id does not match requested id: \(response.value!)")
+                        AppSingleton.log.error("Retrieved info element id does not match requested id: \(response.result.value!)")
                         callback(nil)
                     }
                 } else {
-                    AppSingleton.log.debug("Failed to retrieve a valid info element: \(response.value!)")
+                    AppSingleton.log.debug("Failed to retrieve a valid info element: \(response.result.value!)")
                     callback(nil)
                 }
             }

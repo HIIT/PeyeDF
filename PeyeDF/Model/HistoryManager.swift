@@ -81,10 +81,10 @@ class HistoryManager: FixationDataDelegate {
         let dictionaryObject = ["test": "test"]
         
         Alamofire.request(Alamofire.Method.POST, server_url + "/ping", parameters: dictionaryObject, encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON {
-            _, _, response in
-            if response.isFailure {
+            response in
+            if response.result.isFailure {
                 // connection failed
-                AppSingleton.alertUser("Error while communcating with dime. Dime has now been disconnected", infoText: "Message from dime:\n\(response.debugDescription)")
+                AppSingleton.alertUser("Error while communcating with dime. Dime has now been disconnected", infoText: "Debug error message:\n\(response.result.debugDescription)")
                 
                 self.dimeConnectState(false)
             } else {
@@ -183,13 +183,13 @@ class HistoryManager: FixationDataDelegate {
                 let headers = ["Authorization": "Basic \(base64Credentials)"]
                 
                 Alamofire.request(Alamofire.Method.POST, server_url + "/data/\(endPoint.rawValue)", parameters: dimeData.getDict(), encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON {
-                    _, _, response in
-                    if response.isFailure {
-                        AppSingleton.log.error("Error while reading json response from DiMe: \(response.debugDescription)")
-                        AppSingleton.alertUser("Error while communcating with dime. Dime has now been disconnected", infoText: "Message from dime:\n\(response.debugDescription)")
+                    response in
+                    if response.result.isFailure {
+                        AppSingleton.log.error("Error while reading json response from DiMe: \(response.result.debugDescription)")
+                        AppSingleton.alertUser("Error while communcating with dime. Dime has now been disconnected", infoText: "Message from dime:\n\(response.result.debugDescription)")
                         self.dimeConnectState(false)
                     } else {
-                        let json = JSON(response.value!)
+                        let json = JSON(response.result.value!)
                         if let error = json["error"].string {
                             AppSingleton.log.error("DiMe reply to submission contains error:\n\(error)")
                         }
