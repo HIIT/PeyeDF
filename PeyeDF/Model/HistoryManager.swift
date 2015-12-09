@@ -47,11 +47,14 @@ class HistoryManager: FixationDataDelegate {
     /// A unix timestamp indicating when the user started reading
     private(set) var readingUnixTime = 0
     
-    /// The current thing the user is probably looking at (MyPDFReader instance), which will be used to convert screen to page coordinates
-    private var currentEyeReceiver: ScreenToPageConverter?
+    /// The current thing the user is probably looking at (MyPDFReader instance), which will be used to convert screen to page coordinates or retrieve eye tracking boxes.
+    private var currentEyeReceiver: MyPDFReader?
     
     /// A dictionary, one entry per page (indexed by page number) containing all page eye tracking data
     private var currentEyeData = [Int: PageEyeData]()
+    
+    /// Markings for SMI rectangles created by incoming eye data.
+    private var currentSMIMarks: PDFMarkings?
     
     /// A dictionary indicating when the user marked a paragraph in unix time
     private var manualMarkUnixtimes: [Int]
@@ -131,16 +134,24 @@ class HistoryManager: FixationDataDelegate {
                         var screenPoint = NSPoint(x: fixEv.positionX, y: fixEv.positionY)
                         screenPoint.y = AppSingleton.screenRect.height - screenPoint.y
                         
+                        // retrieve fixation
                         if let triple = eyeReceiver.screenToPage(screenPoint, fromEye: true) {
                             if self.currentEyeData[triple.pageIndex] != nil {
                                 self.currentEyeData[triple.pageIndex]!.appendEvent(triple.x, y: triple.y, startTime: fixEv.startTime, endTime: fixEv.endTime, duration: fixEv.duration, unixtime: fixEv.unixtime)
                             } else {
-                                self.currentEyeData[triple.pageIndex] = PageEyeData(Xs: [triple.x], Ys: [triple.y], startTimes: [fixEv.startTime], endTimes: [fixEv.endTime], durations: [fixEv.duration], unixtimes: [fixEv.unixtime], pageIndex: triple.pageIndex)
+                                self.currentEyeData[triple.pageIndex] = PageEyeData(Xs: [triple.x], Ys: [triple.y], startTimes: [fixEv.startTime], endTimes: [fixEv.endTime], durations: [fixEv.duration], unixtimes: [fixEv.unixtime], pageIndex: triple.pageIndex, scaleFactor: eyeReceiver.getScaleFactor())
+                            }
+                            
+                            // create rect for retrieved fixation
+                            if let smiRect = eyeReceiver.getSMIRect(triple) {
+                                self.currentSMIMarks?.addRect(smiRect)
+                                // TODO: remove debugging check
+                                if self.currentSMIMarks == nil {
+                                    Swift.print("ATTENTION: NIL SMI MARKS")
+                                }
                             }
                         }
-                        
                     }
-                    
                 }
             }
         }
@@ -223,6 +234,8 @@ class HistoryManager: FixationDataDelegate {
         }
     }
     
+    // MARK: - Callbacks
+    
     /// The document has been "seen" long enough, request information and prepare second (exit) timer
     @objc private func entryTimerFire(entryTimer: NSTimer) {
         readingUnixTime = NSDate().unixTime
@@ -236,6 +249,9 @@ class HistoryManager: FixationDataDelegate {
         
         // prepare to convert eye coordinates
         self.currentEyeReceiver = docWindow.pdfReader
+        
+        // prepare smi rectangles
+        self.currentSMIMarks = PDFMarkings(pdfBase: docWindow.pdfReader)
         
         // prepare exit timer, which will fire when the user is inactive long enough (or will be canceled if there is another exit event).
         if let _ = self.currentReadingEvent {
@@ -266,8 +282,8 @@ class HistoryManager: FixationDataDelegate {
             self.exitTimer = nil
         }
         // if there's something to send, send it
-        if let currentStatus = self.currentReadingEvent {
-            currentStatus.setEnd(NSDate())
+        if let cre = self.currentReadingEvent {
+            cre.setEnd(NSDate())
             
             // run on eye serial queue
             
@@ -278,17 +294,25 @@ class HistoryManager: FixationDataDelegate {
                     // clean eye data before adding it
                     self.currentEyeData[k]!.filterData(self.manualMarkUnixtimes)
                     
-                    currentStatus.addEyeData(self.currentEyeData[k]!)
+                    cre.addEyeData(self.currentEyeData[k]!)
                 }
-                self.sendToDiMe(currentStatus, endPoint: .Event)
+                
+                // if there are smi rectangles to send, unite them and send
+                if var csmi = self.currentSMIMarks where csmi.getCount() > 0 {
+                    csmi.flattenRectangles_eye()
+                    cre.extendRects(csmi.getAllReadingRects())
+                }
+                
+                self.sendToDiMe(cre, endPoint: .Event)
                 self.currentReadingEvent = nil
                 self.currentEyeData = [Int: PageEyeData]()
                 
             }
             
         }
-        // reset unix times
+        // reset remaining properties
         manualMarkUnixtimes = [Int]()
+        currentSMIMarks = nil
     }
     
     /// Records that the user marked a pagraph at the given unix time

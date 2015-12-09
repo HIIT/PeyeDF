@@ -15,20 +15,19 @@ class ReadingEvent: Event {
     
     let sessionId: String
     
-    var pageEyeData = [[String: AnyObject]]()
+    private(set) var pageEyeData = [[String: AnyObject]]()
     let infoElemId: NSString
-    var pageRects: [ReadingRect]
+    private(set) var pageRects: [ReadingRect]
     
-    var proportionRead: Double?
-    var proportionCritical: Double?
-    var proportionInteresting: Double?
+    private(set) var proportionRead: Double?
+    private(set) var proportionCritical: Double?
+    private(set) var proportionInteresting: Double?
     
-    var foundStrings = [String]()
-    var isSummary: Bool
+    private(set) var foundStrings = [String]()
+    private(set) var isSummary: Bool
     
-    var pageLabels: [String]?
-    var pageNumbers: [Int]?
-    var scaleFactor: NSNumber?
+    private(set) var pageLabels: [String]?
+    private(set) var pageNumbers: [Int]?
     
     /**
         Creates this reading event.
@@ -41,13 +40,12 @@ class ReadingEvent: Event {
         - parameter scaleFactor: Sale factor of page on screen
         - parameter infoElemId: id referring to the info element referenced by this event (document id)
     */
-    init(multiPage: Bool, sessionId: String, pageNumbers: [Int], pageLabels: [String], pageRects: [ReadingRect], isSummary: Bool, scaleFactor: NSNumber, plainTextContent: NSString, infoElemId: NSString) {
+    init(multiPage: Bool, sessionId: String, pageNumbers: [Int], pageLabels: [String], pageRects: [ReadingRect], isSummary: Bool, plainTextContent: NSString, infoElemId: NSString) {
         self.infoElemId = infoElemId
         self.sessionId = sessionId
         self.pageLabels = pageLabels
         self.pageNumbers = pageNumbers
         self.pageRects = pageRects
-        self.scaleFactor = scaleFactor
         self.isSummary = isSummary
         super.init()
         
@@ -108,10 +106,14 @@ class ReadingEvent: Event {
         theDictionary["pageEyeData"] = pageEyeData
     }
     
-    /// Adds a reading rect to the current rectangle list of
-    /// manually - entered markings
+    /// Adds a reading rect to the current rectangle list
     func addRect(newRect: ReadingRect) {
         self.pageRects.append(newRect)
+    }
+    
+    /// Appends a list of reading rects to the current rectangle list
+    func extendRects(newRects: [ReadingRect]) {
+        self.pageRects.appendContentsOf(newRects)
     }
     
     /// Returns dictionary for this reading event. Overridden to allow custom values
@@ -126,9 +128,6 @@ class ReadingEvent: Event {
         }
         if let pnumbers = self.pageNumbers {
             retDict["pageNumbers"] = pnumbers
-        }
-        if let sfactor = self.scaleFactor {
-            retDict["scaleFactor"] = sfactor
         }
         
         if let pread = proportionRead {

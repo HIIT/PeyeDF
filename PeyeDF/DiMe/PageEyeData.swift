@@ -17,13 +17,15 @@ struct PageEyeData: Dictionariable {
     var endTimes: [NSNumber]
     var durations: [NSNumber]
     var pageIndex: Int?
+    let scaleFactor: NSNumber
+    let unixt: NSNumber
     
     /// unixtimes are not sent to dime, but are used to filter fixations
     /// so that those recorded around a specific time are not sent to dime
     var unixtimes: [Int]
     
 
-    init(Xs: [NSNumber], Ys: [NSNumber], startTimes: [NSNumber], endTimes: [NSNumber], durations: [NSNumber], unixtimes: [Int], pageIndex: Int) {
+    init(Xs: [NSNumber], Ys: [NSNumber], startTimes: [NSNumber], endTimes: [NSNumber], durations: [NSNumber], unixtimes: [Int], pageIndex: Int, scaleFactor: NSNumber) {
         self.Xs = Xs
         self.Ys = Ys
         self.startTimes = startTimes
@@ -31,9 +33,11 @@ struct PageEyeData: Dictionariable {
         self.durations = durations
         self.pageIndex = pageIndex
         self.unixtimes = unixtimes
+        self.scaleFactor = scaleFactor
+        self.unixt = NSDate().unixTime
     }
     
-    init(Xs: [NSNumber], Ys: [NSNumber], Ps: [NSNumber], startTimes: [NSNumber], endTimes: [NSNumber], durations: [NSNumber], unixtimes: [Int], pageIndex: Int) {
+    init(Xs: [NSNumber], Ys: [NSNumber], Ps: [NSNumber], startTimes: [NSNumber], endTimes: [NSNumber], durations: [NSNumber], unixtimes: [Int], pageIndex: Int, scaleFactor: NSNumber) {
         self.Xs = Xs
         self.Ys = Ys
         self.Ps = Ps
@@ -42,6 +46,8 @@ struct PageEyeData: Dictionariable {
         self.durations = durations
         self.pageIndex = pageIndex
         self.unixtimes = unixtimes
+        self.scaleFactor = scaleFactor
+        self.unixt = NSDate().unixTime
     }
     
     mutating func appendEvent(x: NSNumber, y: NSNumber, startTime: NSNumber, endTime: NSNumber, duration: NSNumber, unixtime: Int) {
@@ -161,6 +167,8 @@ struct PageEyeData: Dictionariable {
         retDict["startTimes"] = arraysToCheck[2]
         retDict["endTimes"] = arraysToCheck[3]
         retDict["durations"] = arraysToCheck[4]
+        retDict["unixt"] = self.unixt
+        retDict["scaleFactor"] = self.scaleFactor
         if let pi = pageIndex {
             if pi >= 0 && pi <= PeyeConstants.maxAcceptablePageIndex {
                 retDict["pageIndex"] = pi

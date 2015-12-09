@@ -16,8 +16,8 @@ struct PDFMarkings {
     /// All rectangles (markings) for the given document.
     private var allRects = [ReadingRect]()
     
-    /// Reference to mypdfbase is used to get text within reading rects
-    private var pdfBase: MyPDFBase?
+    /// Reference to mypdfbase is used to get text within reading rects and scaleFactors
+    private weak var pdfBase: MyPDFBase?
     
     /// Create an empty state with markings of a given source using the given pdfBase to get text
     init(pdfBase: MyPDFBase?) {
@@ -25,6 +25,11 @@ struct PDFMarkings {
     }
     
     // MARK: - Accessors
+    
+    /// Get overall count of rectangles
+    func getCount() -> Int {
+        return allRects.count
+    }
     
     /// Return all rectangles in an array of ReadingRects
     func getAllReadingRects() -> [ReadingRect] {

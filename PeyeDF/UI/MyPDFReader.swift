@@ -10,21 +10,9 @@ import Foundation
 import Cocoa
 import Quartz
 
-/// Used to convert points on screen to points on a page
-protocol ScreenToPageConverter: class {
-    
-    /// Converts a point on screen and returns a tuple containing x coordinate, y coordinate, BOTH on page points
-    ///
-    /// - parameter pointOnScreen: point to convert (in OS X coordinate system)
-    /// - parameter fromEye: if this is being done because of eye tracking (so gaze points are stored)
-    /// - returns: A triple containing x, y in page coordinates, and the index of the page in which gaze fell
-    func screenToPage(pointOnScreen: NSPoint, fromEye: Bool) -> (x: CGFloat, y: CGFloat, pageIndex: Int)?
-    
-}
-
 /// Implementation of a custom PDFView class, used to implement additional function related to
 /// psychophysiology and user activity tracking
-class MyPDFReader: MyPDFBase, ScreenToPageConverter {
+class MyPDFReader: MyPDFBase {
     
     /// Whether we want to annotate by clicking
     private var clickAnnotationEnabled = true
@@ -272,9 +260,9 @@ class MyPDFReader: MyPDFBase, ScreenToPageConverter {
         self.clickDelegate?.setRecognizersTo(enabled)
     }
     
-    // MARK: - Protocol implementations
+    // MARK: - General accessor methods
     
-    /// Converts a point on screen and returns a tuple containing x coordinate, y coordinate, BOTH on page points
+    /// Converts a point on screen and returns a triple containing x coordinate, y coordinate (both in page space) and page index. Should be called for each fixation retrieved during the current event.
     ///
     /// - parameter pointOnScreen: point to convert (in OS X coordinate system)
     /// - parameter fromEye: if this is being done because of eye tracking (so gaze points are stored)
@@ -315,7 +303,11 @@ class MyPDFReader: MyPDFBase, ScreenToPageConverter {
         }
         // End debug - circle
         
-        // create rect for gazed-at paragraph
+        // create rect for gazed-at paragraph. Note: this will store rects that will later be sent
+        // in a summary event. This is different from eye rectangles created by each fixation and
+        // sent in the current (non-summary) reading event, as done by HistoryManager calling getSMIRect
+        // (preferred method in PeyeDF 0.4+).
+        // TODO: to be deleted
         if fromEye {
             if let seenRect = pointToParagraphRect(pointOnPage, forPage: page) {
                 let newRect = ReadingRect(pageIndex: self.document().indexForPage(page), rect: seenRect, readingClass: .Paragraph, classSource: .SMI, pdfBase: self)
@@ -328,7 +320,21 @@ class MyPDFReader: MyPDFBase, ScreenToPageConverter {
         return (x: pointOnPage.x, y: pointOnPage.y, pageIndex: pageIndex)
     }
     
-    // MARK: - General accessor methods
+    /// Creates a SMI rect using the triple returned from screenToPage, corresponding to the paragraph contained within 3 degrees of visual angle of the given fixation. As of PeyeDF 0.4+, this is the preferred method to send SMI paragraphs to dime.
+    func getSMIRect(triple: (x: CGFloat, y: CGFloat, pageIndex: Int)) -> ReadingRect? {
+        let pointOnPage = NSPoint(x: triple.x, y: triple.y)
+        let pdfPage = document().pageAtIndex(triple.pageIndex)
+        if let sr = pointToParagraphRect(pointOnPage, forPage: pdfPage) {
+            return ReadingRect(pageIndex: triple.pageIndex, rect: sr, readingClass: .Paragraph, classSource: .SMI, pdfBase: self)
+        } else {
+            return nil
+        }
+    }
+    
+    /// Gets the current scaleFactor (zoom level)
+    func getScaleFactor() -> CGFloat {
+        return scaleFactor()
+    }
     
     /// Converts the current viewport to a reading event.
     ///
@@ -354,7 +360,7 @@ class MyPDFReader: MyPDFBase, ScreenToPageConverter {
                 vpi++
             }
             
-            return ReadingEvent(multiPage: multiPage, sessionId: sessionId, pageNumbers: visiblePageNums, pageLabels: visiblePageLabels, pageRects: readingRects, isSummary: false, scaleFactor: self.scaleFactor(), plainTextContent: plainTextContent, infoElemId: sciDoc!.getId())
+            return ReadingEvent(multiPage: multiPage, sessionId: sessionId, pageNumbers: visiblePageNums, pageLabels: visiblePageLabels, pageRects: readingRects, isSummary: false, plainTextContent: plainTextContent, infoElemId: sciDoc!.getId())
         } else {
             return nil
         }

@@ -17,8 +17,9 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable {
     var plainTextContent: String?
     var unixt: [NSNumber]
     var floating: Bool
+    var scaleFactor: NSNumber
     
-    init(pageIndex: Int, origin: NSPoint, size: NSSize, readingClass: ReadingClass , classSource: ClassSource, pdfBase: MyPDFBase?) {
+    init(pageIndex: Int, origin: NSPoint, size: NSSize, readingClass: ReadingClass, classSource: ClassSource, pdfBase: MyPDFBase?) {
         let newUnixt = NSDate().unixTime
         self.unixt = [NSNumber]()
         self.unixt.append(newUnixt)
@@ -31,6 +32,9 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable {
         self.classSource = classSource
         if let pdfb = pdfBase {
             self.plainTextContent = pdfb.stringForRect(self.rect, onPage: pageIndex)
+            self.scaleFactor = pdfb.scaleFactor()
+        } else {
+            self.scaleFactor = -1
         }
     }
     
@@ -47,6 +51,9 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable {
         self.classSource = classSource
         if let pdfb = pdfBase {
             self.plainTextContent = pdfb.stringForRect(self.rect, onPage: pageIndex)
+            self.scaleFactor = pdfb.scaleFactor()
+        } else {
+            self.scaleFactor = -1
         }
     }
     
@@ -61,6 +68,9 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable {
         self.rect = rect
         if let pdfb = pdfBase {
             self.plainTextContent = pdfb.stringForRect(self.rect, onPage: pageIndex)
+            self.scaleFactor = pdfb.scaleFactor()
+        } else {
+            self.scaleFactor = -1
         }
     }
     
@@ -75,6 +85,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable {
         self.readingClass = ReadingClass(rawValue: json["readingClass"].intValue)!
         self.classSource = ClassSource(rawValue: json["classSource"].intValue)!
         self.pageIndex = json["pageIndex"].intValue
+        self.scaleFactor = json["scaleFactor"].doubleValue
         if let ptc = json["plainTextContent"].string {
             self.plainTextContent = ptc
         }
@@ -86,6 +97,11 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable {
     mutating func unite(otherRect: ReadingRect, pdfBase: MyPDFBase?) {
         var newRect = self
         newRect.floating = false
+        
+        // invalidate scalefactor if the two rects have different values
+        if newRect.scaleFactor != otherRect.scaleFactor {
+            newRect.scaleFactor = -1
+        }
         
         // append times of second rect to this rect, after duplicate check
         for newt in otherRect.unixt {
@@ -163,6 +179,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable {
         retDict["size"] = self.rect.size.getDict()
         retDict["readingClass"] = self.readingClass.rawValue
         retDict["classSource"] = self.classSource.rawValue
+        retDict["scaleFactor"] = self.scaleFactor
         if let ptc = plainTextContent {
             retDict["plainTextContent"] = ptc
         }
@@ -176,7 +193,8 @@ public func == (lhs: ReadingRect, rhs: ReadingRect) -> Bool {
            lhs.rect == rhs.rect &&
            lhs.readingClass == rhs.readingClass &&
            lhs.unixt == rhs.unixt &&
-           lhs.classSource == rhs.classSource
+           lhs.classSource == rhs.classSource &&
+           lhs.scaleFactor == rhs.scaleFactor
 }
 
 /// To allow sorting arrays of readingrects (when uniting them, for example),
