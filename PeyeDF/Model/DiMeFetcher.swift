@@ -24,8 +24,8 @@ class DiMeFetcher {
     /// How many info elements still have to be fetched. When this number reaches 0, the delegate is called.
     private var missingInfoElems = Int.max
     
-    /// Outgoing reading events and associate info elements
-    private var outgoing = [(ev: ReadingEvent, ie: ScientificDocument?)]()
+    /// Outgoing summary reading events and associate info elements
+    private var outgoingSummaries = [(ev: ReadingEvent, ie: ScientificDocument?)]()
     
     init(receiver: DiMeReceiverDelegate) {
         self.receiver = receiver
@@ -33,23 +33,7 @@ class DiMeFetcher {
     
     /// Retrieves all summary information elements from dime and sends received data to the receiver.
     func getSummaries() {
-        let server_url: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerURL) as! String
-        let user: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerUserName) as! String
-        let password: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerPassword) as! String
-        
-        let credentialData = "\(user):\(password)".dataUsingEncoding(NSUTF8StringEncoding)!
-        let base64Credentials = credentialData.base64EncodedStringWithOptions([])
-        
-        let headers = ["Authorization": "Basic \(base64Credentials)"]
-        
-        Alamofire.request(.GET, server_url + "/data/events?actor=PeyeDF&type=http://www.hiit.fi/ontologies/dime/%23ReadingEvent", headers: headers).responseJSON() {
-            response in
-            if response.result.isFailure {
-                AppSingleton.log.error("Error fetching list of PeyeDF events: \(response.result.error!)")
-            } else {
-                self.convertJsonSummary(JSON(response.result.value!))
-            }
-        }
+        fetchAllPeyeDFEvents(fetchSummaryEvents)
     }
     
     /// Attempt to retrieve a single ScientificDocument from a given info element id.
@@ -105,19 +89,42 @@ class DiMeFetcher {
             }
         }
     }
+    
+    /// Retrieves all PeyeDF Reading events and calls the specified function once retrieval is complete
+    private func fetchAllPeyeDFEvents(callback: (JSON) -> Void) {
+        let server_url: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerURL) as! String
+        let user: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerUserName) as! String
+        let password: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerPassword) as! String
+        
+        let credentialData = "\(user):\(password)".dataUsingEncoding(NSUTF8StringEncoding)!
+        let base64Credentials = credentialData.base64EncodedStringWithOptions([])
+        
+        let headers = ["Authorization": "Basic \(base64Credentials)"]
+        
+        Alamofire.request(.GET, server_url + "/data/events?actor=PeyeDF&type=http://www.hiit.fi/ontologies/dime/%23ReadingEvent", headers: headers).responseJSON() {
+            response in
+            if response.result.isFailure {
+                AppSingleton.log.error("Error fetching list of PeyeDF events: \(response.result.error!)")
+            } else {
+                callback(JSON(response.result.value!))
+            }
+        }
+    }
    
-    private func convertJsonSummary(json: JSON) {
+    /// Puts all reading events which are summary in the outgoing tuple, and fetches scientific documents
+    /// (aka information elements) associated to each summary event
+    private func fetchSummaryEvents(json: JSON) {
         missingInfoElems = 0
-        outgoing = [(ev: ReadingEvent, ie: ScientificDocument?)]()
+        outgoingSummaries = [(ev: ReadingEvent, ie: ScientificDocument?)]()
         for readingEvent in json.arrayValue {
             if readingEvent["isSummary"].boolValue {
-                outgoing.append((ev: ReadingEvent(asManualSummaryFromDime: readingEvent), ie: nil))
+                outgoingSummaries.append((ev: ReadingEvent(asManualSummaryFromDime: readingEvent), ie: nil))
                 missingInfoElems++
             }
         }
         // convert info element ids to scientific documents and add them to outgoing data
         var i = 0
-        for tuple in outgoing {
+        for tuple in outgoingSummaries {
             getScientificDocument(i, infoElemId: tuple.ev.infoElemId as String)
             i++
         }
@@ -128,11 +135,11 @@ class DiMeFetcher {
         DiMeFetcher.retrieveScientificDocument(infoElemId) {
             newScidoc in
             
-            self.outgoing[forIndex].ie = newScidoc
+            self.outgoingSummaries[forIndex].ie = newScidoc
             self.missingInfoElems--
             // all data has been fetched, send it
             if self.missingInfoElems == 0 {
-                self.receiver.receiveAllSummaries(self.outgoing)
+                self.receiver.receiveAllSummaries(self.outgoingSummaries)
                 }
             }
     }

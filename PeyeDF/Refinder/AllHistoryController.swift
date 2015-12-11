@@ -16,9 +16,13 @@ protocol HistoryDetailDelegate {
     func historyElementSelected(tuple: (ev: ReadingEvent, ie: ScientificDocument))
 }
 
+/// AllHistoryController 
 class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewDataSource, NSTableViewDelegate {
     
     var delegate: HistoryDetailDelegate?
+    
+    /// Once reloading data is complete, this function will be called (if any)
+    var reloadCompletionCallback: (Void -> Void)?
     
     @IBOutlet weak var historyTable: NSTableView!
     var diMeFetcher: DiMeFetcher?
@@ -38,6 +42,15 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
         }
     }
     
+    // MARK: - Contextual menu
+    
+    /// Extracts a json file containing all (non-summary) reading events associated to the
+    /// selected (summary) reading event, so that they can be analyzed by the eye tracking algo.
+    @IBAction func extractJson(sender: NSMenuItem) {
+        let row = historyTable.clickedRow
+        Swift.print("Session id: \(allHistoryTuples[row].ev.sessionId ?? "<nil>")")
+    }
+    
     // MARK: - DiMe communication
     
     /// Ask dime to fetch data
@@ -49,6 +62,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     func receiveAllSummaries(tuples: [(ev: ReadingEvent, ie: ScientificDocument?)]) {
         allHistoryTuples = tuples
         historyTable.reloadData()
+        reloadCompletionCallback?()
     }
     
     // MARK: - Table delegate & data source

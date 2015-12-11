@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9060" systemVersion="15B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9060"/>
-        <plugIn identifier="com.apple.pdfkit.ibplugin" version="9060"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9531"/>
+        <plugIn identifier="com.apple.pdfkit.ibplugin" version="9531"/>
     </dependencies>
     <scenes>
         <!--Window Controller-->
@@ -34,7 +34,6 @@
                     <splitView key="splitView" dividerStyle="thin" vertical="YES" id="KSX-3A-Rzy">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                     </splitView>
                     <connections>
                         <segue destination="GuY-65-HiL" kind="relationship" relationship="splitItems" id="A0O-K8-IGP"/>
@@ -62,7 +61,6 @@
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="180" viewBased="YES" id="WGv-dD-r3A">
                                             <rect key="frame" x="0.0" y="0.0" width="347" height="0.0"/>
                                             <autoresizingMask key="autoresizingMask"/>
-                                            <animations/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
@@ -86,7 +84,6 @@
                                                             <subviews>
                                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KSp-Fg-dFn">
                                                                     <rect key="frame" x="1" y="160" width="342" height="17"/>
-                                                                    <animations/>
                                                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="&lt;&lt;Filename.pdf&gt;&gt;" id="zWR-rc-Cy9">
                                                                         <font key="font" metaFont="systemBold"/>
                                                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -98,7 +95,6 @@
                                                                     <constraints>
                                                                         <constraint firstAttribute="height" constant="35" id="TQ2-1n-1rD"/>
                                                                     </constraints>
-                                                                    <animations/>
                                                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="&lt;&lt;Authors&gt;&gt;" id="R99-SJ-ZOB">
                                                                         <font key="font" metaFont="system"/>
                                                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -107,7 +103,6 @@
                                                                 </textField>
                                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="S1R-Ca-60F">
                                                                     <rect key="frame" x="1" y="3" width="208" height="17"/>
-                                                                    <animations/>
                                                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Saturday, 25 October 2015, 19:59" id="opy-zZ-hiU">
                                                                         <font key="font" metaFont="system"/>
                                                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -122,21 +117,18 @@
                                                                             <constraints>
                                                                                 <constraint firstAttribute="height" constant="10" id="MtW-7b-ugx"/>
                                                                             </constraints>
-                                                                            <animations/>
                                                                         </customView>
                                                                         <customView translatesAutoresizingMaskIntoConstraints="NO" id="tjU-ki-EBz" customClass="RefinderProgressIndicator" customModule="PeyeDF" customModuleProvider="target">
                                                                             <rect key="frame" x="0.0" y="35" width="164" height="10"/>
                                                                             <constraints>
                                                                                 <constraint firstAttribute="height" constant="10" id="RqG-YJ-HH9"/>
                                                                             </constraints>
-                                                                            <animations/>
                                                                         </customView>
                                                                         <customView translatesAutoresizingMaskIntoConstraints="NO" id="WJD-ll-AgO" customClass="RefinderProgressIndicator" customModule="PeyeDF" customModuleProvider="target">
                                                                             <rect key="frame" x="0.0" y="13" width="164" height="10"/>
                                                                             <constraints>
                                                                                 <constraint firstAttribute="height" constant="10" id="NhO-HB-EDa"/>
                                                                             </constraints>
-                                                                            <animations/>
                                                                         </customView>
                                                                     </subviews>
                                                                     <constraints>
@@ -151,11 +143,9 @@
                                                                         <constraint firstAttribute="height" constant="81" id="ixd-kx-iFG"/>
                                                                         <constraint firstAttribute="trailing" secondItem="tjU-ki-EBz" secondAttribute="trailing" id="lGe-h4-lIR"/>
                                                                     </constraints>
-                                                                    <animations/>
                                                                 </customView>
                                                                 <textField autoresizesSubviews="NO" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vDe-Po-ZzU">
                                                                     <rect key="frame" x="1" y="28" width="168" height="81"/>
-                                                                    <animations/>
                                                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="&lt;&lt; title title title title title title title title &gt;&gt;" id="DwF-ho-gSE">
                                                                         <font key="font" size="13" name="HelveticaNeue-LightItalic"/>
                                                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -183,7 +173,6 @@
                                                                 <constraint firstAttribute="trailing" secondItem="wKU-WM-7j0" secondAttribute="trailing" constant="3" id="v4P-hL-JiL"/>
                                                                 <constraint firstItem="KSp-Fg-dFn" firstAttribute="leading" secondItem="zzU-uF-wqW" secondAttribute="leading" constant="3" id="zpp-27-eEA"/>
                                                             </constraints>
-                                                            <animations/>
                                                             <connections>
                                                                 <outlet property="authorsLab" destination="wKU-WM-7j0" id="IWN-fY-Bzy"/>
                                                                 <outlet property="criticalBar" destination="WJD-ll-AgO" id="PeE-2w-QzK"/>
@@ -200,25 +189,22 @@
                                             <connections>
                                                 <outlet property="dataSource" destination="GuY-65-HiL" id="KYN-4i-4hh"/>
                                                 <outlet property="delegate" destination="GuY-65-HiL" id="CpR-pL-4EC"/>
+                                                <outlet property="menu" destination="gW1-8G-ZD5" id="meW-79-uKZ"/>
                                             </connections>
                                         </tableView>
                                     </subviews>
-                                    <animations/>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </clipView>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="349" id="cV4-C6-BA1"/>
                                 </constraints>
-                                <animations/>
                                 <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="fez-Vz-4al">
                                     <rect key="frame" x="1" y="558" width="347" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <animations/>
                                 </scroller>
                                 <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="Bhw-yg-ECC">
                                     <rect key="frame" x="224" y="17" width="15" height="102"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <animations/>
                                 </scroller>
                             </scrollView>
                         </subviews>
@@ -228,13 +214,22 @@
                             <constraint firstAttribute="trailing" secondItem="PiP-7z-YlQ" secondAttribute="trailing" id="HZ1-Zh-e2P"/>
                             <constraint firstItem="PiP-7z-YlQ" firstAttribute="top" secondItem="DXR-Pi-Zmz" secondAttribute="top" id="Scg-6N-t7K"/>
                         </constraints>
-                        <animations/>
                     </view>
                     <connections>
                         <outlet property="historyTable" destination="WGv-dD-r3A" id="lJI-Fq-3eb"/>
                     </connections>
                 </viewController>
                 <customObject id="zYa-50-W9u" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <menu title="Table menu" id="gW1-8G-ZD5" userLabel="Table menu">
+                    <items>
+                        <menuItem title="Extract JSON..." id="oC3-A9-HPr">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="extractJson:" target="GuY-65-HiL" id="GCu-Fl-E3h"/>
+                            </connections>
+                        </menuItem>
+                    </items>
+                </menu>
             </objects>
             <point key="canvasLocation" x="353.5" y="930.5"/>
         </scene>
@@ -252,7 +247,6 @@
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="400" id="0MM-Vw-NO0"/>
                                     <constraint firstAttribute="width" constant="200" id="hAu-fQ-4U3"/>
                                 </constraints>
-                                <animations/>
                             </pdfView>
                             <pdfView autoresizesSubviews="NO" wantsLayer="YES" autoScales="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Qs2-8R-88d" customClass="MyPDFDetail" customModule="PeyeDF" customModuleProvider="target">
                                 <rect key="frame" x="228" y="20" width="828" height="535"/>
@@ -260,7 +254,6 @@
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="400" id="jen-Sz-bd1"/>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="600" id="sgb-oH-7Ra"/>
                                 </constraints>
-                                <animations/>
                             </pdfView>
                         </subviews>
                         <constraints>
@@ -272,7 +265,6 @@
                             <constraint firstItem="Pp2-ez-teK" firstAttribute="top" secondItem="jMU-mc-1pg" secondAttribute="top" constant="20" id="tek-uc-ZkU"/>
                             <constraint firstAttribute="bottom" secondItem="Pp2-ez-teK" secondAttribute="bottom" constant="20" id="xSk-XA-wE2"/>
                         </constraints>
-                        <animations/>
                     </view>
                     <connections>
                         <outlet property="pdfDetail" destination="Qs2-8R-88d" id="0qD-JL-DDU"/>
