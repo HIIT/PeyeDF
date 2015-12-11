@@ -11,11 +11,13 @@
 import Cocoa
 import Foundation
 
-class ReadingEvent: Event {
+class ReadingEvent: Event, NSCopying {
     
     let sessionId: String
     
-    private(set) var pageEyeData = [[String: AnyObject]]()
+    // page eye data can only be modified by addEyeData(...), can't be initialized
+    private(set) var pageEyeData = [PageEyeDataChunk]()
+    
     let infoElemId: NSString
     private(set) var pageRects: [ReadingRect]
     
@@ -29,6 +31,8 @@ class ReadingEvent: Event {
     private(set) var pageLabels: [String]?
     private(set) var pageNumbers: [Int]?
     
+    private(set) var plainTextContent: NSString?
+    
     /**
         Creates this reading event.
     
@@ -40,17 +44,15 @@ class ReadingEvent: Event {
         - parameter scaleFactor: Sale factor of page on screen
         - parameter infoElemId: id referring to the info element referenced by this event (document id)
     */
-    init(multiPage: Bool, sessionId: String, pageNumbers: [Int], pageLabels: [String], pageRects: [ReadingRect], isSummary: Bool, plainTextContent: NSString, infoElemId: NSString) {
+    init(sessionId: String, pageNumbers: [Int]?, pageLabels: [String]?, pageRects: [ReadingRect], isSummary: Bool, plainTextContent: NSString?, infoElemId: NSString) {
         self.infoElemId = infoElemId
         self.sessionId = sessionId
         self.pageLabels = pageLabels
         self.pageNumbers = pageNumbers
         self.pageRects = pageRects
         self.isSummary = isSummary
+        self.plainTextContent = plainTextContent
         super.init()
-        
-        theDictionary["plainTextContent"] = plainTextContent
-        
     }
     
     /** Creates a summary reading event, which contains all "markings" in form of rectangles
@@ -65,45 +67,53 @@ class ReadingEvent: Event {
         self.foundStrings = foundStrings
         self.pageRects = rects
         self.isSummary = true
+        self.plainTextContent = plainTextContent
         
         super.init()
-        
-        if let ptc = plainTextContent {
-            theDictionary["plainTextContent"] = ptc
-        }
         
         self.foundStrings.appendContentsOf(foundStrings)
     }
     
-    /// Creates event from dime. NOTE: sending these events back to dime is untested.
-    init(asManualSummaryFromDime json: JSON) {
+    /// Creates an event from a json supplied in the dime format.
+    init(fromDime json: JSON) {
         infoElemId = json["targettedResource"][PeyeConstants.iId].stringValue
         sessionId = json["sessionId"].stringValue
         isSummary = json["isSummary"].boolValue
-        proportionRead = json["proportionRead"].doubleValue
-        proportionInteresting = json["proportionInteresting"].doubleValue
-        proportionCritical = json["proportionCritical"].doubleValue
+        
+        //optionals
+        proportionRead = json["proportionRead"].double
+        proportionInteresting = json["proportionInteresting"].double
+        proportionCritical = json["proportionCritical"].double
+        plainTextContent = json["plainTextContent"].string
+        if let pns = json["pageNumbers"].arrayObject {
+            pageNumbers = pns as? [Int]
+        }
+        if let pls = json["pageLabels"].arrayObject {
+            pageLabels = pls as? [String]
+        }
         if let fStrings = json["foundStrings"].array {
             for fString in fStrings {
                 foundStrings.append(fString.stringValue)
             }
         }
+        if let pedata = json["pageEyeData"].array {
+            for chunk in pedata {
+                pageEyeData.append(PageEyeDataChunk(fromDime: chunk))
+            }
+        }
+        
         let dateCreated: NSDate = NSDate(timeIntervalSince1970: NSTimeInterval(json["start"].intValue / 1000))
         self.pageRects = [ReadingRect]()
         for pageRect in json["pageRects"].arrayValue {
             self.pageRects.append(ReadingRect(fromJson: pageRect))
         }
+        
         super.init(withStartDate: dateCreated)
-        
-        // create dictionary directly from json (result untested)
-        theDictionary = json.dictionaryObject!
-        
     }
     
     /// Adds eye tracking data to this reading event
-    func addEyeData(newData: PageEyeData) {
-        pageEyeData.append(newData.getDict())
-        theDictionary["pageEyeData"] = pageEyeData
+    func addEyeData(newData: PageEyeDataChunk) {
+        pageEyeData.append(newData)
     }
     
     /// Adds a reading rect to the current rectangle list
@@ -129,7 +139,6 @@ class ReadingEvent: Event {
         if let pnumbers = self.pageNumbers {
             retDict["pageNumbers"] = pnumbers
         }
-        
         if let pread = proportionRead {
             retDict["proportionRead"] = pread
         }
@@ -139,9 +148,19 @@ class ReadingEvent: Event {
         if let pcrit = proportionCritical {
             retDict["proportionCritical"] = pcrit
         }
+        if let ptc = plainTextContent {
+            retDict["plainTextContent"] = ptc
+        }
+        if pageEyeData.count > 0 {
+            var dataArray = [[String: AnyObject]]()
+            for dataChunk in pageEyeData {
+                dataArray.append(dataChunk.getDict())
+            }
+            retDict["pageEyeData"] = dataArray
+        }
         
         if foundStrings.count > 0 {
-            theDictionary["foundStrings"] = foundStrings
+            retDict["foundStrings"] = foundStrings
         }
         
         var rectArray = [[String: AnyObject]]()
@@ -162,6 +181,14 @@ class ReadingEvent: Event {
         retDict["type"] = ("http://www.hiit.fi/ontologies/dime/#ReadingEvent")
         
         return retDict
+    }
+    
+    /// Makes a deep copy of itself
+    ///
+    /// - parameter zone: this parameter is ignored
+    func copyWithZone(zone: NSZone) -> AnyObject {
+        let newEvent = ReadingEvent(sessionId: self.sessionId, pageNumbers: self.pageNumbers!, pageLabels: self.pageLabels!, pageRects: self.pageRects, isSummary: self.isSummary, plainTextContent: plainTextContent, infoElemId: self.infoElemId)
+        return newEvent
     }
 }
 

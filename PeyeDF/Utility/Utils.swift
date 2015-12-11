@@ -242,6 +242,15 @@ extension NSRect {
     }
 }
 
+extension NSPoint {
+    
+    /// Returns a new point in a given rect's coordinate system. In other words,
+    /// a poing for which the origin matches the given rectangle's origin
+    func pointInRectCoords(theRect: NSRect) -> NSPoint {
+        return NSPoint(x: self.x - theRect.origin.x, y: self.y - theRect.origin.y)
+    }
+}
+
 // MARK: - Other functions
 
 /// Finds i given the condition that ary[i-1] <= target and a[i] > target, using a binary search on

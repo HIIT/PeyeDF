@@ -341,7 +341,6 @@ class MyPDFReader: MyPDFBase {
     /// - returns: The reading event for the current status, or nil if nothing is actually visible
     func getViewportStatus() -> ReadingEvent? {
         if self.visiblePages() != nil {
-            let multiPage: Bool = (self.visiblePages().count) > 1
             let visiblePageLabels: [String] = getVisiblePageLabels()
             let visiblePageNums: [Int] = getVisiblePageNums()
             let pageRects: [NSRect] = getVisibleRects()
@@ -360,7 +359,7 @@ class MyPDFReader: MyPDFBase {
                 vpi++
             }
             
-            return ReadingEvent(multiPage: multiPage, sessionId: sessionId, pageNumbers: visiblePageNums, pageLabels: visiblePageLabels, pageRects: readingRects, isSummary: false, plainTextContent: plainTextContent, infoElemId: sciDoc!.getId())
+            return ReadingEvent(sessionId: sessionId, pageNumbers: visiblePageNums, pageLabels: visiblePageLabels, pageRects: readingRects, isSummary: false, plainTextContent: plainTextContent, infoElemId: sciDoc!.getId())
         } else {
             return nil
         }

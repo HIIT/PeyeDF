@@ -51,7 +51,7 @@ class HistoryManager: FixationDataDelegate {
     private var currentEyeReceiver: MyPDFReader?
     
     /// A dictionary, one entry per page (indexed by page number) containing all page eye tracking data
-    private var currentEyeData = [Int: PageEyeData]()
+    private var currentEyeData = [Int: PageEyeDataChunk]()
     
     /// Markings for SMI rectangles created by incoming eye data.
     private var currentSMIMarks: PDFMarkings?
@@ -139,7 +139,7 @@ class HistoryManager: FixationDataDelegate {
                             if self.currentEyeData[triple.pageIndex] != nil {
                                 self.currentEyeData[triple.pageIndex]!.appendEvent(triple.x, y: triple.y, startTime: fixEv.startTime, endTime: fixEv.endTime, duration: fixEv.duration, unixtime: fixEv.unixtime)
                             } else {
-                                self.currentEyeData[triple.pageIndex] = PageEyeData(Xs: [triple.x], Ys: [triple.y], startTimes: [fixEv.startTime], endTimes: [fixEv.endTime], durations: [fixEv.duration], unixtimes: [fixEv.unixtime], pageIndex: triple.pageIndex, scaleFactor: eyeReceiver.getScaleFactor())
+                                self.currentEyeData[triple.pageIndex] = PageEyeDataChunk(Xs: [triple.x], Ys: [triple.y], startTimes: [fixEv.startTime], endTimes: [fixEv.endTime], durations: [fixEv.duration], unixtimes: [fixEv.unixtime], pageIndex: triple.pageIndex, scaleFactor: eyeReceiver.getScaleFactor())
                             }
                             
                             // create rect for retrieved fixation
@@ -283,37 +283,39 @@ class HistoryManager: FixationDataDelegate {
         // if there's something to send, send it
         if let cre = self.currentReadingEvent {
             cre.setEnd(NSDate())
+            let eventToSend = cre
+            self.currentReadingEvent = nil
+            
+            let manualUnixTimesToSend = self.manualMarkUnixtimes
+            let SMIMarksToSend = self.currentSMIMarks
+            var eyeDataToSend = self.currentEyeData
             
             // run on eye serial queue
-            
             dispatch_async(eyeQueue) {
             
-                // check if there is page eye data, and append it if so
-                for k in self.currentEyeData.keys {
+                // check if there is page eye data, and append data if so
+                for k in eyeDataToSend.keys {
                     // clean eye data before adding it
-                    self.currentEyeData[k]!.filterData(self.manualMarkUnixtimes)
+                    eyeDataToSend[k]!.filterData(manualUnixTimesToSend)
                     
-                    cre.addEyeData(self.currentEyeData[k]!)
+                    eventToSend.addEyeData(eyeDataToSend[k]!)
                 }
                 
                 // if there are smi rectangles to send, unite them and send
-                if var csmi = self.currentSMIMarks where csmi.getCount() > 0 {
+                if var csmi = SMIMarksToSend where csmi.getCount() > 0 {
                     csmi.flattenRectangles_eye()
-                    cre.extendRects(csmi.getAllReadingRects())
+                    eventToSend.extendRects(csmi.getAllReadingRects())
                 }
                 
-                self.sendToDiMe(cre, endPoint: .Event)
-                self.currentReadingEvent = nil
-                self.currentEyeData = [Int: PageEyeData]()
+                self.sendToDiMe(eventToSend, endPoint: .Event)
                 
             }
             
         }
-        dispatch_async(eyeQueue) {
-            // reset remaining properties
-            self.manualMarkUnixtimes = [Int]()
-            self.currentSMIMarks = nil
-        }
+        // reset remaining properties
+        self.manualMarkUnixtimes = [Int]()
+        self.currentSMIMarks = nil
+        self.currentEyeData = [Int: PageEyeDataChunk]()
     }
     
     /// Records that the user marked a pagraph at the given unix time

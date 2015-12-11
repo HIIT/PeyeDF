@@ -31,9 +31,27 @@ class DiMeFetcher {
         self.receiver = receiver
     }
     
-    /// Retrieves all summary information elements from dime and sends received data to the receiver.
+    /// Retrieves **all** summary information elements from dime and later sends outgoingSummaries to the receiver via fetchSummaryEvents.
     func getSummaries() {
         fetchAllPeyeDFEvents(fetchSummaryEvents)
+    }
+    
+    /// Retrieves all non-summary reading events with the given sessionId and callbacks the given function using the
+    /// result as a parameter.
+    func getNonSummaries(withSessionId sessionId: String, callbackOnComplete: ([ReadingEvent] -> Void)) {
+        fetchAllPeyeDFEvents() {
+            json in
+            var foundEvents = [ReadingEvent]()
+            
+            for elem in json.arrayValue {
+                let readingEvent = ReadingEvent(fromDime: elem)
+                if readingEvent.sessionId == sessionId {
+                    foundEvents.append(readingEvent)
+                }
+            }
+            
+            callbackOnComplete(foundEvents)
+        }
     }
     
     /// Attempt to retrieve a single ScientificDocument from a given info element id.
@@ -112,13 +130,14 @@ class DiMeFetcher {
     }
    
     /// Puts all reading events which are summary in the outgoing tuple, and fetches scientific documents
-    /// (aka information elements) associated to each summary event
+    /// (aka information elements) associated to each summary event.
+    /// Can be used as a callback function for fetchAllPeyeDFEvents(...)
     private func fetchSummaryEvents(json: JSON) {
         missingInfoElems = 0
         outgoingSummaries = [(ev: ReadingEvent, ie: ScientificDocument?)]()
         for readingEvent in json.arrayValue {
             if readingEvent["isSummary"].boolValue {
-                outgoingSummaries.append((ev: ReadingEvent(asManualSummaryFromDime: readingEvent), ie: nil))
+                outgoingSummaries.append((ev: ReadingEvent(fromDime: readingEvent), ie: nil))
                 missingInfoElems++
             }
         }
@@ -143,4 +162,5 @@ class DiMeFetcher {
                 }
             }
     }
+    
 }

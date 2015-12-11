@@ -18,17 +18,22 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
     
     /// A reading event was selected, display the doc and its rectangles in the pdf views
     func historyElementSelected(tuple: (ev: ReadingEvent, ie: ScientificDocument)) {
-        let docURL = NSURL(fileURLWithPath: tuple.ie.uri)
-        let pdfDoc1 = PDFDocument(URL: docURL)
-        let pdfDoc2 = PDFDocument(URL: docURL)
-        pdfOverview.setScaleFactor(0.1)
-        pdfOverview.setDocument(pdfDoc1)
-        pdfOverview.scrollToBeginningOfDocument(self)
-        pdfOverview.markings.setAll(tuple.ev.pageRects)
-        pdfDetail.setDocument(pdfDoc2)
-        pdfDetail.markings.setAll(tuple.ev.pageRects)
-        pdfDetail.autoAnnotate()
-        pdfOverview.pdfDetail = pdfDetail
+        // check if file exists first (if not, display and error)
+        if NSFileManager.defaultManager().fileExistsAtPath(tuple.ie.uri) {
+            let docURL = NSURL(fileURLWithPath: tuple.ie.uri)
+            let pdfDoc1 = PDFDocument(URL: docURL)
+            let pdfDoc2 = PDFDocument(URL: docURL)
+            pdfOverview.setScaleFactor(0.1)
+            pdfOverview.setDocument(pdfDoc1)
+            pdfOverview.scrollToBeginningOfDocument(self)
+            pdfOverview.markings.setAll(tuple.ev.pageRects)
+            pdfDetail.setDocument(pdfDoc2)
+            pdfDetail.markings.setAll(tuple.ev.pageRects)
+            pdfDetail.autoAnnotate()
+            pdfOverview.pdfDetail = pdfDetail
+        } else {
+            AppSingleton.alertUser("Can't find original file", infoText: tuple.ie.uri)
+        }
     }
     
     override func viewDidLoad() {

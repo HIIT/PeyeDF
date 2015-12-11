@@ -16,6 +16,9 @@ class RefinderWindowController: NSWindowController, NSWindowDelegate {
     /// Wait wiew controller (should be attached to waitWindow)
     var waitVC: WaitViewController!
     
+    /// Whether we want to reload data on next window is main event
+    var reloadDataNext = true
+    
     weak var allHistoryController: AllHistoryController?
     weak var historyDetailController: HistoryDetailController?
     
@@ -30,26 +33,37 @@ class RefinderWindowController: NSWindowController, NSWindowDelegate {
         let svc = self.contentViewController as! NSSplitViewController
         allHistoryController = (svc.childViewControllers[0] as! AllHistoryController)
         historyDetailController = (svc.childViewControllers[1] as! HistoryDetailController)
-        allHistoryController?.reloadCompletionCallback = reloadingComplete
         allHistoryController?.delegate = historyDetailController
     }
     
     func windowDidBecomeMain(notification: NSNotification) {
-        reloadData(self)
+        if reloadDataNext {
+            reloadData(self)
+            reloadDataNext = false
+        }
     }
     
-    /// Hides the wait view controller (once reloading is complete)
-    func reloadingComplete() {
+    /// Hides the wait view controller (some loading is complete)
+    func loadingComplete() {
         dispatch_async(dispatch_get_main_queue()) {
             self.window!.endSheet(self.waitWindow)
         }
     }
     
-    @IBAction func reloadData(sender: AnyObject) {
+    /// Show the loading sheet (some loading started)
+    func loadingStarted() {
         self.window!.beginSheet(waitWindow, completionHandler: nil)
-        // retrieve data
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
-            self.allHistoryController?.reloadData()
+    }
+    
+    @IBAction func reloadData(sender: AnyObject) {
+        if HistoryManager.sharedManager.dimeAvailable {
+            loadingStarted()
+            // retrieve data
+            dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
+                self.allHistoryController?.reloadData()
+            }
+        } else {
+            AppSingleton.alertUser("DiMe not available")
         }
     }
 

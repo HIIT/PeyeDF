@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct PageEyeData: Dictionariable {
+struct PageEyeDataChunk: Dictionariable {
     var Xs: [NSNumber]
     var Ys: [NSNumber]
     /// pupil sizes
@@ -18,7 +18,7 @@ struct PageEyeData: Dictionariable {
     var durations: [NSNumber]
     var pageIndex: Int?
     let scaleFactor: NSNumber
-    let unixt: NSNumber
+    let unixt: Int
     
     /// unixtimes are not sent to dime, but are used to filter fixations
     /// so that those recorded around a specific time are not sent to dime
@@ -48,6 +48,22 @@ struct PageEyeData: Dictionariable {
         self.unixtimes = unixtimes
         self.scaleFactor = scaleFactor
         self.unixt = NSDate().unixTime
+    }
+    
+    /// Creates data supplied from a json in dime format
+    init(fromDime json: JSON) {
+        self.Xs = json["Xs"].arrayObject! as! [NSNumber]
+        self.Ys = json["Ys"].arrayObject! as! [NSNumber]
+        if let Ps = json["Ps"].arrayObject as? [NSNumber] {
+            self.Ps = Ps
+        }
+        self.startTimes = json["startTimes"].arrayObject! as! [NSNumber]
+        self.endTimes = json["endTimes"].arrayObject! as! [NSNumber]
+        self.durations = json["durations"].arrayObject! as! [NSNumber]
+        self.pageIndex = json["pageIndex"].intValue
+        self.scaleFactor = json["scaleFactor"].doubleValue
+        self.unixt = json["unixt"].intValue
+        self.unixtimes = [Int]()
     }
     
     mutating func appendEvent(x: NSNumber, y: NSNumber, startTime: NSNumber, endTime: NSNumber, duration: NSNumber, unixtime: Int) {

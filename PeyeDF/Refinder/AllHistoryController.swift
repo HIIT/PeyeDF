@@ -21,9 +21,6 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     
     var delegate: HistoryDetailDelegate?
     
-    /// Once reloading data is complete, this function will be called (if any)
-    var reloadCompletionCallback: (Void -> Void)?
-    
     @IBOutlet weak var historyTable: NSTableView!
     var diMeFetcher: DiMeFetcher?
     
@@ -46,9 +43,70 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     
     /// Extracts a json file containing all (non-summary) reading events associated to the
     /// selected (summary) reading event, so that they can be analyzed by the eye tracking algo.
+    /// Extracted json contains:
+    /// - sessionId: String
+    /// - rectangles: Array: one entry for each EyeRectangle
     @IBAction func extractJson(sender: NSMenuItem) {
+        let rwc = self.view.window!.windowController! as! RefinderWindowController
+        rwc.loadingStarted()
         let row = historyTable.clickedRow
-        Swift.print("Session id: \(allHistoryTuples[row].ev.sessionId ?? "<nil>")")
+        let sessionId = allHistoryTuples[row].ev.sessionId
+        diMeFetcher?.getNonSummaries(withSessionId: sessionId) {
+            foundEvents in
+            Swift.print("Matching events: \(foundEvents.count)")
+            
+            var outEyeRects = [EyeRectangle]()
+            
+            // generate eye rectangles
+            for event in foundEvents {
+                outEyeRects.appendContentsOf(EyeRectangle.allEyeRectangles(fromReadingEvent: event))
+            }
+            
+            if outEyeRects.count > 0 {
+                var outArray = [AnyObject]()
+                for eyer in outEyeRects {
+                    outArray.append(eyer.getDict())
+                }
+                
+                do {
+                    // create data
+                    var outDict = [String: AnyObject]()
+                    outDict["sessionId"] = sessionId
+                    outDict["rectangles"] = outArray
+                    let options = NSJSONWritingOptions.PrettyPrinted
+                    let outData = try NSJSONSerialization.dataWithJSONObject(outDict, options: options)
+                    
+                    // save data
+                    let panel = NSSavePanel()
+                    panel.allowedFileTypes = ["json", "JSON"]
+                    panel.canSelectHiddenExtension = true
+                    panel.nameFieldStringValue = "\(sessionId).json"
+                    if panel.runModal() == NSFileHandlingPanelOKButton {
+                        let outURL = panel.URL!
+                        
+                        // create file if it doesn't exist
+                        if !NSFileManager.defaultManager().fileExistsAtPath(outURL.path!) {
+                            NSFileManager.defaultManager().createFileAtPath(outURL.path!, contents: nil, attributes: nil)
+                        }
+                        
+                        // write data to existing file
+                        do {
+                            let file = try NSFileHandle(forWritingToURL: panel.URL!)
+                            file.writeData(outData)
+                        } catch {
+                            AppSingleton.alertUser("Error while creating output file", infoText: "\(error)")
+                        }
+                    }
+                    
+                } catch {
+                    AppSingleton.alertUser("Error while serializing json")
+                }
+            } else {
+                AppSingleton.alertUser("No matching data found")
+            }
+            
+            rwc.loadingComplete()
+        }
     }
     
     // MARK: - DiMe communication
@@ -62,7 +120,8 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     func receiveAllSummaries(tuples: [(ev: ReadingEvent, ie: ScientificDocument?)]) {
         allHistoryTuples = tuples
         historyTable.reloadData()
-        reloadCompletionCallback?()
+        let rwc = self.view.window!.windowController! as! RefinderWindowController
+        rwc.loadingComplete()
     }
     
     // MARK: - Table delegate & data source
