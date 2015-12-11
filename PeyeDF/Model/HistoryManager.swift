@@ -248,12 +248,13 @@ class HistoryManager: FixationDataDelegate {
         // prepare to convert eye coordinates
         self.currentEyeReceiver = docWindow.pdfReader
         
-        // prepare smi rectangles
-        self.currentSMIMarks = PDFMarkings(pdfBase: docWindow.pdfReader)
-        
         // prepare exit timer, which will fire when the user is inactive long enough (or will be canceled if there is another exit event).
         if let _ = self.currentReadingEvent {
             dispatch_sync(timerQueue) {
+                
+                // prepare smi rectangles
+                self.currentSMIMarks = PDFMarkings(pdfBase: docWindow.pdfReader)
+        
                 self.exitTimer = NSTimer(timeInterval: PeyeConstants.maxReadTime, target: self, selector: "exitEvent:", userInfo: nil, repeats: false)
                 NSRunLoop.currentRunLoop().addTimer(self.exitTimer!, forMode: NSRunLoopCommonModes)
             }
@@ -285,7 +286,7 @@ class HistoryManager: FixationDataDelegate {
             
             // run on eye serial queue
             
-            dispatch_sync(eyeQueue) {
+            dispatch_async(eyeQueue) {
             
                 // check if there is page eye data, and append it if so
                 for k in self.currentEyeData.keys {
@@ -308,9 +309,11 @@ class HistoryManager: FixationDataDelegate {
             }
             
         }
-        // reset remaining properties
-        manualMarkUnixtimes = [Int]()
-        currentSMIMarks = nil
+        dispatch_async(eyeQueue) {
+            // reset remaining properties
+            self.manualMarkUnixtimes = [Int]()
+            self.currentSMIMarks = nil
+        }
     }
     
     /// Records that the user marked a pagraph at the given unix time
