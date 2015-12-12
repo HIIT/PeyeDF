@@ -103,6 +103,11 @@ struct PeyeConstants {
     /// marking events
     static let excludeEyeUnixTimeMs = 1000
     
+    // MARK: - Eye Analysis
+    
+    /// Minimum number of fixations for data to be exported
+    static let minNOfFixations = 3
+    
     // MARK: - Debug
     
     /// Column name for debug table. Make sure this identifier matches the table view id in the storyboard

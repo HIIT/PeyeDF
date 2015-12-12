@@ -194,7 +194,7 @@ class HistoryManager: FixationDataDelegate {
                     }
                 }
             } catch {
-                AppSingleton.log.error("Error while deserializing json - no data sent:\n\(error)")
+                AppSingleton.log.error("Error while serializing json - no data sent:\n\(error)")
             }
             
         }

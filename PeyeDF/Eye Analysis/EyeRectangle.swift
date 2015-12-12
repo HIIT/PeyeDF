@@ -32,6 +32,9 @@ struct EyeRectangle: Dictionariable {
     /// Index (from 0) of page in which this rect appeared
     let pageIndex: Int
     
+    /// Attention Value (if set)
+    private(set) var attnVal: NSNumber?
+    
     let readingClass: ReadingClass
     let classSource: ClassSource
     let scaleFactor: NSNumber
@@ -64,7 +67,7 @@ struct EyeRectangle: Dictionariable {
             }
         }
         
-        if Xs.count == 0 {
+        if Xs.count < PeyeConstants.minNOfFixations {
             return nil
         }
         
@@ -81,6 +84,27 @@ struct EyeRectangle: Dictionariable {
         self.size = readingRect.rect.size
     }
     
+    init(fromJson json: JSON) {
+        self.unixt = json["unixt"].intValue
+        self.origin = NSPoint(x: json["origin"]["x"].doubleValue, y: json["origin"]["y"].doubleValue)
+        self.size = NSSize(width: json["size"]["width"].doubleValue, height: json["size"]["height"].doubleValue)
+        
+        self.Xs = json["Xs"].arrayObject! as! [NSNumber]
+        self.Ys = json["Ys"].arrayObject! as! [NSNumber]
+        self.durations = json["durations"].arrayObject! as! [NSNumber]
+        
+        self.pageIndex = json["pageIndex"].intValue
+        if let attnVal = json["attnVal"].double {
+            self.attnVal = attnVal
+        }
+        
+        self.readingClass = ReadingClass(rawValue: json["readingClass"].intValue)!
+        self.classSource = ClassSource(rawValue: json["classSource"].intValue)!
+        
+        self.scaleFactor = json["scaleFactor"].doubleValue
+        self.plainTextContent = json["plainTextContent"].stringValue
+    }
+    
     func getDict() -> [String: AnyObject] {
         var retVal = [String: AnyObject]()
         
@@ -95,22 +119,33 @@ struct EyeRectangle: Dictionariable {
         retVal["classSource"] = classSource.rawValue
         retVal["scaleFactor"] = scaleFactor
         retVal["plainTextContent"] = plainTextContent
+        if let attnVal = attnVal {
+            retVal["attnVal"] = attnVal
+        }
         
         return retVal
     }
     
     /// Given a readingevent and a PageEyeData (array of chunks), generate an EyeRectangle
     /// for each rectangle
-    static func allEyeRectangles(fromReadingEvent readingEvent: ReadingEvent) -> [EyeRectangle] {
+    static func allEyeRectangles(fromReadingEvent readingEvent: ReadingEvent, forReadingClass readingClass: ReadingClass, andSource classSource: ClassSource) -> [EyeRectangle] {
         
         var retVal = [EyeRectangle]()
         let eyeData = readingEvent.pageEyeData
         
+        // TODO: remove this
+        var alreadyDoneRects = [ReadingRect]()
+        
         for rRect in readingEvent.pageRects {
-            for dataChunk in eyeData {
-                if rRect.pageIndex == dataChunk.pageIndex && rRect.scaleFactor == dataChunk.scaleFactor {
-                    if let newEyeRect = EyeRectangle(fromPageRect: rRect, andPageData: dataChunk) {
-                        retVal.append(newEyeRect)
+            if rRect.classSource == classSource && rRect.readingClass == readingClass {
+                if !alreadyDoneRects.contains(rRect) {
+                    alreadyDoneRects.append(rRect)
+                    for dataChunk in eyeData {
+                        if rRect.pageIndex == dataChunk.pageIndex && rRect.scaleFactor == dataChunk.scaleFactor {
+                            if let newEyeRect = EyeRectangle(fromPageRect: rRect, andPageData: dataChunk) {
+                                retVal.append(newEyeRect)
+                            }
+                        }
                     }
                 }
             }

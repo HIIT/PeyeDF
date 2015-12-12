@@ -9,13 +9,6 @@
 import Foundation
 import Cocoa
 
-/// This protocol is implemeted by classes that want to display in detail an history element (which is a tuple of ReadingEvent and ScientificDocument). Used to inform the pdf history display classes on which history item was selected
-protocol HistoryDetailDelegate {
-    
-    /// Tells the delegate that a new item was selected
-    func historyElementSelected(tuple: (ev: ReadingEvent, ie: ScientificDocument))
-}
-
 /// AllHistoryController 
 class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewDataSource, NSTableViewDelegate {
     
@@ -39,6 +32,13 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
         }
     }
     
+    override func prepareForSegue(segue: NSStoryboardSegue, sender: AnyObject?) {
+        if let segueId = segue.identifier where segueId == "showThresholdEditor" {
+            let thresholdCont = segue.destinationController as! ThresholdEditor
+            thresholdCont.detailDelegate = self.delegate
+        }
+    }
+    
     // MARK: - Contextual menu
     
     /// Extracts a json file containing all (non-summary) reading events associated to the
@@ -47,66 +47,99 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     /// - sessionId: String
     /// - rectangles: Array: one entry for each EyeRectangle
     @IBAction func extractJson(sender: NSMenuItem) {
-        let rwc = self.view.window!.windowController! as! RefinderWindowController
-        rwc.loadingStarted()
+        
         let row = historyTable.clickedRow
         let sessionId = allHistoryTuples[row].ev.sessionId
-        diMeFetcher?.getNonSummaries(withSessionId: sessionId) {
-            foundEvents in
-            Swift.print("Matching events: \(foundEvents.count)")
+        
+        // ask for output file first
+        let panel = NSSavePanel()
+        panel.allowedFileTypes = ["json", "JSON"]
+        panel.canSelectHiddenExtension = true
+        panel.nameFieldStringValue = "\(sessionId).json"
+        if panel.runModal() == NSFileHandlingPanelOKButton {
+                
+            let outURL = panel.URL!
+            let rwc = self.view.window!.windowController! as! RefinderWindowController
+            rwc.loadingStarted()
             
-            var outEyeRects = [EyeRectangle]()
-            
-            // generate eye rectangles
-            for event in foundEvents {
-                outEyeRects.appendContentsOf(EyeRectangle.allEyeRectangles(fromReadingEvent: event))
-            }
-            
-            if outEyeRects.count > 0 {
-                var outArray = [AnyObject]()
-                for eyer in outEyeRects {
-                    outArray.append(eyer.getDict())
+            diMeFetcher?.getNonSummaries(withSessionId: sessionId) {
+                foundEvents in
+                
+                var outEyeRects = [EyeRectangle]()
+                
+                // generate eye rectangles
+                for event in foundEvents {
+                    outEyeRects.appendContentsOf(EyeRectangle.allEyeRectangles(fromReadingEvent: event, forReadingClass: .Paragraph, andSource: .SMI))
                 }
                 
-                do {
-                    // create data
-                    var outDict = [String: AnyObject]()
-                    outDict["sessionId"] = sessionId
-                    outDict["rectangles"] = outArray
-                    let options = NSJSONWritingOptions.PrettyPrinted
-                    let outData = try NSJSONSerialization.dataWithJSONObject(outDict, options: options)
-                    
-                    // save data
-                    let panel = NSSavePanel()
-                    panel.allowedFileTypes = ["json", "JSON"]
-                    panel.canSelectHiddenExtension = true
-                    panel.nameFieldStringValue = "\(sessionId).json"
-                    if panel.runModal() == NSFileHandlingPanelOKButton {
-                        let outURL = panel.URL!
-                        
-                        // create file if it doesn't exist
-                        if !NSFileManager.defaultManager().fileExistsAtPath(outURL.path!) {
-                            NSFileManager.defaultManager().createFileAtPath(outURL.path!, contents: nil, attributes: nil)
-                        }
-                        
-                        // write data to existing file
-                        do {
-                            let file = try NSFileHandle(forWritingToURL: panel.URL!)
-                            file.writeData(outData)
-                        } catch {
-                            AppSingleton.alertUser("Error while creating output file", infoText: "\(error)")
-                        }
+                if outEyeRects.count > 0 {
+                    var outArray = [AnyObject]()
+                    for eyer in outEyeRects {
+                        outArray.append(eyer.getDict())
                     }
                     
-                } catch {
-                    AppSingleton.alertUser("Error while serializing json")
+                    do {
+                        // create data
+                        var outDict = [String: AnyObject]()
+                        outDict["sessionId"] = sessionId
+                        outDict["rectangles"] = outArray
+                        let options = NSJSONWritingOptions.PrettyPrinted
+                        let outData = try NSJSONSerialization.dataWithJSONObject(outDict, options: options)
+                        
+                        
+                            // create output file if it doesn't exist
+                            if !NSFileManager.defaultManager().fileExistsAtPath(outURL.path!) {
+                                NSFileManager.defaultManager().createFileAtPath(outURL.path!, contents: nil, attributes: nil)
+                            }
+                            
+                            // write data to existing file
+                            do {
+                                let file = try NSFileHandle(forWritingToURL: outURL)
+                                file.writeData(outData)
+                            } catch {
+                                AppSingleton.alertUser("Error while creating output file", infoText: "\(error)")
+                            }
+                            
+                    } catch {
+                        AppSingleton.alertUser("Error while serializing json")
+                    }
+                } else {
+                    AppSingleton.alertUser("No matching data found")
                 }
-            } else {
-                AppSingleton.alertUser("No matching data found")
+                
+                rwc.loadingComplete()
             }
-            
-            rwc.loadingComplete()
         }
+    }
+    
+    /// Imports a json with computed eye data (contains attnVal for each rect)
+    @IBAction func importJson(sender: NSMenuItem) {
+        
+        let row = historyTable.clickedRow
+        
+        let panel = NSOpenPanel()
+        panel.allowedFileTypes = ["json", "JSON"]
+        if panel.runModal() == NSFileHandlingPanelOKButton {
+            let inURL = panel.URL!
+            let data = NSData(contentsOfURL: inURL)
+            let json = JSON(data: data!)
+            
+            // check that loaded session id matches selection
+            let fileSessionId = json["outData"]["sessionId"].stringValue
+            let tableSessionId = allHistoryTuples[row].ev.sessionId
+            if fileSessionId != tableSessionId {
+                AppSingleton.alertUser("Json file's id does not match table's id (selected wrong row?)")
+            } else {
+                
+                var outRects = [EyeRectangle]()
+                for outR in json["outData"]["outRects"].arrayValue {
+                    outRects.append(EyeRectangle(fromJson: outR))
+                }
+                self.performSegueWithIdentifier("showThresholdEditor", sender: self)
+                delegate?.setEyeRects(outRects)
+            }
+        }
+        
     }
     
     // MARK: - DiMe communication

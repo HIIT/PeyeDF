@@ -74,6 +74,16 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable {
         }
     }
     
+    init(fromEyeRect eyeRect: EyeRectangle, readingClass: ReadingClass) {
+        self.unixt = [eyeRect.unixt as NSNumber]
+        self.rect = NSRect(origin: eyeRect.origin, size: eyeRect.size)
+        self.floating = false
+        self.readingClass = readingClass
+        self.classSource = ClassSource.ML
+        self.pageIndex = eyeRect.pageIndex
+        self.scaleFactor = eyeRect.scaleFactor
+    }
+    
     /// Creates a rect from a (dime-used) json object
     init(fromJson json: JSON) {
         self.unixt = json["unixt"].arrayObject! as! [NSNumber]
@@ -192,7 +202,6 @@ public func == (lhs: ReadingRect, rhs: ReadingRect) -> Bool {
     return lhs.pageIndex == rhs.pageIndex &&
            lhs.rect == rhs.rect &&
            lhs.readingClass == rhs.readingClass &&
-           lhs.unixt == rhs.unixt &&
            lhs.classSource == rhs.classSource &&
            lhs.scaleFactor == rhs.scaleFactor
 }

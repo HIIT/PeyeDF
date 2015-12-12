@@ -113,6 +113,7 @@ struct PDFMarkings {
     /// - No rectangles overlap
     /// - Rectangles of a lower class are overwritten by rectangles of a higher class.
     ///   For example, we show critical rectangles first, then interesting rectangles, then read ones.
+    
     ///   This is because critical rectangles are assumed to be both interesting and read.
     mutating func flattenRectangles_relevance() {
         // "relevance" classes in order of importance: Critical, Interesting, Read

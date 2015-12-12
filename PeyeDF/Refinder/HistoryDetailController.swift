@@ -9,9 +9,28 @@
 import Cocoa
 import Quartz
 
+/// This protocol is implemeted by classes that want to display in detail an history element (which is a tuple of ReadingEvent and 
+/// ScientificDocument). Used to inform the pdf history display classes on which history item was selected and to
+/// communicate which rects to display.
+protocol HistoryDetailDelegate: class {
+    
+    /// Tells the delegate that a new item was selected
+    func historyElementSelected(tuple: (ev: ReadingEvent, ie: ScientificDocument))
+    
+    /// Tells the delegate that a new set of eye rectangles should be shown next time
+    func setEyeRects(eyeRects: [EyeRectangle])
+    
+    /// Tells the delegate to display the current (communicated via setEyeRects) set of eye rectangles by converting them to
+    /// a set of markings (reading rect) using the specified threshold.
+    func setEyeThresholds(readThresh: Double, interestingThresh: Double, criticalThresh: Double)
+}
+
+
 /// The history detail controller manager two pdf views, one for an overview and the other for more detailed
 /// display.
 class HistoryDetailController: NSViewController, HistoryDetailDelegate {
+    
+    private var eyeRects: [EyeRectangle]?
 
     @IBOutlet weak var pdfOverview: MyPDFOverview!
     @IBOutlet weak var pdfDetail: MyPDFDetail!
@@ -41,4 +60,30 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
         // Do view setup here.
     }
     
+    func setEyeRects(eyeRects: [EyeRectangle]) {
+        self.eyeRects = eyeRects
+    }
+    
+    func setEyeThresholds(readThresh: Double, interestingThresh: Double, criticalThresh: Double) {
+        if let eyeRects = self.eyeRects {
+            var newRects = [ReadingRect]()
+            for eyeRect in eyeRects {
+                var newClass: ReadingClass?
+                let attnVal = eyeRect.attnVal! as Double
+                if attnVal > criticalThresh {
+                    newClass = .Critical
+                } else if attnVal > interestingThresh {
+                    newClass = .Interesting
+                } else if attnVal > readThresh {
+                    newClass = .Read
+                }
+                if let nc = newClass {
+                    newRects.append(ReadingRect(fromEyeRect: eyeRect, readingClass: nc))
+                }
+            }
+            pdfOverview.markings.setAll(newRects)
+            pdfDetail.markings.setAll(newRects)
+            pdfDetail.autoAnnotate()
+        }
+    }
 }

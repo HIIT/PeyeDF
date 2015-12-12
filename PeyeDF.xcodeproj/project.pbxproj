@@ -14,6 +14,7 @@
 		A913A9201BA1A93B008BA10D /* SearchPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A913A91F1BA1A93B008BA10D /* SearchPanelController.swift */; };
 		A913A9251BA1B047008BA10D /* MainSplitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A913A9241BA1B047008BA10D /* MainSplitController.swift */; };
 		A918F8101BC2D71500345448 /* eyeBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = A918F80F1BC2D71500345448 /* eyeBox.swift */; };
+		A91AFB731C1DC9A60025D1F6 /* ThresholdEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91AFB721C1DC9A60025D1F6 /* ThresholdEditor.swift */; };
 		A91CB94A1B332EDB00671868 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91CB9491B332EDB00671868 /* AppDelegate.swift */; };
 		A91CB9501B332EDB00671868 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A91CB94F1B332EDB00671868 /* Images.xcassets */; };
 		A91CB95F1B332EDB00671868 /* PeyeDFTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91CB95E1B332EDB00671868 /* PeyeDFTests.swift */; };
@@ -152,6 +153,7 @@
 		A913A91F1BA1A93B008BA10D /* SearchPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchPanelController.swift; sourceTree = "<group>"; };
 		A913A9241BA1B047008BA10D /* MainSplitController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainSplitController.swift; sourceTree = "<group>"; };
 		A918F80F1BC2D71500345448 /* eyeBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = eyeBox.swift; sourceTree = "<group>"; };
+		A91AFB721C1DC9A60025D1F6 /* ThresholdEditor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThresholdEditor.swift; sourceTree = "<group>"; };
 		A91CB9441B332EDB00671868 /* PeyeDF.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PeyeDF.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A91CB9481B332EDB00671868 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A91CB9491B332EDB00671868 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -348,6 +350,7 @@
 				A95795141BD69BAA0083525C /* Refinder.storyboard */,
 				A95795161BD6A1CB0083525C /* RefinderWindowController.swift */,
 				A95795181BD6A31B0083525C /* AllHistoryController.swift */,
+				A91AFB721C1DC9A60025D1F6 /* ThresholdEditor.swift */,
 				A957951A1BD6A35F0083525C /* HistoryTableCell.swift */,
 				A9B36CA21BEA0FE300A27861 /* RefinderProgressIndicator.swift */,
 				A9B36CA81BEA2E0800A27861 /* HistoryDetailController.swift */,
@@ -605,6 +608,7 @@
 				A9B36CAD1BEA30D800A27861 /* MyPDFDetail.swift in Sources */,
 				A9677F921BA806F700DC48CC /* MidasManager.swift in Sources */,
 				A9038F7B1B8F634200A7D183 /* Dictionariable.swift in Sources */,
+				A91AFB731C1DC9A60025D1F6 /* ThresholdEditor.swift in Sources */,
 				A957950D1BD66A600083525C /* ScientificDocument.swift in Sources */,
 				A95A8CF31B94407D0093119E /* DocumentSplitController.swift in Sources */,
 				A9038F761B8F5EE500A7D183 /* Event.swift in Sources */,
