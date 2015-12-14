@@ -116,27 +116,30 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     @IBAction func importJson(sender: NSMenuItem) {
         
         let row = historyTable.clickedRow
+        if row >= 0 {
+            delegate?.historyElementSelected((ev: allHistoryTuples[row].ev, ie: allHistoryTuples[row].ie!))
         
-        let panel = NSOpenPanel()
-        panel.allowedFileTypes = ["json", "JSON"]
-        if panel.runModal() == NSFileHandlingPanelOKButton {
-            let inURL = panel.URL!
-            let data = NSData(contentsOfURL: inURL)
-            let json = JSON(data: data!)
-            
-            // check that loaded session id matches selection
-            let fileSessionId = json["outData"]["sessionId"].stringValue
-            let tableSessionId = allHistoryTuples[row].ev.sessionId
-            if fileSessionId != tableSessionId {
-                AppSingleton.alertUser("Json file's id does not match table's id (selected wrong row?)")
-            } else {
+            let panel = NSOpenPanel()
+            panel.allowedFileTypes = ["json", "JSON"]
+            if panel.runModal() == NSFileHandlingPanelOKButton {
+                let inURL = panel.URL!
+                let data = NSData(contentsOfURL: inURL)
+                let json = JSON(data: data!)
                 
-                var outRects = [EyeRectangle]()
-                for outR in json["outData"]["outRects"].arrayValue {
-                    outRects.append(EyeRectangle(fromJson: outR))
+                // check that loaded session id matches selection
+                let fileSessionId = json["outData"]["sessionId"].stringValue
+                let tableSessionId = allHistoryTuples[row].ev.sessionId
+                if fileSessionId != tableSessionId {
+                    AppSingleton.alertUser("Json file's id does not match table's id (selected wrong row?)")
+                } else {
+                    
+                    var outRects = [EyeRectangle]()
+                    for outR in json["outData"]["outRects"].arrayValue {
+                        outRects.append(EyeRectangle(fromJson: outR))
+                    }
+                    self.performSegueWithIdentifier("showThresholdEditor", sender: self)
+                    delegate?.setEyeRects(outRects)
                 }
-                self.performSegueWithIdentifier("showThresholdEditor", sender: self)
-                delegate?.setEyeRects(outRects)
             }
         }
         

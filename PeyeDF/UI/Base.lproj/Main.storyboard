@@ -82,7 +82,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="E15-lK-fvD">
-                                            <rect key="frame" x="16" y="10" width="339" height="25"/>
+                                            <rect key="frame" x="16" y="9" width="339" height="26"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="335" id="dtF-MU-gHK"/>
                                             </constraints>
@@ -92,7 +92,7 @@
                                             </connections>
                                         </slider>
                                         <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uRt-4J-vlE">
-                                            <rect key="frame" x="359" y="14" width="53" height="22"/>
+                                            <rect key="frame" x="359" y="13" width="53" height="22"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="53" id="N2Q-Hu-YTx"/>
                                             </constraints>
@@ -221,7 +221,7 @@
                 </viewController>
                 <customObject id="ThY-Hh-P4H" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="508.5" y="-1784"/>
+            <point key="canvasLocation" x="508.5" y="-1782"/>
         </scene>
         <!--DiMe Preferences-->
         <scene sceneID="JFC-Eo-9Mb">
@@ -977,7 +977,7 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Connections" autoenablesItems="NO" id="SQE-Zk-SC9">
                                     <items>
-                                        <menuItem title="_dime_connect" id="dV0-IR-78f" userLabel="Connect Dime">
+                                        <menuItem title="&lt;Connecting to DiMe...&gt;" id="dV0-IR-78f" userLabel="Connect Dime">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="connectDime:" target="Voe-Tx-rLC" id="TMU-ol-eIp"/>
@@ -1172,7 +1172,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="yXb-ko-u85">
-                                    <rect key="frame" x="459" y="1" width="15" height="215"/>
+                                    <rect key="frame" x="458" y="1" width="16" height="215"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>

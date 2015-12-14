@@ -138,7 +138,7 @@ class MyPDFBase: PDFView {
         let myBord = PDFBorder()
         myBord.setLineWidth(lineThickness)
         
-        for rect in markings.get(forSource: ClassSource.Click, ofClass: forClass) {
+        for rect in markings.get(onlyClass: forClass) {
             let newRect = annotationRectForMark(rect.rect)
             let annotation = PDFAnnotationSquare(bounds: newRect)
             annotation.setColor(colour)
@@ -228,7 +228,7 @@ class MyPDFBase: PDFView {
             let pageRect = getPageRect(thePage)
             let pageSurface = Double(pageRect.size.height * pageRect.size.width)
             totalSurface += pageSurface
-            for rect in markings.get(ofClass: .Paragraph) {
+            for rect in markings.get(onlyClass: .Paragraph) {
                 gazedSurface += Double(rect.rect.size.height * rect.rect.size.width)
             }
         }

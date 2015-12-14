@@ -42,12 +42,12 @@ struct PDFMarkings {
     }
     
     /// Return all rectangles made from the given source, of the given class
-    func get(forSource source: ClassSource, ofClass: ReadingClass) -> [ReadingRect] {
+    func get(onlySource source: ClassSource, ofClass: ReadingClass) -> [ReadingRect] {
         return allRects.filter({$0.classSource == source && $0.readingClass == ofClass})
     }
     
     /// Returns all rectangles for a given class
-    func get(ofClass theClass: ReadingClass) -> [ReadingRect] {
+    func get(onlyClass theClass: ReadingClass) -> [ReadingRect] {
         return allRects.filter({$0.readingClass == theClass})
     }
     
