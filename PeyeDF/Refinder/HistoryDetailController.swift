@@ -84,6 +84,7 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
                 }
             }
             pdfOverview.markings.setAll(newRects)
+            pdfOverview.markings.flattenRectangles_relevance()
             pdfDetail.markings.setAll(newRects)
             pdfDetail.autoAnnotate()
             pdfOverview.display()
