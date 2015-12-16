@@ -26,6 +26,16 @@ class MyPDFOverview: MyPDFBase {
     	// Let PDFView do most of the hard work.
         super.drawPage(page)
         
+        // if origins of media and boxes are different, obtain difference
+        // to later apply it to each readingrect's origin
+        let mediaBoxo = page.boundsForBox(kPDFDisplayBoxMediaBox).origin
+        let cropBoxo = page.boundsForBox(kPDFDisplayBoxCropBox).origin
+        var pointDiff = NSPoint(x: 0, y: 0)
+        if mediaBoxo != cropBoxo {
+            pointDiff.x = mediaBoxo.x - cropBoxo.x
+            pointDiff.y = mediaBoxo.y - cropBoxo.y
+        }
+        
         // draw gazed upon rects if desired
         if drawGazedRects {
             let pageIndex = self.document().indexForPage(page)
@@ -37,7 +47,8 @@ class MyPDFOverview: MyPDFBase {
                 // Draw.
                 for rect in rectsToDraw {
                     let rectCol = PeyeConstants.smiColours[.Paragraph]!.colorWithAlphaComponent(0.9)
-                    let rectPath: NSBezierPath = NSBezierPath(rect: rect.rect)
+                    let adjRect = rect.rect.offset(byPoint: pointDiff)
+                    let rectPath: NSBezierPath = NSBezierPath(rect: adjRect)
                     rectCol.setFill()
                     rectPath.fill()
                 }
@@ -61,7 +72,8 @@ class MyPDFOverview: MyPDFBase {
                 // Draw.
                 for rect in rectsToDraw {
                     let rectCol = PeyeConstants.annotationColours[rc]!.colorWithAlphaComponent(0.9)
-                    let rectPath: NSBezierPath = NSBezierPath(rect: rect.rect)
+                    let adjRect = rect.rect.offset(byPoint: pointDiff)
+                    let rectPath: NSBezierPath = NSBezierPath(rect: adjRect)
                     rectCol.setFill()
                     rectPath.fill()
                 }

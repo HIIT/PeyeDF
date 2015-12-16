@@ -14,7 +14,7 @@ import Quartz
 /// communicate which rects to display.
 protocol HistoryDetailDelegate: class {
     
-    /// Tells the delegate that a new item was selected
+    /// Tells the delegate that a new item was selected. Resets setEyeRects
     func historyElementSelected(tuple: (ev: ReadingEvent, ie: ScientificDocument))
     
     /// Tells the delegate that a new set of eye rectangles should be shown next time
@@ -22,6 +22,7 @@ protocol HistoryDetailDelegate: class {
     
     /// Tells the delegate to display the current (communicated via setEyeRects) set of eye rectangles by converting them to
     /// a set of markings (reading rect) using the specified threshold.
+    /// - Requires: call setEyeRects before this because historyElementSelected invalidates eyeRects
     func setEyeThresholds(readThresh: Double, interestingThresh: Double, criticalThresh: Double)
 }
 
@@ -37,6 +38,7 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
     
     /// A reading event was selected, display the doc and its rectangles in the pdf views
     func historyElementSelected(tuple: (ev: ReadingEvent, ie: ScientificDocument)) {
+        eyeRects = nil
         // check if file exists first (if not, display and error)
         if NSFileManager.defaultManager().fileExistsAtPath(tuple.ie.uri) {
             let docURL = NSURL(fileURLWithPath: tuple.ie.uri)
@@ -86,6 +88,8 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
             pdfDetail.autoAnnotate()
             pdfOverview.display()
             pdfDetail.display()
+        } else {
+            AppSingleton.alertUser("Nothing to set thresholds for (forgot to import json?).")
         }
     }
 }

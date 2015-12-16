@@ -240,6 +240,15 @@ extension NSRect {
         
         return NSMakeRect(newOrigin.x, newOrigin.y, maxX - newOrigin.x, maxY - newOrigin.y);
     }
+    
+    /// Returns a new rectangle based on this one but with the origin offset
+    /// by adding the given point to it.
+    func offset(byPoint point: NSPoint) -> NSRect {
+        var newOrigin = self.origin
+        newOrigin.x += point.x
+        newOrigin.y += point.y
+        return NSRect(origin: newOrigin, size: self.size)
+    }
 }
 
 extension NSPoint {
