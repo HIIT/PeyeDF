@@ -14,6 +14,7 @@ class DocumentInformationElement: DiMeBase {
     let title: String?
     let plainTextContent: String?
     let id: String
+    let contentHash: String?
     
     /// Creates this information element. The id is set to the hash of the plaintext, or hash of uri if no text was found.
     ///
@@ -27,8 +28,10 @@ class DocumentInformationElement: DiMeBase {
         
         if let ptc = plainTextContent {
             self.id = "PeyeDF_\(ptc.sha1())"
+            self.contentHash = ptc.sha1()
         } else {
             self.id = "PeyeDF_\(uri.sha1())"
+            self.contentHash = nil
         }
         
         super.init()
@@ -42,6 +45,9 @@ class DocumentInformationElement: DiMeBase {
         theDictionary[PeyeConstants.iId] = self.id
         if let ptc = plainTextContent {
             theDictionary["plainTextContent"] = ptc
+        }
+        if let cHash = contentHash {
+            theDictionary["contentHash"] = cHash
         }
         if let title = title {
             theDictionary["title"] = title
@@ -61,6 +67,7 @@ class DocumentInformationElement: DiMeBase {
         self.title = json["title"].string
         self.plainTextContent = json["plainTextContent"].string
         self.id = json[PeyeConstants.iId].stringValue
+        self.contentHash = json["contentHash"].string
     }
     
     /// Returns id using own dictionary
