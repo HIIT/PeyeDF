@@ -21,13 +21,6 @@ class ReadingEvent: Event, NSCopying {
     let infoElemId: NSString
     private(set) var pageRects: [ReadingRect]
     
-    private(set) var proportionRead: Double?
-    private(set) var proportionCritical: Double?
-    private(set) var proportionInteresting: Double?
-    
-    private(set) var foundStrings = [String]()
-    private(set) var isSummary: Bool
-    
     private(set) var pageLabels: [String]?
     private(set) var pageNumbers: [Int]?
     
@@ -44,57 +37,28 @@ class ReadingEvent: Event, NSCopying {
         - parameter scaleFactor: Sale factor of page on screen
         - parameter infoElemId: id referring to the info element referenced by this event (document id)
     */
-    init(sessionId: String, pageNumbers: [Int]?, pageLabels: [String]?, pageRects: [ReadingRect], isSummary: Bool, plainTextContent: NSString?, infoElemId: NSString) {
+    init(sessionId: String, pageNumbers: [Int]?, pageLabels: [String]?, pageRects: [ReadingRect], plainTextContent: NSString?, infoElemId: NSString) {
         self.infoElemId = infoElemId
         self.sessionId = sessionId
         self.pageLabels = pageLabels
         self.pageNumbers = pageNumbers
         self.pageRects = pageRects
-        self.isSummary = isSummary
         self.plainTextContent = plainTextContent
         super.init()
-    }
-    
-    /** Creates a summary reading event, which contains all "markings" in form of rectangles
-    */
-    init(asSummaryWithRects rects: [ReadingRect], sessionId: String, plainTextContent: NSString?, infoElemId: NSString, foundStrings: [String], pdfReader: MyPDFReader?, proportionTriple: (proportionRead: Double, proportionInteresting: Double, proportionCritical: Double)) {
-        self.infoElemId = infoElemId
-        self.sessionId = sessionId
-        
-        self.proportionRead = proportionTriple.proportionRead
-        self.proportionCritical = proportionTriple.proportionCritical
-        self.proportionInteresting = proportionTriple.proportionInteresting
-        self.foundStrings = foundStrings
-        self.pageRects = rects
-        self.isSummary = true
-        self.plainTextContent = plainTextContent
-        
-        super.init()
-        
-        self.foundStrings.appendContentsOf(foundStrings)
     }
     
     /// Creates an event from a json supplied in the dime format.
-    init(fromDime json: JSON) {
-        infoElemId = json["targettedResource"][PeyeConstants.iId].stringValue
+    required init(fromDime json: JSON) {
+        infoElemId = json["targettedResource"]["appId"].stringValue
         sessionId = json["sessionId"].stringValue
-        isSummary = json["isSummary"].boolValue
         
         //optionals
-        proportionRead = json["proportionRead"].double
-        proportionInteresting = json["proportionInteresting"].double
-        proportionCritical = json["proportionCritical"].double
         plainTextContent = json["plainTextContent"].string
         if let pns = json["pageNumbers"].arrayObject {
             pageNumbers = pns as? [Int]
         }
         if let pls = json["pageLabels"].arrayObject {
             pageLabels = pls as? [String]
-        }
-        if let fStrings = json["foundStrings"].array {
-            for fString in fStrings {
-                foundStrings.append(fString.stringValue)
-            }
         }
         if let pedata = json["pageEyeData"].array {
             for chunk in pedata {
@@ -131,22 +95,12 @@ class ReadingEvent: Event, NSCopying {
         var retDict = theDictionary
         
         retDict["sessionId"] = sessionId
-        retDict["isSummary"] = isSummary
         
         if let plabels = self.pageLabels {
             retDict["pageLabels"] = plabels
         }
         if let pnumbers = self.pageNumbers {
             retDict["pageNumbers"] = pnumbers
-        }
-        if let pread = proportionRead {
-            retDict["proportionRead"] = pread
-        }
-        if let pinter = proportionInteresting {
-            retDict["proportionInteresting"] = pinter
-        }
-        if let pcrit = proportionCritical {
-            retDict["proportionCritical"] = pcrit
         }
         if let ptc = plainTextContent {
             retDict["plainTextContent"] = ptc
@@ -159,10 +113,6 @@ class ReadingEvent: Event, NSCopying {
             retDict["pageEyeData"] = dataArray
         }
         
-        if foundStrings.count > 0 {
-            retDict["foundStrings"] = foundStrings
-        }
-        
         var rectArray = [[String: AnyObject]]()
         for rect in pageRects {
             rectArray.append(rect.getDict())
@@ -172,7 +122,7 @@ class ReadingEvent: Event, NSCopying {
         var infoElemDict = [String: AnyObject]()
         infoElemDict["@type"] = "ScientificDocument"
         infoElemDict["type"] = "http://www.hiit.fi/ontologies/dime/#ScientificDocument"
-        infoElemDict[PeyeConstants.iId] = infoElemId
+        infoElemDict["appId"] = infoElemId
         
         retDict["targettedResource"] = infoElemDict
         
@@ -187,7 +137,7 @@ class ReadingEvent: Event, NSCopying {
     ///
     /// - parameter zone: this parameter is ignored
     func copyWithZone(zone: NSZone) -> AnyObject {
-        let newEvent = ReadingEvent(sessionId: self.sessionId, pageNumbers: self.pageNumbers!, pageLabels: self.pageLabels!, pageRects: self.pageRects, isSummary: self.isSummary, plainTextContent: plainTextContent, infoElemId: self.infoElemId)
+        let newEvent = ReadingEvent(sessionId: self.sessionId, pageNumbers: self.pageNumbers!, pageLabels: self.pageLabels!, pageRects: self.pageRects, plainTextContent: plainTextContent, infoElemId: self.infoElemId)
         return newEvent
     }
 }

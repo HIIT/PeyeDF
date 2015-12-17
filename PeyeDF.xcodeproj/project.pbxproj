@@ -20,6 +20,7 @@
 		A91CB95F1B332EDB00671868 /* PeyeDFTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91CB95E1B332EDB00671868 /* PeyeDFTests.swift */; };
 		A91CB96F1B332FB700671868 /* EyeFormulas.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91CB9691B332FB700671868 /* EyeFormulas.swift */; };
 		A91CB9721B332FB700671868 /* PeyeDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91CB96C1B332FB700671868 /* PeyeDocument.swift */; };
+		A91DC4E11C22E43800BBB612 /* SummaryReadingEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91DC4E01C22E43700BBB612 /* SummaryReadingEvent.swift */; };
 		A9260F571BA4CD10005B1556 /* MyOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9260F561BA4CD10005B1556 /* MyOverlay.swift */; };
 		A935F0C61B8CC5FD00587C99 /* DesktopEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A935F0C51B8CC5FD00587C99 /* DesktopEvent.swift */; };
 		A93C53DC1B8DCEFB00179C72 /* HistoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93C53DB1B8DCEFB00179C72 /* HistoryManager.swift */; };
@@ -164,6 +165,7 @@
 		A91CB95E1B332EDB00671868 /* PeyeDFTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeyeDFTests.swift; sourceTree = "<group>"; };
 		A91CB9691B332FB700671868 /* EyeFormulas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EyeFormulas.swift; sourceTree = "<group>"; };
 		A91CB96C1B332FB700671868 /* PeyeDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeyeDocument.swift; sourceTree = "<group>"; };
+		A91DC4E01C22E43700BBB612 /* SummaryReadingEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SummaryReadingEvent.swift; sourceTree = "<group>"; };
 		A9260F561BA4CD10005B1556 /* MyOverlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyOverlay.swift; sourceTree = "<group>"; };
 		A935F0C51B8CC5FD00587C99 /* DesktopEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DesktopEvent.swift; sourceTree = "<group>"; };
 		A93C53DB1B8DCEFB00179C72 /* HistoryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryManager.swift; sourceTree = "<group>"; };
@@ -395,6 +397,7 @@
 				A9038F751B8F5EE500A7D183 /* Event.swift */,
 				A95795061BD668E40083525C /* Person.swift */,
 				A912D8A31B8B5C3A006F0657 /* ReadingEvent.swift */,
+				A91DC4E01C22E43700BBB612 /* SummaryReadingEvent.swift */,
 				A935F0C51B8CC5FD00587C99 /* DesktopEvent.swift */,
 				A97230751B8B60C8005D29E0 /* DiMeData.swift */,
 			);
@@ -576,6 +579,7 @@
 			files = (
 				A99C23031BE92536005EDFD9 /* DiMeFetcher.swift in Sources */,
 				A9260F571BA4CD10005B1556 /* MyOverlay.swift in Sources */,
+				A91DC4E11C22E43800BBB612 /* SummaryReadingEvent.swift in Sources */,
 				A9B36CAB1BEA30BF00A27861 /* MyPDFOverview.swift in Sources */,
 				A935F0C61B8CC5FD00587C99 /* DesktopEvent.swift in Sources */,
 				A99C22FB1BE8EC9D005EDFD9 /* WaitViewController.swift in Sources */,

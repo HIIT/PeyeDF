@@ -359,7 +359,7 @@ class MyPDFReader: MyPDFBase {
                 vpi++
             }
             
-            return ReadingEvent(sessionId: sessionId, pageNumbers: visiblePageNums, pageLabels: visiblePageLabels, pageRects: readingRects, isSummary: false, plainTextContent: plainTextContent, infoElemId: sciDoc!.getId())
+            return ReadingEvent(sessionId: sessionId, pageNumbers: visiblePageNums, pageLabels: visiblePageLabels, pageRects: readingRects, plainTextContent: plainTextContent, infoElemId: sciDoc!.getId())
         } else {
             return nil
         }
@@ -369,7 +369,7 @@ class MyPDFReader: MyPDFBase {
     ///
     /// - returns: A summary reading event corresponding to all marks, nil if proportion read / interesting
     ///            etc was less than a minimum amount (suggesting the document wasn't actually read)
-    func getUserRectStatus() -> ReadingEvent? {
+    func getUserRectStatus() -> SummaryReadingEvent? {
         markings.flattenRectangles_eye()
         
         // Calculate proportion for Read, Critical and Interesting rectangles
@@ -385,7 +385,7 @@ class MyPDFReader: MyPDFBase {
         if totProportion < PeyeConstants.minProportion && proportionGazed < PeyeConstants.minProportion {
             return nil
         } else {
-            return ReadingEvent(asSummaryWithRects: markings.getAllReadingRects(), sessionId: sessionId, plainTextContent: nil, infoElemId: sciDoc!.getId(), foundStrings: foundStrings, pdfReader: self, proportionTriple: proportionTriple)
+            return SummaryReadingEvent(rects: markings.getAllReadingRects(), sessionId: sessionId, plainTextContent: nil, infoElemId: sciDoc!.getId(), foundStrings: foundStrings, pdfReader: self, proportionTriple: proportionTriple)
         }
     }
     

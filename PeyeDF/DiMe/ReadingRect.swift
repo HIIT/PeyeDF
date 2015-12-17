@@ -78,6 +78,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable {
         self.unixt = [eyeRect.unixt as NSNumber]
         self.rect = NSRect(origin: eyeRect.origin, size: eyeRect.size)
         self.floating = false
+        self.plainTextContent = eyeRect.plainTextContent
         self.readingClass = readingClass
         self.classSource = ClassSource.ML
         self.pageIndex = eyeRect.pageIndex

@@ -69,14 +69,9 @@ class HistoryManager: FixationDataDelegate {
     
     /// Attempts to connect to dime. Sends a notification if we succeeded / failed
     func dimeConnect() {
-        let server_url: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerURL) as! String
-        let user: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerUserName) as! String
-        let password: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerPassword) as! String
         
-        let credentialData = "\(user):\(password)".dataUsingEncoding(NSUTF8StringEncoding)!
-        let base64Credentials = credentialData.base64EncodedStringWithOptions([])
-        
-        let headers = ["Authorization": "Basic \(base64Credentials)"]
+        let server_url = AppSingleton.dimeUrl
+        let headers = AppSingleton.dimeHeaders
         
         let dictionaryObject = ["test": "test"]
         
@@ -147,7 +142,7 @@ class HistoryManager: FixationDataDelegate {
                                 self.currentSMIMarks?.addRect(smiRect)
                                 // TODO: remove debugging check
                                 if self.currentSMIMarks == nil {
-                                    Swift.print("ATTENTION: NIL SMI MARKS")
+                                    AppSingleton.log.debug("Nil smi marks")
                                 }
                             }
                         }
@@ -171,14 +166,8 @@ class HistoryManager: FixationDataDelegate {
                 try NSJSONSerialization.dataWithJSONObject(dimeData.getDict(), options: options)
                 
                 // assume json conversion was a success, hence send to dime
-                let server_url: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerURL) as! String
-                let user: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerUserName) as! String
-                let password: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerPassword) as! String
-                
-                let credentialData = "\(user):\(password)".dataUsingEncoding(NSUTF8StringEncoding)!
-                let base64Credentials = credentialData.base64EncodedStringWithOptions([])
-                
-                let headers = ["Authorization": "Basic \(base64Credentials)"]
+                let server_url = AppSingleton.dimeUrl
+                let headers = AppSingleton.dimeHeaders
                 
                 Alamofire.request(Alamofire.Method.POST, server_url + "/data/\(endPoint.rawValue)", parameters: dimeData.getDict(), encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON {
                     response in

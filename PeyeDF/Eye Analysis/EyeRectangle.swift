@@ -38,7 +38,7 @@ struct EyeRectangle: Dictionariable {
     let readingClass: ReadingClass
     let classSource: ClassSource
     let scaleFactor: NSNumber
-    let plainTextContent: NSString
+    let plainTextContent: String?
     
     /// Given a page rect some a chunk of data (assumed to be on the same page, throws
     /// fatal error if not) returns an EyeRectangle corresponding to the "intersection"
@@ -78,7 +78,7 @@ struct EyeRectangle: Dictionariable {
         self.scaleFactor = pageData.scaleFactor
         self.readingClass = readingRect.readingClass
         self.classSource = readingRect.classSource
-        self.plainTextContent = readingRect.plainTextContent ?? ""
+        self.plainTextContent = readingRect.plainTextContent
         self.unixt = pageData.unixt
         self.origin = readingRect.rect.origin
         self.size = readingRect.rect.size
@@ -102,7 +102,7 @@ struct EyeRectangle: Dictionariable {
         self.classSource = ClassSource(rawValue: json["classSource"].intValue)!
         
         self.scaleFactor = json["scaleFactor"].doubleValue
-        self.plainTextContent = json["plainTextContent"].stringValue
+        self.plainTextContent = json["plainTextContent"].string
     }
     
     func getDict() -> [String: AnyObject] {
@@ -118,7 +118,9 @@ struct EyeRectangle: Dictionariable {
         retVal["readingClass"] = readingClass.rawValue
         retVal["classSource"] = classSource.rawValue
         retVal["scaleFactor"] = scaleFactor
-        retVal["plainTextContent"] = plainTextContent
+        if let ptc = plainTextContent {
+            retVal["plainTextContent"] = ptc
+        }
         if let attnVal = attnVal {
             retVal["attnVal"] = attnVal
         }

@@ -118,6 +118,8 @@ struct PDFMarkings {
     mutating func flattenRectangles_relevance() {
         // "relevance" classes in order of importance: Critical, Interesting, Read
         uniteRectangles(.Critical)
+        uniteRectangles(.Interesting)
+        uniteRectangles(.Read)
         // Subtract critical rects from interesting and read rects
         subtractRectsOfClass(minuend: .Interesting, subtrahend: .Critical)
         subtractRectsOfClass(minuend: .Read, subtrahend: .Critical)
@@ -206,29 +208,49 @@ struct PDFMarkings {
     /// - parameter minuends: The array of rectangles from which the other will be subtracted (lhs)
     /// - parameter subtrahends: The array of rectangles that will be subtracted from minuends (rhs)
     /// - returns: An array of rectangles which is the result of minuends - subtrahends
-    func subtractRectangles(forPage forPage: Int, minuends: [ReadingRect], subtrahends: [ReadingRect]) -> [ReadingRect] {
-        var collidingRects: [(lhsRect: ReadingRect, rhsRect: ReadingRect)] = [] // tuples with minuend rect and subtrahend rects which intersect (must be on the same page)
+    func subtractRectangles(forPage forPage: Int, var minuends: [ReadingRect], subtrahends: [ReadingRect]) -> [ReadingRect] {
+        var collidingRects: [(lhsRect: ReadingRect, rhsRect: ReadingRect)] // tuples with minuend rect and subtrahend rects which intersect (must be on the same page)
         
         // return the same result if there is nothing to subtract from / to
         if minuends.count == 0 || subtrahends.count == 0 {
             return minuends
         }
         
-        var i = 0
-        var result = minuends
-        while i < result.count {
-            let minuendRect = result[i]
-            for subtrahendRect in subtrahends {
-                if NSIntersectsRect(minuendRect.rect, subtrahendRect.rect) {
-                    collidingRects.append((lhsRect: minuendRect, rhsRect: subtrahendRect))
-                    result.removeAtIndex(i)
-                    continue
+        // repeat the procedure until no more collisions are found
+        // do this a maximum number of times, if this exceeds report an error
+        let maxLoops = 50
+        var loops = 0
+        var collisions = false
+        var result: [ReadingRect]
+        repeat {
+            collidingRects = []
+            
+            var i = 0
+            result = minuends
+            while i < result.count {
+                let minuendRect = result[i]
+                for subtrahendRect in subtrahends {
+                    if NSIntersectsRect(minuendRect.rect, subtrahendRect.rect) {
+                        collidingRects.append((lhsRect: minuendRect, rhsRect: subtrahendRect))
+                        result.removeAtIndex(i)
+                        break
+                    }
                 }
+                ++i
             }
-            ++i
-        }
-        for (minuendRect, subtrahendRect) in collidingRects {
-            result.appendContentsOf(minuendRect.subtractRect(subtrahendRect, pdfBase: pdfBase))
+            
+            collisions = !collidingRects.isEmpty
+            
+            for (minuendRect, subtrahendRect) in collidingRects {
+                result.appendContentsOf(minuendRect.subtractRect(subtrahendRect, pdfBase: pdfBase))
+            }
+            
+            minuends = result
+            
+            ++loops
+        } while collisions && loops < maxLoops
+        if loops >= maxLoops {
+            AppSingleton.log.error("Loops exceeded maximum loops, check subtraction algo")
         }
         return result
     }

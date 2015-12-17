@@ -42,7 +42,7 @@ class DocumentInformationElement: DiMeBase {
     /// Sublasses must call this before editing their dictionary.
     override func getDict() -> [String : AnyObject] {
         theDictionary["uri"] = "file://" + uri
-        theDictionary[PeyeConstants.iId] = self.id
+        theDictionary["appId"] = self.id
         if let ptc = plainTextContent {
             theDictionary["plainTextContent"] = ptc
         }
@@ -66,12 +66,12 @@ class DocumentInformationElement: DiMeBase {
         self.uri = json["uri"].stringValue.skipPrefix(7) // skip file:// prefix when importing
         self.title = json["title"].string
         self.plainTextContent = json["plainTextContent"].string
-        self.id = json[PeyeConstants.iId].stringValue
+        self.id = json["appId"].stringValue
         self.contentHash = json["contentHash"].string
     }
     
     /// Returns id using own dictionary
     func getId() -> String {
-        return theDictionary[PeyeConstants.iId]! as! String
+        return theDictionary["appId"]! as! String
     }
 }

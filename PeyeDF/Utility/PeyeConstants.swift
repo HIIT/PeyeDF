@@ -63,27 +63,6 @@ struct PeyeConstants {
     /// Page area is multiplied by this constant, to reduce total area size (to remove margins, etc)
     static let pageAreaMultiplier = 0.25
     
-    // MARK: - DiMe
-    
-    /// Enum identifying dime branches
-    enum DiMeBranch {
-        case mongodb
-        case sql
-    }
-    
-    /// Default DiMe branch
-    static let dimeBranch = DiMeBranch.sql
-    
-    /// String that identifies the key used to retrieve stuff from DiMe
-    static let iId: String = {
-        switch PeyeConstants.dimeBranch {
-        case .mongodb:
-            return "id"
-        case .sql:
-            return "appId"
-        }
-    }()
-    
     // MARK: - Midas
     
     /// Name of the midas node containing raw (gaze) data
@@ -165,7 +144,13 @@ struct PeyeConstants {
     static let docWindowHeight: CGFloat = 700
     
     /// When comparing rectangles, they are at the same horizontal positions if they are separated by less than this amount of points.
-    static let rectHorizontalTolerance: CGFloat = 2.0
+    static let rectHorizontalTolerance: CGFloat = 5.0
+    
+    /// When comparing rectangles, they are at the same vertical positions if they are separated by less than this amount of points.
+    static let rectVerticalTolerance: CGFloat = 5.0
+    
+    /// Minimum rectangle height (based on 0.25 inch at 72 dpi)
+    static let minRectHeight: CGFloat = 0.25 * 72
     
     /// How much space do we leave between margins of the window and text we consider visible. In points.
     static let extraMargin: CGFloat = 2

@@ -19,7 +19,7 @@ class HistoryTableCell: NSTableCellView {
     @IBOutlet weak var interestingBar: RefinderProgressIndicator!
     @IBOutlet weak var criticalBar: RefinderProgressIndicator!
     
-    func setValues(fromReadingEvent readingEvent: ReadingEvent, sciDoc: ScientificDocument) {
+    func setValues(fromReadingEvent readingEvent: SummaryReadingEvent, sciDoc: ScientificDocument) {
         readBar.setProgress(readingEvent.proportionRead!, forClass: .Read)
         interestingBar.setProgress(readingEvent.proportionInteresting!, forClass: .Interesting)
         criticalBar.setProgress(readingEvent.proportionCritical!, forClass: .Critical)

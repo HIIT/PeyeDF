@@ -184,30 +184,32 @@ extension NSRect {
     func subtractRect(rhs: NSRect) -> [NSRect] {
         let constant: CGFloat = PeyeConstants.rectHorizontalTolerance
         var ary = [NSRect]()
-        if NSContainsRect(rhs, self) {
+        // if the other rectangle encloses this (taking into account some tolerance)
+        // return an empty array
+        if NSContainsRect(rhs, self.insetBy(dx: PeyeConstants.rectHorizontalTolerance, dy: PeyeConstants.rectVerticalTolerance)) {
             return ary
         }
         if withinRange(self.origin.x, rhs: rhs.origin.x, range: constant) {
             if NSIntersectsRect(self, rhs) {
                 var slice = NSRect()
                 var remainder = NSRect()
-                if rhs.minY < self.minY && rhs.maxY > self.maxY {
-                    // the other rectangle encloses this, return an empty array
-                    return ary
-                }
                 if self.minY < rhs.minY {
                     // this rectangle extends below the other
                     // slce the bottom from below
                     let sliceFromBottom = rhs.minY - self.minY
                     NSDivideRect(self, &slice, &remainder, sliceFromBottom, NSRectEdge.MinY)
-                    ary.append(slice)
+                    if slice.size.height > PeyeConstants.minRectHeight {
+                        ary.append(slice)
+                    }
                 }
                 if self.maxY > rhs.maxY {
                     // this rectangle extends above the other
                     // slice the top from above
                     let sliceFromTop = self.maxY - rhs.maxY
                     NSDivideRect(self, &slice, &remainder, sliceFromTop, NSRectEdge.MaxY)
-                    ary.append(slice)
+                    if slice.size.height > PeyeConstants.minRectHeight {
+                        ary.append(slice)
+                    }
                 }
                 return ary
             }

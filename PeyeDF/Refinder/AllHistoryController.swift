@@ -17,7 +17,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     @IBOutlet weak var historyTable: NSTableView!
     var diMeFetcher: DiMeFetcher?
     
-    var allHistoryTuples = [(ev: ReadingEvent, ie: ScientificDocument?)]()
+    var allHistoryTuples = [(ev: SummaryReadingEvent, ie: ScientificDocument?)]()
     
     override func viewDidLoad() {
         // creates dime fetcher with self as receiver and prepares to receive table selection notifications
@@ -153,7 +153,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     }
     
     /// Receive summaries from dime fetcher, as per protocol
-    func receiveAllSummaries(tuples: [(ev: ReadingEvent, ie: ScientificDocument?)]) {
+    func receiveAllSummaries(tuples: [(ev: SummaryReadingEvent, ie: ScientificDocument?)]) {
         allHistoryTuples = tuples
         historyTable.reloadData()
         let rwc = self.view.window!.windowController! as! RefinderWindowController

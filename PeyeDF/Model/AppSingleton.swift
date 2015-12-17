@@ -27,6 +27,22 @@ class AppSingleton {
     /// It is assumed there is only one screen when using eye tracking.
     static var screenRect = NSRect()
     
+    /// Returns HTTP headers used for DiMe connection
+    static var dimeHeaders: [String: String] = {
+        let user: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerUserName) as! String
+        let password: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerPassword) as! String
+        
+        let credentialData = "\(user):\(password)".dataUsingEncoding(NSUTF8StringEncoding)!
+        let base64Credentials = credentialData.base64EncodedStringWithOptions([])
+        
+        return ["Authorization": "Basic \(base64Credentials)"]
+    }()
+    
+    /// Returns dime server url
+    static var dimeUrl: String = {
+        return NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerURL) as! String
+    }()
+    
     /// Convenience function to get monitor DPI
     static func getMonitorDPI() -> CGFloat {
         let dpi: Int = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefMonitorDPI) as! Int
