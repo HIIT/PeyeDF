@@ -26,9 +26,9 @@ class DocumentInformationElement: DiMeBase {
         self.title = title
         
         if let ptc = plainTextContent {
-            self.id = ptc.sha1()
+            self.id = "PeyeDF_\(ptc.sha1())"
         } else {
-            self.id = uri.sha1()
+            self.id = "PeyeDF_\(uri.sha1())"
         }
         
         super.init()
