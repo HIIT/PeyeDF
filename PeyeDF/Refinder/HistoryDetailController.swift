@@ -87,8 +87,12 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
             pdfOverview.markings.flattenRectangles_relevance()
             pdfDetail.markings.setAll(newRects)
             pdfDetail.autoAnnotate()
-            pdfOverview.display()
-            pdfDetail.display()
+            dispatch_async(dispatch_get_main_queue()) {
+                self.pdfOverview.layoutDocumentView()
+                self.pdfOverview.display()
+                self.pdfDetail.layoutDocumentView()
+                self.pdfDetail.display()
+            }
         } else {
             AppSingleton.alertUser("Nothing to set thresholds for (forgot to import json?).")
         }
