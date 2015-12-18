@@ -155,7 +155,9 @@ class HistoryManager: FixationDataDelegate {
     // MARK: - External functions
     
     /// Send the given data to dime
-    func sendToDiMe(dimeData: DiMeBase, endPoint: DiMeEndpoint) {
+    /// - parameter callback: If operation was successfull, calls the given callback function using the 
+    ///                       id (as Int) retrieved from DiMe
+    func sendToDiMe(dimeData: DiMeBase, endPoint: DiMeEndpoint, callback: (Int -> Void)? = nil) {
        
         if dimeAvailable {
             
@@ -179,6 +181,9 @@ class HistoryManager: FixationDataDelegate {
                         let json = JSON(response.result.value!)
                         if let error = json["error"].string {
                             AppSingleton.log.error("DiMe reply to submission contains error:\n\(error)")
+                        } else {
+                            // assume submission was a success, call callback (if any) with returned id
+                            callback?(json["id"].intValue)
                         }
                     }
                 }
@@ -292,8 +297,10 @@ class HistoryManager: FixationDataDelegate {
                 
                 // if there are smi rectangles to send, unite them and send
                 if var csmi = SMIMarksToSend where csmi.getCount() > 0 {
+                    Swift.print("Number of rects before flattening: \(csmi.getAllReadingRects().count)")
                     csmi.flattenRectangles_eye()
                     eventToSend.extendRects(csmi.getAllReadingRects())
+                    Swift.print("Number of rects sent: \(csmi.getAllReadingRects().count)")
                 }
                 
                 self.sendToDiMe(eventToSend, endPoint: .Event)

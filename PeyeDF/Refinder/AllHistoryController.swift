@@ -153,9 +153,13 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     }
     
     /// Receive summaries from dime fetcher, as per protocol
-    func receiveAllSummaries(tuples: [(ev: SummaryReadingEvent, ie: ScientificDocument?)]) {
-        allHistoryTuples = tuples
-        historyTable.reloadData()
+    func receiveAllSummaries(tuples: [(ev: SummaryReadingEvent, ie: ScientificDocument?)]?) {
+        if let t = tuples {
+            allHistoryTuples = t
+            historyTable.reloadData()
+        } else {
+            AppSingleton.alertUser("No data found.")
+        }
         let rwc = self.view.window!.windowController! as! RefinderWindowController
         rwc.loadingComplete()
     }

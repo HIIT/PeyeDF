@@ -12,6 +12,7 @@ import Foundation
 /// subclasses must implement the DiMeAble protocol.
 class Event: DiMeBase {
     let startDate: NSDate
+    private (set) var id: Int?
     
     /// Must be called by subclasses that create an event starting now
     override init() {
@@ -41,10 +42,16 @@ class Event: DiMeBase {
         if let hostname = NSHost.currentHost().name {
             theDictionary["origin"] = hostname
         }
-    
+        
         // set dime-required fields (these are defaults that can be overwritten by subclasses)
         theDictionary["@type"] = "Event"
         theDictionary["type"] = "http://www.hiit.fi/ontologies/dime/#Event"
+    }
+    
+    /// Sets the id of this event. If an id is given, dime will replace the previous event which had this id.
+    func setId(newId: Int) {
+        id = newId
+        theDictionary["id"] = newId
     }
     
     /// Set an end date for this item (otherwise, won't be submitted)

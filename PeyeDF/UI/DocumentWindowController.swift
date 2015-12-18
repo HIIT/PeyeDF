@@ -13,6 +13,12 @@ import Quartz
 /// Manages the "Document Window", which comprises two split views, one inside the other
 class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollapseToggleDelegate, SearchPanelCollapseDelegate {
     
+    /// The "global" GCD queue in which all timers are created / destroyed (to prevent potential memory leaks, they all run here)
+    static let timerQueue = dispatch_queue_create("hiit.PeyeDF.DocumentWindowController.timerQueue", DISPATCH_QUEUE_SERIAL)
+    
+    /// Regular timer for this window
+    var regularTimer: NSTimer?
+    
     weak var pdfReader: MyPDFReader?
     weak var docSplitController: DocumentSplitController?
     weak var mainSplitController: MainSplitController?
@@ -255,11 +261,12 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             
             // Send event regardig opening of file
             sendDeskEvent()
+            
         }
     }
     
     
-    /// Prepares all the notification centre observers (will have to be removed when the window wants to close). See unSetObservers, these two methods should load / unload the same observers.
+    /// Prepares all the notification centre observers + timers (will have to be removed when the window wants to close). See unSetObservers, these two methods should load / unload the same observers.
     private func setUpObservers() {
         
         // Get notifications from pdfview for window
@@ -280,6 +287,28 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         // Get notifications from midas manager
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "eyeStateCallback:", name: PeyeConstants.eyesAvailabilityNotification, object: MidasManager.sharedInstance)
+        
+        // Set up regular timer
+        dispatch_sync(DocumentWindowController.timerQueue) {
+            if self.regularTimer == nil {
+                self.regularTimer = NSTimer(timeInterval: PeyeConstants.regularSummaryEventInterval, target: self, selector: "regularTimerFire:", userInfo: nil, repeats: true)
+                NSRunLoop.currentRunLoop().addTimer(self.regularTimer!, forMode: NSRunLoopCommonModes)
+            }
+        }
+    }
+    
+    // MARK: - Timer callbacks
+    
+    /// The regular timer is a repeating timer that regularly submits a summary event to dime
+    @objc private func regularTimerFire(regularTimer: NSTimer) {
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) {
+            if let mpdf = self.pdfReader, userRectStatus = mpdf.getUserRectStatus() {
+                HistoryManager.sharedManager.sendToDiMe(userRectStatus, endPoint: .Event) {
+                    id in
+                    mpdf.setSummaryId(id)
+                }
+            }
+        }
     }
     
     // MARK: - Unloading
@@ -304,6 +333,14 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         
         // Remove notifications from midas manager
         NSNotificationCenter.defaultCenter().removeObserver(self, name: PeyeConstants.eyesAvailabilityNotification, object: MidasManager.sharedInstance)
+        
+        // Stop regular timer
+        if let timer = regularTimer {
+            dispatch_sync(DocumentWindowController.timerQueue) {
+                    timer.invalidate()
+            }
+            regularTimer = nil
+        }
     }
     
     // MARK: - Notification callbacks from managed pdf view
@@ -339,6 +376,14 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     @objc private func windowWantsMain(notification: NSNotification) {
         NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.documentChangeNotification, object: self.document)
         
+        // Set up regular timer
+        dispatch_sync(DocumentWindowController.timerQueue) {
+            if self.regularTimer == nil {
+                self.regularTimer = NSTimer(timeInterval: PeyeConstants.regularSummaryEventInterval, target: self, selector: "regularTimerFire:", userInfo: nil, repeats: true)
+                NSRunLoop.currentRunLoop().addTimer(self.regularTimer!, forMode: NSRunLoopCommonModes)
+            }
+        }
+        
         // If the relevant preference is set, send a DesktopEvent for the current document
         if (NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefSendEventOnFocusSwitch) as! Bool) {
             sendDeskEvent()
@@ -366,6 +411,14 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     @objc private func windowWillSwitchAway(notification: NSNotification) {
         // Tell the history manager to "stop recording"
         HistoryManager.sharedManager.exit(self)
+        
+        // Stop regular timer
+        if let timer = regularTimer {
+            dispatch_sync(DocumentWindowController.timerQueue) {
+                    timer.invalidate()
+            }
+            regularTimer = nil
+        }
     }
    
     // MARK: - Window delegate

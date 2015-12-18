@@ -183,11 +183,11 @@ class MyPDFBase: PDFView {
     }
     
     
-    /// Calculate proportion of Read, Interesting and Critical markings.
+    /// Calculate proportion of Read, Interesting and Critical markings for the given parameters.
     /// This is done by calculating the total area of each page and multiplying it by a constant.
     /// All rectangles (which will be united) are then cycled and the area of each is subtracted
     /// to calculate a proportion.
-    func calculateProportions_manual() -> (proportionRead: Double, proportionInteresting: Double, proportionCritical: Double) {
+    func calculateProportions_manual(var markings: PDFMarkings) -> (proportionRead: Double, proportionInteresting: Double, proportionCritical: Double, markings: PDFMarkings) {
         markings.flattenRectangles_relevance()
         var totalSurface = 0.0
         var readSurface = 0.0
@@ -212,14 +212,14 @@ class MyPDFBase: PDFView {
         let proportionRead = readSurface / totalSurface
         let proportionInteresting = interestingSurface / totalSurface
         let proportionCritical = criticalSurface / totalSurface
-        return (proportionRead: proportionRead, proportionInteresting: proportionInteresting, proportionCritical: proportionCritical)
+        return (proportionRead: proportionRead, proportionInteresting: proportionInteresting, proportionCritical: proportionCritical, markings: markings)
     }
     
-    /// Calculate proportion of gazed-at united rectangles.
+    /// Calculate proportion of gazed-at united rectangles for the markings passed as a parameter.
     /// This is done by calculating the total area of each page and multiplying it by a constant.
     /// All rectangles (which will be united) are then cycled and the area of each is subtracted
     /// to calculate a proportion.
-    func calculateProportion_smi() -> Double {
+    func calculateProportion_smi(var markings: PDFMarkings) -> (proportionGazed: Double, markings: PDFMarkings) {
         markings.flattenRectangles_eye()
         var totalSurface = 0.0
         var gazedSurface = 0.0
@@ -234,7 +234,7 @@ class MyPDFBase: PDFView {
         }
         totalSurface *= PeyeConstants.pageAreaMultiplier
         let proportionGazed = gazedSurface / totalSurface
-        return proportionGazed
+        return (proportionGazed: proportionGazed, markings: markings)
     }
     
     // MARK: - Internal functions

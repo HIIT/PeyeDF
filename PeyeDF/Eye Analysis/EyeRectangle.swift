@@ -135,18 +135,12 @@ struct EyeRectangle: Dictionariable {
         var retVal = [EyeRectangle]()
         let eyeData = readingEvent.pageEyeData
         
-        // TODO: remove this
-        var alreadyDoneRects = [ReadingRect]()
-        
         for rRect in readingEvent.pageRects {
             if rRect.classSource == classSource && rRect.readingClass == readingClass {
-                if !alreadyDoneRects.contains(rRect) {
-                    alreadyDoneRects.append(rRect)
-                    for dataChunk in eyeData {
-                        if rRect.pageIndex == dataChunk.pageIndex && rRect.scaleFactor == dataChunk.scaleFactor {
-                            if let newEyeRect = EyeRectangle(fromPageRect: rRect, andPageData: dataChunk) {
-                                retVal.append(newEyeRect)
-                            }
+                for dataChunk in eyeData {
+                    if rRect.pageIndex == dataChunk.pageIndex && rRect.scaleFactor == dataChunk.scaleFactor {
+                        if let newEyeRect = EyeRectangle(fromPageRect: rRect, andPageData: dataChunk) {
+                            retVal.append(newEyeRect)
                         }
                     }
                 }

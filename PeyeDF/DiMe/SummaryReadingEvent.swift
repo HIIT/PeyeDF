@@ -20,11 +20,11 @@ class SummaryReadingEvent: ReadingEvent {
     
     /** Creates a summary reading event, which contains all "markings" in form of rectangles
     */
-    required init(rects: [ReadingRect], sessionId: String, plainTextContent: NSString?, infoElemId: NSString, foundStrings: [String], pdfReader: MyPDFReader?, proportionTriple: (proportionRead: Double, proportionInteresting: Double, proportionCritical: Double)) {
+    required init(rects: [ReadingRect], sessionId: String, plainTextContent: NSString?, infoElemId: NSString, foundStrings: [String], pdfReader: MyPDFReader?, proportionRead: Double, proportionInteresting: Double, proportionCritical: Double) {
         
-        self.proportionRead = proportionTriple.proportionRead
-        self.proportionCritical = proportionTriple.proportionCritical
-        self.proportionInteresting = proportionTriple.proportionInteresting
+        self.proportionRead = proportionRead
+        self.proportionCritical = proportionCritical
+        self.proportionInteresting = proportionInteresting
         self.foundStrings = foundStrings
         
         super.init(sessionId: sessionId, pageNumbers: nil, pageLabels: nil, pageRects: rects,  plainTextContent: plainTextContent, infoElemId: infoElemId)

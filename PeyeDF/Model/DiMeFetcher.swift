@@ -12,7 +12,8 @@ import Alamofire
 /// Instances that want to receive dime data must implement this protocol and add themselves as delegates to the DiMeFetcher
 protocol DiMeReceiverDelegate: class {
     
-    func receiveAllSummaries(tuples: [(ev: SummaryReadingEvent, ie: ScientificDocument?)])
+    /// Receive all summaries information elements and associated informatione elements in a tuple. Nil means nothing was found.
+    func receiveAllSummaries(tuples: [(ev: SummaryReadingEvent, ie: ScientificDocument?)]?)
 }
 
 /// DiMeFetcher is supposed to be used as a singleton (via sharedFetcher)
@@ -136,6 +137,11 @@ class DiMeFetcher {
         for tuple in outgoingSummaries {
             getScientificDocument(i, infoElemId: tuple.ev.infoElemId as String)
             i++
+        }
+        
+        // if nothing is being sent, call receiveAllSummaries with nil
+        if outgoingSummaries.count == 0 {
+            self.receiver.receiveAllSummaries(nil)
         }
     }
     

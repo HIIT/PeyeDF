@@ -102,7 +102,7 @@ struct PeyeConstants {
     
     /// Documents which have been seen / read / marked as interesting less than this amount won't be sent
     /// as summary events to DiMe
-    static let minProportion = 0.05
+    static let minProportion = 0.001
     
     /// Space between the "selection" (seen paragraph) rectangle and its line (in page points)
     static let annotationLineDistance: CGFloat = 7
@@ -136,6 +136,9 @@ struct PeyeConstants {
     static let smiColours: [ReadingClass: NSColor] = [.Paragraph: markColourParagraph]
     
     // MARK: - Other globals
+    
+    /// Open windows regularly submit a summary event every time this amount of time passes
+    static let regularSummaryEventInterval: NSTimeInterval = 10//1 * 60
     
     /// Default window width. Make sure this is above min document window width in storyboard.
     static let docWindowWidth: CGFloat = 1100

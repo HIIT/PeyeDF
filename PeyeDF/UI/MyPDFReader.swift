@@ -27,6 +27,10 @@ class MyPDFReader: MyPDFBase {
     /// Id for this reading session, all events sent by this instance should have the same value
     let sessionId: String = { return NSUUID().UUIDString.sha1() }()
     
+    /// Id for the outgoing summary event. If set, forces dime to replace the event with this id
+    /// (useful to regularly update the outgoing summary event)
+    private(set) var summaryId: Int?
+    
     /// Stores all strings searched for and found by user
     private lazy var foundStrings = { return [String]() }()
     
@@ -260,6 +264,13 @@ class MyPDFReader: MyPDFBase {
         self.clickDelegate?.setRecognizersTo(enabled)
     }
     
+    // MARK: - Setters
+    
+    /// Sets the outgoing summary event id to the given value (to update previously sent summary event)
+    func setSummaryId(newId: Int) {
+        summaryId = newId
+    }
+    
     // MARK: - General accessor methods
     
     /// Converts a point on screen and returns a triple containing x coordinate, y coordinate (both in page space) and page index. Should be called for each fixation retrieved during the current event.
@@ -306,13 +317,11 @@ class MyPDFReader: MyPDFBase {
         // create rect for gazed-at paragraph. Note: this will store rects that will later be sent
         // in a summary event. This is different from eye rectangles created by each fixation and
         // sent in the current (non-summary) reading event, as done by HistoryManager calling getSMIRect
-        // (preferred method in PeyeDF 0.4+).
-        // TODO: to be deleted
+        // (preferred method to fetch eye tracking data).
         if fromEye {
             if let seenRect = pointToParagraphRect(pointOnPage, forPage: page) {
                 let newRect = ReadingRect(pageIndex: self.document().indexForPage(page), rect: seenRect, readingClass: .Paragraph, classSource: .SMI, pdfBase: self)
                 markings.addRect(newRect)
-                HistoryManager.sharedManager.addReadingRect(newRect)
             }
         }
         
@@ -370,22 +379,24 @@ class MyPDFReader: MyPDFBase {
     /// - returns: A summary reading event corresponding to all marks, nil if proportion read / interesting
     ///            etc was less than a minimum amount (suggesting the document wasn't actually read)
     func getUserRectStatus() -> SummaryReadingEvent? {
-        markings.flattenRectangles_eye()
-        
         // Calculate proportion for Read, Critical and Interesting rectangles
-        let proportionTriple = calculateProportions_manual()
+        let proportionQuad = calculateProportions_manual(markings)  // note: markings are a passed as a parameter because this method can be called from a different thread
         
         var totProportion = 0.0
-        totProportion += proportionTriple.proportionRead
-        totProportion += proportionTriple.proportionInteresting
-        totProportion += proportionTriple.proportionCritical
+        totProportion += proportionQuad.proportionRead
+        totProportion += proportionQuad.proportionInteresting
+        totProportion += proportionQuad.proportionCritical
         
-        let proportionGazed = calculateProportion_smi()
+        let computedSMI = calculateProportion_smi(proportionQuad.markings)
         
-        if totProportion < PeyeConstants.minProportion && proportionGazed < PeyeConstants.minProportion {
+        if totProportion < PeyeConstants.minProportion && computedSMI.proportionGazed < PeyeConstants.minProportion {
             return nil
         } else {
-            return SummaryReadingEvent(rects: markings.getAllReadingRects(), sessionId: sessionId, plainTextContent: nil, infoElemId: sciDoc!.getId(), foundStrings: foundStrings, pdfReader: self, proportionTriple: proportionTriple)
+            let retEv = SummaryReadingEvent(rects: computedSMI.markings.getAllReadingRects(), sessionId: sessionId, plainTextContent: nil, infoElemId: sciDoc!.getId(), foundStrings: foundStrings, pdfReader: self, proportionRead: proportionQuad.proportionRead, proportionInteresting: proportionQuad.proportionInteresting, proportionCritical: proportionQuad.proportionCritical)
+            if let id = summaryId {
+                retEv.setId(id)
+            }
+            return retEv
         }
     }
     
