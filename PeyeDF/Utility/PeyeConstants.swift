@@ -138,7 +138,7 @@ struct PeyeConstants {
     // MARK: - Other globals
     
     /// Open windows regularly submit a summary event every time this amount of time passes
-    static let regularSummaryEventInterval: NSTimeInterval = 10//1 * 60
+    static let regularSummaryEventInterval: NSTimeInterval = 1 * 60
     
     /// Default window width. Make sure this is above min document window width in storyboard.
     static let docWindowWidth: CGFloat = 1100
