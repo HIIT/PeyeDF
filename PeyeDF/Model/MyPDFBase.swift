@@ -89,6 +89,15 @@ class MyPDFBase: PDFView {
         return visibleRects
     }
     
+    /// Returns all text from contained document (nil if not present)
+    func getDocText() -> String? {
+        if let doc = self.document() {
+            return doc.getText()
+        } else {
+            return nil
+        }
+    }
+    
     /// Returns a string corresponding to the text contained within the given rect at the given page index
     ///
     /// - parameter rect: The rect for which we want the string for
@@ -105,8 +114,13 @@ class MyPDFBase: PDFView {
     }
     
     /// Convenience function to get a string from a readingrect
-    func stringForReadingRect(theRect: ReadingRect) -> String? {
+    func stringForRect(theRect: ReadingRect) -> String? {
         return stringForRect(theRect.rect, onPage: theRect.pageIndex.integerValue)
+    }
+    
+    /// Convenience function to get a string from a eyerect
+    func stringForRect(theRect: EyeRectangle) -> String? {
+        return stringForRect(NSRect(origin: theRect.origin, size: theRect.size), onPage: theRect.pageIndex)
     }
     
     /// Manually set all rectangles to the given parameters, and annotate them.

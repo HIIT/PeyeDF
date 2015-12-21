@@ -15,13 +15,13 @@ func verticalFocalPoints(fromPoint point: NSPoint, zoomLevel: CGFloat, pageRect:
     let defaultMargin: CGFloat = 28
     let defaultStep: CGFloat = 2
     
-    let pointSpan = inchSpan() * AppSingleton.getMonitorDPI() / zoomLevel
     let fitInRect = NSInsetRect(pageRect, defaultMargin, defaultMargin)
     
     var pointArray = [NSPoint]()
+    let points = pointSpan(zoomLevel: zoomLevel, dpi: AppSingleton.getComputedDPI()!, distancemm: MidasManager.sharedInstance.lastValidDistance)
     
-    let startPoint = NSPoint(x: point.x, y: point.y + pointSpan / 2)
-    let endPoint = NSPoint(x: point.x, y: point.y - pointSpan / 2)
+    let startPoint = NSPoint(x: point.x, y: point.y + points / 2)
+    let endPoint = NSPoint(x: point.x, y: point.y - points / 2)
     var currentPoint = startPoint
     while currentPoint.y >= endPoint.y {
         if NSPointInRect(currentPoint, fitInRect) {
@@ -34,22 +34,27 @@ func verticalFocalPoints(fromPoint point: NSPoint, zoomLevel: CGFloat, pageRect:
     return pointArray
 }
 
+/// Returns how many points should be covered by the participant's fovea at the current distance, given a zoom level (scale factor) and monitor DPI
+func pointSpan(zoomLevel zoomLevel: CGFloat, dpi: Int, distancemm: CGFloat) -> CGFloat {
+    return inchSpan(distancemm) * CGFloat(dpi) / zoomLevel
+}
 
-/// Returns how many inches should be covered by the participant's fovea at a predefined distance
-func inchSpan() -> CGFloat {
-    let inchFromScreen: CGFloat = CGFloat(MidasManager.sharedInstance.lastValidDistance * 0.039370)
+/// Returns how many inches should be covered by the participant's fovea at the given distance in
+/// millimetres
+func inchSpan(distancemm: CGFloat) -> CGFloat {
+    let inchFromScreen: CGFloat = mmToInch(distancemm)
     let defaultAngle: CGFloat = degToRad(3)  // fovea's covered angle
     return 2 * inchFromScreen * tan(defaultAngle/2)
 }
 
 /// Returns a rectangle representing what should be seen by the participant's fovea
 func getSeenRect(fromPoint point: NSPoint, zoomLevel: CGFloat) -> NSRect {
-    let pointSpan = inchSpan() * AppSingleton.getMonitorDPI() / zoomLevel
+    let points = pointSpan(zoomLevel: zoomLevel, dpi: AppSingleton.getComputedDPI()!, distancemm: MidasManager.sharedInstance.lastValidDistance)
     
     var newOrigin = point
-    newOrigin.x -= pointSpan / 2
-    newOrigin.y -= pointSpan / 2
-    let size = NSSize(width: pointSpan, height: pointSpan)
+    newOrigin.x -= points / 2
+    newOrigin.y -= points / 2
+    let size = NSSize(width: points, height: points)
     return NSRect(origin: newOrigin, size: size)
 }
 

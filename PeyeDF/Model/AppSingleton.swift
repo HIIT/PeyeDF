@@ -44,9 +44,24 @@ class AppSingleton {
     }()
     
     /// Convenience function to get monitor DPI
-    static func getMonitorDPI() -> CGFloat {
-        let dpi: Int = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefMonitorDPI) as! Int
-        return CGFloat(dpi)
+    static func getMonitorDPI() -> Int {
+        return NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefMonitorDPI) as! Int
+    }
+    
+    /// Gets DPI programmatically
+    static func getComputedDPI() -> Int? {
+        if NSScreen.screens()?.count > 1 {
+            AppSingleton.alertUser("Can't get dpi", infoText: "Using multiple monitors is not supported yet.")
+            return nil
+        } else {
+            let screen = NSScreen.mainScreen()
+            let id = CGMainDisplayID()
+            let mmSize = CGDisplayScreenSize(id)
+
+            let pixelWidth = screen!.frame.width  //we could do * screen!.backingScaleFactor but OS X normalizes DPI
+            let inchWidth = cmToInch(mmSize.width / 10)
+            return Int(round(pixelWidth / inchWidth))
+        }
     }
     
     /// Convenience function to get preferred eye

@@ -49,7 +49,9 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     @IBAction func extractJson(sender: NSMenuItem) {
         
         let row = historyTable.clickedRow
+        delegate?.historyElementSelected((ev: allHistoryTuples[row].ev, ie: allHistoryTuples[row].ie!))
         let sessionId = allHistoryTuples[row].ev.sessionId
+        let contentHash = allHistoryTuples[row].ie!.contentHash!
         
         // ask for output file first
         let panel = NSSavePanel()
@@ -67,12 +69,19 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
                 
                 var outEyeRects = [EyeRectangle]()
                 
+                // check that info in dime matches selected file
+                if let pdfb = self.delegate?.getPdfBase(), currentHash = pdfb.getDocText()?.sha1() where currentHash != contentHash {
+                    AppSingleton.alertUser("Content of selected file does not match content stored in dime.", infoText: "Was the file moved / edited?")
+                }
+                
                 // generate eye rectangles
                 for event in foundEvents {
-                    outEyeRects.appendContentsOf(EyeRectangle.allEyeRectangles(fromReadingEvent: event, forReadingClass: .Paragraph, andSource: .SMI))
+                    outEyeRects.appendContentsOf(EyeRectangle.allEyeRectangles(fromReadingEvent: event, forReadingClass: .Paragraph, andSource: .SMI, withPdfBase: self.delegate?.getPdfBase()))
                 }
                 
                 if outEyeRects.count > 0 {
+                    
+                    // create object for json
                     var outArray = [AnyObject]()
                     for eyer in outEyeRects {
                         outArray.append(eyer.getDict())
@@ -90,6 +99,14 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
                             // create output file if it doesn't exist
                             if !NSFileManager.defaultManager().fileExistsAtPath(outURL.path!) {
                                 NSFileManager.defaultManager().createFileAtPath(outURL.path!, contents: nil, attributes: nil)
+                            } else {
+                            // if file exists, delete it and create id
+                                do {
+                                    try NSFileManager.defaultManager().removeItemAtURL(outURL)
+                                    NSFileManager.defaultManager().createFileAtPath(outURL.path!, contents: nil, attributes: nil)
+                                } catch {
+                                    AppSingleton.log.error("Could not delete file at \(outURL): \(error)")
+                                }
                             }
                             
                             // write data to existing file
@@ -130,7 +147,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
                 let fileSessionId = json["outData"]["sessionId"].stringValue
                 let tableSessionId = allHistoryTuples[row].ev.sessionId
                 if fileSessionId != tableSessionId {
-                    AppSingleton.alertUser("Json file's id does not match table's id (selected wrong row?)")
+                    AppSingleton.alertUser("Json file's id does not match table's id (selected wrong row or file?)")
                 } else {
                     
                     var outRects = [EyeRectangle]()

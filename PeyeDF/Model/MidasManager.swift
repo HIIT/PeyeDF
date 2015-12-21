@@ -31,7 +31,7 @@ class MidasManager {
     private(set) var midasAvailable: Bool = false
     
     /// Last valid distance from screen in mm (defaults to 60 cm)
-    private(set) var lastValidDistance: Double = 600.0
+    private(set) var lastValidDistance: CGFloat = 600.0
     
     /// Last time for last recorded fixation
     private var lastFixationUnixtime: Int = 0
@@ -191,7 +191,7 @@ class MidasManager {
                 
                 // save last eye position, if valid
                 if lastPos.EyePositionZ > 0 {
-                    self.lastValidDistance = lastPos.EyePositionZ
+                    self.lastValidDistance = CGFloat(lastPos.EyePositionZ)
                 }
             }
         case .Fixations:

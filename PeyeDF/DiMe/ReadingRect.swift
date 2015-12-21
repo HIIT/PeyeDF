@@ -18,9 +18,11 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable {
     var unixt: [NSNumber]
     var floating: Bool
     var scaleFactor: NSNumber
+    var screenDistance: NSNumber
     
     init(pageIndex: Int, origin: NSPoint, size: NSSize, readingClass: ReadingClass, classSource: ClassSource, pdfBase: MyPDFBase?) {
         let newUnixt = NSDate().unixTime
+        self.screenDistance = MidasManager.sharedInstance.lastValidDistance
         self.unixt = [NSNumber]()
         self.unixt.append(newUnixt)
         
@@ -40,6 +42,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable {
     
     init(pageIndex: Int, rect: NSRect, readingClass: ReadingClass, classSource: ClassSource, pdfBase: MyPDFBase?) {
         let newUnixt = NSDate().unixTime
+        self.screenDistance = MidasManager.sharedInstance.lastValidDistance
         self.unixt = [NSNumber]()
         self.unixt.append(newUnixt)
         
@@ -58,6 +61,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable {
     }
     
     init(pageIndex: Int, rect: NSRect, pdfBase: MyPDFBase?) {
+        self.screenDistance = MidasManager.sharedInstance.lastValidDistance
         let newUnixt = NSDate().unixTime
         self.unixt = [NSNumber]()
         self.unixt.append(newUnixt)
@@ -83,6 +87,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable {
         self.classSource = ClassSource.ML
         self.pageIndex = eyeRect.pageIndex
         self.scaleFactor = eyeRect.scaleFactor
+        self.screenDistance = eyeRect.screenDistance
     }
     
     /// Creates a rect from a (dime-used) json object
@@ -100,6 +105,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable {
         if let ptc = json["plainTextContent"].string {
             self.plainTextContent = ptc
         }
+        self.screenDistance = json["screenDistance"].double ?? 600.0
     }
     
     /// Unites these two rectangles and appends the unxtimes of the second rectangle to this rectangle.
@@ -127,7 +133,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable {
         
         if let pdfb = pdfBase {
             if pdfb.document().getText() != nil {
-                newRect.plainTextContent = pdfb.stringForReadingRect(newRect)
+                newRect.plainTextContent = pdfb.stringForRect(newRect)
             }
         } else {
             if newRect.plainTextContent != nil {
@@ -191,6 +197,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable {
         retDict["readingClass"] = self.readingClass.rawValue
         retDict["classSource"] = self.classSource.rawValue
         retDict["scaleFactor"] = self.scaleFactor
+        retDict["screenDistance"] = self.screenDistance
         if let ptc = plainTextContent {
             retDict["plainTextContent"] = ptc
         }

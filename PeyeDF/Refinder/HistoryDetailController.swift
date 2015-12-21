@@ -13,6 +13,8 @@ import Quartz
 /// ScientificDocument). Used to inform the pdf history display classes on which history item was selected and to
 /// communicate which rects to display.
 protocol HistoryDetailDelegate: class {
+    /// Returns a pdf base which can handle rect-to-text, for example
+    func getPdfBase() -> MyPDFBase?
     
     /// Tells the delegate that a new item was selected. Resets setEyeRects
     func historyElementSelected(tuple: (ev: ReadingEvent, ie: ScientificDocument))
@@ -64,6 +66,10 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
     
     func setEyeRects(eyeRects: [EyeRectangle]) {
         self.eyeRects = eyeRects
+    }
+    
+    func getPdfBase() -> MyPDFBase? {
+        return pdfDetail
     }
     
     func setEyeThresholds(readThresh: Double, interestingThresh: Double, criticalThresh: Double) {

@@ -401,13 +401,18 @@ func roundToX(number: CGFloat, places: CGFloat) -> CGFloat {
 public func withinRange(lhs: CGFloat, rhs: CGFloat, range: CGFloat) -> Bool {
     return (lhs + abs(range)) >= rhs && (lhs - abs(range)) <= rhs
 }
+ 
+/// converts centimetres to inches
+public func cmToInch(cmvalue: CGFloat) -> CGFloat {
+    return cmvalue * 0.393701
+}
 
-/// Converts centimetre to inches
-public func cmToInch(cmValue: CGFloat) -> CGFloat {
-    return cmValue * 0.3937
+/// converts millimetres to inches
+public func mmToInch(mmvalue: CGFloat) -> CGFloat {
+    return mmvalue * 0.0393701
 }
 
 /// Converts inches to centimetre
 public func inchToCm(inchValue: CGFloat) -> CGFloat {
-    return inchValue / 0.3937
+    return inchValue / 0.393701
 }

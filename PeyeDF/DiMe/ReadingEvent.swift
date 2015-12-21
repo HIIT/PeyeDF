@@ -25,6 +25,7 @@ class ReadingEvent: Event, NSCopying {
     private(set) var pageNumbers: [Int]?
     
     private(set) var plainTextContent: NSString?
+    private(set) var dpi: Int?
     
     /**
         Creates this reading event.
@@ -41,6 +42,11 @@ class ReadingEvent: Event, NSCopying {
         self.infoElemId = infoElemId
         self.sessionId = sessionId
         self.pageLabels = pageLabels
+        if let dp = AppSingleton.getComputedDPI() {
+            dpi = dp
+        } else {
+            dpi = AppSingleton.getMonitorDPI()
+        }
         self.pageNumbers = pageNumbers
         self.pageRects = pageRects
         self.plainTextContent = plainTextContent
@@ -54,6 +60,7 @@ class ReadingEvent: Event, NSCopying {
         
         //optionals
         plainTextContent = json["plainTextContent"].string
+        dpi = json["dpi"].int
         if let pns = json["pageNumbers"].arrayObject {
             pageNumbers = pns as? [Int]
         }
@@ -105,6 +112,9 @@ class ReadingEvent: Event, NSCopying {
         if let ptc = plainTextContent {
             retDict["plainTextContent"] = ptc
         }
+        if let dp = dpi {
+            retDict["dpi"] = dp
+        }
         if pageEyeData.count > 0 {
             var dataArray = [[String: AnyObject]]()
             for dataChunk in pageEyeData {
@@ -138,6 +148,7 @@ class ReadingEvent: Event, NSCopying {
     /// - parameter zone: this parameter is ignored
     func copyWithZone(zone: NSZone) -> AnyObject {
         let newEvent = ReadingEvent(sessionId: self.sessionId, pageNumbers: self.pageNumbers!, pageLabels: self.pageLabels!, pageRects: self.pageRects, plainTextContent: plainTextContent, infoElemId: self.infoElemId)
+        newEvent.dpi = self.dpi
         return newEvent
     }
 }
