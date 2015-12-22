@@ -141,7 +141,8 @@ struct EyeRectangle: Dictionariable {
     /// - parameter maxHeight: the maximum height of the returned rectangles. Current rectangle will be divided into many rectangles of equal height (which will be less than this value)
     /// - parameter pdfBase: If set, will use given class to extract plainTextContent from PDF (plainTextContent will be nil otherwise)
     func splitAndCrop(dpi: Int, _ pdfBase: MyPDFBase?) -> [EyeRectangle] {
-        let maxHeight = pointSpan(zoomLevel: CGFloat(self.scaleFactor), dpi: dpi, distancemm: CGFloat(self.screenDistance))
+        // calculate max height by multiplying standard box size (3 visual angle calc) * 1.5
+        let maxHeight = pointSpan(zoomLevel: CGFloat(self.scaleFactor), dpi: dpi, distancemm: CGFloat(self.screenDistance)) * 1.5
         
         // number of new rects
         let newNum = Int(ceil(self.size.height/maxHeight))

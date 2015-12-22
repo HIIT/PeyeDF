@@ -181,6 +181,9 @@ class HistoryManager: FixationDataDelegate {
                         let json = JSON(response.result.value!)
                         if let error = json["error"].string {
                             AppSingleton.log.error("DiMe reply to submission contains error:\n\(error)")
+                            if let message = json["message"].string {
+                                AppSingleton.log.error("DiMe's error message:\n\(message)")
+                            }
                         } else {
                             // assume submission was a success, call callback (if any) with returned id
                             callback?(json["id"].intValue)
