@@ -97,7 +97,7 @@ class eyeBox: NSBox {
 }
 
 /// Given a value and an input range, return a value in the output range
-func translate(value: CGFloat, leftMin: CGFloat, leftMax: CGFloat, rightMin: CGFloat, rightMax: CGFloat) -> CGFloat {
+private func translate(value: CGFloat, leftMin: CGFloat, leftMax: CGFloat, rightMin: CGFloat, rightMax: CGFloat) -> CGFloat {
     // Figure out how 'wide' each range is
     let leftSpan = leftMax - leftMin
     let rightSpan = rightMax - rightMin
