@@ -56,7 +56,8 @@ class DocumentInformationElement: DiMeBase {
         
         // dime-required
         theDictionary["@type"] = "Document"
-        theDictionary["type"] = "http://www.hiit.fi/ontologies/dime/#Document"
+        theDictionary["type"] = "http://www.hiit.fi/ontologies/dime/#ScientificDocument"
+        theDictionary["isStoredAs"] = "http://www.semanticdesktop.org/ontologies/2007/03/22/nfo/#LocalFileDataObject"
         
         return theDictionary
     }
