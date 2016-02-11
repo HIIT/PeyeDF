@@ -179,6 +179,69 @@ struct PDFMarkings {
             }
         }
     }
+    
+    /// Calculate proportion of Read, Interesting and Critical markings for the given parameters.
+    /// This is done by calculating the total area of each page and multiplying it by a constant.
+    /// All rectangles (which will be united) are then cycled and the area of each is subtracted
+    /// to calculate a proportion. Returns nil if no pdfBase is connected.
+    mutating func calculateProportions_relevance() -> (proportionRead: Double, proportionInteresting: Double, proportionCritical: Double)? {
+        guard let pdf = pdfBase else {
+            AppSingleton.log.warning("Was requested to compute proportions, but did not find an associated pdfBase")
+            return nil
+        }
+        flattenRectangles_relevance()
+        var totalSurface = 0.0
+        var readSurface = 0.0
+        var interestingSurface = 0.0
+        var criticalSurface = 0.0
+        for pageI in 0 ..< pdf.document().pageCount() {
+            let thePage = pdf.document().pageAtIndex(pageI)
+            let pageRect = pdf.getPageRect(thePage)
+            let pageSurface = Double(pageRect.size.height * pageRect.size.width)
+            totalSurface += pageSurface
+            for rect in get(ofClass: .Read, forPage: pageI) {
+                readSurface += Double(rect.rect.size.height * rect.rect.size.width)
+            }
+            for rect in get(ofClass: .Interesting, forPage: pageI) {
+                interestingSurface += Double(rect.rect.size.height * rect.rect.size.width)
+            }
+            for rect in get(ofClass: .Critical, forPage: pageI) {
+                criticalSurface += Double(rect.rect.size.height * rect.rect.size.width)
+            }
+        }
+        totalSurface *= PeyeConstants.pageAreaMultiplier
+        let proportionRead = readSurface / totalSurface
+        let proportionInteresting = interestingSurface / totalSurface
+        let proportionCritical = criticalSurface / totalSurface
+        return (proportionRead: proportionRead, proportionInteresting: proportionInteresting, proportionCritical: proportionCritical)
+    }
+    
+    /// Calculate proportion of gazed-at united rectangles for the markings passed as a parameter.
+    /// This is done by calculating the total area of each page and multiplying it by a constant.
+    /// All rectangles (which will be united) are then cycled and the area of each is subtracted
+    /// to calculate a proportion. Returns 0 if no pdfBase is connected.
+    mutating func calculateProportion_smi() -> Double {
+        guard let pdf = pdfBase else {
+            AppSingleton.log.warning("Was requested to compute smi proportions, but did not find an associated pdfBase")
+            return 0
+        }
+        flattenRectangles_eye()
+        var totalSurface = 0.0
+        var gazedSurface = 0.0
+        for pageI in 0..<pdf.document().pageCount() {
+            let thePage = pdf.document().pageAtIndex(pageI)
+            let pageRect = pdf.getPageRect(thePage)
+            let pageSurface = Double(pageRect.size.height * pageRect.size.width)
+            totalSurface += pageSurface
+            for rect in get(onlyClass: .Paragraph) {
+                gazedSurface += Double(rect.rect.size.height * rect.rect.size.width)
+            }
+        }
+        totalSurface *= PeyeConstants.pageAreaMultiplier
+        let proportionGazed = gazedSurface / totalSurface
+        return proportionGazed
+    }
+    
 
     /// Given an array of reading rectangles, return a sorted version of the array
     /// (sorted so that elements coming first should have been read first in western order)

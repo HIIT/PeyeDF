@@ -185,7 +185,6 @@ class MyPDFBase: PDFView {
         }
     }
     
-    
     /// Writes all annotations corresponding to all marks, and deletes intersecting rectangles for "lower-class" rectangles which
     /// intersect with "higher-class" rectangles
     func autoAnnotate() {
@@ -194,61 +193,6 @@ class MyPDFBase: PDFView {
         outputAnnotations(.Critical, colour: PeyeConstants.annotationColourCritical)
         outputAnnotations(.Interesting, colour: PeyeConstants.annotationColourInteresting)
         outputAnnotations(.Read, colour: PeyeConstants.annotationColourRead)
-    }
-    
-    
-    /// Calculate proportion of Read, Interesting and Critical markings for the given parameters.
-    /// This is done by calculating the total area of each page and multiplying it by a constant.
-    /// All rectangles (which will be united) are then cycled and the area of each is subtracted
-    /// to calculate a proportion.
-    func calculateProportions_relevance(var markings: PDFMarkings) -> (proportionRead: Double, proportionInteresting: Double, proportionCritical: Double, markings: PDFMarkings) {
-        markings.flattenRectangles_relevance()
-        var totalSurface = 0.0
-        var readSurface = 0.0
-        var interestingSurface = 0.0
-        var criticalSurface = 0.0
-        for pageI in 0..<document().pageCount() {
-            let thePage = document().pageAtIndex(pageI)
-            let pageRect = getPageRect(thePage)
-            let pageSurface = Double(pageRect.size.height * pageRect.size.width)
-            totalSurface += pageSurface
-            for rect in markings.get(ofClass: .Read, forPage: pageI) {
-                readSurface += Double(rect.rect.size.height * rect.rect.size.width)
-            }
-            for rect in markings.get(ofClass: .Interesting, forPage: pageI) {
-                interestingSurface += Double(rect.rect.size.height * rect.rect.size.width)
-            }
-            for rect in markings.get(ofClass: .Critical, forPage: pageI) {
-                criticalSurface += Double(rect.rect.size.height * rect.rect.size.width)
-            }
-        }
-        totalSurface *= PeyeConstants.pageAreaMultiplier
-        let proportionRead = readSurface / totalSurface
-        let proportionInteresting = interestingSurface / totalSurface
-        let proportionCritical = criticalSurface / totalSurface
-        return (proportionRead: proportionRead, proportionInteresting: proportionInteresting, proportionCritical: proportionCritical, markings: markings)
-    }
-    
-    /// Calculate proportion of gazed-at united rectangles for the markings passed as a parameter.
-    /// This is done by calculating the total area of each page and multiplying it by a constant.
-    /// All rectangles (which will be united) are then cycled and the area of each is subtracted
-    /// to calculate a proportion.
-    func calculateProportion_smi(var markings: PDFMarkings) -> (proportionGazed: Double, markings: PDFMarkings) {
-        markings.flattenRectangles_eye()
-        var totalSurface = 0.0
-        var gazedSurface = 0.0
-        for pageI in 0..<document().pageCount() {
-            let thePage = document().pageAtIndex(pageI)
-            let pageRect = getPageRect(thePage)
-            let pageSurface = Double(pageRect.size.height * pageRect.size.width)
-            totalSurface += pageSurface
-            for rect in markings.get(onlyClass: .Paragraph) {
-                gazedSurface += Double(rect.rect.size.height * rect.rect.size.width)
-            }
-        }
-        totalSurface *= PeyeConstants.pageAreaMultiplier
-        let proportionGazed = gazedSurface / totalSurface
-        return (proportionGazed: proportionGazed, markings: markings)
     }
     
     // MARK: - Internal functions

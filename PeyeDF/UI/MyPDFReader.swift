@@ -380,19 +380,19 @@ class MyPDFReader: MyPDFBase {
     ///            etc was less than a minimum amount (suggesting the document wasn't actually read)
     func getUserRectStatus() -> SummaryReadingEvent? {
         // Calculate proportion for Read, Critical and Interesting rectangles
-        let proportionQuad = calculateProportions_relevance(markings)  // note: markings are a passed as a parameter because this method can be called from a different thread
+        let prop = markings.calculateProportions_relevance()!
         
         var totProportion = 0.0
-        totProportion += proportionQuad.proportionRead
-        totProportion += proportionQuad.proportionInteresting
-        totProportion += proportionQuad.proportionCritical
+        totProportion += prop.proportionRead
+        totProportion += prop.proportionInteresting
+        totProportion += prop.proportionCritical
         
-        let computedSMI = calculateProportion_smi(proportionQuad.markings)
+        let gazedArea = markings.calculateProportion_smi()
         
-        if totProportion < PeyeConstants.minProportion && computedSMI.proportionGazed < PeyeConstants.minProportion {
+        if totProportion < PeyeConstants.minProportion && gazedArea < PeyeConstants.minProportion {
             return nil
         } else {
-            let retEv = SummaryReadingEvent(rects: computedSMI.markings.getAllReadingRects(), sessionId: sessionId, plainTextContent: nil, infoElemId: sciDoc!.getId(), foundStrings: foundStrings, proportionRead: proportionQuad.proportionRead, proportionInteresting: proportionQuad.proportionInteresting, proportionCritical: proportionQuad.proportionCritical)
+            let retEv = SummaryReadingEvent(rects: markings.getAllReadingRects(), sessionId: sessionId, plainTextContent: nil, infoElemId: sciDoc!.getId(), foundStrings: foundStrings, proportionRead: prop.proportionRead, proportionInteresting: prop.proportionInteresting, proportionCritical: prop.proportionCritical)
             if let id = summaryId {
                 retEv.setId(id)
             }

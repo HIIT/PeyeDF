@@ -117,7 +117,10 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
     func getMarkings() -> (rects: [ReadingRect], pRead: Double, pInteresting: Double, pCritical: Double)? {
         if !requiresThresholdComputation {
             let rects = pdfDetail.markings.getAllReadingRects()
-            let prop = pdfDetail.calculateProportions_relevance(pdfDetail.markings)
+            guard let prop = pdfDetail.markings.calculateProportions_relevance() else {
+                AppSingleton.alertUser("Failed to retrieve proportions (this should NEVER happen)")
+                return nil
+            }
             return (rects: rects, pRead: prop.proportionRead, pInteresting: prop.proportionInteresting, pCritical: prop.proportionCritical)
         } else {
             AppSingleton.alertUser("Must compute thresholds before requesting markings")
