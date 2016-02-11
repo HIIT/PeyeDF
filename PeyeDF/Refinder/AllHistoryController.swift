@@ -9,7 +9,7 @@
 import Foundation
 import Cocoa
 
-/// AllHistoryController 
+/// Manages "all history" that is, all the documents stored in dime, and allows to manipulate some of that history
 class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewDataSource, NSTableViewDelegate {
     
     var delegate: HistoryDetailDelegate?
@@ -18,6 +18,9 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     var diMeFetcher: DiMeFetcher?
     
     var allHistoryTuples = [(ev: SummaryReadingEvent, ie: ScientificDocument?)]()
+    
+    var lastImportedSessionId = ""
+    var lastImportedIndex = -1
     
     override func viewDidLoad() {
         // creates dime fetcher with self as receiver and prepares to receive table selection notifications
@@ -148,18 +151,61 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
                 let tableSessionId = allHistoryTuples[row].ev.sessionId
                 if fileSessionId != tableSessionId {
                     AppSingleton.alertUser("Json file's id does not match table's id (selected wrong row or file?)")
+                    
+                    lastImportedIndex = -1
+                    lastImportedSessionId = ""
                 } else {
                     
                     var outRects = [EyeRectangle]()
                     for outR in json["outData"]["outRects"].arrayValue {
                         outRects.append(EyeRectangle(fromJson: outR))
                     }
+                    
+                    // normalize imported rects so attnVal ranges between 0 and 1
+                    outRects = outRects.normalize()
+                    
                     self.performSegueWithIdentifier("showThresholdEditor", sender: self)
                     delegate?.setEyeRects(outRects)
+                    
+                    lastImportedIndex = row
+                    lastImportedSessionId = tableSessionId
                 }
+            } else {
+                lastImportedIndex = -1
+                lastImportedSessionId = ""
             }
+        } else {
+            lastImportedIndex = -1
+            lastImportedSessionId = ""
         }
         
+    }
+    
+    /// Send the computed rectangles back to dime
+    @IBAction func sendToDiMe(sender: NSMenuItem) {
+        let row = historyTable.clickedRow
+        if row >= 0 {
+            let sessionId = allHistoryTuples[row].ev.sessionId
+            guard row == lastImportedIndex && sessionId == lastImportedSessionId else {
+                AppSingleton.alertUser("Last imported row and/or session id do not match (selected wrong row?)")
+                return
+            }
+            guard lastImportedSessionId != "" && lastImportedIndex != -1 else {
+                AppSingleton.alertUser("Nothing was imported last!")
+                return
+            }
+            
+            if let info = delegate!.getMarkings() {
+                let summaryEvent = allHistoryTuples[row].ev
+                summaryEvent.setProportions(info.pRead, pInteresting: info.pInteresting, pCritical: info.pCritical)
+                summaryEvent.setRects(info.rects)
+                HistoryManager.sharedManager.sendToDiMe(summaryEvent, endPoint: .Event) {
+                    _ in
+                    AppSingleton.alertUser("Data successfully sent")
+                }
+            }
+        
+        }
     }
     
     // MARK: - DiMe communication

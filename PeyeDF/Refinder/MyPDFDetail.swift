@@ -10,6 +10,7 @@ import Cocoa
 import Quartz
 import Foundation
 
+/// Extends the base pdf view to allow quick seeking
 class MyPDFDetail: MyPDFBase {
 
     /// Scrolls the view to the given rect on the given page index

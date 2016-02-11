@@ -214,3 +214,19 @@ struct EyeRectangle: Dictionariable {
     }
     
 }
+
+extension SequenceType where Generator.Element == EyeRectangle {
+    
+    /// Normalize attnVal of all eye rectangles so that they range between 0 and 1
+    func normalize() -> [EyeRectangle] {
+        let attnVals: [Double] = self.map({$0.attnVal! as Double})
+        let minVal = attnVals.minElement()!
+        let maxVal = attnVals.maxElement()!
+        return self.map() {
+            var retVal = $0
+            retVal.attnVal = ($0.attnVal! as Double - minVal) / (maxVal - minVal)
+            return retVal
+        }
+    }
+    
+}

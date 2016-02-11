@@ -80,6 +80,10 @@ class ReadingEvent: Event, NSCopying {
         }
         
         super.init(withStartDate: dateCreated)
+        
+        if let id = json["id"].int {
+            super.setId(id)
+        }
     }
     
     /// Adds eye tracking data to this reading event
@@ -95,6 +99,13 @@ class ReadingEvent: Event, NSCopying {
     /// Appends a list of reading rects to the current rectangle list
     func extendRects(newRects: [ReadingRect]) {
         self.pageRects.appendContentsOf(newRects)
+    }
+    
+    /// Sets current rects with a new set of rects.
+    /// - Warning: This can break associations between page numbers and eye data chunks, make
+    /// sure this is not done across events coming from different sources.
+    func setRects(newRects: [ReadingRect]) {
+        pageRects = newRects
     }
     
     /// Returns dictionary for this reading event. Overridden to allow custom values

@@ -201,7 +201,7 @@ class MyPDFBase: PDFView {
     /// This is done by calculating the total area of each page and multiplying it by a constant.
     /// All rectangles (which will be united) are then cycled and the area of each is subtracted
     /// to calculate a proportion.
-    func calculateProportions_manual(var markings: PDFMarkings) -> (proportionRead: Double, proportionInteresting: Double, proportionCritical: Double, markings: PDFMarkings) {
+    func calculateProportions_relevance(var markings: PDFMarkings) -> (proportionRead: Double, proportionInteresting: Double, proportionCritical: Double, markings: PDFMarkings) {
         markings.flattenRectangles_relevance()
         var totalSurface = 0.0
         var readSurface = 0.0

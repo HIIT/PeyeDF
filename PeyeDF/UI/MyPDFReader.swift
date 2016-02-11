@@ -380,7 +380,7 @@ class MyPDFReader: MyPDFBase {
     ///            etc was less than a minimum amount (suggesting the document wasn't actually read)
     func getUserRectStatus() -> SummaryReadingEvent? {
         // Calculate proportion for Read, Critical and Interesting rectangles
-        let proportionQuad = calculateProportions_manual(markings)  // note: markings are a passed as a parameter because this method can be called from a different thread
+        let proportionQuad = calculateProportions_relevance(markings)  // note: markings are a passed as a parameter because this method can be called from a different thread
         
         var totProportion = 0.0
         totProportion += proportionQuad.proportionRead
@@ -392,7 +392,7 @@ class MyPDFReader: MyPDFBase {
         if totProportion < PeyeConstants.minProportion && computedSMI.proportionGazed < PeyeConstants.minProportion {
             return nil
         } else {
-            let retEv = SummaryReadingEvent(rects: computedSMI.markings.getAllReadingRects(), sessionId: sessionId, plainTextContent: nil, infoElemId: sciDoc!.getId(), foundStrings: foundStrings, pdfReader: self, proportionRead: proportionQuad.proportionRead, proportionInteresting: proportionQuad.proportionInteresting, proportionCritical: proportionQuad.proportionCritical)
+            let retEv = SummaryReadingEvent(rects: computedSMI.markings.getAllReadingRects(), sessionId: sessionId, plainTextContent: nil, infoElemId: sciDoc!.getId(), foundStrings: foundStrings, proportionRead: proportionQuad.proportionRead, proportionInteresting: proportionQuad.proportionInteresting, proportionCritical: proportionQuad.proportionCritical)
             if let id = summaryId {
                 retEv.setId(id)
             }

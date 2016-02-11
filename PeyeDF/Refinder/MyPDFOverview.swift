@@ -10,6 +10,7 @@ import Cocoa
 import Quartz
 import Foundation
 
+/// Extends the basic pdf support to allow an overview of a document
 class MyPDFOverview: MyPDFBase {
     
     weak var pdfDetail: MyPDFDetail?

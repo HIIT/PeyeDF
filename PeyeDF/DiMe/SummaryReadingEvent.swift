@@ -20,7 +20,7 @@ class SummaryReadingEvent: ReadingEvent {
     
     /** Creates a summary reading event, which contains all "markings" in form of rectangles
     */
-    required init(rects: [ReadingRect], sessionId: String, plainTextContent: NSString?, infoElemId: NSString, foundStrings: [String], pdfReader: MyPDFReader?, proportionRead: Double, proportionInteresting: Double, proportionCritical: Double) {
+    required init(rects: [ReadingRect], sessionId: String, plainTextContent: NSString?, infoElemId: NSString, foundStrings: [String], proportionRead: Double, proportionInteresting: Double, proportionCritical: Double) {
         
         self.proportionRead = proportionRead
         self.proportionCritical = proportionCritical
@@ -65,5 +65,12 @@ class SummaryReadingEvent: ReadingEvent {
         retDict["type"] = ("http://www.hiit.fi/ontologies/dime/#SummaryReadingEvent")
         
         return retDict
+    }
+    
+    /// Overwrite the current set of read/critical/interesting values
+    func setProportions(pRead: Double, pInteresting: Double, pCritical: Double) {
+        self.proportionRead = pRead
+        self.proportionInteresting = pInteresting
+        self.proportionCritical = pCritical
     }
 }

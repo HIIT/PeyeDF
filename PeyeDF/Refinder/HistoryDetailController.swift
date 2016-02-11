@@ -26,6 +26,12 @@ protocol HistoryDetailDelegate: class {
     /// a set of markings (reading rect) using the specified threshold.
     /// - Requires: call setEyeRects before this because historyElementSelected invalidates eyeRects
     func setEyeThresholds(readThresh: Double, interestingThresh: Double, criticalThresh: Double)
+    
+    /// Returns all information (reading rectangles, proportion) from a document
+    /// - Requires: Threshold computation after import
+    /// - Returns: Annotated eye rects and proportions (nil if thresholds were not computed)
+    func getMarkings() -> (rects: [ReadingRect], pRead: Double, pInteresting: Double, pCritical: Double)?
+    
 }
 
 
@@ -34,6 +40,7 @@ protocol HistoryDetailDelegate: class {
 class HistoryDetailController: NSViewController, HistoryDetailDelegate {
     
     private var eyeRects: [EyeRectangle]?
+    private var requiresThresholdComputation = true
 
     @IBOutlet weak var pdfOverview: MyPDFOverview!
     @IBOutlet weak var pdfDetail: MyPDFDetail!
@@ -57,6 +64,7 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
         } else {
             AppSingleton.alertUser("Can't find original file", infoText: tuple.ie.uri)
         }
+        requiresThresholdComputation = true
     }
     
     override func viewDidLoad() {
@@ -99,8 +107,21 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
                 self.pdfDetail.layoutDocumentView()
                 self.pdfDetail.display()
             }
+            requiresThresholdComputation = false
         } else {
             AppSingleton.alertUser("Nothing to set thresholds for (forgot to import json?).")
+            requiresThresholdComputation = true
+        }
+    }
+    
+    func getMarkings() -> (rects: [ReadingRect], pRead: Double, pInteresting: Double, pCritical: Double)? {
+        if !requiresThresholdComputation {
+            let rects = pdfDetail.markings.getAllReadingRects()
+            let prop = pdfDetail.calculateProportions_relevance(pdfDetail.markings)
+            return (rects: rects, pRead: prop.proportionRead, pInteresting: prop.proportionInteresting, pCritical: prop.proportionCritical)
+        } else {
+            AppSingleton.alertUser("Must compute thresholds before requesting markings")
+            return nil
         }
     }
 }
