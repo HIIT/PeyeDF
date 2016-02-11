@@ -16,7 +16,7 @@ PeyeDF can be installed like any app. After running, open the preferences window
 
 The following GitHub projects are linked as git submodules.
 
-[Alamofire version 3.1.3](https://github.com/Alamofire/Alamofire/releases/tag/3.1.3) - For easier DiMe API calls. The correct version should be already checked out as a submodule (in case it's not, do `git checkout tags/3.1.3` in the Alamofire subfolder).
+[Alamofire version 3.2.0](https://github.com/Alamofire/Alamofire/releases/tag/3.2.0) - For easier DiMe API calls. The correct version should be already checked out as a submodule (in case it's not, do `git checkout tags/3.2.0` in the Alamofire subfolder).
 
 ## Embedded
 
