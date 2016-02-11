@@ -71,7 +71,7 @@ class HistoryManager: FixationDataDelegate {
     func dimeConnect() {
         
         let server_url = AppSingleton.dimeUrl
-        let headers = AppSingleton.dimeHeaders
+        let headers = AppSingleton.dimeHeaders()
         
         let dictionaryObject = ["test": "test"]
         
@@ -169,7 +169,7 @@ class HistoryManager: FixationDataDelegate {
                 
                 // assume json conversion was a success, hence send to dime
                 let server_url = AppSingleton.dimeUrl
-                let headers = AppSingleton.dimeHeaders
+                let headers = AppSingleton.dimeHeaders()
                 
                 Alamofire.request(Alamofire.Method.POST, server_url + "/data/\(endPoint.rawValue)", parameters: dimeData.getDict(), encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON {
                     response in

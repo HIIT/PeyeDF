@@ -61,7 +61,7 @@ class DiMeFetcher {
     static func retrieveScientificDocument(infoElemId: String, callback: (ScientificDocument?) -> Void) {
         
         let server_url = AppSingleton.dimeUrl
-        let headers = AppSingleton.dimeHeaders
+        let headers = AppSingleton.dimeHeaders()
         
         let reqString = server_url + "/data/informationelements?appId=" + infoElemId
         
@@ -98,7 +98,7 @@ class DiMeFetcher {
     ///                        using dime filtering. Set to nil to get all events.
     private func fetchPeyeDFEvents(getSummaries getSummaries: Bool, sessionId: String?, callback: (JSON) -> Void) {
         let server_url = AppSingleton.dimeUrl
-        let headers = AppSingleton.dimeHeaders
+        let headers = AppSingleton.dimeHeaders()
         
         var filterString = ""
         if sessionId != nil {
