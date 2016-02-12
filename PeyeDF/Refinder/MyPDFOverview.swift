@@ -109,6 +109,10 @@ class MyPDFOverview: MyPDFBase {
     
     /// Single click to scroll pdfDetail to the desired point
     override func mouseDown(theEvent: NSEvent) {
+        guard let doc = self.document() else {
+            return
+        }
+        
         let piw = theEvent.locationInWindow
         let mouseInView = self.convertPoint(piw, fromView: nil)
         
@@ -116,7 +120,7 @@ class MyPDFOverview: MyPDFBase {
         let activePage = self.pageForPoint(mouseInView, nearest: true)
         
         // Index for current page
-        let pageIndex = self.document().indexForPage(activePage)
+        let pageIndex = doc.indexForPage(activePage)
 
         // Get location in "page space".
         let pagePoint = self.convertPoint(mouseInView, toPage: activePage)
