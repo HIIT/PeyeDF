@@ -94,10 +94,6 @@ class Person: DiMeBase {
             theDictionary["middleNames"] = middleNames
         }
         
-        // dime-required
-        theDictionary["@type"] = "Person"
-        theDictionary["type"] = "http://www.hiit.fi/ontologies/dime/#Person"
-        
         return theDictionary
     }
 }

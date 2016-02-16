@@ -300,10 +300,8 @@ class HistoryManager: FixationDataDelegate {
                 
                 // if there are smi rectangles to send, unite them and send
                 if var csmi = SMIMarksToSend where csmi.getCount() > 0 {
-                    Swift.print("Number of rects before flattening: \(csmi.getAllReadingRects().count)")
                     csmi.flattenRectangles_eye()
                     eventToSend.extendRects(csmi.getAllReadingRects())
-                    Swift.print("Number of rects sent: \(csmi.getAllReadingRects().count)")
                 }
                 
                 self.sendToDiMe(eventToSend, endPoint: .Event)

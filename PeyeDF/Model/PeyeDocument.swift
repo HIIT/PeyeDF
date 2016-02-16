@@ -39,7 +39,6 @@ class PeyeDocument: NSDocument {
         
         let windowController = storyboard.instantiateControllerWithIdentifier("Document Window Controller") as! DocumentWindowController
         self.addWindowController(windowController)
-        AppSingleton.appDelegate.openPDFs++
         windowController.loadDocument()
         windowController.shouldCloseDocument = true // tell to automaticall close document when closing window
     }

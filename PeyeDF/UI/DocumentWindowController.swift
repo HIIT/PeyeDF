@@ -209,11 +209,11 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         
         pdfReader?.setAutoScales(true)
         
-        // Create debug window
-        debugWindowController = AppSingleton.mainStoryboard.instantiateControllerWithIdentifier("DebugWindow") as? NSWindowController
-        debugWindowController?.showWindow(self)
-        debugController = (debugWindowController?.contentViewController as! DebugController)
-        debugController?.setUpMonitors(pdfReader!, docWindow: self.window!)
+        // Create debug window (disabled for now)
+//        debugWindowController = AppSingleton.mainStoryboard.instantiateControllerWithIdentifier("DebugWindow") as? NSWindowController
+//        debugWindowController?.showWindow(self)
+//        debugController = (debugWindowController?.contentViewController as! DebugController)
+//        debugController?.setUpMonitors(pdfReader!, docWindow: self.window!)
         
         // Prepare to receive events
         setUpObservers()
@@ -425,6 +425,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     // DocumentWindowController is the delegate of DocumentWindow
     
     /// This window is going to close, send exit event and send all paragraph data to HistoryManager as summary
+    /// Must call this synchonously, since it uses a dispatch group
     func windowShouldClose(sender: AnyObject) -> Bool {
         HistoryManager.sharedManager.exit(self)
         unSetObservers()
@@ -438,12 +439,11 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             wvc.someText = "Sending data to DiMe..."
             self.window!.beginSheet(ww, completionHandler: nil)
             // send data to dime
-            dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
+            dispatch_group_async(AppSingleton.appDelegate.closeGroup, AppSingleton.appDelegate.closeQueue) {
                 if let mpdf = self.pdfReader, userRectStatus = mpdf.getUserRectStatus() {
                     HistoryManager.sharedManager.sendToDiMe(userRectStatus, endPoint: .Event)
                 }
-                dispatch_sync(dispatch_get_main_queue()) {
-                    AppSingleton.appDelegate.openPDFs--
+                dispatch_async(dispatch_get_main_queue()) {
                     ww.close()
                     self.window!.close()
                 }
@@ -452,10 +452,6 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         } else {
             return true
         }
-    }
-    
-    func windowWillClose(notification: NSNotification) {
-        AppSingleton.appDelegate.openPDFs--
     }
     
     /// Ensures that the document window never gets bigger than the maximum

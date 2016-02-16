@@ -13,7 +13,7 @@ class DiMeBase: NSObject, Dictionariable {
     
     /// Main dictionary storing all data
     ///
-    /// **Important**: all sublasses must set these two keys, in order to be decoded by dime:
+    /// **Important**: endpoint classes (Event, InformationElement as subclasses) must set these two keys, in order to be decoded by dime:
     /// - @type
     /// - type
     var theDictionary = [String: AnyObject]()

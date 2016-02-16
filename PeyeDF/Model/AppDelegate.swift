@@ -12,6 +12,14 @@ import Quartz
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
+    /// Dispatch group for closing documents
+    let closeGroup = dispatch_group_create()
+    /// CGD queue for closing documents
+    let closeQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+    
+    /// Document controller
+    var documentController: DocumentController!
+    
     /// Outlet for connect to dime menu item
     @IBOutlet weak var connectDime: NSMenuItem!
     
@@ -20,9 +28,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     /// Refinder window
     var refinderWindow: NSWindowController?
-    
-    /// Counts how many open document windows there are. If >0 PeyeDF refuses to quit
-    var openPDFs = 0
     
     /// Creates default preferences
     func applicationDidFinishLaunching(aNotification: NSNotification) {
@@ -90,10 +95,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     /// Shows logs menu
     @IBAction func showLogsPath(sender: AnyObject) {
-        let logsPath = AppSingleton.logsURL.path!
-        NSPasteboard.generalPasteboard().declareTypes([NSStringPboardType], owner: self)
-        NSPasteboard.generalPasteboard().setString(logsPath, forType: NSStringPboardType)
-        AppSingleton.alertUser("Logs file path copied to clipboard.", infoText: logsPath)
+        if let logsPath = AppSingleton.logsURL.path {
+            NSPasteboard.generalPasteboard().declareTypes([NSStringPboardType], owner: self)
+            NSPasteboard.generalPasteboard().setString(logsPath, forType: NSStringPboardType)
+            AppSingleton.alertUser("Logs file path copied to clipboard.", infoText: logsPath)
+        } else {
+            AppSingleton.alertUser("Nothing logged so far.")
+        }
     }
 
     @IBAction func allDocMetadata(sender: AnyObject) {
@@ -125,13 +133,23 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return false
     }
     
+    func applicationWillFinishLaunching(notification: NSNotification) {
+        /// Simply instatiate this to make it the default document controller
+        documentController = DocumentController()
+    }
+    
     func applicationShouldTerminate(sender: NSApplication) -> NSApplicationTerminateReply {
-        if openPDFs > 0 {
-            AppSingleton.alertUser("Please close all open documents before qutting")
-            return .TerminateCancel
-        } else {
-            return .TerminateNow
+        /// get all documents and their window controller, and ask to close
+        let documents = NSDocumentController.sharedDocumentController().documents
+        for doc in documents {
+            let controller = doc.windowControllers[0]
+            controller.window?.performClose(self)
         }
+        let waitInterval: NSTimeInterval = 60  // wait 60 seconds for everything to close
+        let waitTime = dispatch_time(DISPATCH_TIME_NOW,
+                                     Int64(waitInterval * Double(NSEC_PER_SEC)))
+        dispatch_group_wait(closeGroup, waitTime)
+        return .TerminateNow
     }
     
     // MARK: - Notification callbacks

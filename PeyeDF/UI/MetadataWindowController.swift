@@ -23,19 +23,8 @@ class MetadataWindowController: NSWindowController, NSWindowDelegate {
             return true
         }
         if sender.documentEdited {
-            let myAl = NSAlert()
-            myAl.messageText = "Do you want to save the changes to the document's metadata?"
-            myAl.addButtonWithTitle("Yes")
-            myAl.addButtonWithTitle("No")
-            myAl.beginSheetModalForWindow(self.window!) {
-                response in
-                
-                if response == NSAlertFirstButtonReturn {
-                    self.metadataView?.saveData()
-                }
-                self.close()
-            }
-            return false
+            self.metadataView?.saveData()
+            return true
         } else {
             return true
         }
