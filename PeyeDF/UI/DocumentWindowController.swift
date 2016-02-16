@@ -19,6 +19,9 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     /// Regular timer for this window
     var regularTimer: NSTimer?
     
+    /// To make sure only one summary event is sent to dime
+    var closeToken: Int = 0
+    
     weak var pdfReader: MyPDFReader?
     weak var docSplitController: DocumentSplitController?
     weak var mainSplitController: MainSplitController?
@@ -162,7 +165,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         
         // show window controller for metadata and send data
         metadataWindowController?.showWindow(self)
-        metadataWindowController?.setDoc(pdfReader!.document())
+        metadataWindowController?.setDoc(pdfReader!.document(), mainWC: self)
     }
     
     
@@ -313,6 +316,41 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     // MARK: - Unloading
     
+    /// This window is going to close, send exit event and send all paragraph data to HistoryManager as summary. Calls the given callback once done saving to dime.
+    func unload(callback: (Void -> Void)? = nil) {
+        HistoryManager.sharedManager.exit(self)
+        self.unSetObservers()
+        self.debugController?.unSetMonitors(self.pdfReader!, docWindow: self.window!)
+        self.debugController?.view.window?.close()
+        self.metadataWindowController?.close()
+        // If dime is available, set up a semaphore and wait for it to signal before closing
+        if HistoryManager.sharedManager.dimeAvailable {
+            let ww = NSWindow()
+            Swift.print(NSThread.isMainThread())
+            let wvc = AppSingleton.mainStoryboard.instantiateControllerWithIdentifier("WaitVC") as! WaitViewController
+            ww.contentViewController = wvc
+            wvc.someText = "Sending data to DiMe..."
+            self.window!.beginSheet(ww, completionHandler: nil)
+            // send data to dime
+            if closeToken == 0 {
+                closeToken += 1
+                if let mpdf = self.pdfReader, userRectStatus = mpdf.getUserRectStatus() {
+                    HistoryManager.sharedManager.sendToDiMe(userRectStatus, endPoint: .Event) {
+                        _ in
+                        // signal on success
+                        callback?()
+                    }
+                } else {
+                    callback?()
+                }
+            } else {
+                callback?()
+            }
+        } else {
+            callback?()
+        }
+    }
+    
     /// Removes all the observers created in setUpObservers()
     private func unSetObservers() {
         
@@ -422,37 +460,6 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     }
    
     // MARK: - Window delegate
-    // DocumentWindowController is the delegate of DocumentWindow
-    
-    /// This window is going to close, send exit event and send all paragraph data to HistoryManager as summary
-    /// Must call this synchonously, since it uses a dispatch group
-    func windowShouldClose(sender: AnyObject) -> Bool {
-        HistoryManager.sharedManager.exit(self)
-        unSetObservers()
-        debugController?.unSetMonitors(pdfReader!, docWindow: self.window!)
-        debugController?.view.window?.close()
-        metadataWindowController?.close()
-        if HistoryManager.sharedManager.dimeAvailable {
-            let ww = NSWindow()
-            let wvc = AppSingleton.mainStoryboard.instantiateControllerWithIdentifier("WaitVC") as! WaitViewController
-            ww.contentViewController = wvc
-            wvc.someText = "Sending data to DiMe..."
-            self.window!.beginSheet(ww, completionHandler: nil)
-            // send data to dime
-            dispatch_group_async(AppSingleton.appDelegate.closeGroup, AppSingleton.appDelegate.closeQueue) {
-                if let mpdf = self.pdfReader, userRectStatus = mpdf.getUserRectStatus() {
-                    HistoryManager.sharedManager.sendToDiMe(userRectStatus, endPoint: .Event)
-                }
-                dispatch_async(dispatch_get_main_queue()) {
-                    ww.close()
-                    self.window!.close()
-                }
-            }
-            return false
-        } else {
-            return true
-        }
-    }
     
     /// Ensures that the document window never gets bigger than the maximum
     /// allowed size when midas is active and stays within its boundaries.

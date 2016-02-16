@@ -52,7 +52,7 @@
             <objects>
                 <viewController title="General Settings" showSeguePresentationStyle="single" id="62w-oK-rf7" customClass="GeneralSettingsController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="WGw-LJ-0lD">
-                        <rect key="frame" x="0.0" y="0.0" width="459" height="261"/>
+                        <rect key="frame" x="0.0" y="0.0" width="462" height="261"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="BVV-hH-JyH">
@@ -76,15 +76,15 @@
                                 </buttonCell>
                             </button>
                             <box title="Annotation line thickness" borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="UC7-V4-Wrp">
-                                <rect key="frame" x="17" y="16" width="425" height="66"/>
+                                <rect key="frame" x="17" y="16" width="428" height="66"/>
                                 <view key="contentView" id="cbh-La-9jU">
-                                    <rect key="frame" x="1" y="1" width="423" height="47"/>
+                                    <rect key="frame" x="1" y="1" width="426" height="47"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="E15-lK-fvD">
-                                            <rect key="frame" x="16" y="9" width="339" height="26"/>
+                                            <rect key="frame" x="16" y="10" width="340" height="25"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="335" id="dtF-MU-gHK"/>
+                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="336" id="dtF-MU-gHK"/>
                                             </constraints>
                                             <sliderCell key="cell" continuous="YES" state="on" alignment="left" minValue="0.25" maxValue="5" doubleValue="1" tickMarkPosition="above" numberOfTickMarks="20" allowsTickMarkValuesOnly="YES" sliderType="linear" id="OMQ-CR-fp2"/>
                                             <connections>
@@ -92,9 +92,9 @@
                                             </connections>
                                         </slider>
                                         <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uRt-4J-vlE">
-                                            <rect key="frame" x="359" y="13" width="53" height="22"/>
+                                            <rect key="frame" x="360" y="14" width="54" height="22"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" constant="53" id="N2Q-Hu-YTx"/>
+                                                <constraint firstAttribute="width" constant="54" id="N2Q-Hu-YTx"/>
                                             </constraints>
                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" usesSingleLineMode="YES" id="Bqn-z5-WOK">
                                                 <font key="font" metaFont="system"/>
@@ -107,7 +107,7 @@
                                 <constraints>
                                     <constraint firstItem="E15-lK-fvD" firstAttribute="top" secondItem="UC7-V4-Wrp" secondAttribute="top" constant="30" id="4fd-U8-hze"/>
                                     <constraint firstItem="uRt-4J-vlE" firstAttribute="leading" secondItem="E15-lK-fvD" secondAttribute="trailing" constant="6" id="MSs-hS-xe7"/>
-                                    <constraint firstAttribute="trailing" secondItem="uRt-4J-vlE" secondAttribute="trailing" constant="9" id="VQS-HC-Mwq"/>
+                                    <constraint firstAttribute="trailing" secondItem="uRt-4J-vlE" secondAttribute="trailing" constant="10" id="VQS-HC-Mwq"/>
                                     <constraint firstItem="E15-lK-fvD" firstAttribute="leading" secondItem="UC7-V4-Wrp" secondAttribute="leading" constant="16" id="Wud-dI-VYU"/>
                                     <constraint firstItem="uRt-4J-vlE" firstAttribute="centerY" secondItem="E15-lK-fvD" secondAttribute="centerY" constant="-1" id="h2v-jE-CsO"/>
                                     <constraint firstAttribute="height" constant="62" id="yrF-Ac-hSa"/>
@@ -1172,7 +1172,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="yXb-ko-u85">
-                                    <rect key="frame" x="459" y="1" width="15" height="201"/>
+                                    <rect key="frame" x="458" y="1" width="16" height="201"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>

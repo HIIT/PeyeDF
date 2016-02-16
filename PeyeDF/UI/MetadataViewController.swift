@@ -12,6 +12,7 @@ import Quartz
 class MetadataViewController: NSViewController {
     
     private weak var pdfDoc: PDFDocument?
+    private weak var mainCont: DocumentWindowController?
 
     @IBOutlet weak var keywordArrayController: NSArrayController!
     
@@ -29,8 +30,9 @@ class MetadataViewController: NSViewController {
     
     @IBOutlet weak var plaintextLabel: NSTextField!
     
-    func setDoc(pdfDoc: PDFDocument) {
+    func setDoc(pdfDoc: PDFDocument, mainWC: DocumentWindowController) {
         self.pdfDoc = pdfDoc
+        self.mainCont = mainWC
         
         if let title = pdfDoc.getTitle() {
             titleField.stringValue = title
@@ -55,16 +57,19 @@ class MetadataViewController: NSViewController {
     }
     
     func saveData() {
+        var dirty = false
         if initialTitle != titleField.stringValue {
             if titleField.stringValue.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()).characters.count > 0 {
                 let trimVal = titleField.stringValue.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
                 pdfDoc!.setTitle(trimVal)
+                dirty = true
             }
         }
         if initialAuthor != authorField.stringValue {
             if authorField.stringValue.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()).characters.count > 0 {
                 let trimVal = authorField.stringValue.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
                 pdfDoc!.setAuthor(trimVal)
+                dirty = true
             }
             
         }
@@ -72,6 +77,7 @@ class MetadataViewController: NSViewController {
             if subjectField.stringValue.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()).characters.count > 0 {
                 let trimVal = subjectField.stringValue.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
                 pdfDoc!.setSubject(trimVal)
+                dirty = true
             }
             
         }
@@ -79,7 +85,12 @@ class MetadataViewController: NSViewController {
             if keywordsField.stringValue.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()).characters.count > 0 {
                 let trimVal = keywordsField.stringValue.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
                 pdfDoc!.setKeywords(trimVal)
+                dirty = true
             }
+        }
+        if dirty {
+            mainCont!.setDocumentEdited(true)
+            (mainCont!.document as! NSDocument).updateChangeCount(NSDocumentChangeType.ChangeDone)
         }
     }
     

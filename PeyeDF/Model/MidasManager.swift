@@ -30,8 +30,8 @@ class MidasManager {
     /// Whether there is a midas connection available
     private(set) var midasAvailable: Bool = false
     
-    /// Last valid distance from screen in mm (defaults to 60 cm)
-    private(set) var lastValidDistance: CGFloat = 600.0
+    /// Last valid distance from screen in mm (defaults to 80 cm)
+    private(set) var lastValidDistance: CGFloat = 800.0
     
     /// Last time for last recorded fixation
     private var lastFixationUnixtime: Int = 0

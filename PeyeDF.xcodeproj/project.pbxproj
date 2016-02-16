@@ -62,7 +62,6 @@
 		A9D9A8BF1C1C883D0014C1EB /* EyeRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D9A8BE1C1C883D0014C1EB /* EyeRectangle.swift */; };
 		A9DFF1721B7E3D1A008CFF0C /* XCGLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DFF1711B7E3D1A008CFF0C /* XCGLogger.swift */; };
 		A9E771111B96091F0005A4B3 /* ReadingRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E771101B96091F0005A4B3 /* ReadingRect.swift */; };
-		A9F0313B1C738E290063B99F /* DocumentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F0313A1C738E290063B99F /* DocumentController.swift */; };
 		A9F335731B3ABC090042BFB3 /* AppSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F335721B3ABC090042BFB3 /* AppSingleton.swift */; };
 		A9FE38A81B98497400680F31 /* GeneralSettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9FE38A71B98497400680F31 /* GeneralSettingsController.swift */; };
 /* End PBXBuildFile section */
@@ -208,7 +207,6 @@
 		A9D9A8BE1C1C883D0014C1EB /* EyeRectangle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EyeRectangle.swift; sourceTree = "<group>"; };
 		A9DFF1711B7E3D1A008CFF0C /* XCGLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCGLogger.swift; sourceTree = "<group>"; };
 		A9E771101B96091F0005A4B3 /* ReadingRect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadingRect.swift; sourceTree = "<group>"; };
-		A9F0313A1C738E290063B99F /* DocumentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentController.swift; sourceTree = "<group>"; };
 		A9F335721B3ABC090042BFB3 /* AppSingleton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSingleton.swift; sourceTree = "<group>"; };
 		A9FE38A71B98497400680F31 /* GeneralSettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneralSettingsController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -283,7 +281,6 @@
 				A91CB9491B332EDB00671868 /* AppDelegate.swift */,
 				A9CEAA7F1BE7793500E23964 /* Paragraphs.swift */,
 				A9B36CAF1BEA4A3A00A27861 /* MyPDFBase.swift */,
-				A9F0313A1C738E290063B99F /* DocumentController.swift */,
 			);
 			name = Model;
 			path = PeyeDF/Model;
@@ -582,7 +579,6 @@
 			files = (
 				A99C23031BE92536005EDFD9 /* DiMeFetcher.swift in Sources */,
 				A9260F571BA4CD10005B1556 /* MyOverlay.swift in Sources */,
-				A9F0313B1C738E290063B99F /* DocumentController.swift in Sources */,
 				A91DC4E11C22E43800BBB612 /* SummaryReadingEvent.swift in Sources */,
 				A9B36CAB1BEA30BF00A27861 /* MyPDFOverview.swift in Sources */,
 				A935F0C61B8CC5FD00587C99 /* DesktopEvent.swift in Sources */,

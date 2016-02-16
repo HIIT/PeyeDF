@@ -59,4 +59,5 @@ class PeyeDocument: NSDocument {
     override func readFromURL(url: NSURL, ofType typeName: String) throws {
         // AppSingleton.log.debug("Opening  \(url.description)")
     }
+    
 }
