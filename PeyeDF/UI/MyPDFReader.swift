@@ -266,8 +266,9 @@ class MyPDFReader: MyPDFBase {
     
     // MARK: - Setters
     
-    /// Sets the outgoing summary event id to the given value (to update previously sent summary event)
-    func setSummaryId(newId: Int) {
+    /// Sets the outgoing summary event id to the given value (to update previously sent summary event).
+    /// If nil, this won't be used (a new summary event will be sent next time).
+    func setSummaryId(newId: Int?) {
         summaryId = newId
     }
     

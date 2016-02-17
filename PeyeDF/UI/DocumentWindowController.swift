@@ -307,7 +307,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) {
             if let mpdf = self.pdfReader, userRectStatus = mpdf.getUserRectStatus() {
                 HistoryManager.sharedManager.sendToDiMe(userRectStatus, endPoint: .Event) {
-                    id in
+                    _, id in
                     mpdf.setSummaryId(id)
                 }
             }
@@ -337,7 +337,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                 if let mpdf = self.pdfReader, userRectStatus = mpdf.getUserRectStatus() {
                     HistoryManager.sharedManager.sendToDiMe(userRectStatus, endPoint: .Event) {
                         _ in
-                        // signal on success
+                        // signal when done
                         callback?()
                     }
                 } else {

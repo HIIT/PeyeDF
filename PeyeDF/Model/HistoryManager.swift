@@ -155,9 +155,9 @@ class HistoryManager: FixationDataDelegate {
     // MARK: - External functions
     
     /// Send the given data to dime
-    /// - parameter callback: If operation was successfull, calls the given callback function using the 
-    ///                       id (as Int) retrieved from DiMe
-    func sendToDiMe(dimeData: DiMeBase, endPoint: DiMeEndpoint, callback: (Int -> Void)? = nil) {
+    /// - parameter callback: When done calls the callback where the first parameter is a boolean (true if successful) and the second
+    ///                       the id of the returned item (nil if couldn't be found, or operation failed)
+    func sendToDiMe(dimeData: DiMeBase, endPoint: DiMeEndpoint, callback: ((Bool, Int?) -> Void)? = nil) {
        
         if dimeAvailable {
             
@@ -177,23 +177,30 @@ class HistoryManager: FixationDataDelegate {
                         AppSingleton.log.error("Error while reading json response from DiMe: \(response.result.error)")
                         AppSingleton.alertUser("Error while communcating with dime. Dime has now been disconnected", infoText: "Message from dime:\n\(response.result.error!)")
                         self.dimeConnectState(false)
+                        callback?(false, nil)
                     } else {
                         let json = JSON(response.result.value!)
                         if let error = json["error"].string {
                             AppSingleton.log.error("DiMe reply to submission contains error:\n\(error)")
+                            Swift.print(dimeData.getDict()) // TODO: remove these two prints
                             if let message = json["message"].string {
                                 AppSingleton.log.error("DiMe's error message:\n\(message)")
+                                Swift.print(dimeData.getDict())
                             }
+                            callback?(false, nil)
                         } else {
                             // assume submission was a success, call callback (if any) with returned id
-                            callback?(json["id"].intValue)
+                            callback?(true, json["id"].int)
                         }
                     }
                 }
             } catch {
                 AppSingleton.log.error("Error while serializing json - no data sent:\n\(error)")
+                callback?(false, nil)
             }
             
+        } else {
+            callback?(false, nil)
         }
         
     }
