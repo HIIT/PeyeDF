@@ -85,7 +85,7 @@ class DiMeFetcher {
                         callback(nil)
                     }
                 } else {
-                    AppSingleton.log.debug("Failed to retrieve a valid info element: \(response.result.value!)")
+                    AppSingleton.log.debug("Info element \(infoElemId) was not found in the database.")
                     callback(nil)
                 }
             }

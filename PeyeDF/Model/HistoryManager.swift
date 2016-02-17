@@ -67,6 +67,60 @@ class HistoryManager: FixationDataDelegate {
     
     // MARK: - External functions
     
+    /// Send the given data to dime
+    /// - parameter callback: When done calls the callback where the first parameter is a boolean (true if successful) and
+    /// the second the id of the returned item (nil if couldn't be found, or operation failed)
+    func sendToDiMe(dimeData: DiMeBase, endPoint: DiMeEndpoint, callback: ((Bool, Int?) -> Void)? = nil) {
+       
+        if dimeAvailable {
+            
+            do {
+                // attempt to translate json
+                let options = NSJSONWritingOptions.PrettyPrinted
+                
+                try NSJSONSerialization.dataWithJSONObject(dimeData.getDict(), options: options)
+                // MF: Data + debug
+//                let outData = try NSJSONSerialization.dataWithJSONObject(dimeData.getDict(), options: options)
+//                AppSingleton.log.debug("Sending to dime...\n\(String(data: outData, encoding: NSUTF8StringEncoding))")
+                
+                // assume json conversion was a success, hence send to dime
+                let server_url = AppSingleton.dimeUrl
+                let headers = AppSingleton.dimeHeaders()
+                
+                Alamofire.request(Alamofire.Method.POST, server_url + "/data/\(endPoint.rawValue)", parameters: dimeData.getDict(), encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON {
+                    response in
+                    if response.result.isFailure {
+                        AppSingleton.log.error("Error while reading json response from DiMe: \(response.result.error)")
+                        AppSingleton.alertUser("Error while communcating with dime. Dime has now been disconnected", infoText: "Message from dime:\n\(response.result.error!)")
+                        self.dimeConnectState(false)
+                        callback?(false, nil)
+                    } else {
+                        let json = JSON(response.result.value!)
+                        if let error = json["error"].string {
+                            AppSingleton.log.error("DiMe reply to submission contains error:\n\(error)")
+                            Swift.print(dimeData.getDict()) // TODO: remove these two prints
+                            if let message = json["message"].string {
+                                AppSingleton.log.error("DiMe's error message:\n\(message)")
+                                Swift.print(dimeData.getDict())
+                            }
+                            callback?(false, nil)
+                        } else {
+                            // assume submission was a success, call callback (if any) with returned id
+                            callback?(true, json["id"].int)
+                        }
+                    }
+                }
+            } catch {
+                AppSingleton.log.error("Error while serializing json - no data sent:\n\(error)")
+                callback?(false, nil)
+            }
+            
+        } else {
+            callback?(false, nil)
+        }
+        
+    }
+    
     /// Attempts to connect to dime. Sends a notification if we succeeded / failed
     func dimeConnect() {
         
@@ -112,6 +166,13 @@ class HistoryManager: FixationDataDelegate {
         exitEvent(nil)
     }
     
+    /// Adds a reading rect to the current outgoing readingevent (to add manual markings)
+    func addReadingRect(theRect: ReadingRect) {
+        if let cre = self.currentReadingEvent {
+            cre.addRect(theRect)
+        }
+    }
+    
     // MARK: - Protocol implementation
     
     func receiveNewFixationData(newData: [SMIFixationEvent]) {
@@ -152,67 +213,6 @@ class HistoryManager: FixationDataDelegate {
         }
     }
     
-    // MARK: - External functions
-    
-    /// Send the given data to dime
-    /// - parameter callback: When done calls the callback where the first parameter is a boolean (true if successful) and the second
-    ///                       the id of the returned item (nil if couldn't be found, or operation failed)
-    func sendToDiMe(dimeData: DiMeBase, endPoint: DiMeEndpoint, callback: ((Bool, Int?) -> Void)? = nil) {
-       
-        if dimeAvailable {
-            
-            do {
-                // attempt to translate json
-                let options = NSJSONWritingOptions.PrettyPrinted
-                
-                try NSJSONSerialization.dataWithJSONObject(dimeData.getDict(), options: options)
-                
-                // assume json conversion was a success, hence send to dime
-                let server_url = AppSingleton.dimeUrl
-                let headers = AppSingleton.dimeHeaders()
-                
-                Alamofire.request(Alamofire.Method.POST, server_url + "/data/\(endPoint.rawValue)", parameters: dimeData.getDict(), encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON {
-                    response in
-                    if response.result.isFailure {
-                        AppSingleton.log.error("Error while reading json response from DiMe: \(response.result.error)")
-                        AppSingleton.alertUser("Error while communcating with dime. Dime has now been disconnected", infoText: "Message from dime:\n\(response.result.error!)")
-                        self.dimeConnectState(false)
-                        callback?(false, nil)
-                    } else {
-                        let json = JSON(response.result.value!)
-                        if let error = json["error"].string {
-                            AppSingleton.log.error("DiMe reply to submission contains error:\n\(error)")
-                            Swift.print(dimeData.getDict()) // TODO: remove these two prints
-                            if let message = json["message"].string {
-                                AppSingleton.log.error("DiMe's error message:\n\(message)")
-                                Swift.print(dimeData.getDict())
-                            }
-                            callback?(false, nil)
-                        } else {
-                            // assume submission was a success, call callback (if any) with returned id
-                            callback?(true, json["id"].int)
-                        }
-                    }
-                }
-            } catch {
-                AppSingleton.log.error("Error while serializing json - no data sent:\n\(error)")
-                callback?(false, nil)
-            }
-            
-        } else {
-            callback?(false, nil)
-        }
-        
-    }
-    
-    
-    /// Adds a reading rect to the current outgoing readingevent (to add manual markings)
-    func addReadingRect(theRect: ReadingRect) {
-        if let cre = self.currentReadingEvent {
-            cre.addRect(theRect)
-        }
-    }
-
     // MARK: - Internal functions
     
     /// Connection to dime successful / failed

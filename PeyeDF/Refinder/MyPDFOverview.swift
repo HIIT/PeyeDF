@@ -16,9 +16,9 @@ class MyPDFOverview: MyPDFBase {
     weak var pdfDetail: MyPDFDetail?
     
     /// Whether we want to draw rect which were simply gazed upon (useful for debugging)
-    var drawGazedRects: Bool = {
+    var drawGazedRects: Bool { get {
         return NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefRefinderDrawGazedUpon) as! Bool
-    }()
+        } }
     
     // MARK: - Page drawing override
     

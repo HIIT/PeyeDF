@@ -326,7 +326,6 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         // If dime is available, set up a semaphore and wait for it to signal before closing
         if HistoryManager.sharedManager.dimeAvailable {
             let ww = NSWindow()
-            Swift.print(NSThread.isMainThread())
             let wvc = AppSingleton.mainStoryboard.instantiateControllerWithIdentifier("WaitVC") as! WaitViewController
             ww.contentViewController = wvc
             wvc.someText = "Sending data to DiMe..."
