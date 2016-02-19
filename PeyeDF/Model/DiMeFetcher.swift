@@ -12,8 +12,11 @@ import Alamofire
 /// Instances that want to receive dime data must implement this protocol and add themselves as delegates to the DiMeFetcher
 protocol DiMeReceiverDelegate: class {
     
-    /// Receive all summaries information elements and associated informatione elements in a tuple. Nil means nothing was found.
+    /// Receive all summaries information elements and associated informatione elements in a tuple. Nil means nothing was found. Receving this signals that the fetching operation is finished.
     func receiveAllSummaries(tuples: [(ev: SummaryReadingEvent, ie: ScientificDocument?)]?)
+    
+    /// Indicates that the fetching operation started / isprogessing, by communicating how many items have been received and how many are missing.
+    func updateProgress(received: Int, total: Int)
 }
 
 /// DiMeFetcher is supposed to be used as a singleton (via sharedFetcher)
@@ -142,6 +145,8 @@ class DiMeFetcher {
         // if nothing is being sent, call receiveAllSummaries with nil
         if outgoingSummaries.count == 0 {
             self.receiver.receiveAllSummaries(nil)
+        } else {
+            self.receiver.updateProgress(outgoingSummaries.count - missingInfoElems, total: outgoingSummaries.count)
         }
     }
     
@@ -152,6 +157,7 @@ class DiMeFetcher {
             
             self.outgoingSummaries[forIndex].ie = newScidoc
             self.missingInfoElems--
+            self.receiver.updateProgress(self.outgoingSummaries.count - self.missingInfoElems, total: self.outgoingSummaries.count)
             // all data has been fetched, send it
             if self.missingInfoElems == 0 {
                 self.receiver.receiveAllSummaries(self.outgoingSummaries)

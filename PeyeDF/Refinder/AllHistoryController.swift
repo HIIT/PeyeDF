@@ -22,6 +22,9 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     var lastImportedSessionId = ""
     var lastImportedIndex = -1
     
+    @IBOutlet weak var loadingLabel: NSTextField!
+    @IBOutlet weak var progressBar: NSProgressIndicator!
+    
     override func viewDidLoad() {
         // creates dime fetcher with self as receiver and prepares to receive table selection notifications
         diMeFetcher = DiMeFetcher(receiver: self)
@@ -64,8 +67,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
         if panel.runModal() == NSFileHandlingPanelOKButton {
                 
             let outURL = panel.URL!
-            let rwc = self.view.window!.windowController! as! RefinderWindowController
-            rwc.loadingStarted()
+            loadingStarted()
             
             diMeFetcher?.getNonSummaries(withSessionId: sessionId) {
                 foundEvents in
@@ -127,7 +129,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
                     AppSingleton.alertUser("No matching data found")
                 }
                 
-                rwc.loadingComplete()
+                self.loadingComplete()
             }
         }
     }
@@ -214,6 +216,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     
     /// Ask dime to fetch data
     func reloadData() {
+        loadingComplete()
         diMeFetcher?.getSummaries()
     }
     
@@ -225,8 +228,12 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
         } else {
             AppSingleton.alertUser("No data found.")
         }
-        let rwc = self.view.window!.windowController! as! RefinderWindowController
-        rwc.loadingComplete()
+        loadingComplete()
+    }
+    
+    /// Update progress bar
+    func updateProgress(received: Int, total: Int) {
+        self.progressBar.doubleValue = Double(received) / Double(total)
     }
     
     // MARK: - Table delegate & data source
@@ -243,6 +250,26 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
         }
         else {
             return nil
+        }
+    }
+    
+    // MARK: - Convenience
+    
+    func loadingStarted() {
+        dispatch_async(dispatch_get_main_queue()) {
+            self.progressBar.doubleValue = 0
+            self.historyTable.enabled = false
+            self.progressBar.hidden = false
+            self.loadingLabel.hidden = false
+        }
+    }
+    
+    func loadingComplete() {
+        dispatch_async(dispatch_get_main_queue()) {
+            self.progressBar.doubleValue = 1
+            self.historyTable.enabled = true
+            self.progressBar.hidden = true
+            self.loadingLabel.hidden = true
         }
     }
 }
