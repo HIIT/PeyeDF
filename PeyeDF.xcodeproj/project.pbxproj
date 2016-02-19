@@ -51,6 +51,7 @@
 		A9A23CD61C771A82008B61C4 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A23CD51C771A82008B61C4 /* String+Extensions.swift */; };
 		A9A23CD81C771AB4008B61C4 /* NSRect+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A23CD71C771AB4008B61C4 /* NSRect+Extensions.swift */; };
 		A9A23CDA1C771AF4008B61C4 /* NS+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A23CD91C771AF4008B61C4 /* NS+Extensions.swift */; };
+		A9A23CE31C776989008B61C4 /* PeyeDF.icns in Resources */ = {isa = PBXBuildFile; fileRef = A9A23CE21C776989008B61C4 /* PeyeDF.icns */; };
 		A9A2DFC61BC427BE006C07FD /* MetadataWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A2DFC51BC427BE006C07FD /* MetadataWindowController.swift */; };
 		A9A2DFCC1BC427D2006C07FD /* MetadataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A2DFCB1BC427D2006C07FD /* MetadataViewController.swift */; };
 		A9B36CA31BEA0FE300A27861 /* RefinderProgressIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B36CA21BEA0FE300A27861 /* RefinderProgressIndicator.swift */; };
@@ -200,6 +201,7 @@
 		A9A23CD51C771A82008B61C4 /* String+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
 		A9A23CD71C771AB4008B61C4 /* NSRect+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSRect+Extensions.swift"; sourceTree = "<group>"; };
 		A9A23CD91C771AF4008B61C4 /* NS+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NS+Extensions.swift"; sourceTree = "<group>"; };
+		A9A23CE21C776989008B61C4 /* PeyeDF.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = PeyeDF.icns; sourceTree = "<group>"; };
 		A9A2DFC51BC427BE006C07FD /* MetadataWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetadataWindowController.swift; sourceTree = "<group>"; };
 		A9A2DFCB1BC427D2006C07FD /* MetadataViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetadataViewController.swift; sourceTree = "<group>"; };
 		A9B36CA21BEA0FE300A27861 /* RefinderProgressIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefinderProgressIndicator.swift; sourceTree = "<group>"; };
@@ -297,6 +299,7 @@
 		A91CB93B1B332EDB00671868 = {
 			isa = PBXGroup;
 			children = (
+				A9A23CE21C776989008B61C4 /* PeyeDF.icns */,
 				A9D9545F1B8B59DD007A34BF /* DiMe data types */,
 				A9C8F0231BC2B27A007ABE1A /* Midas data types */,
 				A9D9A8B31C1C87AE0014C1EB /* Eye Analysis */,
@@ -581,6 +584,7 @@
 				A91CB9501B332EDB00671868 /* Images.xcassets in Resources */,
 				A95A8CEA1B9440600093119E /* Main.storyboard in Resources */,
 				A95795151BD69BAA0083525C /* Refinder.storyboard in Resources */,
+				A9A23CE31C776989008B61C4 /* PeyeDF.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

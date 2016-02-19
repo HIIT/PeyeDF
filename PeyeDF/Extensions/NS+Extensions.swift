@@ -66,9 +66,47 @@ extension NSColor {
 
 extension NSPoint {
     
+    /// Creates a point from string specifying (x,y)
+    /// - returns: nil if conversion failed
+    init?(string: String) {
+        if let spl = string.split(",") where spl.count == 2 {
+            let nf = NSNumberFormatter()
+            if let x = nf.numberFromString(spl[0]) as? CGFloat,
+              y = nf.numberFromString(spl[1]) as? CGFloat {
+                self.x = x
+                self.y = y
+            } else {
+                return nil
+            }
+        } else {
+            return nil
+        }
+    }
+    
     /// Returns a new point in a given rect's coordinate system. In other words,
     /// a poing for which the origin matches the given rectangle's origin
     func pointInRectCoords(theRect: NSRect) -> NSPoint {
         return NSPoint(x: self.x - theRect.origin.x, y: self.y - theRect.origin.y)
     }
+}
+
+extension NSURLComponents {
+    
+    /// Returns all parameters and their values in a dictionary.
+    /// If there are no parameters, return nil.
+    /// Only parameters with a corresponding value are returned.
+    var parameterDictionary: [String: String]? { get {
+        if let qItems = self.queryItems {
+            var retVal = [String: String]()
+            for qi in qItems {
+                if let val = qi.value {
+                    retVal[qi.name] = val
+                }
+            }
+            return retVal
+        } else {
+            return nil
+        }
+    } }
+    
 }

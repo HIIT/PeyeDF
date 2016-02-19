@@ -10,6 +10,17 @@ import Foundation
 
 extension String {
     
+    /// Removes the character(s) from this string
+    mutating func withoutChars(theChars: [Character]) {
+        self = String(characters.filter({!theChars.contains($0)}))
+    }
+    
+    /// Removes the character(s) and returns a new string
+    @warn_unused_result(mutable_variant="withoutChars")
+    func removeChars(theChars: [Character]) -> String {
+        return String(self.characters.filter({!theChars.contains($0)}))
+    }
+    
     /// Dumps a string to a file in the temporary directory.
     /// The title will be prefixed to the name of the output file (before the date/time).
     /// Returns url of the written-to file (if successful, otherwise nil).

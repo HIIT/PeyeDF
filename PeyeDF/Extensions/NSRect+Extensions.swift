@@ -34,6 +34,25 @@ public func < (lhs: NSRect, rhs: NSRect) -> Bool {
 
 extension NSRect {
     
+    /// Creates a rect from a string specifying (x,y,w,h)
+    /// - returns: nil if conversion failed
+    init?(string: String) {
+        if let spl = string.split(",") where spl.count == 4 {
+            let nf = NSNumberFormatter()
+            if let x = nf.numberFromString(spl[0]) as? CGFloat,
+              y = nf.numberFromString(spl[1]) as? CGFloat,
+              w = nf.numberFromString(spl[2]) as? CGFloat,
+              h = nf.numberFromString(spl[3]) as? CGFloat {
+                self.origin = NSPoint(x: x, y: y)
+                self.size = NSSize(width: w, height: h)
+            } else {
+                return nil
+            }
+        } else {
+            return nil
+        }
+    }
+    
     /// Subtracts another rectangle **from** this rectangle. That is,
     /// returns this rectangle as a (possibly disjoint) array. Only one element
     /// is returned in the array if the lhs was not entirely enclosed by this element.

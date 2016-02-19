@@ -21,7 +21,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// Refinder window
     var refinderWindow: NSWindowController?
     
-    /// Creates default preferences
+    /// Sets up custom url handler
+    func applicationWillFinishLaunching(notification: NSNotification) {
+        NSAppleEventManager.sharedAppleEventManager().setEventHandler(self, andSelector: "handleURL:", forEventClass: UInt32(kInternetEventClass), andEventID: UInt32(kAEGetURL))
+    }
+    
+    /// Creates default preferences and sets up dime
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         var defaultPrefs = [String: AnyObject]()
         defaultPrefs[PeyeConstants.prefDominantEye] = Eye.right.rawValue
@@ -126,7 +131,30 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return false
     }
     
-    // MARK: - Notification callbacks
+    // MARK: - Callbacks
+    
+    @objc func handleURL(event: NSAppleEventDescriptor) {
+        if let pDesc = event.paramDescriptorForKeyword(UInt32(keyDirectObject)), stringVal = pDesc.stringValue {
+            if let comps = NSURLComponents(string: stringVal), host = comps.host {
+                // check that "host" (sessioId) is valid, then proceed
+                Swift.print("Host: \(host)")
+                if let params = comps.parameterDictionary {
+                    if let sr = params["rect"]?.removeChars(["(", ")"]) {
+                        let r = NSRect(string: sr)
+                        Swift.print("Rect: \(r)")
+                    }
+                    if let sp = params["point"]?.removeChars(["(", ")"]) {
+                        let p = NSPoint(string: sp)
+                        Swift.print("Point: \(p)")
+                    }
+                }
+            } else {
+                AppSingleton.log.error("Failed to convert this to NSURLComponents: \(stringVal)")
+            }
+        } else {
+            AppSingleton.log.error("Failed to retrieve url from event: \(event)")
+        }
+    }
     
     @objc func dimeConnectionChanged(notification: NSNotification) {
         let userInfo = notification.userInfo as! [String: Bool]
