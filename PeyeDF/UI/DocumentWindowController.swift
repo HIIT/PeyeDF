@@ -129,14 +129,24 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     // MARK: - Annotations
     
     @IBAction func toggleAnnotate(sender: AnyObject?) {
-        let annotateTB = sender as? NSToolbarItem
         if let delegate = clickDelegate {
             if delegate.getRecognizersState() {
-                delegate.setRecognizersTo(false)
-                annotateTB?.image = NSImage(named: PeyeConstants.annotateButton_UP)
+                setAnnotate(false)
             } else {
+                setAnnotate(true)
+            }
+        }
+    }
+    
+    /// Set the annotate function to on (true) or off (false)
+    func setAnnotate(toState: Bool) {
+        if let annotateTB = tbAnnotate, delegate = clickDelegate {
+            if toState {
                 delegate.setRecognizersTo(true)
-                annotateTB?.image = NSImage(named: PeyeConstants.annotateButton_DOWN)
+                annotateTB.image = NSImage(named: PeyeConstants.annotateButton_DOWN)
+            } else {
+                delegate.setRecognizersTo(false)
+                annotateTB.image = NSImage(named: PeyeConstants.annotateButton_UP)
             }
         }
     }
@@ -211,6 +221,10 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         self.mainSplitController?.searchPanelController?.pdfReader = pdfReader
         
         pdfReader?.setAutoScales(true)
+        
+        // Set annotate on or off depending on preference
+        let enableAnnotate: Bool = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefEnableAnnotate) as! Bool
+        setAnnotate(enableAnnotate)
         
         // Create debug window (disabled for now)
 //        debugWindowController = AppSingleton.mainStoryboard.instantiateControllerWithIdentifier("DebugWindow") as? NSWindowController
