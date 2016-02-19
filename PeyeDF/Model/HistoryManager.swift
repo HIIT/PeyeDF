@@ -79,9 +79,15 @@ class HistoryManager: FixationDataDelegate {
                 let options = NSJSONWritingOptions.PrettyPrinted
                 
                 try NSJSONSerialization.dataWithJSONObject(dimeData.getDict(), options: options)
-                // MF: Data + debug
-//                let outData = try NSJSONSerialization.dataWithJSONObject(dimeData.getDict(), options: options)
-//                AppSingleton.log.debug("Sending to dime...\n\(String(data: outData, encoding: NSUTF8StringEncoding))")
+                /* MF: Data + debug
+                let outData = try NSJSONSerialization.dataWithJSONObject(dimeData.getDict(), options: options)
+                let outString = String(data: outData, encoding: NSUTF8StringEncoding)
+                if let outURL = outString?.dumpToTemp("toDime") {
+                    AppSingleton.log.debug("\(outURL.path!) dumped")
+                } else {
+                    AppSingleton.log.error("Failed to write dump")
+                }
+                **/
                 
                 // assume json conversion was a success, hence send to dime
                 let server_url = AppSingleton.dimeUrl
