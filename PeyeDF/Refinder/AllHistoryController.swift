@@ -21,6 +21,8 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     
     var lastImportedSessionId = ""
     var lastImportedIndex = -1
+    var lastSelectedRow = -1
+    var lastSelectedSessionId = ""
     
     @IBOutlet weak var loadingLabel: NSTextField!
     @IBOutlet weak var progressBar: NSProgressIndicator!
@@ -33,8 +35,14 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     
     @objc private func newHistoryTableSelection(notification: NSNotification) {
         let selectedRow = historyTable.selectedRow
-        if selectedRow >= 0 {
+        guard selectedRow >= 0 else {
+            return
+        }
+        let selectedSesId = allHistoryTuples[selectedRow].ev.sessionId
+        if selectedRow != lastSelectedRow || selectedSesId != lastSelectedSessionId {
             delegate?.historyElementSelected((ev: allHistoryTuples[selectedRow].ev, ie: allHistoryTuples[selectedRow].ie!))
+            lastSelectedRow = selectedRow
+            lastSelectedSessionId = selectedSesId
         }
     }
     
