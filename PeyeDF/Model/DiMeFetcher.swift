@@ -58,6 +58,57 @@ class DiMeFetcher {
         }
     }
     
+    /// Attempt to retrieve a single summary event for the given sessionId.
+    /// Returns a tuple containing reading event and scidoc or nil if it failed.
+    func retrieveTuple(forSessionId sesId: String) -> (ev: SummaryReadingEvent, ie: ScientificDocument)? {
+        
+        var foundEvent: SummaryReadingEvent?
+        var foundDoc: ScientificDocument?
+        
+        let dGroup = dispatch_group_create()
+        
+        dispatch_group_enter(dGroup)
+        fetchPeyeDFEvents(getSummaries: true, sessionId: sesId) {
+            json in
+            guard let retVals = json.array where retVals.count > 0 else {
+                AppSingleton.log.error("Failed to find results for sessionId \(sesId)")
+                dispatch_group_leave(dGroup)
+                return
+            }
+            if retVals.count != 1 {
+                AppSingleton.log.warning("Found \(retVals.count) instead of 1 for sessionId \(sesId). Returning last one.")
+            }
+            foundEvent = SummaryReadingEvent(fromDime: retVals.last!)
+            
+            guard foundEvent!.infoElemId != "" else {
+                AppSingleton.log.error("Found an event but no associated infoElemId for sessionId \(sesId)")
+                dispatch_group_leave(dGroup)
+                return
+            }
+            
+            DiMeFetcher.retrieveScientificDocument(foundEvent!.infoElemId as String) {
+                fetchedDoc in
+                guard let sciDoc = fetchedDoc else {
+                    AppSingleton.log.error("Failed to find SciDoc for sessionId \(sesId)")
+                    dispatch_group_leave(dGroup)
+                    return
+                }
+                foundDoc = sciDoc
+                dispatch_group_leave(dGroup)
+            }
+        }
+        
+        // wait 5 seconds for all operations to complete
+        let waitTime = dispatch_time(DISPATCH_TIME_NOW,
+                                     Int64(5 * Double(NSEC_PER_SEC)))
+        dispatch_group_wait(dGroup, waitTime)
+        
+        guard let ev = foundEvent, ie = foundDoc else {
+            return nil
+        }
+        return (ev: ev, ie: ie)
+    }
+    
     /// Attempt to retrieve a single ScientificDocument from a given info element id.
     /// **Asynchronously** calls the given callback function once retrieval is complete.
     /// Called-back function will contain nil if retrieval failed.

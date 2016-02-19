@@ -224,7 +224,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     
     /// Ask dime to fetch data
     func reloadData() {
-        loadingComplete()
+        loadingStarted()
         diMeFetcher?.getSummaries()
     }
     
@@ -267,6 +267,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
         dispatch_async(dispatch_get_main_queue()) {
             self.progressBar.doubleValue = 0
             self.historyTable.enabled = false
+            self.historyTable.alphaValue = 0.4
             self.progressBar.hidden = false
             self.loadingLabel.hidden = false
         }
@@ -276,6 +277,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
         dispatch_async(dispatch_get_main_queue()) {
             self.progressBar.doubleValue = 1
             self.historyTable.enabled = true
+            self.historyTable.alphaValue = 1
             self.progressBar.hidden = true
             self.loadingLabel.hidden = true
         }
