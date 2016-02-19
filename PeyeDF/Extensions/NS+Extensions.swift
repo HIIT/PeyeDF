@@ -64,7 +64,6 @@ extension NSColor {
     }
 }
 
-
 extension NSPoint {
     
     /// Returns a new point in a given rect's coordinate system. In other words,
@@ -72,100 +71,4 @@ extension NSPoint {
     func pointInRectCoords(theRect: NSRect) -> NSPoint {
         return NSPoint(x: self.x - theRect.origin.x, y: self.y - theRect.origin.y)
     }
-}
-
-// MARK: - Other functions
-
-/// Finds i given the condition that ary[i-1] <= target and a[i] > target, using a binary search on
-/// a sorted array. Assuming no items are repeated.
-///
-/// - parameter ary: The sorted array to search
-/// - parameter target: The item to search for
-/// - returns: The index which corresponds to the item coming immediately after target (or the count of the array if last item <= target), 0 if the beginning of the array > target.
-func binaryGreaterOnSortedArray<T: Comparable>(ary: [T], target: T) -> Int {
-    var left: Int = 1
-    var right: Int = ary.count - 1
-    
-    if ary.last! <= target {
-        return ary.count
-    }
-    
-    if ary.first! > target {
-        return 0
-    }
-    
-    var mid: Int = -1
-    
-    while (left <= right) {
-        mid = (left + right) / 2
-        let previousitem = ary[mid - 1]
-        let value = ary[mid]
-        
-        if (previousitem <= target && value > target) {
-            return mid
-        }
-        
-        if (value == target) {
-            return mid + 1
-        }
-        
-        if (value < target) {
-            left = mid + 1
-        }
-        
-        if (previousitem > target) {
-            right = mid - 1
-        }
-    }
-    
-    fatalError("Loop terminated without finding a value")
-}
-
-/// Finds i given the condition that ary[i-1] < target and a[i] >= target, using a binary search on
-/// a sorted array. Returns the first match.
-///
-/// - parameter ary: The sorted array to search
-/// - parameter target: The item to search for
-/// - returns: The index which corresponds to the first match, the count of the array if firstOperator(last item > target), 0 if first item < target).
-func binaryGreaterOrEqOnSortedArray<T: Comparable>(ary: [T], target: T) -> Int {
-    var left: Int = 1
-    var right: Int = ary.count - 1
-    
-    if ary.last! < target {
-        return ary.count
-    }
-    
-    if ary.first! > target {
-        return 0
-    }
-    
-    var mid: Int = -1
-    
-    while (left <= right) {
-        mid = (left + right) / 2
-        let previousitem = ary[mid - 1]
-        let value = ary[mid]
-        
-        if (previousitem < target && value >= target) {
-            return mid
-        }
-        
-        if (value == target) {
-            if mid-1 > 0 && ary[mid-1] < target {
-                return mid
-            } else if previousitem == target {
-                right = mid - 1
-            }
-        }
-        
-        if (value < target) {
-            left = mid + 1
-        }
-        
-        if (previousitem > target) {
-            right = mid - 1
-        }
-    }
-    
-    fatalError("Loop terminated without finding a value")
 }
