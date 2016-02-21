@@ -12,6 +12,30 @@ import Cocoa
 /// Manages "all history" that is, all the documents stored in dime, and allows to manipulate some of that history
 class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewDataSource, NSTableViewDelegate {
     
+    // MARK: - For external (outside ui, e.g. ipc) sessionId selection
+    
+    /// Whether there is loading ongoing.
+    var loading = true { didSet {
+        if let sesId = mustSelectSessionId where loading == false {
+            mustSelectSessionId = nil
+            if lastTriedSessionId != sesId {
+                selectSessionId(sesId)
+            } else {
+                AppSingleton.alertUser("Could not find sessionId: '\(sesId)' even after reloading.")
+            }
+            lastTriedSessionId = sesId
+        }
+    } }
+    
+    /// Indicate a sessionId to select as soon as possible (useful for interprocess comm)
+    var mustSelectSessionId: String? = nil
+    
+    /// Last sessionId that was asked to be retrieved after loading (used to prevent
+    /// loops, yet signal that this id does not exist)
+    var lastTriedSessionId = ""
+    
+    // MARK: - Setup
+    
     var delegate: HistoryDetailDelegate?
     
     @IBOutlet weak var historyTable: NSTableView!
@@ -261,7 +285,29 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     
     // MARK: - Convenience
     
+    /// Selects a given sessionId in the table. If the given sessionId is not in the
+    /// list of tuples (or loading is ongoing), orders a refresh (will try to fetch this sessionId once loading
+    /// completes).
+    func selectSessionId(sessionId: String) {
+        guard loading == false else {
+            mustSelectSessionId = sessionId
+            return
+        }
+        let tuples = allHistoryTuples.filter({$0.ev.sessionId == sessionId})
+        guard tuples.count != 0 else {
+            mustSelectSessionId = sessionId
+            reloadData()
+            return
+        }
+        guard let i = allHistoryTuples.indexOf({$0.ev.sessionId == sessionId}) else {
+            AppSingleton.log.error("SessionId \(sessionId) should have been found in the table, but wasn't. (Should never happen).")
+            return
+        }
+        historyTable.selectRowIndexes(NSIndexSet(index: i), byExtendingSelection: false)
+    }
+    
     func loadingStarted() {
+        loading = true
         dispatch_async(dispatch_get_main_queue()) {
             self.progressBar.doubleValue = 0
             self.historyTable.enabled = false
@@ -278,6 +324,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
             self.historyTable.alphaValue = 1
             self.progressBar.hidden = true
             self.loadingLabel.hidden = true
+            self.loading = false
         }
     }
 }

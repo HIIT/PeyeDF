@@ -109,4 +109,19 @@ extension NSURLComponents {
         }
     } }
     
+    /// Sends itself to the given function only if dime is available. Tries to connect to dime.
+    /// - parameter mustConnect: If true, proceeds only if dime connects after trying. If false, 
+    ///  tries once but then proceeds even if dime is off.
+    func onDiMeAvail(callback: (NSURLComponents -> Void), mustConnect: Bool) {
+        if HistoryManager.sharedManager.dimeAvailable {
+            callback(self)
+        } else {
+            HistoryManager.sharedManager.dimeConnect() {
+                success in
+                if !mustConnect || success {
+                    callback(self)
+                }
+            }
+        }
+    }
 }

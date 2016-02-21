@@ -21,15 +21,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var connectMidas: NSMenuItem!
     
     /// Refinder window
-    var refinderWindow: NSWindowController?
+    var refinderWindow: RefinderWindowController?
     
     /// Sets up custom url handler
     func applicationWillFinishLaunching(notification: NSNotification) {
-        NSAppleEventManager.sharedAppleEventManager().setEventHandler(self, andSelector: "handleURL:", forEventClass: UInt32(kInternetEventClass), andEventID: UInt32(kAEGetURL))
-    }
-    
-    /// Creates default preferences and sets up dime
-    func applicationDidFinishLaunching(aNotification: NSNotification) {
         var defaultPrefs = [String: AnyObject]()
         defaultPrefs[PeyeConstants.prefDominantEye] = Eye.right.rawValue
         defaultPrefs[PeyeConstants.prefMonitorDPI] = 110  // defaulting monitor DPI to 110 as this is developing PC's DPI
@@ -47,6 +42,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         // Attempt dime connection (required even if we don't use dime, because this sets up historymanager shared object)
         HistoryManager.sharedManager.dimeConnect()  // will automatically detect if dime is down
+        
+        // Set up handler for custom url types (peyedf://)
+        NSAppleEventManager.sharedAppleEventManager().setEventHandler(self, andSelector: "handleURL:", forEventClass: UInt32(kInternetEventClass), andEventID: UInt32(kAEGetURL))
+    }
+    
+    /// Creates default preferences and sets up dime
+    func applicationDidFinishLaunching(aNotification: NSNotification) {
         
         // If we want to use midas, start the manager
         let useMidas = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefUseMidas) as! Bool
@@ -66,12 +68,23 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return false
     }
     
-    /// Overridden to allow searching from outside (spotlight)
+    /// Overridden to allow searching from outside (spotlight). Checks for dime before
+    /// proceeding.
     func application(sender: NSApplication, openFiles filenames: [String]) {
         let searchString = NSAppleEventManager.sharedAppleEventManager().currentAppleEvent?.descriptorForKeyword(UInt32(keyAESearchText))?.stringValue
-        for filename in filenames {
-            let fileUrl = NSURL(fileURLWithPath: filename)
-            openDocument(fileUrl, searchString: searchString)
+        if HistoryManager.sharedManager.dimeAvailable {
+            for filename in filenames {
+                let fileUrl = NSURL(fileURLWithPath: filename)
+                openDocument(fileUrl, searchString: searchString)
+            }
+        } else {
+            HistoryManager.sharedManager.dimeConnect() {
+                _ in
+                for filename in filenames {
+                    let fileUrl = NSURL(fileURLWithPath: filename)
+                    self.openDocument(fileUrl, searchString: searchString)
+                }
+            }
         }
     }
     
@@ -97,12 +110,30 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
+    /// Uses the given url components to open refinder and find the given sessionId.
+    func refindComponents(comps: NSURLComponents) {
+        showRefinderWindor(nil)
+        if let sesId = comps.path where sesId != "" && sesId.skipPrefix(1) != "" {
+            refinderWindow?.allHistoryController?.selectSessionId(sesId.skipPrefix(1))
+        }
+        if let params = comps.parameterDictionary {
+            if let sr = params["rect"]?.withoutChars(["(", ")"]) {
+                let r = NSRect(string: sr)
+                Swift.print("Rect: \(r)")
+            }
+            if let sp = params["point"]?.withoutChars(["(", ")"]) {
+                let p = NSPoint(string: sp)
+                Swift.print("Point: \(p)")
+            }
+        }
+    }
+    
     // MARK: - Actions
     
     /// Show refinder window (creating it, if needed)
     @IBAction func showRefinderWindor(sender: AnyObject?) {
         if refinderWindow == nil {
-            refinderWindow = (AppSingleton.refinderStoryboard.instantiateControllerWithIdentifier("RefinderWindowController") as! NSWindowController)
+            refinderWindow = (AppSingleton.refinderStoryboard.instantiateControllerWithIdentifier("RefinderWindowController") as! RefinderWindowController)
         }
         refinderWindow!.showWindow(self)
     }
@@ -178,21 +209,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             if let comps = NSURLComponents(string: stringVal), host = comps.host {
                 switch host {
                 case "reader":
-                    openComponents(comps)
+                    comps.onDiMeAvail(openComponents, mustConnect: false)
                 case "refinder":
-                    showRefinderWindor(nil)
+                    comps.onDiMeAvail(refindComponents, mustConnect: true)
                 default:
                     AppSingleton.alertUser("\(host) not recognized.", infoText: "Allowed \"hosts\" are 'reader' and 'refinder'.")
-                }
-                if let params = comps.parameterDictionary {
-                    if let sr = params["rect"]?.withoutChars(["(", ")"]) {
-                        let r = NSRect(string: sr)
-                        Swift.print("Rect: \(r)")
-                    }
-                    if let sp = params["point"]?.withoutChars(["(", ")"]) {
-                        let p = NSPoint(string: sp)
-                        Swift.print("Point: \(p)")
-                    }
                 }
             } else {
                 AppSingleton.log.error("Failed to convert this to NSURLComponents: \(stringVal)")
