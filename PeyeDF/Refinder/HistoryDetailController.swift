@@ -22,6 +22,9 @@ protocol HistoryDetailDelegate: class {
     /// Tells the delegate that a new set of eye rectangles should be shown next time
     func setEyeRects(eyeRects: [EyeRectangle])
     
+    /// Tells the delegate to focus on an area (does it after a delay)
+    func focusOn(area: FocusArea)
+    
     /// Tells the delegate to display the current (communicated via setEyeRects) set of eye rectangles by converting them to
     /// a set of markings (reading rect) using the specified threshold.
     /// - Requires: call setEyeRects before this because historyElementSelected invalidates eyeRects
@@ -43,7 +46,7 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
     private var requiresThresholdComputation = true
 
     @IBOutlet weak var pdfOverview: MyPDFOverview!
-    @IBOutlet weak var pdfDetail: MyPDFDetail!
+    @IBOutlet weak var pdfDetail: MyPDFBase!
     
     /// A reading event was selected, display the doc and its rectangles in the pdf views
     func historyElementSelected(tuple: (ev: ReadingEvent, ie: ScientificDocument)) {
@@ -65,6 +68,15 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
             AppSingleton.alertUser("Can't find original file", infoText: tuple.ie.uri)
         }
         requiresThresholdComputation = true
+    }
+    
+    func focusOn(area: FocusArea) {
+        let showTime = dispatch_time(DISPATCH_TIME_NOW,
+                                     Int64(0.5 * Double(NSEC_PER_SEC)))
+        dispatch_after(showTime, dispatch_get_main_queue()) {
+            self.pdfDetail.focusOn(area)
+            self.pdfOverview.focusOn(area)
+        }
     }
     
     override func viewDidLoad() {

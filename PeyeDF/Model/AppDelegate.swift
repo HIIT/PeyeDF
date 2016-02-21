@@ -112,26 +112,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     /// Uses the given url components to open refinder and find the given sessionId.
     func refindComponents(comps: NSURLComponents) {
-        showRefinderWindor(nil)
-        if let sesId = comps.path where sesId != "" && sesId.skipPrefix(1) != "" {
-            refinderWindow?.allHistoryController?.selectSessionId(sesId.skipPrefix(1))
-        }
-        if let params = comps.parameterDictionary {
-            if let sr = params["rect"]?.withoutChars(["(", ")"]) {
-                let r = NSRect(string: sr)
-                Swift.print("Rect: \(r)")
+        showRefinderWindow(nil)
+        if let _sesId = comps.path where _sesId != "" && _sesId.skipPrefix(1) != "" {
+            let sesId = _sesId.skipPrefix(1)
+            if let focusArea = FocusArea(fromURLComponents: comps) {
+                refinderWindow?.allHistoryController?.focusOn(focusArea, forSessionId: sesId)
             }
-            if let sp = params["point"]?.withoutChars(["(", ")"]) {
-                let p = NSPoint(string: sp)
-                Swift.print("Point: \(p)")
-            }
+            refinderWindow?.allHistoryController?.selectSessionId(sesId)
         }
     }
     
     // MARK: - Actions
     
     /// Show refinder window (creating it, if needed)
-    @IBAction func showRefinderWindor(sender: AnyObject?) {
+    @IBAction func showRefinderWindow(sender: AnyObject?) {
         if refinderWindow == nil {
             refinderWindow = (AppSingleton.refinderStoryboard.instantiateControllerWithIdentifier("RefinderWindowController") as! RefinderWindowController)
         }

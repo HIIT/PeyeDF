@@ -13,7 +13,7 @@ import Foundation
 /// Extends the basic pdf support to allow an overview of a document
 class MyPDFOverview: MyPDFBase {
     
-    weak var pdfDetail: MyPDFDetail?
+    weak var pdfDetail: MyPDFBase?
     
     /// Whether we want to draw rect which were simply gazed upon (useful for debugging)
     var drawGazedRects: Bool { get {
@@ -125,9 +125,6 @@ class MyPDFOverview: MyPDFBase {
         // Get location in "page space".
         let pagePoint = self.convertPoint(mouseInView, toPage: activePage)
         
-        // Get tiny rect of selected position
-        let pointRect = NSRect(origin: pagePoint, size: NSSize())
-        
-        pdfDetail?.scrollToRect(pointRect, onPageIndex: pageIndex)
+        pdfDetail?.focusOn(FocusArea(forPoint: pagePoint, onPage: pageIndex))
     }
 }

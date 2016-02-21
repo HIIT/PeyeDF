@@ -245,7 +245,6 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
             guard let searchS = theString.split(" ") else {
                 return
             }
-            Swift.print(searchS)
             pdfReader!.document().beginFindStrings(searchS, withOptions: Int(NSStringCompareOptions.CaseInsensitiveSearch.rawValue))
         }
         

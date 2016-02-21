@@ -104,10 +104,8 @@ class HistoryManager: FixationDataDelegate {
                         let json = JSON(response.result.value!)
                         if let error = json["error"].string {
                             AppSingleton.log.error("DiMe reply to submission contains error:\n\(error)")
-                            Swift.print(dimeData.getDict()) // TODO: remove these two prints
                             if let message = json["message"].string {
                                 AppSingleton.log.error("DiMe's error message:\n\(message)")
-                                Swift.print(dimeData.getDict())
                             }
                             callback?(false, nil)
                         } else {
@@ -210,10 +208,11 @@ class HistoryManager: FixationDataDelegate {
                             // create rect for retrieved fixation
                             if let smiRect = eyeReceiver.getSMIRect(triple) {
                                 self.currentSMIMarks?.addRect(smiRect)
-                                // TODO: remove debugging check
-                                if self.currentSMIMarks == nil {
-                                    AppSingleton.log.debug("Nil smi marks")
-                                }
+                                #if DEBUG
+                                    if self.currentSMIMarks == nil {
+                                        AppSingleton.log.debug("Nil smi marks")
+                                    }
+                                #endif
                             }
                         }
                     }

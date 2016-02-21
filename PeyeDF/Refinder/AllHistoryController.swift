@@ -30,6 +30,10 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     /// Indicate a sessionId to select as soon as possible (useful for interprocess comm)
     var mustSelectSessionId: String? = nil
     
+    /// Contains an area to focus on next time that the row corresponding to this
+    /// sessionId is selected.
+    private var mustFocusOn = [String: FocusArea]()
+    
     /// Last sessionId that was asked to be retrieved after loading (used to prevent
     /// loops, yet signal that this id does not exist)
     var lastTriedSessionId = ""
@@ -64,6 +68,10 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
         let selectedSesId = allHistoryTuples[selectedRow].ev.sessionId
         if  selectedSesId != lastSelectedSessionId {
             delegate?.historyElementSelected((ev: allHistoryTuples[selectedRow].ev, ie: allHistoryTuples[selectedRow].ie!))
+            if let f = mustFocusOn[allHistoryTuples[selectedRow].ev.sessionId] {
+                mustFocusOn.removeValueForKey(allHistoryTuples[selectedRow].ev.sessionId)
+                delegate?.focusOn(f)
+            }
             lastSelectedSessionId = selectedSesId
         }
     }
@@ -285,6 +293,16 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     
     // MARK: - Convenience
     
+    /// Focus on the given area, for the given sessionId. If another sessionId is selected,
+    /// will focus on the next refresh.
+    func focusOn(area: FocusArea, forSessionId: String) {
+        if forSessionId == lastSelectedSessionId {
+            delegate?.focusOn(area)
+        } else {
+            mustFocusOn[forSessionId] = area
+        }
+    }
+    
     /// Selects a given sessionId in the table. If the given sessionId is not in the
     /// list of tuples (or loading is ongoing), orders a refresh (will try to fetch this sessionId once loading
     /// completes).
@@ -300,8 +318,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
             return
         }
         guard let i = allHistoryTuples.indexOf({$0.ev.sessionId == sessionId}) else {
-            AppSingleton.log.error("SessionId \(sessionId) should have been found in the table, but wasn't. (Should never happen).")
-            return
+            return  // this should never happen
         }
         historyTable.selectRowIndexes(NSIndexSet(index: i), byExtendingSelection: false)
     }

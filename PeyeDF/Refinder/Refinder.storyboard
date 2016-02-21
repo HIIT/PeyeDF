@@ -344,8 +344,8 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
-                            <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4ti-6V-pgA">
-                                <rect key="frame" x="117" y="557" width="117" height="17"/>
+                            <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4ti-6V-pgA">
+                                <rect key="frame" x="116" y="557" width="117" height="17"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Processing data..." id="l7z-ND-A0i">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -416,7 +416,7 @@
                                     <constraint firstAttribute="width" constant="200" id="hAu-fQ-4U3"/>
                                 </constraints>
                             </pdfView>
-                            <pdfView autoresizesSubviews="NO" wantsLayer="YES" autoScales="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Qs2-8R-88d" customClass="MyPDFDetail" customModule="PeyeDF" customModuleProvider="target">
+                            <pdfView autoresizesSubviews="NO" wantsLayer="YES" autoScales="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Qs2-8R-88d" customClass="MyPDFBase" customModule="PeyeDF" customModuleProvider="target">
                                 <rect key="frame" x="228" y="20" width="848" height="535"/>
                                 <constraints>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="400" id="jen-Sz-bd1"/>
