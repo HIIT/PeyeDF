@@ -66,7 +66,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 _doc, _, _ in
                 if let searchS = _searchString, doc = _doc where
                   doc.windowControllers.count == 1 {
-                    (doc.windowControllers[0] as! DocumentWindowController).doSearch(searchS)
+                    (doc.windowControllers[0] as! DocumentWindowController).doSearch(searchS, exact: false)
                 }
             }
         }
@@ -153,11 +153,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 // check that "host" (sessioId) is valid, then proceed
                 Swift.print("Host: \(host)")
                 if let params = comps.parameterDictionary {
-                    if let sr = params["rect"]?.removeChars(["(", ")"]) {
+                    if let sr = params["rect"]?.withoutChars(["(", ")"]) {
                         let r = NSRect(string: sr)
                         Swift.print("Rect: \(r)")
                     }
-                    if let sp = params["point"]?.removeChars(["(", ")"]) {
+                    if let sp = params["point"]?.withoutChars(["(", ")"]) {
                         let p = NSPoint(string: sp)
                         Swift.print("Point: \(p)")
                     }

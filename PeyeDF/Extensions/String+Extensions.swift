@@ -11,13 +11,13 @@ import Foundation
 extension String {
     
     /// Removes the character(s) from this string
-    mutating func withoutChars(theChars: [Character]) {
+    mutating func removeChars(theChars: [Character]) {
         self = String(characters.filter({!theChars.contains($0)}))
     }
     
     /// Removes the character(s) and returns a new string
     @warn_unused_result(mutable_variant="withoutChars")
-    func removeChars(theChars: [Character]) -> String {
+    func withoutChars(theChars: [Character]) -> String {
         return String(self.characters.filter({!theChars.contains($0)}))
     }
     
@@ -67,6 +67,17 @@ extension String {
             }
         }
         return false
+    }
+    
+    /// Counts occurrences of char within this string
+    func countOfChar(theChar: Character) -> Int {
+        var count = 0
+        for c in self.characters {
+            if c == theChar {
+                count += 1
+            }
+        }
+        return count
     }
     
     /// Splits the string, trimming whitespaces, between the given characters (note: slow for very long strings)

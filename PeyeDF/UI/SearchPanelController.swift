@@ -16,8 +16,9 @@ protocol SearchProvider: class {
     /// Returns true if there is a result avaiable
     func hasResult() -> Bool
     
-    /// Performs the requested search using the given string
-    func doSearch(_: String)
+    /// Performs the requested search using the given string.
+    /// -parameter exact: If false, words will be separated
+    func doSearch(_: String, exact: Bool)
     
     /// Gets the next found item
     func selectNextResult(sender: AnyObject?)
@@ -52,8 +53,14 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     @IBOutlet weak var previousButton: NSButton!
     @IBOutlet weak var nextButton: NSButton!
     
+    /// The string that was inputted for search
     var searchString: String = ""
+    var exactMatch: Bool = true
     weak var selectedSelection: PDFSelection?
+    
+    // Option buttons
+    @IBOutlet weak var separateWordsButton: NSButton!
+    @IBOutlet weak var exactMatchButton: NSButton!
     
     weak var pdfReader: MyPDFReader?
     
@@ -62,6 +69,16 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     
     /// Keeps instances of found selections
     var foundSelections = [PDFSelection]()
+    
+    @IBAction func exactMatchPress(sender: NSButton) {
+        exactMatch = true
+        separateWordsButton.state = NSOffState
+    }
+    
+    @IBAction func separateWordsPress(sender: NSButton) {
+        exactMatch = false
+        exactMatchButton.state = NSOffState
+    }
     
     // MARK: - Loading / unloading
     
@@ -96,7 +113,9 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
         // table set
         resultTable.setDataSource(self)
         resultTable.setDelegate(self)
-        
+    }
+    
+    override func viewDidAppear() {
         // set up search notifications
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "foundOneMatch:", name: PDFDocumentDidFindMatchNotification, object: pdfReader!.document())
     }
@@ -172,7 +191,24 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     }
     
     /// Performs a search using the given string
-    func doSearch(theString: String) {
+    func doSearch(var theString: String, var exact: Bool) {
+        // if the string contains two quotes, at beginning and end, 
+        // remove them and perform exact search
+        if theString.countOfChar("\"") == 2 && theString.characters.first! == "\"" && theString.characters.last! == "\"" {
+            theString.removeChars(["\""])
+            exact = true
+        }
+        
+        // reset exact flag and button in case we are called from outside ui
+        exactMatch = exact
+        if exact {
+            exactMatchButton.state = NSOnState
+            separateWordsButton.state = NSOffState
+        } else {
+            separateWordsButton.state = NSOnState
+            exactMatchButton.state = NSOffState
+        }
+        
         if searchField.stringValue != theString {
             searchField.stringValue = theString
         }
@@ -203,7 +239,15 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
         resultTable.reloadData()
         selectedSelection = nil
         
-        pdfReader!.document().beginFindString(theString, withOptions: Int(NSStringCompareOptions.CaseInsensitiveSearch.rawValue))
+        if exact {
+            pdfReader!.document().beginFindString(theString, withOptions: Int(NSStringCompareOptions.CaseInsensitiveSearch.rawValue))
+        } else {
+            guard let searchS = theString.split(" ") else {
+                return
+            }
+            Swift.print(searchS)
+            pdfReader!.document().beginFindStrings(searchS, withOptions: Int(NSStringCompareOptions.CaseInsensitiveSearch.rawValue))
+        }
         
         previousButton.enabled = false
         nextButton.enabled = false
@@ -217,7 +261,7 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
             pdfReader!.document().cancelFindString()
         }
         
-        doSearch(sender.stringValue)
+        doSearch(sender.stringValue, exact: exactMatch)
     }
     
     // MARK: - Notification callbacks
@@ -263,6 +307,7 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
             
             // extract line from found selection
             let pages = foundSelections[row].pages()
+            let foundString = foundSelections[row].string()
             let page = pages[0] as! PDFPage
             let selRect = foundSelections[row].boundsForPage(page)
             let selPoint = NSPoint(x: selRect.origin.x + selRect.width / 2, y: selRect.origin.y + selRect.height / 2)
@@ -270,9 +315,9 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
             let lineString: NSString = lineSel.string().trimmed()
             
             // make found result bold
-            let rangeOfQuery = lineString.rangeOfString(searchString, options: NSStringCompareOptions.CaseInsensitiveSearch)
-            let boldFont = NSFont.boldSystemFontOfSize(12.0)
             let attrString = NSMutableAttributedString(string: lineString as String)
+            let rangeOfQuery = lineString.rangeOfString(foundString, options: NSStringCompareOptions.CaseInsensitiveSearch)
+            let boldFont = NSFont.boldSystemFontOfSize(12.0)
             attrString.beginEditing()
             attrString.addAttribute(NSFontAttributeName, value: boldFont, range: rangeOfQuery)
             attrString.endEditing()

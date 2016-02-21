@@ -37,10 +37,10 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     // MARK: - Searching
     
     /// Do a search using a predefined string (when called from outside ui, e.g. from other applications)
-    func doSearch(searchString: String) {
+    func doSearch(searchString: String, exact: Bool) {
         dispatch_async(dispatch_get_main_queue()) {
             self.mainSplitController?.openSearchPanel()
-            self.mainSplitController?.searchPanelController?.doSearch(searchString)
+            self.mainSplitController?.searchPanelController?.doSearch(searchString, exact: exact)
         }
     }
     
@@ -55,7 +55,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             mainSplitController?.searchProvider?.selectPreviousResult(nil)
         case NSFindPanelAction.SetFindString.rawValue:
             if let currentSelection = pdfReader!.currentSelection() {
-                mainSplitController?.searchProvider?.doSearch(currentSelection.string())
+                mainSplitController?.searchProvider?.doSearch(currentSelection.string(), exact: true)
                 mainSplitController?.openSearchPanel()
             }
         default:
