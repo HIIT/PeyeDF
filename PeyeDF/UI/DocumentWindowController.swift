@@ -37,6 +37,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     // MARK: - Searching
     
     /// Do a search using a predefined string (when called from outside ui, e.g. from other applications)
+    /// - parameter exact: If true, searches for exact phrase (false for all words)
     func doSearch(searchString: String, exact: Bool) {
         dispatch_async(dispatch_get_main_queue()) {
             self.mainSplitController?.openSearchPanel()

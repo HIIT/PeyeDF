@@ -190,7 +190,7 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
         }
     }
     
-    /// Performs a search using the given string
+    /// Performs a search using the given string, with the exact phrase flag.
     func doSearch(var theString: String, var exact: Bool) {
         // if the string contains two quotes, at beginning and end, 
         // remove them and perform exact search

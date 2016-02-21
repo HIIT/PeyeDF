@@ -21,7 +21,6 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     
     var lastImportedSessionId = ""
     var lastImportedIndex = -1
-    var lastSelectedRow = -1
     var lastSelectedSessionId = ""
     
     @IBOutlet weak var loadingLabel: NSTextField!
@@ -39,9 +38,8 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
             return
         }
         let selectedSesId = allHistoryTuples[selectedRow].ev.sessionId
-        if selectedRow != lastSelectedRow || selectedSesId != lastSelectedSessionId {
+        if  selectedSesId != lastSelectedSessionId {
             delegate?.historyElementSelected((ev: allHistoryTuples[selectedRow].ev, ie: allHistoryTuples[selectedRow].ie!))
-            lastSelectedRow = selectedRow
             lastSelectedSessionId = selectedSesId
         }
     }

@@ -11,6 +11,8 @@ import Quartz
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
+    
+    // MARK: - Setup
 
     /// Outlet for connect to dime menu item
     @IBOutlet weak var connectDime: NSMenuItem!
@@ -58,22 +60,47 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "midasConnectionChanged:", name: PeyeConstants.midasConnectionNotification, object: MidasManager.sharedInstance)
     }
     
+    // MARK: - Opening
+    
+    func applicationShouldOpenUntitledFile(sender: NSApplication) -> Bool {
+        return false
+    }
+    
     /// Overridden to allow searching from outside (spotlight)
     func application(sender: NSApplication, openFiles filenames: [String]) {
-        let _searchString = NSAppleEventManager.sharedAppleEventManager().currentAppleEvent?.descriptorForKeyword(UInt32(keyAESearchText))?.stringValue
+        let searchString = NSAppleEventManager.sharedAppleEventManager().currentAppleEvent?.descriptorForKeyword(UInt32(keyAESearchText))?.stringValue
         for filename in filenames {
-            NSDocumentController.sharedDocumentController().openDocumentWithContentsOfURL(NSURL(fileURLWithPath: filename), display: true) {
-                _doc, _, _ in
-                if let searchS = _searchString, doc = _doc where
-                  searchS != "" && doc.windowControllers.count == 1 {
-                    (doc.windowControllers[0] as! DocumentWindowController).doSearch(searchS, exact: false)
-                }
+            let fileUrl = NSURL(fileURLWithPath: filename)
+            openDocument(fileUrl, searchString: searchString)
+        }
+    }
+    
+    // MARK: - Convenience
+    
+    /// Convenience function to open a file using a given local url and an 
+    /// (optional) search string.
+    func openDocument(fileURL: NSURL, searchString: String?) {
+        NSDocumentController.sharedDocumentController().openDocumentWithContentsOfURL(fileURL, display: true) {
+            document, _, _ in
+            if let searchS = searchString, doc = document where
+              searchS != "" && doc.windowControllers.count == 1 {
+                (doc.windowControllers[0] as! DocumentWindowController).doSearch(searchS, exact: false)
             }
         }
     }
     
+    /// A url sent for opening (using host "reader") is sent here.
+    func openComponents(comps: NSURLComponents) {
+        let query: String? = comps.parameterDictionary?["search"]
+        if let path = comps.path where path != "" {
+            openDocument(NSURL(fileURLWithPath: path), searchString: query)
+        }
+    }
+    
+    // MARK: - Actions
+    
     /// Show refinder window (creating it, if needed)
-    @IBAction func showRefinderWindor(sender: AnyObject) {
+    @IBAction func showRefinderWindor(sender: AnyObject?) {
         if refinderWindow == nil {
             refinderWindow = (AppSingleton.refinderStoryboard.instantiateControllerWithIdentifier("RefinderWindowController") as! NSWindowController)
         }
@@ -133,6 +160,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
+    // MARK: - Closing
+    
     func applicationWillTerminate(aNotification: NSNotification) {
         // Insert code here to tear down your application
         MidasManager.sharedInstance.unsetFixationDelegate(HistoryManager.sharedManager)
@@ -141,17 +170,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: PeyeConstants.midasConnectionNotification, object: MidasManager.sharedInstance)
     }
     
-    func applicationShouldOpenUntitledFile(sender: NSApplication) -> Bool {
-        return false
-    }
-    
     // MARK: - Callbacks
     
+    /// Handles PeyeDF's url type (with protocol peyedf://)
     @objc func handleURL(event: NSAppleEventDescriptor) {
         if let pDesc = event.paramDescriptorForKeyword(UInt32(keyDirectObject)), stringVal = pDesc.stringValue {
             if let comps = NSURLComponents(string: stringVal), host = comps.host {
-                // check that "host" (sessioId) is valid, then proceed
-                Swift.print("Host: \(host)")
+                switch host {
+                case "reader":
+                    openComponents(comps)
+                case "refinder":
+                    showRefinderWindor(nil)
+                default:
+                    AppSingleton.alertUser("\(host) not recognized.", infoText: "Allowed \"hosts\" are 'reader' and 'refinder'.")
+                }
                 if let params = comps.parameterDictionary {
                     if let sr = params["rect"]?.withoutChars(["(", ")"]) {
                         let r = NSRect(string: sr)

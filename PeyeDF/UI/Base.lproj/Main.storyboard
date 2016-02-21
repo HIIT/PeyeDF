@@ -1182,7 +1182,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="yXb-ko-u85">
-                                    <rect key="frame" x="458" y="1" width="16" height="201"/>
+                                    <rect key="frame" x="459" y="1" width="15" height="201"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
@@ -1538,8 +1538,8 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <button translatesAutoresizingMaskIntoConstraints="NO" id="vCT-OT-qdj">
-                                            <rect key="frame" x="19" y="35" width="97" height="18"/>
-                                            <buttonCell key="cell" type="radio" title="Exact match" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="frZ-ZE-aQ7">
+                                            <rect key="frame" x="19" y="35" width="101" height="18"/>
+                                            <buttonCell key="cell" type="radio" title="Exact phrase" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="frZ-ZE-aQ7">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
@@ -1548,8 +1548,8 @@
                                             </connections>
                                         </button>
                                         <button translatesAutoresizingMaskIntoConstraints="NO" id="V5c-zb-GX0">
-                                            <rect key="frame" x="19" y="9" width="117" height="18"/>
-                                            <buttonCell key="cell" type="radio" title="Separate words" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="tAw-d3-8Wi">
+                                            <rect key="frame" x="19" y="9" width="78" height="18"/>
+                                            <buttonCell key="cell" type="radio" title="All words" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="tAw-d3-8Wi">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
