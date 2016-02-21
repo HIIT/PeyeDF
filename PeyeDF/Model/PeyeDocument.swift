@@ -31,14 +31,6 @@ class PeyeDocument: NSDocument {
         return false
     }
     
-    /// Overridden to allow showing of search events from spotlight
-    override func showWindows() {
-        if let searchString = NSAppleEventManager.sharedAppleEventManager().currentAppleEvent?.descriptorForKeyword(UInt32(keyAESearchText))?.stringValue where windowControllers.count == 1 {
-            (self.windowControllers[0] as? DocumentWindowController)?.doSearch(searchString, exact: false)
-        }
-        super.showWindows()
-    }
-    
     /// Creates window controllers and automatically calls loadDocument()
     override func makeWindowControllers() {
         let storyboard = AppSingleton.mainStoryboard

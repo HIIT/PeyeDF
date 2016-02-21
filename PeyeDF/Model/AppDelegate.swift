@@ -65,7 +65,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             NSDocumentController.sharedDocumentController().openDocumentWithContentsOfURL(NSURL(fileURLWithPath: filename), display: true) {
                 _doc, _, _ in
                 if let searchS = _searchString, doc = _doc where
-                  doc.windowControllers.count == 1 {
+                  searchS != "" && doc.windowControllers.count == 1 {
                     (doc.windowControllers[0] as! DocumentWindowController).doSearch(searchS, exact: false)
                 }
             }
