@@ -12,7 +12,7 @@
 				<string>pdf</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
-			<string>pdf.icns</string>
+			<string>peyedoc.icns</string>
 			<key>CFBundleTypeName</key>
 			<string>PeyeDF</string>
 			<key>CFBundleTypeOSTypes</key>

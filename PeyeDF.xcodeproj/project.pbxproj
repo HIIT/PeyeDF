@@ -24,7 +24,6 @@
 		A9260F571BA4CD10005B1556 /* MyOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9260F561BA4CD10005B1556 /* MyOverlay.swift */; };
 		A935F0C61B8CC5FD00587C99 /* DesktopEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A935F0C51B8CC5FD00587C99 /* DesktopEvent.swift */; };
 		A93C53DC1B8DCEFB00179C72 /* HistoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93C53DB1B8DCEFB00179C72 /* HistoryManager.swift */; };
-		A947C5681C79230F0083102D /* pdf.icns in Resources */ = {isa = PBXBuildFile; fileRef = A947C5671C79230F0083102D /* pdf.icns */; };
 		A95795071BD668E40083525C /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95795061BD668E40083525C /* Person.swift */; };
 		A957950D1BD66A600083525C /* ScientificDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = A957950C1BD66A600083525C /* ScientificDocument.swift */; };
 		A95795151BD69BAA0083525C /* Refinder.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A95795141BD69BAA0083525C /* Refinder.storyboard */; };
@@ -62,6 +61,7 @@
 		A9B36CB01BEA4A3A00A27861 /* MyPDFBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B36CAF1BEA4A3A00A27861 /* MyPDFBase.swift */; };
 		A9C8F0251BC2B309007ABE1A /* Fixation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C8F0241BC2B309007ABE1A /* Fixation.swift */; };
 		A9C8F0271BC2B31A007ABE1A /* Raw.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C8F0261BC2B31A007ABE1A /* Raw.swift */; };
+		A9CC31551C79FF5600AE7556 /* peyedoc.icns in Resources */ = {isa = PBXBuildFile; fileRef = A9CC31541C79FF5600AE7556 /* peyedoc.icns */; };
 		A9CDB2E91B3AC49800347398 /* PeyeConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CDB2E81B3AC49800347398 /* PeyeConstants.swift */; };
 		A9CEAA801BE7793500E23964 /* Paragraphs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CEAA7F1BE7793500E23964 /* Paragraphs.swift */; };
 		A9D833AD1BA868520046B21F /* PageEyeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D833AC1BA868520046B21F /* PageEyeData.swift */; };
@@ -175,7 +175,6 @@
 		A9260F561BA4CD10005B1556 /* MyOverlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyOverlay.swift; sourceTree = "<group>"; };
 		A935F0C51B8CC5FD00587C99 /* DesktopEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DesktopEvent.swift; sourceTree = "<group>"; };
 		A93C53DB1B8DCEFB00179C72 /* HistoryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryManager.swift; sourceTree = "<group>"; };
-		A947C5671C79230F0083102D /* pdf.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = pdf.icns; sourceTree = "<group>"; };
 		A95795061BD668E40083525C /* Person.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
 		A957950C1BD66A600083525C /* ScientificDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScientificDocument.swift; sourceTree = "<group>"; };
 		A95795141BD69BAA0083525C /* Refinder.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Refinder.storyboard; sourceTree = "<group>"; };
@@ -213,6 +212,7 @@
 		A9B36CAF1BEA4A3A00A27861 /* MyPDFBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPDFBase.swift; sourceTree = "<group>"; };
 		A9C8F0241BC2B309007ABE1A /* Fixation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fixation.swift; sourceTree = "<group>"; };
 		A9C8F0261BC2B31A007ABE1A /* Raw.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Raw.swift; sourceTree = "<group>"; };
+		A9CC31541C79FF5600AE7556 /* peyedoc.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = peyedoc.icns; sourceTree = "<group>"; };
 		A9CDB2E81B3AC49800347398 /* PeyeConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeyeConstants.swift; sourceTree = "<group>"; };
 		A9CEAA7F1BE7793500E23964 /* Paragraphs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Paragraphs.swift; sourceTree = "<group>"; };
 		A9D833AC1BA868520046B21F /* PageEyeData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageEyeData.swift; sourceTree = "<group>"; };
@@ -301,7 +301,7 @@
 		A91CB93B1B332EDB00671868 = {
 			isa = PBXGroup;
 			children = (
-				A947C5671C79230F0083102D /* pdf.icns */,
+				A9CC31541C79FF5600AE7556 /* peyedoc.icns */,
 				A9A23CE21C776989008B61C4 /* PeyeDF.icns */,
 				A9D9545F1B8B59DD007A34BF /* DiMe data types */,
 				A9C8F0231BC2B27A007ABE1A /* Midas data types */,
@@ -584,7 +584,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A947C5681C79230F0083102D /* pdf.icns in Resources */,
+				A9CC31551C79FF5600AE7556 /* peyedoc.icns in Resources */,
 				A91CB9501B332EDB00671868 /* Images.xcassets in Resources */,
 				A95A8CEA1B9440600093119E /* Main.storyboard in Resources */,
 				A95795151BD69BAA0083525C /* Refinder.storyboard in Resources */,
