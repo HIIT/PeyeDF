@@ -24,6 +24,7 @@
 		A9260F571BA4CD10005B1556 /* MyOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9260F561BA4CD10005B1556 /* MyOverlay.swift */; };
 		A935F0C61B8CC5FD00587C99 /* DesktopEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A935F0C51B8CC5FD00587C99 /* DesktopEvent.swift */; };
 		A93C53DC1B8DCEFB00179C72 /* HistoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93C53DB1B8DCEFB00179C72 /* HistoryManager.swift */; };
+		A947C5681C79230F0083102D /* pdf.icns in Resources */ = {isa = PBXBuildFile; fileRef = A947C5671C79230F0083102D /* pdf.icns */; };
 		A95795071BD668E40083525C /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95795061BD668E40083525C /* Person.swift */; };
 		A957950D1BD66A600083525C /* ScientificDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = A957950C1BD66A600083525C /* ScientificDocument.swift */; };
 		A95795151BD69BAA0083525C /* Refinder.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A95795141BD69BAA0083525C /* Refinder.storyboard */; };
@@ -174,6 +175,7 @@
 		A9260F561BA4CD10005B1556 /* MyOverlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyOverlay.swift; sourceTree = "<group>"; };
 		A935F0C51B8CC5FD00587C99 /* DesktopEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DesktopEvent.swift; sourceTree = "<group>"; };
 		A93C53DB1B8DCEFB00179C72 /* HistoryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryManager.swift; sourceTree = "<group>"; };
+		A947C5671C79230F0083102D /* pdf.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = pdf.icns; sourceTree = "<group>"; };
 		A95795061BD668E40083525C /* Person.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
 		A957950C1BD66A600083525C /* ScientificDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScientificDocument.swift; sourceTree = "<group>"; };
 		A95795141BD69BAA0083525C /* Refinder.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Refinder.storyboard; sourceTree = "<group>"; };
@@ -299,6 +301,7 @@
 		A91CB93B1B332EDB00671868 = {
 			isa = PBXGroup;
 			children = (
+				A947C5671C79230F0083102D /* pdf.icns */,
 				A9A23CE21C776989008B61C4 /* PeyeDF.icns */,
 				A9D9545F1B8B59DD007A34BF /* DiMe data types */,
 				A9C8F0231BC2B27A007ABE1A /* Midas data types */,
@@ -581,6 +584,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A947C5681C79230F0083102D /* pdf.icns in Resources */,
 				A91CB9501B332EDB00671868 /* Images.xcassets in Resources */,
 				A95A8CEA1B9440600093119E /* Main.storyboard in Resources */,
 				A95795151BD69BAA0083525C /* Refinder.storyboard in Resources */,

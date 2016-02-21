@@ -228,7 +228,9 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
         
         numberOfResultsFound += 1
         foundSelections.append(pdfSel.copy() as! PDFSelection)
-        resultTable.reloadData()
+        self.resultTable.noteNumberOfRowsChanged()
+        let updateRect = self.resultTable.rectOfRow(self.numberOfResultsFound)
+        self.resultTable.setNeedsDisplayInRect(updateRect)
         resultNumberField.stringValue = "\(numberOfResultsFound)"
         
         if numberOfResultsFound > 1 {

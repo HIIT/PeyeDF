@@ -16,8 +16,6 @@ class PeyeDocument: NSDocument {
     /// Reference to underlying PDFDocument. Set after loading document by window controller.
     weak var pdfDoc: PDFDocument?
     
-    // MARK: - DiMe related
-    
     // MARK: - NSDocument overrides
     
     override init() {
@@ -33,6 +31,14 @@ class PeyeDocument: NSDocument {
         return false
     }
     
+    /// Overridden to allow showing of search events from spotlight
+    override func showWindows() {
+        if let searchString = NSAppleEventManager.sharedAppleEventManager().currentAppleEvent?.descriptorForKeyword(UInt32(keyAESearchText))?.stringValue where windowControllers.count == 1 {
+            (self.windowControllers[0] as? DocumentWindowController)?.doSearch(searchString)
+        }
+        super.showWindows()
+    }
+    
     /// Creates window controllers and automatically calls loadDocument()
     override func makeWindowControllers() {
         let storyboard = AppSingleton.mainStoryboard
@@ -40,7 +46,7 @@ class PeyeDocument: NSDocument {
         let windowController = storyboard.instantiateControllerWithIdentifier("Document Window Controller") as! DocumentWindowController
         self.addWindowController(windowController)
         windowController.loadDocument()
-        windowController.shouldCloseDocument = true // tell to automaticall close document when closing window
+        windowController.shouldCloseDocument = true // tell to automatically close document when closing window
     }
     
     /// Saving document to a given url

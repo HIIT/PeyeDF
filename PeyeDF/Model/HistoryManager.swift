@@ -127,8 +127,9 @@ class HistoryManager: FixationDataDelegate {
         
     }
     
-    /// Attempts to connect to dime. Sends a notification if we succeeded / failed
-    func dimeConnect() {
+    /// Attempts to connect to dime. Sends a notification if we succeeded / failed.
+    /// Also calls the given callback with a boolean which is true if operation succeeded.
+    func dimeConnect(callback: (Bool -> Void)? = nil) {
         
         let server_url = AppSingleton.dimeUrl
         let headers = AppSingleton.dimeHeaders()
@@ -142,9 +143,11 @@ class HistoryManager: FixationDataDelegate {
                 AppSingleton.alertUser("Error while communcating with dime. Dime has now been disconnected", infoText: "Error message:\n\(response.result.error!)")
                 
                 self.dimeConnectState(false)
+                callback?(false)
             } else {
                 // succesfully connected
                 self.dimeConnectState(true)
+                callback?(true)
             }
         }
     }

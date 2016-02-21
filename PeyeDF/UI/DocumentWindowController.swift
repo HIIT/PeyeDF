@@ -36,6 +36,14 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     // MARK: - Searching
     
+    /// Do a search using a predefined string (when called from outside ui, e.g. from other applications)
+    func doSearch(searchString: String) {
+        dispatch_async(dispatch_get_main_queue()) {
+            self.mainSplitController?.openSearchPanel()
+            self.mainSplitController?.searchPanelController?.doSearch(searchString)
+        }
+    }
+    
     /// Perform search using default methods.
     @objc func performFindPanelAction(sender: AnyObject) {
         switch UInt(sender.tag()) {

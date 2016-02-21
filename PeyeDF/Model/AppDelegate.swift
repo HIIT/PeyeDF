@@ -58,6 +58,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "midasConnectionChanged:", name: PeyeConstants.midasConnectionNotification, object: MidasManager.sharedInstance)
     }
     
+    /// Overridden to allow searching from outside (spotlight)
+    func application(sender: NSApplication, openFiles filenames: [String]) {
+        let _searchString = NSAppleEventManager.sharedAppleEventManager().currentAppleEvent?.descriptorForKeyword(UInt32(keyAESearchText))?.stringValue
+        for filename in filenames {
+            NSDocumentController.sharedDocumentController().openDocumentWithContentsOfURL(NSURL(fileURLWithPath: filename), display: true) {
+                _doc, _, _ in
+                if let searchS = _searchString, doc = _doc where
+                  doc.windowControllers.count == 1 {
+                    (doc.windowControllers[0] as! DocumentWindowController).doSearch(searchS)
+                }
+            }
+        }
+    }
+    
     /// Show refinder window (creating it, if needed)
     @IBAction func showRefinderWindor(sender: AnyObject) {
         if refinderWindow == nil {
