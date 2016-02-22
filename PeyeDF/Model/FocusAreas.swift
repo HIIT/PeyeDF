@@ -13,6 +13,7 @@ import Quartz
 /// Enum representing something we can focus on, such as a point on a document (to
 /// refer to a heading or bookmark) or a rect (to refer to a block of text).
 enum FocusAreaType {
+    case Page
     case Rect(NSRect)
     case Point(NSPoint)
     
@@ -29,8 +30,7 @@ enum FocusAreaType {
         } else if let sp = params["point"]?.withoutChars(["(", ")"]), p = NSPoint(string: sp) {
             self = .Point(p)
         } else {
-            AppSingleton.log.warning("Could not parse string to rect or point: \(comps.string)")
-            return nil
+            self = .Page
         }
     }
 }
@@ -97,6 +97,18 @@ extension MyPDFBase {
             var pointRect = NSRect(origin: p, size: NSSize())
             
             pointRect.origin.y += frame.size.height / 3
+            goToRect(pointRect, onPage: pdfpage)
+            
+        case .Page:
+            
+            // Get beginning of page (x: 0, y: top)
+            let pageRect = getPageRect(pdfpage)
+            var p = pageRect.origin
+            p.y = pageRect.origin.y + pageRect.height
+            
+            // Get tiny rect for beginning of page
+            let pointRect = NSRect(origin: p, size: NSSize())
+            
             goToRect(pointRect, onPage: pdfpage)
             
         }
