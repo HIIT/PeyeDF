@@ -15,6 +15,9 @@ struct PeyeConstants {
     // MARK: - Preferences
     // Remember to set some default values in the appdelegate for each preference
     
+    /// Whether we want to try to fetch metadata on document open
+    static let prefDownloadMetadata = "metadata.usecrossref"
+    
     /// Whether we want "annotate" to be enabled by default
     static let prefEnableAnnotate = "annotate.defaultOn"
     

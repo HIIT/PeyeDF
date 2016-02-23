@@ -8,6 +8,7 @@
 
 import Foundation
 import Quartz
+import Alamofire
 
 extension PDFDocument {
     
@@ -140,11 +141,15 @@ extension PDFDocument {
         }
     }
     
+    // MARK: - Auto-Metadata
     
-    /// Asynchronously attempts to find the doi as a string. It does this by
-    /// searching the first page for ` doi ` or ` doi:` and returns the string that follows it.
-    func getDoi(callback: String -> Void) {
+    /// Asynchronously attempt to auto-set metadata using crossref
+    /// - parameter sciDoc: Scientific document, will update its values and send it to dime
+    func autoCrossref(sciDoc: ScientificDocument) {
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
+            // Try to find doi
+            var _doi: String? = nil
+            
             guard let pageString = self.pageAtIndex(0).string() else {
                 return
             }
@@ -155,8 +160,39 @@ extension PDFDocument {
                 if let r = _range, last = r.last {
                     let s = pageString.substringFromIndex(last.advancedBy(1)).trimmed()
                     if let doiChunk = s.firstChunk() where doiChunk.characters.count >= 5 {
-                        callback(doiChunk)
-                        return
+                        _doi = doiChunk
+                        break
+                    }
+                }
+            }
+            
+            // If doi was found, use the crossref api to auto-set metadata
+            guard let doi = _doi else {
+                return
+            }
+            
+            Alamofire.request(.GET, "http://api.crossref.org/works/\(doi)").responseJSON() {
+                response in
+                if let resp = response.result.value where response.result.isSuccess {
+                    let json = JSON(resp)
+                    if let status = json["status"].string where status == "ok" {
+                        if let title = json["message"]["title"][0].string {
+                            self.setTitle(title)
+                            sciDoc.title = title
+                        }
+                        if let subj = json["message"]["container-title"][0].string {
+                            self.setSubject(subj)
+                        }
+                        if let auths = json["message"]["author"].array {
+                            var authString = auths[0]["given"].stringValue + " " + auths[0]["family"].stringValue
+                            for i in 1..<auths.count {
+                                authString += "; "
+                                authString += auths[i]["given"].stringValue + " " + auths[i]["family"].stringValue
+                            }
+                            self.setAuthor(authString)
+                            sciDoc.authors = self.getAuthorsAsArray()
+                            HistoryManager.sharedManager.sendToDiMe(sciDoc)
+                        }
                     }
                 }
             }

@@ -52,9 +52,23 @@
             <objects>
                 <viewController title="General Settings" showSeguePresentationStyle="single" id="62w-oK-rf7" customClass="GeneralSettingsController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="WGw-LJ-0lD">
-                        <rect key="frame" x="0.0" y="0.0" width="462" height="281"/>
+                        <rect key="frame" x="0.0" y="0.0" width="462" height="301"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="wEK-ud-1k4">
+                                <rect key="frame" x="18" y="265" width="288" height="18"/>
+                                <buttonCell key="cell" type="check" title="Annotate function enabled for new windows" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="seh-ry-ahZ">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="PGH-u0-em8">
+                                <rect key="frame" x="18" y="245" width="327" height="18"/>
+                                <buttonCell key="cell" type="check" title="Attempt to download metadata on document open" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="dby-mW-4qK">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="BVV-hH-JyH">
                                 <rect key="frame" x="18" y="225" width="440" height="18"/>
                                 <constraints>
@@ -187,16 +201,10 @@
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
-                            <button translatesAutoresizingMaskIntoConstraints="NO" id="wEK-ud-1k4">
-                                <rect key="frame" x="18" y="245" width="288" height="18"/>
-                                <buttonCell key="cell" type="check" title="Annotate function enabled for new windows" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="seh-ry-ahZ">
-                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="afp-6T-41F" firstAttribute="top" secondItem="S1W-xx-0w2" secondAttribute="bottom" constant="8" symbolic="YES" id="5Ka-dp-EXl"/>
+                            <constraint firstItem="BVV-hH-JyH" firstAttribute="top" secondItem="PGH-u0-em8" secondAttribute="bottom" constant="6" symbolic="YES" id="AGt-z4-MIT"/>
                             <constraint firstItem="kwa-ow-smM" firstAttribute="centerY" secondItem="gxa-Hp-eF0" secondAttribute="centerY" constant="-0.5" id="AMn-gO-zt9"/>
                             <constraint firstItem="S1W-xx-0w2" firstAttribute="top" secondItem="GFc-xH-ekV" secondAttribute="bottom" constant="6" symbolic="YES" id="D74-0d-whb"/>
                             <constraint firstItem="kwa-ow-smM" firstAttribute="top" secondItem="afp-6T-41F" secondAttribute="bottom" constant="8" symbolic="YES" id="F5Z-PG-XBm"/>
@@ -204,21 +212,23 @@
                             <constraint firstItem="UC7-V4-Wrp" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" id="GDs-Qo-G4q"/>
                             <constraint firstItem="UC7-V4-Wrp" firstAttribute="top" secondItem="gxa-Hp-eF0" secondAttribute="bottom" constant="8" symbolic="YES" id="My0-gm-Agt"/>
                             <constraint firstItem="wEK-ud-1k4" firstAttribute="top" secondItem="WGw-LJ-0lD" secondAttribute="top" constant="20" symbolic="YES" id="Pba-Rh-7DG"/>
+                            <constraint firstItem="PGH-u0-em8" firstAttribute="leading" secondItem="wEK-ud-1k4" secondAttribute="leading" id="Rla-LV-4W2"/>
                             <constraint firstAttribute="bottom" secondItem="UC7-V4-Wrp" secondAttribute="bottom" constant="20" symbolic="YES" id="YhJ-Bc-HLK"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="gxa-Hp-eF0" secondAttribute="trailing" constant="254" id="ZTB-dj-bam"/>
                             <constraint firstItem="afp-6T-41F" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" symbolic="YES" id="am1-DD-o8Q"/>
                             <constraint firstItem="BVV-hH-JyH" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" symbolic="YES" id="fXk-kY-jPK"/>
+                            <constraint firstItem="PGH-u0-em8" firstAttribute="top" secondItem="wEK-ud-1k4" secondAttribute="bottom" constant="6" symbolic="YES" id="h4i-oZ-NIt"/>
                             <constraint firstItem="gxa-Hp-eF0" firstAttribute="leading" secondItem="kwa-ow-smM" secondAttribute="trailing" constant="15" id="jDD-qL-Gav"/>
                             <constraint firstItem="GFc-xH-ekV" firstAttribute="top" secondItem="BVV-hH-JyH" secondAttribute="bottom" constant="6" symbolic="YES" id="jSb-WS-XYW"/>
                             <constraint firstItem="GFc-xH-ekV" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" symbolic="YES" id="mwV-8m-hy7"/>
                             <constraint firstItem="wEK-ud-1k4" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" id="o2c-TX-GJK"/>
                             <constraint firstAttribute="trailing" secondItem="UC7-V4-Wrp" secondAttribute="trailing" constant="20" id="rwf-WJ-HtQ"/>
-                            <constraint firstItem="BVV-hH-JyH" firstAttribute="top" secondItem="wEK-ud-1k4" secondAttribute="bottom" constant="6" symbolic="YES" id="sOY-Rg-NOD"/>
                             <constraint firstItem="kwa-ow-smM" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" id="spo-cJ-rCU"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="annotateDefaultOnCell" destination="seh-ry-ahZ" id="URs-Qf-W6e"/>
+                        <outlet property="downloadMetadataCell" destination="dby-mW-4qK" id="8Nk-3m-sD5"/>
                         <outlet property="dpiField" destination="gxa-Hp-eF0" id="Ag9-HG-C3H"/>
                         <outlet property="drawDebugCircleCheckCell" destination="qEt-ZY-ZQF" id="IEe-IU-hs7"/>
                         <outlet property="leftDomEyeButton" destination="I21-cq-meB" id="xHI-t6-wUf"/>
@@ -1182,7 +1192,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="yXb-ko-u85">
-                                    <rect key="frame" x="459" y="1" width="15" height="201"/>
+                                    <rect key="frame" x="458" y="1" width="16" height="201"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>

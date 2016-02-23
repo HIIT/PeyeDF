@@ -166,7 +166,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     func sendDeskEvent() {
         let sciDoc = pdfReader!.sciDoc!
         let deskEvent = DesktopEvent(sciDoc: sciDoc)
-        HistoryManager.sharedManager.sendToDiMe(deskEvent, endPoint: .Event)
+        HistoryManager.sharedManager.sendToDiMe(deskEvent)
     }
     
     /// Retrieves current ReadingEvent (for HistoryManager)
@@ -259,7 +259,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             dispatch_async(dispatch_get_main_queue()) {
                 NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.documentChangeNotification, object: self.document)
             }
-        
+            
             // NSDocument subclass
             let peyeDoc = self.document as! PeyeDocument
             peyeDoc.pdfDoc = pdfDoc
@@ -272,8 +272,14 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             }
             
             // Associate PDF view to info element
+            // TODO: do this (also) after fetching metadata
             let sciDoc = ScientificDocument(uri: url.path!, plainTextContent: pdfDoc.getText(), title: pdfDoc.getTitle(), authors: pdfDoc.getAuthorsAsArray(), keywords: pdfDoc.getKeywordsAsArray())
             pdfReader!.sciDoc = sciDoc
+            
+            // Download metadata after sending "old" doc to dime
+            if (NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDownloadMetadata) as! Bool) {
+                self.pdfReader?.document().autoCrossref(pdfReader!.sciDoc!)
+            }
             
             // Tell app singleton which screen size we are using
             if let screen = window?.screen {
@@ -329,7 +335,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     @objc private func regularTimerFire(regularTimer: NSTimer) {
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) {
             if let mpdf = self.pdfReader, userRectStatus = mpdf.getUserRectStatus() {
-                HistoryManager.sharedManager.sendToDiMe(userRectStatus, endPoint: .Event) {
+                HistoryManager.sharedManager.sendToDiMe(userRectStatus) {
                     _, id in
                     mpdf.setSummaryId(id)
                 }
@@ -357,7 +363,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             if closeToken == 0 {
                 closeToken += 1
                 if let mpdf = self.pdfReader, userRectStatus = mpdf.getUserRectStatus() {
-                    HistoryManager.sharedManager.sendToDiMe(userRectStatus, endPoint: .Event) {
+                    HistoryManager.sharedManager.sendToDiMe(userRectStatus) {
                         _ in
                         // signal when done
                         callback?()
@@ -453,7 +459,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             DiMeFetcher.retrieveScientificDocument(pdfReader!.sciDoc!.id) {
                 scidoc in
                 if scidoc == nil {
-                    HistoryManager.sharedManager.sendToDiMe(self.pdfReader!.sciDoc!, endPoint: .InformationElement)
+                    HistoryManager.sharedManager.sendToDiMe(self.pdfReader!.sciDoc!)
                 }
             }
         }

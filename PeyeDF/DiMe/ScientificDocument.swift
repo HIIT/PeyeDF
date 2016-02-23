@@ -10,7 +10,7 @@ import Foundation
 
 class ScientificDocument: DocumentInformationElement {
     
-    private(set) var authors: [Person]?
+    var authors: [Person]?
     private(set) var keywords: [String]?
     
     /// Creates this scientific document

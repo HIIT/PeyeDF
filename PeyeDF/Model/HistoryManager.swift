@@ -70,9 +70,19 @@ class HistoryManager: FixationDataDelegate {
     /// Send the given data to dime
     /// - parameter callback: When done calls the callback where the first parameter is a boolean (true if successful) and
     /// the second the id of the returned item (nil if couldn't be found, or operation failed)
-    func sendToDiMe(dimeData: DiMeBase, endPoint: DiMeEndpoint, callback: ((Bool, Int?) -> Void)? = nil) {
+    func sendToDiMe(dimeData: DiMeBase, callback: ((Bool, Int?) -> Void)? = nil) {
        
         if dimeAvailable {
+            
+            let endPoint: DiMeEndpoint
+            switch dimeData {
+            case is Event:
+                endPoint = .Event
+            case is DocumentInformationElement:
+                endPoint = .InformationElement
+            default:
+                return
+            }
             
             do {
                 // attempt to translate json
@@ -319,7 +329,7 @@ class HistoryManager: FixationDataDelegate {
                     eventToSend.extendRects(csmi.getAllReadingRects())
                 }
                 
-                self.sendToDiMe(eventToSend, endPoint: .Event)
+                self.sendToDiMe(eventToSend)
                 
             }
             

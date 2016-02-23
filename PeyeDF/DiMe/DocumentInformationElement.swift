@@ -11,7 +11,7 @@ import Foundation
 class DocumentInformationElement: DiMeBase {
     
     let uri: String
-    let title: String?
+    var title: String?
     let plainTextContent: String?
     let id: String
     let contentHash: String?
@@ -75,4 +75,5 @@ class DocumentInformationElement: DiMeBase {
     func getId() -> String {
         return theDictionary["appId"]! as! String
     }
+    
 }

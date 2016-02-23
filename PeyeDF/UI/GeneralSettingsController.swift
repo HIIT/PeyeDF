@@ -14,6 +14,7 @@ class GeneralSettingsController: NSViewController {
     @IBOutlet weak var leftDomEyeButton: NSButton!
     @IBOutlet weak var rightDomEyeButton: NSButton!
     
+    @IBOutlet weak var downloadMetadataCell: NSButtonCell!
     @IBOutlet weak var annotateDefaultOnCell: NSButtonCell!
     @IBOutlet weak var dpiField: NSTextField!
     @IBOutlet weak var thicknessField: NSTextField!
@@ -55,6 +56,7 @@ class GeneralSettingsController: NSViewController {
         
         
         annotateDefaultOnCell.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefEnableAnnotate, options: options)
+        annotateDefaultOnCell.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefDownloadMetadata, options: options)
         midasCheckCell.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefUseMidas, options: options)
         refinderDrawGazedCheckCell.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefRefinderDrawGazedUpon, options: options)
         drawDebugCircleCheckCell.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefDrawDebugCircle, options: options)

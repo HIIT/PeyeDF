@@ -239,7 +239,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
                 let summaryEvent = allHistoryTuples[row].ev
                 summaryEvent.setProportions(info.pRead, pInteresting: info.pInteresting, pCritical: info.pCritical)
                 summaryEvent.setRects(info.rects)
-                HistoryManager.sharedManager.sendToDiMe(summaryEvent, endPoint: .Event) {
+                HistoryManager.sharedManager.sendToDiMe(summaryEvent) {
                     success, _ in
                     if success {
                         AppSingleton.alertUser("Data successfully sent")
