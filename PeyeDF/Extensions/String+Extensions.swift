@@ -10,6 +10,23 @@ import Foundation
 
 extension String {
     
+    /// Returns the first "chunk" i.e. a fragment which is not separated by whitespace
+    func firstChunk() -> String? {
+        var outC = [Character]()
+        for c in self.characters {
+            if c != " " && c != "\n" && c != "\r" {
+                outC.append(c)
+            } else {
+                break
+            }
+        }
+        if outC.count > 0 {
+            return String(outC)
+        } else {
+            return nil
+        }
+    }
+    
     /// Removes the character(s) from this string
     mutating func removeChars(theChars: [Character]) {
         self = String(characters.filter({!theChars.contains($0)}))

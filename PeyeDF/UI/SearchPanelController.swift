@@ -305,13 +305,8 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
         } else if tableColumn?.identifier == kColumnTitleLine {
             
             // extract line from found selection
-            let pages = foundSelections[row].pages()
             let foundString = foundSelections[row].string()
-            let page = pages[0] as! PDFPage
-            let selRect = foundSelections[row].boundsForPage(page)
-            let selPoint = NSPoint(x: selRect.origin.x + selRect.width / 2, y: selRect.origin.y + selRect.height / 2)
-            let lineSel = page.selectionForLineAtPoint(selPoint)
-            let lineString: NSString = lineSel.string().trimmed()
+            let lineString: NSString = foundSelections[row].lineString()
             
             // make found result bold
             let attrString = NSMutableAttributedString(string: lineString as String)

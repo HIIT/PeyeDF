@@ -140,6 +140,29 @@ extension PDFDocument {
         }
     }
     
+    
+    /// Asynchronously attempts to find the doi as a string. It does this by
+    /// searching the first page for ` doi ` or ` doi:` and returns the string that follows it.
+    func getDoi(callback: String -> Void) {
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
+            guard let pageString = self.pageAtIndex(0).string() else {
+                return
+            }
+            let doiSearches = ["doi ", "doi:"]
+            for doiS in doiSearches {
+                let _range = pageString.rangeOfString(doiS, options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil, locale: nil)
+                
+                if let r = _range, last = r.last {
+                    let s = pageString.substringFromIndex(last.advancedBy(1)).trimmed()
+                    if let doiChunk = s.firstChunk() where doiChunk.characters.count >= 5 {
+                        callback(doiChunk)
+                        return
+                    }
+                }
+            }
+        }
+    }
+    
     // MARK: - Setters
     
     func setTitle(newTitle: String) {
