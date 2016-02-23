@@ -10,6 +10,8 @@ import Foundation
 
 class ScientificDocument: DocumentInformationElement {
     
+    // TODO: add missing fields
+    
     var authors: [Person]?
     private(set) var keywords: [String]?
     

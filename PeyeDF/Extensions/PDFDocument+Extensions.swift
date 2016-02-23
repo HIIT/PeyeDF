@@ -182,6 +182,7 @@ extension PDFDocument {
                         }
                         if let subj = json["message"]["container-title"][0].string {
                             self.setSubject(subj)
+                            // TODO: update object with new values used in dime
                         }
                         if let auths = json["message"]["author"].array {
                             var authString = auths[0]["given"].stringValue + " " + auths[0]["family"].stringValue
