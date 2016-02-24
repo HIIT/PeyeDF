@@ -143,9 +143,9 @@ extension PDFDocument {
     
     // MARK: - Auto-Metadata
     
-    /// Asynchronously attempt to auto-set metadata using crossref
-    /// - parameter sciDoc: Scientific document, will update its values and send it to dime
-    func autoCrossref(sciDoc: ScientificDocument) {
+    /// Asynchronously attempt to auto-set metadata using crossref.
+    /// If successful, calls callback with json from crossref.
+    func autoCrossref(callback: (JSON -> Void)? = nil) {
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
             // Try to find doi
             var _doi: String? = nil
@@ -178,11 +178,9 @@ extension PDFDocument {
                     if let status = json["status"].string where status == "ok" {
                         if let title = json["message"]["title"][0].string {
                             self.setTitle(title)
-                            sciDoc.title = title
                         }
                         if let subj = json["message"]["container-title"][0].string {
                             self.setSubject(subj)
-                            // TODO: update object with new values used in dime
                         }
                         if let auths = json["message"]["author"].array {
                             var authString = auths[0]["given"].stringValue + " " + auths[0]["family"].stringValue
@@ -191,9 +189,8 @@ extension PDFDocument {
                                 authString += auths[i]["given"].stringValue + " " + auths[i]["family"].stringValue
                             }
                             self.setAuthor(authString)
-                            sciDoc.authors = self.getAuthorsAsArray()
-                            HistoryManager.sharedManager.sendToDiMe(sciDoc)
                         }
+                        callback?(json)
                     }
                 }
             }

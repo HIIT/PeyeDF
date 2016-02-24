@@ -60,6 +60,7 @@ class DiMeFetcher {
     
     /// Attempt to retrieve a single summary event for the given sessionId.
     /// Returns a tuple containing reading event and scidoc or nil if it failed.
+    /// - Attention: Don't call this from the main thread.
     func retrieveTuple(forSessionId sesId: String) -> (ev: SummaryReadingEvent, ie: ScientificDocument)? {
         
         var foundEvent: SummaryReadingEvent?
@@ -132,7 +133,7 @@ class DiMeFetcher {
                 }
                 if let appId = json["appId"].string {
                     if appId == infoElemId {
-                        let newScidoc = ScientificDocument(fromJson: json)
+                        let newScidoc = ScientificDocument(fromDime: json)
                         callback(newScidoc)
                     } else {
                         AppSingleton.log.error("Retrieved info element id does not match requested id: \(response.result.value!)")

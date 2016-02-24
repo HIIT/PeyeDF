@@ -63,7 +63,7 @@ class DocumentInformationElement: DiMeBase {
     }
     
     /// Creates information element from json
-    init(fromJson json: JSON) {
+    init(fromDime json: JSON) {
         self.uri = json["uri"].stringValue.skipPrefix(7) // skip file:// prefix when importing
         self.title = json["title"].string
         self.plainTextContent = json["plainTextContent"].string

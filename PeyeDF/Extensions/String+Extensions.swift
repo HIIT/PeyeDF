@@ -10,6 +10,25 @@ import Foundation
 
 extension String {
     
+    /// Returns an array of the words that compose the string (skipping space and other punctuation). Returns nil if no words were found.
+    func words() -> [String]? {
+        
+        let range = Range<String.Index>(start: self.startIndex, end: self.endIndex)
+        var words = [String]()
+        
+        self.enumerateSubstringsInRange(range, options: NSStringEnumerationOptions.ByWords) { substring, _, _, _ in
+            if let s = substring {
+                words.append(s)
+            }
+        }
+        
+        if words.count >= 1 {
+            return words
+        } else {
+            return nil
+        }
+    }
+    
     /// Returns the first "chunk" i.e. a fragment which is not separated by whitespace
     func firstChunk() -> String? {
         var outC = [Character]()

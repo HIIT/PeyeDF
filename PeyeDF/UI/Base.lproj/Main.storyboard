@@ -442,7 +442,7 @@
                                         <menuItem title="Show refinder" id="pCf-Ki-POQ">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="showRefinderWindor:" target="Ady-hI-5gd" id="W3s-P1-3TE"/>
+                                                <action selector="showRefinderWindow:" target="Ady-hI-5gd" id="cma-6M-nSg"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem title="This doc metadata..." id="GCK-AT-nyU">

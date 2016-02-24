@@ -273,12 +273,16 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             
             // Associate PDF view to info element
             // TODO: do this (also) after fetching metadata
-            let sciDoc = ScientificDocument(uri: url.path!, plainTextContent: pdfDoc.getText(), title: pdfDoc.getTitle(), authors: pdfDoc.getAuthorsAsArray(), keywords: pdfDoc.getKeywordsAsArray())
+            let sciDoc = ScientificDocument(uri: url.path!, plainTextContent: pdfDoc.getText(), title: pdfDoc.getTitle(), authors: pdfDoc.getAuthorsAsArray(), keywords: pdfDoc.getKeywordsAsArray(), subject: pdfDoc.getSubject())
             pdfReader!.sciDoc = sciDoc
             
-            // Download metadata after sending "old" doc to dime
+            // Download metadata if needed, and send to dime if found
             if (NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDownloadMetadata) as! Bool) {
-                self.pdfReader?.document().autoCrossref(pdfReader!.sciDoc!)
+                self.pdfReader?.document().autoCrossref() {
+                    json in
+                    sciDoc.updateFields(fromCrossRef: json)
+                    HistoryManager.sharedManager.sendToDiMe(sciDoc)
+                }
             }
             
             // Tell app singleton which screen size we are using
