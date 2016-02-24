@@ -351,6 +351,10 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     /// This window is going to close, send exit event and send all paragraph data to HistoryManager as summary. Calls the given callback once done saving to dime.
     func unload(callback: (Void -> Void)? = nil) {
+        guard closeToken == 0 else {
+            return
+        }
+        closeToken += 1
         HistoryManager.sharedManager.exit(self)
         self.unSetObservers()
         self.debugController?.unSetMonitors(self.pdfReader!, docWindow: self.window!)
@@ -364,15 +368,10 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             wvc.someText = "Sending data to DiMe..."
             self.window!.beginSheet(ww, completionHandler: nil)
             // send data to dime
-            if closeToken == 0 {
-                closeToken += 1
-                if let mpdf = self.pdfReader, userRectStatus = mpdf.getUserRectStatus() {
-                    HistoryManager.sharedManager.sendToDiMe(userRectStatus) {
-                        _ in
-                        // signal when done
-                        callback?()
-                    }
-                } else {
+            if let mpdf = self.pdfReader, userRectStatus = mpdf.getUserRectStatus() {
+                HistoryManager.sharedManager.sendToDiMe(userRectStatus) {
+                    _ in
+                    // signal when done
                     callback?()
                 }
             } else {
