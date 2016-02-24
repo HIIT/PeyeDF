@@ -71,7 +71,7 @@ class ScientificDocument: DocumentInformationElement {
             if let doi = json["message"]["DOI"].string {
                 self.doi = doi
             }
-            if let year = json["message"]["issued"]["date-parts"][0].int {
+            if let year = json["message"]["issued"]["date-parts"][0][0].int {
                 self.year = year
             }
             if let ps = json["message"]["page"].string, words = ps.words() {
@@ -83,8 +83,8 @@ class ScientificDocument: DocumentInformationElement {
             if let publisher = json["message"]["publisher"].string {
                 self.publisher = publisher
             }
-            if let volume = json["message"]["volume"].int {
-                self.volume = volume
+            if let volume = json["message"]["volume"].string {
+                self.volume = Int(volume)
             }
         }
     }
