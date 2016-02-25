@@ -92,8 +92,24 @@ class Person: DiMeBase {
         
     }
     
+    /// Creates a preson from crossref's json's ["message"]["author"] result.
+    /// Crossref has an array of dicts with "given", "family" keys.
+    /// "family" values can contain middle names separated by " "
+    init?(fromCrossRef json: JSON) {
+        super.init()
+        guard let fnamesS = json["given"].string, lname = json["family"].string,
+              var fnames = fnamesS.split(" ")
+              where fnames.count >= 1 else {
+                AppSingleton.log.warning("Couldn't parse author with dictionary: \(json)")
+                return nil
+        }
+        self.firstName = fnames.removeAtIndex(0)
+        self.lastName = lname
+        self.middleNames = fnames
+    }
+    
     /// Creates a person from dime's json
-    init(fromJson json: JSON) {
+    init(fromDime json: JSON) {
         self.firstName = json["firstName"].stringValue
         self.lastName = json["lastName"].stringValue
         if let midnames = json["middleNames"].array {

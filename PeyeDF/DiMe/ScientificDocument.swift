@@ -60,7 +60,7 @@ class ScientificDocument: DocumentInformationElement {
             if authors.count > 0 {
                 self.authors = [Person]()
                 for author in authors {
-                    self.authors!.append(Person(fromJson: author))
+                    self.authors!.append(Person(fromDime: author))
                 }
             }
         }
@@ -76,13 +76,7 @@ class ScientificDocument: DocumentInformationElement {
                 self.booktitle = subj
             }
             if let auths = json["message"]["author"].array {
-                self.authors = [Person]()
-                for auth in auths {
-                    let authString = auth["given"].stringValue + " " + auth["family"].stringValue
-                    if let p = Person(fromString: authString) {
-                        self.authors!.append(p)
-                    }
-                }
+                self.authors = auths.flatMap({Person(fromCrossRef: $0)})
             }
             if let doi = json["message"]["DOI"].string {
                 self.doi = doi

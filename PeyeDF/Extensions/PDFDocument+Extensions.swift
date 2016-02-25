@@ -201,11 +201,7 @@ extension PDFDocument {
                             self.setSubject(subj)
                         }
                         if let auths = json["message"]["author"].array {
-                            var authString = auths[0]["given"].stringValue + " " + auths[0]["family"].stringValue
-                            for i in 1..<auths.count {
-                                authString += "; "
-                                authString += auths[i]["given"].stringValue + " " + auths[i]["family"].stringValue
-                            }
+                            let authString = auths.map({$0["given"].stringValue + " " + $0["family"].stringValue}).joinWithSeparator("; ")
                             self.setAuthor(authString)
                         }
                         callback?(json)
