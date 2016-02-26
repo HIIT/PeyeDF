@@ -83,7 +83,7 @@ struct PeyeConstants {
     static let diMeDateFormat = "Y'-'MM'-'d'T'HH':'mm':'ssZ"
     
     /// Page area is multiplied by this constant, to reduce total area size (to remove margins, etc)
-    static let pageAreaMultiplier = 0.25
+    static let pageAreaMultiplier = 0.125
     
     // MARK: - Midas
     

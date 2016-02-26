@@ -43,6 +43,12 @@ class MidasManager {
     /// Port of midas server
     static let kMidasPort: String = "8085"
     
+    /// How many times we warn user before giving up
+    static let kMaxWarnings = 3
+    
+    /// How many times the user was warned
+    private(set) var warnings = 0
+    
     /// Whether there is a midas connection available
     private(set) var midasAvailable: Bool = false
     
@@ -65,7 +71,7 @@ class MidasManager {
     private(set) var eyesLost: Bool = true
     
     /// How often a request is made to midas (seconds)
-    private let kFetchInterval: NSTimeInterval = 0.250
+    private let kFetchInterval: NSTimeInterval = 0.500
     
     /// Testing url used by midas
     private let kTestURL = "http://\(kMidasAddress):\(kMidasPort)/test"
@@ -82,7 +88,6 @@ class MidasManager {
     }()
     
     /// Fetching of eye tracking events, TO / FROM Midas Manager, and timers related to this activity, are all run on this queue to prevent resource conflicts.
-    /// writing of eye tracking events blocks the queue, reading does not.
     static let sharedQueue = dispatch_queue_create("hiit.MidasManager.sharedQueue", DISPATCH_QUEUE_CONCURRENT)
     
     /// Time to regularly fetch data from Midas
@@ -164,8 +169,10 @@ class MidasManager {
     
     /// Fetching timer regularly calls this
     @objc private func fetchTimerHit(timer: NSTimer) {
-        fetchData(PeyeConstants.midasRawNodeName, channels: PeyeConstants.midasRawChannelNames, fetchKind: .EyePosition)
-        fetchData(PeyeConstants.midasEventNodeName, channels: PeyeConstants.midasEventChannelNames, fetchKind: .Fixations)
+        dispatch_async(MidasManager.sharedQueue) {
+            self.fetchData(PeyeConstants.midasRawNodeName, channels: PeyeConstants.midasRawChannelNames, fetchKind: .EyePosition)
+            self.fetchData(PeyeConstants.midasEventNodeName, channels: PeyeConstants.midasEventChannelNames, fetchKind: .Fixations)
+        }
     }
     
     /// Gets data from the given node, for the given channels
@@ -186,7 +193,10 @@ class MidasManager {
             if response.result.isFailure {
                 self.stop()
                 AppSingleton.log.error("Error while reading json response from Midas: \(response.result.error!)")
-                AppSingleton.alertUser("Error while reading json response from Midas", infoText: "Message:\n\(response.result.error!)")
+                if self.warnings < MidasManager.kMaxWarnings {
+                    AppSingleton.alertUser("Error while reading json response from Midas", infoText: "Message:\n\(response.result.error!)")
+                    self.warnings += 1
+                }
             } else {
                 self.gotData(ofKind: fetchKind, json: JSON(response.result.value!))
             }
