@@ -292,19 +292,23 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             pdfReader!.sciDoc = sciDoc
             
             // Download metadata if needed, and send to dime if found
-            if (NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDownloadMetadata) as! Bool) {
-                self.pdfReader?.document().autoCrossref() {
-                    _json in
-                    if let json = _json {
-                        // found crossref, use it
-                        sciDoc.updateFields(fromCrossRef: json)
-                        HistoryManager.sharedManager.sendToDiMe(sciDoc)
-                    } else {
-                        // at least attempt to get title
-                        if let tit = self.pdfReader?.document().guessTitle() {
-                            self.pdfReader?.document().setTitle(tit)
-                            sciDoc.title = tit
+            let showTime = dispatch_time(DISPATCH_TIME_NOW,
+                                         Int64(1 * Double(NSEC_PER_SEC)))
+            dispatch_after(showTime, dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
+                if (NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDownloadMetadata) as! Bool) {
+                    self.pdfReader?.document().autoCrossref() {
+                        _json in
+                        if let json = _json {
+                            // found crossref, use it
+                            sciDoc.updateFields(fromCrossRef: json)
                             HistoryManager.sharedManager.sendToDiMe(sciDoc)
+                        } else {
+                            // at least attempt to get title
+                            if let tit = self.pdfReader?.document().guessTitle() {
+                                self.pdfReader?.document().setTitle(tit)
+                                sciDoc.title = tit
+                                HistoryManager.sharedManager.sendToDiMe(sciDoc)
+                            }
                         }
                     }
                 }
@@ -492,10 +496,14 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         } else {
             // otherwise just send an information element for the given document if the current document
             // does not have already an associated info elemen in dime
-            DiMeFetcher.retrieveScientificDocument(pdfReader!.sciDoc!.id) {
-                scidoc in
-                if scidoc == nil {
-                    HistoryManager.sharedManager.sendToDiMe(self.pdfReader!.sciDoc!)
+            let showTime = dispatch_time(DISPATCH_TIME_NOW,
+                                         Int64(1 * Double(NSEC_PER_SEC)))
+            dispatch_after(showTime, dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
+                DiMeFetcher.retrieveScientificDocument(self.pdfReader!.sciDoc!.id) {
+                    scidoc in
+                    if scidoc == nil {
+                        HistoryManager.sharedManager.sendToDiMe(self.pdfReader!.sciDoc!)
+                    }
                 }
             }
         }
