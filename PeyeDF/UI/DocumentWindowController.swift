@@ -397,13 +397,21 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                 HistoryManager.sharedManager.sendToDiMe(userRectStatus) {
                     _ in
                     // signal when done
-                    callback?()
+                    dispatch_async(dispatch_get_main_queue()) {
+                        ww.close()
+                        callback?()
+                    }
                 }
             } else {
-                callback?()
+                dispatch_async(dispatch_get_main_queue()) {
+                    ww.close()
+                    callback?()
+                }
             }
         } else {
-            callback?()
+            dispatch_async(dispatch_get_main_queue()) {
+                callback?()
+            }
         }
     }
     

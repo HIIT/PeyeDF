@@ -70,8 +70,10 @@ class DocumentWindow: NSWindow {
     
     override func close() {
         if let windowController = self.windowController as? DocumentWindowController {
-            windowController.unload() {
-                super.close()
+            if windowController.closeToken == 0 {
+                windowController.unload() {
+                    super.close()
+                }
             }
         } else {
             super.close()
