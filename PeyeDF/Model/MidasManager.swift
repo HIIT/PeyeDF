@@ -59,7 +59,7 @@ class MidasManager {
     private var eyesLastSeen: NSDate?
     
     /// If eyes are lost for this whole period (seconds) an eye lost notification is sent
-    let kEyesMaxLostDuration: NSTimeInterval = 5.0
+    let kEyesMaxLostDuration: NSTimeInterval = 7.0
     
     /// Whether eyes were lost for at least kEyesMaxLostDuration
     private(set) var eyesLost: Bool = true
