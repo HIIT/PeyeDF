@@ -99,21 +99,21 @@
                                 </connections>
                             </button>
                             <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hcN-4x-pg0">
-                                <rect key="frame" x="98" y="109" width="272" height="21"/>
+                                <rect key="frame" x="98" y="109" width="272" height="20"/>
                                 <sliderCell key="cell" continuous="YES" state="on" alignment="left" maxValue="1" doubleValue="0.050505050505050511" tickMarkPosition="above" sliderType="linear" id="mDB-9B-1rY"/>
                                 <connections>
                                     <action selector="takeDoubleValueFrom:" target="3Sf-9b-tBT" id="5XD-9h-Vb7"/>
                                 </connections>
                             </slider>
                             <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gqN-Ax-dEb">
-                                <rect key="frame" x="98" y="84" width="272" height="21"/>
+                                <rect key="frame" x="98" y="84" width="272" height="20"/>
                                 <sliderCell key="cell" continuous="YES" state="on" alignment="left" maxValue="1" doubleValue="0.29999999999999999" tickMarkPosition="above" sliderType="linear" id="MA0-BU-0ye"/>
                                 <connections>
                                     <action selector="takeDoubleValueFrom:" target="jIp-kn-DY7" id="UKG-R4-ByH"/>
                                 </connections>
                             </slider>
                             <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="MEO-AZ-WOP">
-                                <rect key="frame" x="98" y="59" width="273" height="21"/>
+                                <rect key="frame" x="98" y="59" width="273" height="20"/>
                                 <sliderCell key="cell" continuous="YES" state="on" alignment="left" maxValue="1" doubleValue="0.80000000000000004" tickMarkPosition="above" sliderType="linear" id="hNx-3t-LYQ"/>
                                 <connections>
                                     <action selector="takeDoubleValueFrom:" target="mOl-UH-jLg" id="u6Z-Nl-oDC"/>

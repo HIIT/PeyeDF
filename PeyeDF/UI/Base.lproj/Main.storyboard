@@ -95,8 +95,8 @@
                                     <rect key="frame" x="1" y="1" width="426" height="47"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="E15-lK-fvD">
-                                            <rect key="frame" x="16" y="10" width="340" height="26"/>
+                                        <slider verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="E15-lK-fvD">
+                                            <rect key="frame" x="16" y="10" width="340" height="25"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="336" id="dtF-MU-gHK"/>
                                             </constraints>
@@ -105,7 +105,7 @@
                                                 <action selector="thicknessSlided:" target="62w-oK-rf7" id="Re0-xj-aMp"/>
                                             </connections>
                                         </slider>
-                                        <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uRt-4J-vlE">
+                                        <textField verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uRt-4J-vlE">
                                             <rect key="frame" x="360" y="13" width="54" height="22"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="54" id="N2Q-Hu-YTx"/>
@@ -1160,10 +1160,10 @@
                                     <rect key="frame" x="1" y="1" width="473" height="201"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <view translatesAutoresizingMaskIntoConstraints="NO" id="S4s-dV-cpl">
+                                        <view misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="S4s-dV-cpl">
                                             <rect key="frame" x="0.0" y="184" width="473" height="17"/>
                                             <subviews>
-                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vvQ-96-JrI" userLabel="Plain text label">
+                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vvQ-96-JrI" userLabel="Plain text label">
                                                     <rect key="frame" x="-2" y="0.0" width="477" height="17"/>
                                                     <textFieldCell key="cell" controlSize="mini" selectable="YES" sendsActionOnEndEditing="YES" title="Multiline Label" id="FMJ-w1-hWT">
                                                         <font key="font" metaFont="system"/>
@@ -1188,11 +1188,11 @@
                                     </constraints>
                                 </clipView>
                                 <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="3jp-Dq-eYf">
-                                    <rect key="frame" x="1" y="186" width="473" height="16"/>
+                                    <rect key="frame" x="1" y="187" width="458" height="15"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="yXb-ko-u85">
-                                    <rect key="frame" x="458" y="1" width="16" height="201"/>
+                                    <rect key="frame" x="459" y="1" width="15" height="186"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
@@ -1347,7 +1347,7 @@
                                 </toolbarItem>
                                 <toolbarItem implicitItemIdentifier="821AC73D-FAA2-481C-A38D-F0B6FB4147A7" label="Refinder" paletteLabel="Refinder" tag="-1" image="Refinder" id="YKD-Fb-cHD">
                                     <connections>
-                                        <action selector="showRefinderWindor:" target="H3y-Bk-Ofi" id="Pca-hR-277"/>
+                                        <action selector="showRefinderWindow:" target="H3y-Bk-Ofi" id="4H2-7J-PgT"/>
                                     </connections>
                                 </toolbarItem>
                             </allowedToolbarItems>
@@ -1432,11 +1432,11 @@
                             <scrollView verticalCompressionResistancePriority="250" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ObA-9X-EOe">
                                 <rect key="frame" x="375" y="20" width="324" height="135"/>
                                 <clipView key="contentView" id="yba-wA-5fo">
-                                    <rect key="frame" x="1" y="0.0" width="322" height="134"/>
+                                    <rect key="frame" x="1" y="0.0" width="322" height="119"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" horizontalCompressionResistancePriority="730" verticalCompressionResistancePriority="730" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="hYF-Uy-3Rx" viewBased="YES" id="LHf-eC-4mj">
-                                            <rect key="frame" x="0.0" y="0.0" width="820" height="111"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="820" height="96"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
