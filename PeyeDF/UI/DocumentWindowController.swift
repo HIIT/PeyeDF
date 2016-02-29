@@ -497,7 +497,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             // otherwise just send an information element for the given document if the current document
             // does not have already an associated info elemen in dime
             let showTime = dispatch_time(DISPATCH_TIME_NOW,
-                                         Int64(1 * Double(NSEC_PER_SEC)))
+                                         Int64(2 * Double(NSEC_PER_SEC)))
             dispatch_after(showTime, dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
                 DiMeFetcher.retrieveScientificDocument(self.pdfReader!.sciDoc!.id) {
                     scidoc in
