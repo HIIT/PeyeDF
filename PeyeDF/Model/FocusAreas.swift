@@ -88,45 +88,50 @@ extension MyPDFBase {
             return
         }
         
-        let pdfpage = self.document().pageAtIndex(f.pageIndex)
-        let pageRect = getPageRect(pdfpage)
-        
-        switch f.type {
-        case let .Rect(r):
-            guard NSContainsRect(pageRect, r) else {
-               AppSingleton.log.warning("Attempted to focus on a rect outside bounds")
-                return
+        let showTime = dispatch_time(DISPATCH_TIME_NOW,
+                                     Int64(0.5 * Double(NSEC_PER_SEC)))
+        dispatch_after(showTime, dispatch_get_main_queue()) {
+            
+            let pdfpage = self.document().pageAtIndex(f.pageIndex)
+            let pageRect = self.getPageRect(pdfpage)
+            
+            switch f.type {
+            case let .Rect(r):
+                guard NSContainsRect(pageRect, r) else {
+                   AppSingleton.log.warning("Attempted to focus on a rect outside bounds")
+                    return
+                }
+                
+                let sel = pdfpage.selectionForRect(r)
+                self.setCurrentSelection(sel, animate: false)
+                self.scrollSelectionToVisible(self)
+                self.setCurrentSelection(sel, animate: true)
+                
+            case let .Point(p):
+                guard NSPointInRect(p, pageRect) else {
+                   AppSingleton.log.warning("Attempted to focus on a point outside bounds")
+                    return
+                }
+                
+                // Get tiny rect of selected position
+                var pointRect = NSRect(origin: p, size: NSSize())
+                
+                pointRect.origin.y += self.frame.size.height / 3
+                self.goToRect(pointRect, onPage: pdfpage)
+                
+            case .Page:
+                
+                // Get beginning of page (x: 0, y: top)
+                let pageRect = self.getPageRect(pdfpage)
+                var p = pageRect.origin
+                p.y = pageRect.origin.y + pageRect.height
+                
+                // Get tiny rect for beginning of page
+                let pointRect = NSRect(origin: p, size: NSSize())
+                
+                self.goToRect(pointRect, onPage: pdfpage)
+                
             }
-            
-            let sel = pdfpage.selectionForRect(r)
-            setCurrentSelection(sel, animate: false)
-            scrollSelectionToVisible(self)
-            setCurrentSelection(sel, animate: true)
-            
-        case let .Point(p):
-            guard NSPointInRect(p, pageRect) else {
-               AppSingleton.log.warning("Attempted to focus on a point outside bounds")
-                return
-            }
-            
-            // Get tiny rect of selected position
-            var pointRect = NSRect(origin: p, size: NSSize())
-            
-            pointRect.origin.y += frame.size.height / 3
-            goToRect(pointRect, onPage: pdfpage)
-            
-        case .Page:
-            
-            // Get beginning of page (x: 0, y: top)
-            let pageRect = getPageRect(pdfpage)
-            var p = pageRect.origin
-            p.y = pageRect.origin.y + pageRect.height
-            
-            // Get tiny rect for beginning of page
-            let pointRect = NSRect(origin: p, size: NSSize())
-            
-            goToRect(pointRect, onPage: pdfpage)
-            
         }
     }
     

@@ -87,12 +87,8 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
     }
     
     func focusOn(area: FocusArea) {
-        let showTime = dispatch_time(DISPATCH_TIME_NOW,
-                                     Int64(0.5 * Double(NSEC_PER_SEC)))
-        dispatch_after(showTime, dispatch_get_main_queue()) {
-            self.pdfDetail.focusOn(area)
-            self.pdfOverview.focusOn(area)
-        }
+        self.pdfDetail.focusOn(area)
+        self.pdfOverview.focusOn(area)
     }
     
     override func viewDidLoad() {

@@ -32,6 +32,21 @@ class PeyeDocument: NSDocument {
     /// Reference to underlying PDFDocument. Set after loading document by window controller.
     weak var pdfDoc: PDFDocument?
     
+    
+    // MARK: - Convenience
+    
+    /// Convenience function to call the focusOn method of this document's pdfReader.
+    func focusOn(f: FocusArea) {
+        guard windowControllers.count == 1 else {
+            return
+        }
+        guard let wc = windowControllers[0] as? DocumentWindowController else {
+            return
+        }
+        
+        wc.pdfReader?.focusOn(f)
+    }
+    
     // MARK: - NSDocument overrides
     
     override init() {

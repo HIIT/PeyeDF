@@ -37,7 +37,16 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
             if lastTriedSessionId != sesId {
                 selectSessionId(sesId)
             } else {
-                AppSingleton.alertUser("Could not find sessionId: '\(sesId)' even after reloading.")
+                AppSingleton.log.debug("Could not find sessionId: '\(sesId)' even after reloading, opening instead.")
+                // retreve scidoc and if found, open the document with the url associated to it
+                diMeFetcher?.retrieveScientificDocument(forSessionId: sesId) {
+                    sciDoc in
+                    if let doc = sciDoc {
+                        let fileUrl = NSURL(fileURLWithPath: doc.uri)
+                        AppSingleton.appDelegate.openDocument(fileUrl, searchString: nil, focusArea: self.mustFocusOn[sesId])
+                        self.mustFocusOn.removeValueForKey(sesId)
+                    }
+                }
             }
             lastTriedSessionId = sesId
         }
@@ -67,6 +76,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     var lastImportedIndex = -1
     var lastSelectedSessionId = ""
     
+    @IBOutlet weak var reloadButton: NSButton!
     @IBOutlet weak var loadingLabel: NSTextField!
     @IBOutlet weak var progressBar: NSProgressIndicator!
     
@@ -347,6 +357,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
             self.historyTable.alphaValue = 0.4
             self.progressBar.hidden = false
             self.loadingLabel.hidden = false
+            self.reloadButton.enabled = false
         }
     }
     
@@ -357,6 +368,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
             self.historyTable.alphaValue = 1
             self.progressBar.hidden = true
             self.loadingLabel.hidden = true
+            self.reloadButton.enabled = true
             self.loading = false
         }
     }

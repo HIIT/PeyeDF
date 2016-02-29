@@ -107,14 +107,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     // MARK: - Convenience
     
-    /// Convenience function to open a file using a given local url and an 
-    /// (optional) search string.
-    func openDocument(fileURL: NSURL, searchString: String?) {
+    /// Convenience function to open a file using a given local url and optionally 
+    /// a search string (to initiate a query) and focus area (to highlight a specific area).
+    func openDocument(fileURL: NSURL, searchString: String?, focusArea: FocusArea? = nil) {
         NSDocumentController.sharedDocumentController().openDocumentWithContentsOfURL(fileURL, display: true) {
             document, _, _ in
             if let searchS = searchString, doc = document where
               searchS != "" && doc.windowControllers.count == 1 {
                 (doc.windowControllers[0] as! DocumentWindowController).doSearch(searchS, exact: false)
+            }
+            if let f = focusArea, doc = document as? PeyeDocument {
+                doc.focusOn(f)
             }
         }
     }
@@ -123,7 +126,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func openComponents(comps: NSURLComponents) {
         let query: String? = comps.parameterDictionary?["search"]
         if let path = comps.path where path != "" {
-            openDocument(NSURL(fileURLWithPath: path), searchString: query)
+            openDocument(NSURL(fileURLWithPath: path), searchString: query, focusArea: FocusArea(fromURLComponents: comps))
         }
     }
     

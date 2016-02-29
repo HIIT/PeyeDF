@@ -357,13 +357,25 @@
                             <progressIndicator hidden="YES" wantsLayer="YES" maxValue="1" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="ECp-iC-NU9">
                                 <rect key="frame" x="20" y="0.0" width="309" height="20"/>
                             </progressIndicator>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Xoc-Gj-MX2">
+                                <rect key="frame" x="273" y="547" width="82" height="32"/>
+                                <buttonCell key="cell" type="push" title="Reload" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="gnw-TY-RHf">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="reloadData:" target="zYa-50-W9u" id="H8o-Mi-6tv"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="PiP-7z-YlQ" firstAttribute="leading" secondItem="DXR-Pi-Zmz" secondAttribute="leading" id="3h2-zL-AaB"/>
+                            <constraint firstAttribute="trailing" secondItem="Xoc-Gj-MX2" secondAttribute="trailing" id="7Dr-W9-AM0"/>
                             <constraint firstAttribute="bottom" secondItem="PiP-7z-YlQ" secondAttribute="bottom" constant="20" id="F95-0H-eQd"/>
                             <constraint firstAttribute="trailing" secondItem="PiP-7z-YlQ" secondAttribute="trailing" id="HZ1-Zh-e2P"/>
                             <constraint firstItem="4ti-6V-pgA" firstAttribute="centerX" secondItem="DXR-Pi-Zmz" secondAttribute="centerX" id="PMh-9h-j3o"/>
                             <constraint firstAttribute="bottom" secondItem="ECp-iC-NU9" secondAttribute="bottom" constant="1" id="Pa9-xj-Bxi"/>
+                            <constraint firstItem="Xoc-Gj-MX2" firstAttribute="top" secondItem="DXR-Pi-Zmz" secondAttribute="top" id="Rh5-r1-vmc"/>
                             <constraint firstItem="PiP-7z-YlQ" firstAttribute="top" secondItem="DXR-Pi-Zmz" secondAttribute="top" constant="20" id="Scg-6N-t7K"/>
                             <constraint firstAttribute="trailing" secondItem="ECp-iC-NU9" secondAttribute="trailing" constant="20" id="WyQ-bj-R4m"/>
                             <constraint firstItem="4ti-6V-pgA" firstAttribute="top" secondItem="DXR-Pi-Zmz" secondAttribute="top" constant="1" id="jMS-hk-RnO"/>
@@ -374,6 +386,7 @@
                         <outlet property="historyTable" destination="WGv-dD-r3A" id="lJI-Fq-3eb"/>
                         <outlet property="loadingLabel" destination="4ti-6V-pgA" id="bNb-o0-e89"/>
                         <outlet property="progressBar" destination="ECp-iC-NU9" id="zjL-9v-JTJ"/>
+                        <outlet property="reloadButton" destination="Xoc-Gj-MX2" id="lbj-QM-tug"/>
                         <segue destination="b4I-LT-AQi" kind="show" identifier="showThresholdEditor" id="pCu-7b-i2Z"/>
                     </connections>
                 </viewController>

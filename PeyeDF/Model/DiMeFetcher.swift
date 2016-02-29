@@ -74,6 +74,24 @@ class DiMeFetcher {
         }
     }
     
+    /// Attempt to retrieve a scientific document for a given **sessionId**.
+    /// Useful to check to which document any event (NonSummary) was associated to.
+    /// **Asynchronously** calls the given callback with the obtained scidoc.
+    func retrieveScientificDocument(forSessionId sesId: String, callback: ScientificDocument? -> Void) {
+        getNonSummaries(withSessionId: sesId) {
+            events in
+            if events.count == 0 {
+                callback(nil)
+                AppSingleton.log.warning("Didn't find any event with sessionId: \(sesId)")
+            } else {
+                DiMeFetcher.retrieveScientificDocument(events.last!.infoElemId as String) {
+                    sciDoc in
+                    callback(sciDoc)
+                }
+            }
+        }
+    }
+    
     /// Attempt to retrieve a single summary event for the given sessionId.
     /// Returns a tuple containing reading event and scidoc or nil if it failed.
     /// - Attention: Don't call this from the main thread.
