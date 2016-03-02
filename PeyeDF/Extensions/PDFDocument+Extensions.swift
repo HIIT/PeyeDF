@@ -99,8 +99,8 @@ extension PDFDocument {
     /// Gets the title from the document metadata, returns nil if not present
     func getTitle() -> String? {
         let docAttrib = documentAttributes()
-        if let title: AnyObject = docAttrib[PDFDocumentTitleAttribute] {
-            return (title as! String)
+        if let title: String = docAttrib[PDFDocumentTitleAttribute] as? String where title.trimmed().characters.count > 0 {
+            return title.trimmed()
         } else {
             return nil
         }

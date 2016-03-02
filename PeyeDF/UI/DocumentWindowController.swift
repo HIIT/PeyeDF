@@ -302,13 +302,15 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                             // found crossref, use it
                             sciDoc.updateFields(fromCrossRef: json)
                             HistoryManager.sharedManager.sendToDiMe(sciDoc)
-                        } else {
-                            // at least attempt to get title (if not already present in the document)
-                            if self.pdfReader?.document().getTitle() != nil, let tit = self.pdfReader?.document().guessTitle() {
-                                self.pdfReader?.document().setTitle(tit)
-                                sciDoc.title = tit
-                                HistoryManager.sharedManager.sendToDiMe(sciDoc)
-                            }
+                        } else if let tit = self.pdfReader?.document().getTitle() {
+                            // if not, attempt to get title from document
+                            sciDoc.title = tit
+                            HistoryManager.sharedManager.sendToDiMe(sciDoc)
+                        } else if let tit = self.pdfReader?.document().guessTitle() {
+                            // as a last resort, guess it
+                            self.pdfReader?.document().setTitle(tit)
+                            sciDoc.title = tit
+                            HistoryManager.sharedManager.sendToDiMe(sciDoc)
                         }
                     }
                 }
