@@ -35,6 +35,11 @@ class PeyeDocument: NSDocument {
     
     // MARK: - Convenience
     
+    /// Open this PDF in preview
+    @IBAction func openInPreview(sender: AnyObject?) {
+        NSWorkspace.sharedWorkspace().openURLs([self.fileURL!], withAppBundleIdentifier: "com.apple.Preview", options: NSWorkspaceLaunchOptions(), additionalEventParamDescriptor: nil, launchIdentifiers: nil)
+    }
+    
     /// Convenience function to call the focusOn method of this document's pdfReader.
     func focusOn(f: FocusArea) {
         guard windowControllers.count == 1 else {
