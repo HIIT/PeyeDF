@@ -1,2 +1,0 @@
-- check output of all types of events
-- sampling rate how is it outputted
