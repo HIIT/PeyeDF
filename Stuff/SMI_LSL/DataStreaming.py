@@ -157,7 +157,7 @@ inkey = "x"
 while (accLX > minAccuracy or accLY > minAccuracy or accRX > minAccuracy or accRY > minAccuracy) and inkey != "s":
 
 	displayDevice = 1
-	calibrationData = CCalibration(5, 1, displayDevice, 0, 1, 250, 220, 2, 20, b"")
+	calibrationData = CCalibration(9, 1, displayDevice, 0, 1, 250, 220, 2, 20, b"")
 
 	res = iViewXAPI.iV_SetupCalibration(byref(calibrationData))
 	print "iV_SetupCalibration " + str(res)
