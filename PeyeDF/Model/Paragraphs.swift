@@ -147,8 +147,7 @@ struct PDFMarkings {
         uniteRectangles(.Read)
     }
     
-    /// Unite all floating eye rectangles into bigger rectangles that enclose them and put them
-    /// in their place in the allRects dictionary (under .Paragraph_united)
+    /// Unite all floating eye rectangles into bigger rectangles that enclose them
     mutating func flattenRectangles_eye() {
         uniteRectangles(.Paragraph)
     }

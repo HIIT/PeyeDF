@@ -54,6 +54,9 @@ struct EyeRectangle: Dictionariable {
     /// Attention Value (if set)
     private(set) var attnVal: NSNumber?
     
+    /// Normalized attention value
+    private(set) var attnVal_n: NSNumber?
+    
     let readingClass: ReadingClass
     let classSource: ClassSource
     let scaleFactor: NSNumber
@@ -117,8 +120,12 @@ struct EyeRectangle: Dictionariable {
         self.durations = json["durations"].arrayObject! as! [NSNumber]
         
         self.pageIndex = json["pageIndex"].intValue
+        
         if let attnVal = json["attnVal"].double {
             self.attnVal = attnVal
+        }
+        if let attnVal_n = json["attnVal_n"].double {
+            self.attnVal_n = attnVal_n
         }
         
         self.readingClass = ReadingClass(rawValue: json["readingClass"].intValue)!
@@ -147,6 +154,9 @@ struct EyeRectangle: Dictionariable {
         }
         if let attnVal = attnVal {
             retVal["attnVal"] = attnVal
+        }
+        if let attnVal_n = attnVal_n {
+            retVal["attnVal_n"] = attnVal_n
         }
         
         return retVal
@@ -209,7 +219,6 @@ struct EyeRectangle: Dictionariable {
         var retVal = [EyeRectangle]()
         let eyeData = readingEvent.pageEyeData
         
-        // extract rects from event, as-is
         for rRect in readingEvent.pageRects {
             if rRect.classSource == classSource && rRect.readingClass == readingClass {
                 for dataChunk in eyeData {
@@ -233,14 +242,14 @@ struct EyeRectangle: Dictionariable {
 
 extension SequenceType where Generator.Element == EyeRectangle {
     
-    /// Normalize attnVal of all eye rectangles so that they range between 0 and 1
+    /// Create (or modify) attVal_n of all eye rectangles so that they range between 0 and 1
     func normalize() -> [EyeRectangle] {
         let attnVals: [Double] = self.map({$0.attnVal! as Double})
         let minVal = attnVals.minElement()!
         let maxVal = attnVals.maxElement()!
         return self.map() {
             var retVal = $0
-            retVal.attnVal = ($0.attnVal! as Double - minVal) / (maxVal - minVal)
+            retVal.attnVal_n = ($0.attnVal! as Double - minVal) / (maxVal - minVal)
             return retVal
         }
     }

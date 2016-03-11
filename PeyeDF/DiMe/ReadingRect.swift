@@ -35,6 +35,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable {
     var floating: Bool
     var scaleFactor: NSNumber
     var screenDistance: NSNumber
+    var attnVal: NSNumber?
     
     init(pageIndex: Int, origin: NSPoint, size: NSSize, readingClass: ReadingClass, classSource: ClassSource, pdfBase: MyPDFBase?) {
         let newUnixt = NSDate().unixTime
@@ -104,6 +105,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable {
         self.pageIndex = eyeRect.pageIndex
         self.scaleFactor = eyeRect.scaleFactor
         self.screenDistance = eyeRect.screenDistance
+        self.attnVal = eyeRect.attnVal
     }
     
     /// Creates a rect from a (dime-used) json object
@@ -122,6 +124,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable {
             self.plainTextContent = ptc
         }
         self.screenDistance = json["screenDistance"].double ?? 600.0
+        self.attnVal = json["attnVal"].double
     }
     
     /// Unites these two rectangles and appends the unxtimes of the second rectangle to this rectangle.
@@ -214,6 +217,9 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable {
         retDict["classSource"] = self.classSource.rawValue
         retDict["scaleFactor"] = self.scaleFactor
         retDict["screenDistance"] = self.screenDistance
+        if let av = self.attnVal {
+            retDict["attnVal"] = av
+        }
         if let ptc = plainTextContent {
             retDict["plainTextContent"] = ptc
         }

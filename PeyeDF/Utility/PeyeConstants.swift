@@ -141,6 +141,11 @@ struct PeyeConstants {
     /// Default color for "floating" paragraphs detected using fixations
     static let markColourParagraph: NSColor = NSColor(red: 0.40, green: 0.40, blue: 0.40, alpha: 0.75)
     
+    /// Default color for paragraphs when showing raw attention value (assuming attVal between 0 and 1)
+    static func markColourAttnVal(attnVal: NSNumber) -> NSColor {
+        return NSColor(red: 0.675, green: 0.25, blue: 0.675, alpha: attnVal as CGFloat)
+    }
+    
     /// Default color for searched, found and looked at string queries
     static let markColourFoundStrings: NSColor = NSColor(red: 0.88, green: 0.89, blue: 0.0, alpha: 0.85)
     

@@ -63,7 +63,13 @@ class MyPDFOverview: MyPDFBase {
                 
                 // Draw.
                 for rect in rectsToDraw {
-                    let rectCol = PeyeConstants.smiColours[.Paragraph]!.colorWithAlphaComponent(0.9)
+                    // if rect has an attention value, use that instead of the default color
+                    let rectCol: NSColor
+                    if let av = rect.attnVal {
+                        rectCol = PeyeConstants.markColourAttnVal(av)
+                    } else {
+                        rectCol = PeyeConstants.smiColours[.Paragraph]!.colorWithAlphaComponent(0.9)
+                    }
                     let adjRect = rect.rect.offset(byPoint: pointDiff)
                     let rectPath: NSBezierPath = NSBezierPath(rect: adjRect)
                     rectCol.setFill()
@@ -74,23 +80,44 @@ class MyPDFOverview: MyPDFBase {
                 NSGraphicsContext.restoreGraphicsState()
             }
             
-        }
+        } else {
+        // If we don't want to display gazed rects - display "normal" annotations instead
         
-        // cycle through annotation classes
-        let cycleClasses = [ReadingClass.Read, ReadingClass.Interesting, ReadingClass.Critical]
-        
-        let pageIndex = self.document().indexForPage(page)
-        for rc in cycleClasses {
-            let rectsToDraw = markings.get(ofClass: rc, forPage: pageIndex)
-            if rectsToDraw.count > 0 {
+            // cycle through annotation classes
+            let cycleClasses = [ReadingClass.Read, ReadingClass.Interesting, ReadingClass.Critical]
+            
+            let pageIndex = self.document().indexForPage(page)
+            for rc in cycleClasses {
+                let rectsToDraw = markings.get(ofClass: rc, forPage: pageIndex)
+                if rectsToDraw.count > 0 {
+                	// Save.
+                    NSGraphicsContext.saveGraphicsState()
+            	
+                    // Draw.
+                    for rect in rectsToDraw {
+                        let rectCol = PeyeConstants.annotationColours[rc]!.colorWithAlphaComponent(0.9)
+                        let adjRect = rect.rect.offset(byPoint: pointDiff)
+                        let rectPath: NSBezierPath = NSBezierPath(rect: adjRect)
+                        rectCol.setFill()
+                        rectPath.fill()
+                    }
+                    
+                	// Restore.
+                	NSGraphicsContext.restoreGraphicsState()
+                }
+            }
+            
+            // draw found search queries
+            let rectsToDraw = markings.get(ofClass: .FoundString, forPage: pageIndex)
+            if rectsToDraw.count > 0{
             	// Save.
                 NSGraphicsContext.saveGraphicsState()
         	
                 // Draw.
                 for rect in rectsToDraw {
-                    let rectCol = PeyeConstants.annotationColours[rc]!.colorWithAlphaComponent(0.9)
-                    let adjRect = rect.rect.offset(byPoint: pointDiff)
-                    let rectPath: NSBezierPath = NSBezierPath(rect: adjRect)
+                    let rectCol = PeyeConstants.markColourFoundStrings
+                    // scale rect up to make it more visible
+                    let rectPath: NSBezierPath = NSBezierPath(rect: rect.rect.scale(3))
                     rectCol.setFill()
                     rectPath.fill()
                 }
@@ -98,27 +125,8 @@ class MyPDFOverview: MyPDFBase {
             	// Restore.
             	NSGraphicsContext.restoreGraphicsState()
             }
-        }
-        
-        // draw found search queries
-        let rectsToDraw = markings.get(ofClass: .FoundString, forPage: pageIndex)
-        if rectsToDraw.count > 0{
-        	// Save.
-            NSGraphicsContext.saveGraphicsState()
-    	
-            // Draw.
-            for rect in rectsToDraw {
-                let rectCol = PeyeConstants.markColourFoundStrings
-                // scale rect up to make it more visible
-                let rectPath: NSBezierPath = NSBezierPath(rect: rect.rect.scale(3))
-                rectCol.setFill()
-                rectPath.fill()
-            }
             
-        	// Restore.
-        	NSGraphicsContext.restoreGraphicsState()
         }
-        
 
     }
     

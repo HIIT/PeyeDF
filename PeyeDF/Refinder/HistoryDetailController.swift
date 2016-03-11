@@ -98,6 +98,12 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
     
     func setEyeRects(eyeRects: [EyeRectangle]) {
         self.eyeRects = eyeRects
+        let rRects: [ReadingRect] = eyeRects.map({ReadingRect(fromEyeRect: $0, readingClass: .Paragraph)})
+        pdfOverview.markings.setAll(rRects)
+        dispatch_async(dispatch_get_main_queue()) {
+            self.pdfOverview.layoutDocumentView()
+            self.pdfOverview.display()
+        }
     }
     
     func getPdfBase() -> MyPDFBase? {
@@ -109,12 +115,13 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
             var newRects = [ReadingRect]()
             for eyeRect in eyeRects {
                 var newClass: ReadingClass?
-                let attnVal = eyeRect.attnVal! as Double
-                if attnVal > criticalThresh {
+                // use normalized attnVal if present, otherwise force non-normalised attnVal
+                let av = (eyeRect.attnVal_n as? Double) ?? eyeRect.attnVal! as Double
+                if av > criticalThresh {
                     newClass = .Critical
-                } else if attnVal > interestingThresh {
+                } else if av > interestingThresh {
                     newClass = .Interesting
-                } else if attnVal > readThresh {
+                } else if av >= readThresh {
                     newClass = .Read
                 }
                 if let nc = newClass {

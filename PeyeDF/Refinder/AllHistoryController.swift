@@ -227,7 +227,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
                         outRects.append(EyeRectangle(fromJson: outR))
                     }
                     
-                    // normalize imported rects so attnVal ranges between 0 and 1
+                    // normalize imported rects so attnVal_n ranges between 0 and 1
                     outRects = outRects.normalize()
                     
                     self.performSegueWithIdentifier("showThresholdEditor", sender: self)
