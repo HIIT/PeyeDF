@@ -439,12 +439,6 @@
                                             </menu>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="3Dw-Rk-ZW0"/>
-                                        <menuItem title="Show refinder" id="pCf-Ki-POQ">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="showRefinderWindow:" target="Ady-hI-5gd" id="cma-6M-nSg"/>
-                                            </connections>
-                                        </menuItem>
                                         <menuItem title="This doc metadata..." id="GCK-AT-nyU">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
@@ -944,15 +938,34 @@
                                     </items>
                                 </menu>
                             </menuItem>
-                            <menuItem title="View" id="H8h-7b-M4v">
+                            <menuItem title="Refinder" id="OU9-qb-KRA">
                                 <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="View" id="HyV-fh-RgO">
+                                <menu key="submenu" title="Refinder" id="Pl4-IG-zPy">
                                     <items>
-                                        <menuItem title="Reload data" keyEquivalent="r" id="qHx-jN-Jpb">
+                                        <menuItem title="Show Refinder" id="pCf-Ki-POQ">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="showRefinderWindow:" target="Ady-hI-5gd" id="cma-6M-nSg"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Reload Data" keyEquivalent="r" id="qHx-jN-Jpb">
                                             <connections>
                                                 <action selector="reloadData:" target="Ady-hI-5gd" id="Quc-nP-lEB"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Re-Open" keyEquivalent="O" id="UOS-cj-KY2">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="reOpenDocument:" target="Ady-hI-5gd" id="xhX-KB-jCz"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="View" id="H8h-7b-M4v">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="View" id="HyV-fh-RgO">
+                                    <items>
                                         <menuItem title="Show Toolbar" keyEquivalent="t" id="snW-S8-Cw5">
                                             <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                             <connections>
@@ -1192,7 +1205,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="yXb-ko-u85">
-                                    <rect key="frame" x="459" y="1" width="15" height="201"/>
+                                    <rect key="frame" x="458" y="1" width="16" height="201"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>

@@ -185,33 +185,40 @@ class MyPDFReader: MyPDFBase {
     
     // MARK: - Markings and Annotations
     
-    /// This method is called (so far) only by the undo manager. It sets the state of markings to the specified object (markingState) and
-    /// refreshes the view on the marking corresponding to the last rectangle's property of the given marking state (so that the last
-    /// added / removed rectangle can be seen appearing / disappearing immediately).
+    /// This method is called (so far) only by the undo manager.
+    /// It sets the state of markings to the specified object (markingState) and
+    /// refreshes the view (so that the change can be seen appearing / disappearing immediately).
     @objc func undoMarkAndAnnotate(previousState: PDFMarkingsState) {
-        // a last tuple must be present, otherwise it should not have been added in the first place
-        if let lastRect = previousState.getLastRect() {
-            
-            // store previous state before making any modification
-            let evenPreviousState = PDFMarkingsState(oldState: markings.getAll(forSource: .Click))
-            
-            // apply previous state and perform annotations
-            markings.setAll(forSource: .Click, newRects: previousState.rectState)
-            autoAnnotate()
         
-            // show this change
+        // store previous state before making any modification
+        let evenPreviousState = PDFMarkingsState(oldState: markings.getAll(forSource: .Click))
+        
+        // apply previous state and perform annotations
+        markings.setAll(forSource: .Click, newRects: previousState.rectState)
+        autoAnnotate()
+    
+        // if we have a last rect, refresh the view only for the area covered by it.
+        // if last rect is nil (this was a big change) refresh whole document.
+        if let lastRect = previousState.getLastRect() {
             let annotRect = annotationRectForMark(lastRect.rect)
-            setNeedsDisplayInRect(convertRect(annotRect, fromPage: self.document().pageAtIndex(lastRect.pageIndex.integerValue)))
             
-            // create an undo operation for this operation
+            dispatch_async(dispatch_get_main_queue()) {
+                self.setNeedsDisplayInRect(self.convertRect(annotRect, fromPage: self.document().pageAtIndex(lastRect.pageIndex.integerValue)))
+            }
+            
+            // save last rect in state for redo
             let lastR = previousState.getLastRect()!
             evenPreviousState.setLastRect(lastR)
-            undoManager?.registerUndoWithTarget(self, selector: "undoMarkAndAnnotate:", object: evenPreviousState)
-            undoManager?.setActionName(NSLocalizedString("actions.annotate", value: "Mark Text", comment: "Some text was marked as importance by clicking"))
         } else {
-            let exception = NSException(name: "This should never happen!", reason: "Undoing a nil last rectangle", userInfo: nil)
-            exception.raise()
+            dispatch_async(dispatch_get_main_queue()) {
+                self.layoutDocumentView()
+                self.display()
+            }
         }
+        
+        // create an undo operation for this operation
+        undoManager?.registerUndoWithTarget(self, selector: "undoMarkAndAnnotate:", object: evenPreviousState)
+        undoManager?.setActionName(NSLocalizedString("actions.annotate", value: "Mark Text", comment: "Some text was marked via clicking / undoing"))
     }
     
     /// Create a marking (and subsequently a rect) at the given point, and make annotations.
@@ -228,12 +235,25 @@ class MyPDFReader: MyPDFBase {
             if let newMark = newMaybeMark {
                 previousState.setLastRect(newMark)
                 undoManager?.registerUndoWithTarget(self, selector: "undoMarkAndAnnotate:", object: previousState)
-                undoManager?.setActionName(NSLocalizedString("actions.annotate", value: "Mark Text", comment: "Some text was marked as importance by clicking"))
+                undoManager?.setActionName(NSLocalizedString("actions.annotate", value: "Mark Text", comment: "Some text was marked via clicking / undoing"))
                 autoAnnotate()
             }
         }
         let unixtimeDict = ["unixtime": NSDate().unixTime]
         NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.manualParagraphMarkNotification, object: self, userInfo: unixtimeDict)
+    }
+    
+    /// Given a set of markings, apply them all at once as click markings and create
+    /// and undo operation so that the previous state can be restored.
+    /// For now forces and converts all given rects' source to manual (i.e. click markings).
+    /// - Note: Only rects with classSource .Click will be added
+    func markAndAnnotateBulk(newMarks: [ReadingRect]) {
+        let previousState = PDFMarkingsState(oldState: self.markings.getAll(forSource: .Click))
+        undoManager?.registerUndoWithTarget(self, selector: "undoMarkAndAnnotate:", object: previousState)
+        undoManager?.setActionName(NSLocalizedString("actions.annotate", value: "Bulk Annotate", comment: "Many annotations were changed in bulk"))
+        
+        self.markings.setAll(forSource: .Click, newRects: newMarks)
+        autoAnnotate()
     }
     
     /// Manually tell that a point (and hence the paragraph/subparagraph related to it

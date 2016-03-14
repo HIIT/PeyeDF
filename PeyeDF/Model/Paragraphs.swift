@@ -91,14 +91,13 @@ struct PDFMarkings {
         }
     }
     
-    /// Sets rects of a given class to the given dictionary. Traps if given reading class does not match this
-    /// instance's class
+    /// Sets rects of a given class to the given dictionary.
     mutating func set(theClass: ReadingClass, _ rects: [ReadingRect]) {
         // remove all rects of the given class
         allRects = allRects.filter({$0.readingClass != theClass})
         for newRect in rects {
             if newRect.readingClass != theClass {
-                fatalError("Added reading rect class does not match requested class")
+                AppSingleton.log.error("Added reading rect class does not match requested class")
             }
             if !allRects.contains(newRect) {
                 allRects.append(newRect)
@@ -107,12 +106,11 @@ struct PDFMarkings {
     }
     
     /// Set all rect with the given source to a new list of rects.
-    /// Traps if not all rects passed have the given source.
     mutating func setAll(forSource source: ClassSource, newRects: [ReadingRect]) {
         allRects = allRects.filter({$0.classSource != source})
         for rect in newRects {
             if rect.classSource != source {
-                fatalError("Passed rect with source \(rect.classSource) does not match \(source)")
+                AppSingleton.log.error("Passed rect with source \(rect.classSource) does not match \(source)")
             } else {
                 allRects.append(rect)
             }
@@ -334,12 +332,15 @@ struct PDFMarkings {
     }
     
 }
+
 /// This class represents a "marking state", that is a selection of importance rectangles and the last rectangle and
 /// last page that were edited. It is used to store states in undo operations.
 class PDFMarkingsState: NSObject {
     /// All rectangles, prior to addition / deletion
     var rectState: [ReadingRect]
-    /// The rectangle on which the last modification was made
+    /// The rectangle on which the last modification was made.
+    /// If nil, assumes that this is change encompasses all rectangles
+    /// (this means that the whole screen, instead of a section, has to be refreshed)
     private var lastRect: ReadingRect?
     
     init(oldState: [ReadingRect]) {
@@ -351,7 +352,8 @@ class PDFMarkingsState: NSObject {
         self.lastRect = lastRect
     }
     
-    /// Returns the last rectangle (if it exists). In the current implementation, this should never return nil.
+    /// Returns the last rectangle. If the change was not related to a single rect
+    /// (e.g many were set at once) this should return nil.
     func getLastRect() -> ReadingRect? {
         return lastRect
     }

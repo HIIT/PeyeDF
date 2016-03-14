@@ -35,6 +35,19 @@ class PeyeDocument: NSDocument {
     
     // MARK: - Convenience
     
+    /// Sets all annotations to a given set of reading rects.
+    /// - Note: Only rects with classSource .Click will be added
+    func setMarkings(newRects: [ReadingRect]) {
+        guard windowControllers.count == 1 else {
+            return
+        }
+        guard let wc = windowControllers[0] as? DocumentWindowController else {
+            return
+        }
+        
+        wc.pdfReader?.markAndAnnotateBulk(newRects)
+    }
+    
     /// Open this PDF in preview
     @IBAction func openInPreview(sender: AnyObject?) {
         NSWorkspace.sharedWorkspace().openURLs([self.fileURL!], withAppBundleIdentifier: "com.apple.Preview", options: NSWorkspaceLaunchOptions(), additionalEventParamDescriptor: nil, launchIdentifiers: nil)

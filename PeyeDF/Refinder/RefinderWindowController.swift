@@ -57,5 +57,26 @@ class RefinderWindowController: NSWindowController, NSWindowDelegate {
             AppSingleton.alertUser("DiMe not available")
         }
     }
+    
+    // MARK: - Re-Opening
+    
+    /// Opens a document corresponding to the current document with the same annotations
+    /// as those which are being shown.
+    @IBAction func reOpenDocument(sender: AnyObject?) {
+        historyDetailController?.reOpenDocument(self)
+    }
+    
+    @objc override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
+        if menuItem.title == "Re-Open" && historyDetailController != nil {
+            return historyDetailController!.validateMenuItem(menuItem)
+        } else if menuItem.title == "Reload Data" {
+            return true
+        } else {
+            // any other tag was not considered we disable it by default
+            // we can print to check who else is calling this function using
+            // print(menuItem.action)
+            return false
+        }
+    }
 
 }

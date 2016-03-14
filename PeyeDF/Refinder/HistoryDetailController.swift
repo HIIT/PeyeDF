@@ -58,7 +58,15 @@ protocol HistoryDetailDelegate: class {
 /// display.
 class HistoryDetailController: NSViewController, HistoryDetailDelegate {
     
+    /// SMI Rectangles fetched from event
     private var eyeRects: [EyeRectangle]?
+    
+    /// Marked rectangles
+    private var pageRects: [ReadingRect]?
+    
+    /// Last opened url
+    private var lastUrl: NSURL?
+    
     private var requiresThresholdComputation = true
 
     @IBOutlet weak var pdfOverview: MyPDFOverview!
@@ -69,15 +77,16 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
         eyeRects = nil
         // check if file exists first (if not, display and error)
         if NSFileManager.defaultManager().fileExistsAtPath(tuple.ie.uri) {
-            let docURL = NSURL(fileURLWithPath: tuple.ie.uri)
-            let pdfDoc1 = PDFDocument(URL: docURL)
-            let pdfDoc2 = PDFDocument(URL: docURL)
+            lastUrl = NSURL(fileURLWithPath: tuple.ie.uri)
+            pageRects = tuple.ev.pageRects
+            let pdfDoc1 = PDFDocument(URL: lastUrl)
+            let pdfDoc2 = PDFDocument(URL: lastUrl)
             pdfOverview.setScaleFactor(0.1)
             pdfOverview.setDocument(pdfDoc1)
             pdfOverview.scrollToBeginningOfDocument(self)
-            pdfOverview.markings.setAll(tuple.ev.pageRects)
+            pdfOverview.markings.setAll(pageRects!)
             pdfDetail.setDocument(pdfDoc2)
-            pdfDetail.markings.setAll(tuple.ev.pageRects)
+            pdfDetail.markings.setAll(pageRects!)
             pdfDetail.autoAnnotate()
             pdfOverview.pdfDetail = pdfDetail
         } else {
@@ -112,7 +121,7 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
     
     func setEyeThresholds(readThresh: Double, interestingThresh: Double, criticalThresh: Double) {
         if let eyeRects = self.eyeRects {
-            var newRects = [ReadingRect]()
+            pageRects = [ReadingRect]()
             for eyeRect in eyeRects {
                 var newClass: ReadingClass?
                 // use normalized attnVal if present, otherwise force non-normalised attnVal
@@ -125,12 +134,12 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
                     newClass = .Read
                 }
                 if let nc = newClass {
-                    newRects.append(ReadingRect(fromEyeRect: eyeRect, readingClass: nc))
+                    pageRects!.append(ReadingRect(fromEyeRect: eyeRect, readingClass: nc))
                 }
             }
-            pdfOverview.markings.setAll(newRects)
+            pdfOverview.markings.setAll(pageRects!)
             pdfOverview.markings.flattenRectangles_relevance()
-            pdfDetail.markings.setAll(newRects)
+            pdfDetail.markings.setAll(pageRects!)
             pdfDetail.autoAnnotate()
             dispatch_async(dispatch_get_main_queue()) {
                 self.pdfOverview.layoutDocumentView()
@@ -156,6 +165,34 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
         } else {
             AppSingleton.alertUser("Must compute thresholds before requesting markings")
             return nil
+        }
+    }
+    
+    // MARK: - Re-Opening
+    
+    /// Opens a document corresponding to the current document with the same annotations
+    /// as those which are being shown.
+    @IBAction func reOpenDocument(sender: AnyObject?) {
+        guard let url = lastUrl, rects = pageRects else {
+            return
+        }
+        
+        // open document and set computed (ML) marks to manual (click) marks
+        NSDocumentController.sharedDocumentController().openDocumentWithContentsOfURL(url, display: true) {
+            document, _, _ in
+            if let doc = document as? PeyeDocument {
+                var newRects = rects.filter({$0.classSource == .ML})
+                newRects = newRects.map() {(var rect) in rect.classSource = .Click ; return rect}
+                doc.setMarkings(newRects)
+            }
+        }
+    }
+    
+    @objc override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
+        if menuItem.title == "Re-Open" {
+            return lastUrl != nil && pageRects != nil
+        } else {
+            return super.validateMenuItem(menuItem)
         }
     }
 }

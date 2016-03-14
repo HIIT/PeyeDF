@@ -139,12 +139,6 @@ class MyPDFBase: PDFView {
         return stringForRect(NSRect(origin: theRect.origin, size: theRect.size), onPage: theRect.pageIndex)
     }
     
-    /// Manually set all rectangles to the given parameters, and annotate them.
-    func setManualMarksAndAnnotate(newManualMarks: [ReadingRect]) {
-        markings.setAll(forSource: .Click, newRects: newManualMarks)
-        autoAnnotate()
-    }
-    
     /// Returns a rectangle corresponding to the annotation for a rectangle corresponding to the mark, using all appropriate constants / preferences.
     ///
     /// - parameter markRect: The rectangle corresponding to the mark
@@ -180,7 +174,9 @@ class MyPDFBase: PDFView {
             
             // tell the view to immediately refresh itself in an area which includes the
             // line's "border"
-            setNeedsDisplayInRect(convertRect(newRect, fromPage: pdfPage))
+            dispatch_async(dispatch_get_main_queue()) {
+                self.setNeedsDisplayInRect(self.convertRect(newRect, fromPage: pdfPage))
+            }
         }
     }
     
