@@ -391,7 +391,8 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         self.debugController?.unSetMonitors(self.pdfReader!, docWindow: self.window!)
         self.debugController?.view.window?.close()
         self.metadataWindowController?.close()
-        // If dime is available, set up a semaphore and wait for it to signal before closing
+        // If dime is available, call the callback after the dime operation is done,
+        // otherwise call the callback right now
         if HistoryManager.sharedManager.dimeAvailable {
             let ww = NSWindow()
             let wvc = AppSingleton.mainStoryboard.instantiateControllerWithIdentifier("WaitVC") as! WaitViewController
