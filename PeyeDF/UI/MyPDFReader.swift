@@ -512,6 +512,9 @@ class MyPDFReader: MyPDFBase {
         }
     }
     
+    deinit {
+        Swift.print("pdf reader deallocated")
+    }
 }
 
 /// Semi-debug enum

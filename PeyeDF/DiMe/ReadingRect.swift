@@ -151,7 +151,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable {
         newRect.rect = unitedR
         
         if let pdfb = pdfBase {
-            if pdfb.document().getText() != nil {
+            if pdfb.containsPlainText {
                 newRect.plainTextContent = pdfb.stringForRect(newRect)
             }
         } else {

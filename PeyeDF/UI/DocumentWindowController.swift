@@ -291,9 +291,9 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             }
             
             // Asynchronously fetch text from document (if no text is found, nill we be passed)
-            dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
-                [weak self] in
-                self?.checkMetadata(pdfDoc.getText())
+            pdfReader?.checkPlainText() {
+                [weak self] result in
+                self?.checkMetadata(result)
             }
         }
     }
@@ -318,7 +318,9 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         
         // Associate PDF view to info element
         let url = (self.document as! PeyeDocument).fileURL!
-        let pdfDoc = pdfr.document()
+        guard let pdfDoc = pdfr.document() else {
+            return
+        }
         let sciDoc = ScientificDocument(uri: url.path!, plainTextContent: plainText, title: pdfDoc.getTitle(), authors: pdfDoc.getAuthorsAsArray(), keywords: pdfDoc.getKeywordsAsArray(), subject: pdfDoc.getSubject())
         pdfReader!.sciDoc = sciDoc
         
@@ -326,27 +328,28 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         let showTime = dispatch_time(DISPATCH_TIME_NOW,
                                      Int64(1 * Double(NSEC_PER_SEC)))
         dispatch_after(showTime, dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
+            [weak self] in
             if (NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDownloadMetadata) as! Bool) {
-                self.pdfReader?.document().autoCrossref() {
+                self?.pdfReader?.document()?.autoCrossref() {
                     _json in
                     if let json = _json {
                         // found crossref, use it
                         sciDoc.updateFields(fromCrossRef: json)
                         HistoryManager.sharedManager.sendToDiMe(sciDoc)
-                    } else if let tit = self.pdfReader?.document().getTitle() {
+                    } else if let tit = self?.pdfReader?.document().getTitle() {
                         // if not, attempt to get title from document
                         sciDoc.title = tit
                         HistoryManager.sharedManager.sendToDiMe(sciDoc)
-                    } else if let tit = self.pdfReader?.document().guessTitle() {
+                    } else if let tit = self?.pdfReader?.document().guessTitle() {
                         // as a last resort, guess it
-                        self.pdfReader?.document().setTitle(tit)
+                        self?.pdfReader?.document().setTitle(tit)
                         sciDoc.title = tit
                         HistoryManager.sharedManager.sendToDiMe(sciDoc)
                     }
                     // Update debug controller with metadata
                     if let title = pdfDoc.getTitle() {
                         dispatch_async(dispatch_get_main_queue()) {
-                            self.debugController?.titleLabel.stringValue = title
+                            self?.debugController?.titleLabel.stringValue = title
                         }
                     }
                 }
@@ -433,18 +436,24 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                     _ in
                     // signal when done
                     dispatch_async(dispatch_get_main_queue()) {
+                        self.pdfReader!.setDocument(nil)
+                        self.pdfReader!.markings = nil
                         self.window!.endSheet(ww)
                         callback?()
                     }
                 }
             } else {
                 dispatch_async(dispatch_get_main_queue()) {
+                    self.pdfReader!.setDocument(nil)
+                    self.pdfReader!.markings = nil
                     self.window!.endSheet(ww)
                     callback?()
                 }
             }
         } else {
             dispatch_async(dispatch_get_main_queue()) {
+                self.pdfReader!.setDocument(nil)
+                self.pdfReader!.markings = nil
                 callback?()
             }
         }

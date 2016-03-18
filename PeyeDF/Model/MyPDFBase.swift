@@ -36,6 +36,12 @@ class MyPDFBase: PDFView {
     /// Stores all markings
     var markings: PDFMarkings!
     
+    /// Whether this document contains plain text
+    private(set) var containsPlainText = false
+    
+    /// Plain text within this document
+    private(set) var plainText: String?
+    
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         markings = PDFMarkings(pdfBase: self)
@@ -104,13 +110,33 @@ class MyPDFBase: PDFView {
         }
         return visibleRects
     }
-    
+
     /// Returns all text from contained document (nil if not present)
+    /// - Warning: Time-consuming for long documents, blocks thread.
     func getDocText() -> String? {
         if let doc = self.document() {
             return doc.getText()
         } else {
             return nil
+        }
+    }
+
+    /// Asynchronously gets text within document (if any) and
+    /// calls callback with the result.
+    func checkPlainText(callback: (String? -> Void)?) {
+        if let doc = self.document() {
+            dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
+                [weak self] in
+                if let txt = doc.getText() {
+                    self?.plainText = txt
+                    self?.containsPlainText = true
+                    callback?(txt)
+                } else {
+                    callback?(nil)
+                }
+            }
+        } else {
+            callback?(nil)
         }
     }
     
@@ -120,7 +146,7 @@ class MyPDFBase: PDFView {
     /// - parameter onPage: Index starting from 0 on which the rect is
     /// - returns: A string if it was possible to generate it, nil if not
     func stringForRect(rect: NSRect, onPage: Int) -> String? {
-        if self.document().getText() != nil {
+        if containsPlainText {
             let page = document().pageAtIndex(onPage)
             let selection = page.selectionForRect(rect)
             return selection.string()
