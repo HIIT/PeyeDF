@@ -26,7 +26,7 @@ import Foundation
 import Cocoa
 
 /// A protocol that allows a delegate to notify that the side view was collapsed/uncollapsed.
-@objc protocol SideCollapseToggleDelegate {
+@objc protocol SideCollapseToggleDelegate: class {
     func sideCollapseAction(wasCollapsed: Bool)
 }
 

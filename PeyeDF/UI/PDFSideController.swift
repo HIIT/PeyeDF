@@ -25,7 +25,7 @@
 import Cocoa
 
 /// Protocol for allowing / disallowing double and triple click recognizers
-protocol ClickRecognizerDelegate {
+protocol ClickRecognizerDelegate: class {
     
     /// Set the enabled state of the recognizer to the given value
     func setRecognizersTo(enabled: Bool)

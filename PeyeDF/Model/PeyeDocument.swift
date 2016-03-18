@@ -32,7 +32,6 @@ class PeyeDocument: NSDocument {
     /// Reference to underlying PDFDocument. Set after loading document by window controller.
     weak var pdfDoc: PDFDocument?
     
-    
     // MARK: - Convenience
     
     /// Sets all annotations to a given set of reading rects.

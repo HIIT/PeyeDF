@@ -64,7 +64,7 @@ class HistoryManager: FixationDataDelegate {
     private(set) var readingUnixTime = 0
     
     /// The current thing the user is probably looking at (MyPDFReader instance), which will be used to convert screen to page coordinates or retrieve eye tracking boxes.
-    private var currentEyeReceiver: MyPDFReader?
+    private weak var currentEyeReceiver: MyPDFReader?
     
     /// A dictionary, one entry per page (indexed by page number) containing all page eye tracking data
     private var currentEyeData = [Int: PageEyeDataChunk]()
@@ -176,11 +176,11 @@ class HistoryManager: FixationDataDelegate {
         }
     }
     
-    /// Tells the history manager that something new is happened. The history manager check if the sender is a window in front (main window)
+    /// Tells the history manager that something new is happened. The history manager check if the sender is a window in front (main window) and if there is scidoc associated to it
     ///
     /// - parameter documentWindow: The window controller that is sending the message
     func entry(documentWindow: DocumentWindowController) {
-        if let window = documentWindow.window {
+        if let window = documentWindow.window, _ = documentWindow.pdfReader?.sciDoc {
             if window.mainWindow {
                 // if we are tracking eyes (using midas), make sure eyes are available before starting
                 if MidasManager.sharedInstance.midasAvailable {

@@ -26,7 +26,7 @@ import Cocoa
 
 
 /// A protocol that allows a delegate to notify that the search panel was collapsed/uncollapsed.
-@objc protocol SearchPanelCollapseDelegate {
+@objc protocol SearchPanelCollapseDelegate: class {
     func searchCollapseAction(wasCollapsed: Bool)
 }
 

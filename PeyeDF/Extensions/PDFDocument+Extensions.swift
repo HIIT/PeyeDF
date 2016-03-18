@@ -83,7 +83,6 @@ extension PDFDocument {
     
     /// Returns a trimmed plain text of the data contained in the document, nil not present
     func getText() -> String? {
-        
         var trimmedText = string()
         trimmedText = trimmedText.stringByReplacingOccurrencesOfString("\u{fffc}", withString: "")
         trimmedText = trimmedText.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) // get trimmed version of all text

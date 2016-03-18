@@ -44,8 +44,6 @@ class MetadataViewController: NSViewController {
     @IBOutlet weak var authorField: NSTextField!
     @IBOutlet weak var keywordsField: NSTextField!
     
-    @IBOutlet weak var plaintextLabel: NSTextField!
-    
     func setDoc(pdfDoc: PDFDocument, mainWC: DocumentWindowController) {
         self.pdfDoc = pdfDoc
         self.mainCont = mainWC
@@ -61,9 +59,6 @@ class MetadataViewController: NSViewController {
         }
         if let keywords = pdfDoc.getKeywords() {
             keywordsField.stringValue = keywords
-        }
-        if let plainText = pdfDoc.getText() {
-            plaintextLabel.stringValue = plainText
         }
         initialTitle = titleField.stringValue
         initialAuthor = authorField.stringValue

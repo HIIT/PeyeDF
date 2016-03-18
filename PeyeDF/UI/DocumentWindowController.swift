@@ -48,7 +48,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     var metadataWindowController: MetadataWindowController?
     
-    var clickDelegate: ClickRecognizerDelegate?
+    weak var clickDelegate: ClickRecognizerDelegate?
     
     // MARK: - Searching
     
@@ -106,7 +106,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             // in any other case, we check the action instead of tag
             switch menuItem.action.description {
                 // these should always be enabled
-                case "thisDocMdata:", "saveDocument:", "saveDocumentAs:":
+                case "saveDocument:", "saveDocumentAs:":
                 return true
             default:
                 // any other tag was not considered we disable it by default
@@ -180,9 +180,10 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     /// Sends a desktop event directly (which includes doc metadata) for the currently displayed pdf
     func sendDeskEvent() {
-        let sciDoc = pdfReader!.sciDoc!
-        let deskEvent = DesktopEvent(sciDoc: sciDoc)
-        HistoryManager.sharedManager.sendToDiMe(deskEvent)
+        if let sciDoc = pdfReader!.sciDoc {
+            let deskEvent = DesktopEvent(sciDoc: sciDoc)
+            HistoryManager.sharedManager.sendToDiMe(deskEvent)
+        }
     }
     
     /// Retrieves current ReadingEvent (for HistoryManager)
@@ -228,6 +229,9 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     override func windowDidLoad() {
         super.windowDidLoad()
         
+        // metadata disabled at start (will be enabled in checkMetadata(_) )
+        tbMetadata.enabled = false
+        
         let oldFrame = NSRect(origin: self.window!.frame.origin, size: NSSize(width: PeyeConstants.docWindowWidth, height: PeyeConstants.docWindowHeight))
         self.window!.setFrame(oldFrame, display: true)
         
@@ -270,50 +274,15 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         if let document: NSDocument = self.document as? NSDocument {
             let url: NSURL = document.fileURL!
             
+            // set NSDocument subclass fields
+            let peyeDoc = self.document as! PeyeDocument
+            
             pdfDoc = PDFDocument(URL: url)
+            peyeDoc.pdfDoc = pdfDoc
             pdfReader!.setDocument(pdfDoc)
+            
             dispatch_async(dispatch_get_main_queue()) {
                 NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.documentChangeNotification, object: self.document)
-            }
-            
-            // NSDocument subclass
-            let peyeDoc = self.document as! PeyeDocument
-            peyeDoc.pdfDoc = pdfDoc
-            // check if there is text
-            if let _ = pdfDoc.getText() {
-                pdfReader!.containsRawString = true
-                tbMetadata.image = NSImage(named: "NSStatusAvailable")
-            } else {
-                tbMetadata.image = NSImage(named: "NSStatusUnavailable")
-            }
-            
-            // Associate PDF view to info element
-            let sciDoc = ScientificDocument(uri: url.path!, plainTextContent: pdfDoc.getText(), title: pdfDoc.getTitle(), authors: pdfDoc.getAuthorsAsArray(), keywords: pdfDoc.getKeywordsAsArray(), subject: pdfDoc.getSubject())
-            pdfReader!.sciDoc = sciDoc
-            
-            // Download metadata if needed, and send to dime if found
-            let showTime = dispatch_time(DISPATCH_TIME_NOW,
-                                         Int64(1 * Double(NSEC_PER_SEC)))
-            dispatch_after(showTime, dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
-                if (NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDownloadMetadata) as! Bool) {
-                    self.pdfReader?.document().autoCrossref() {
-                        _json in
-                        if let json = _json {
-                            // found crossref, use it
-                            sciDoc.updateFields(fromCrossRef: json)
-                            HistoryManager.sharedManager.sendToDiMe(sciDoc)
-                        } else if let tit = self.pdfReader?.document().getTitle() {
-                            // if not, attempt to get title from document
-                            sciDoc.title = tit
-                            HistoryManager.sharedManager.sendToDiMe(sciDoc)
-                        } else if let tit = self.pdfReader?.document().guessTitle() {
-                            // as a last resort, guess it
-                            self.pdfReader?.document().setTitle(tit)
-                            sciDoc.title = tit
-                            HistoryManager.sharedManager.sendToDiMe(sciDoc)
-                        }
-                    }
-                }
             }
             
             // Tell app singleton which screen size we are using
@@ -321,15 +290,74 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                 AppSingleton.screenRect = screen.frame
             }
             
-            // Update debug controller with metadata
-            if let title = pdfDoc.getTitle() {
-                debugController?.titleLabel.stringValue = title
+            // Asynchronously fetch text from document (if no text is found, nill we be passed)
+            dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
+                [weak self] in
+                self?.checkMetadata(pdfDoc.getText())
             }
-            
-            // Send event regardig opening of file
-            sendDeskEvent()
-            
         }
+    }
+    
+    /// Asynchronously fetch metadata (including plain text) from PDF.
+    /// Enables the toolbar item when done.
+    private func checkMetadata(plainText: String?) {
+        guard let pdfr = self.pdfReader, _ = self.document else {
+            return
+        }
+        
+        // check if there is text
+        dispatch_async(dispatch_get_main_queue()) {
+            if let _ = plainText {
+                pdfr.containsRawString = true
+                self.tbMetadata.image = NSImage(named: "NSStatusAvailable")
+            } else {
+                self.tbMetadata.image = NSImage(named: "NSStatusUnavailable")
+            }
+            self.tbMetadata.enabled = true
+        }
+        
+        // Associate PDF view to info element
+        let url = (self.document as! PeyeDocument).fileURL!
+        let pdfDoc = pdfr.document()
+        let sciDoc = ScientificDocument(uri: url.path!, plainTextContent: plainText, title: pdfDoc.getTitle(), authors: pdfDoc.getAuthorsAsArray(), keywords: pdfDoc.getKeywordsAsArray(), subject: pdfDoc.getSubject())
+        pdfReader!.sciDoc = sciDoc
+        
+        // Download metadata if needed, and send to dime if found
+        let showTime = dispatch_time(DISPATCH_TIME_NOW,
+                                     Int64(1 * Double(NSEC_PER_SEC)))
+        dispatch_after(showTime, dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
+            if (NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDownloadMetadata) as! Bool) {
+                self.pdfReader?.document().autoCrossref() {
+                    _json in
+                    if let json = _json {
+                        // found crossref, use it
+                        sciDoc.updateFields(fromCrossRef: json)
+                        HistoryManager.sharedManager.sendToDiMe(sciDoc)
+                    } else if let tit = self.pdfReader?.document().getTitle() {
+                        // if not, attempt to get title from document
+                        sciDoc.title = tit
+                        HistoryManager.sharedManager.sendToDiMe(sciDoc)
+                    } else if let tit = self.pdfReader?.document().guessTitle() {
+                        // as a last resort, guess it
+                        self.pdfReader?.document().setTitle(tit)
+                        sciDoc.title = tit
+                        HistoryManager.sharedManager.sendToDiMe(sciDoc)
+                    }
+                    // Update debug controller with metadata
+                    if let title = pdfDoc.getTitle() {
+                        dispatch_async(dispatch_get_main_queue()) {
+                            self.debugController?.titleLabel.stringValue = title
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Send event regarding opening of file
+        sendDeskEvent()
+        
+        // Tell the history manager to "start recording"
+        HistoryManager.sharedManager.entry(self)
     }
     
     
@@ -405,13 +433,13 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                     _ in
                     // signal when done
                     dispatch_async(dispatch_get_main_queue()) {
-                        ww.close()
+                        self.window!.endSheet(ww)
                         callback?()
                     }
                 }
             } else {
                 dispatch_async(dispatch_get_main_queue()) {
-                    ww.close()
+                    self.window!.endSheet(ww)
                     callback?()
                 }
             }
@@ -496,16 +524,16 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         // If the relevant preference is set, send a DesktopEvent for the current document
         if (NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefSendEventOnFocusSwitch) as! Bool) {
             sendDeskEvent()
-        } else {
+        } else if let sciDoc = self.pdfReader?.sciDoc {
             // otherwise just send an information element for the given document if the current document
             // does not have already an associated info elemen in dime
             let showTime = dispatch_time(DISPATCH_TIME_NOW,
                                          Int64(2 * Double(NSEC_PER_SEC)))
             dispatch_after(showTime, dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
-                DiMeFetcher.retrieveScientificDocument(self.pdfReader!.sciDoc!.id) {
+                DiMeFetcher.retrieveScientificDocument(sciDoc.id) {
                     scidoc in
                     if scidoc == nil {
-                        HistoryManager.sharedManager.sendToDiMe(self.pdfReader!.sciDoc!)
+                        HistoryManager.sharedManager.sendToDiMe(sciDoc)
                     }
                 }
             }
