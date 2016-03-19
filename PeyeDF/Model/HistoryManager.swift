@@ -287,11 +287,11 @@ class HistoryManager: FixationDataDelegate {
         self.currentEyeReceiver = docWindow.pdfReader
         
         // prepare exit timer, which will fire when the user is inactive long enough (or will be canceled if there is another exit event).
-        if let _ = self.currentReadingEvent {
+        if let _ = self.currentReadingEvent, pdfReader = docWindow.pdfReader {
             dispatch_sync(timerQueue) {
                 
                 // prepare smi rectangles
-                self.currentSMIMarks = PDFMarkings(pdfBase: docWindow.pdfReader)
+                self.currentSMIMarks = PDFMarkings(pdfBase: pdfReader)
         
                 self.exitTimer = NSTimer(timeInterval: PeyeConstants.maxReadTime, target: self, selector: "exitEvent:", userInfo: nil, repeats: false)
                 NSRunLoop.currentRunLoop().addTimer(self.exitTimer!, forMode: NSRunLoopCommonModes)

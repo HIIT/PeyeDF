@@ -511,10 +511,6 @@ class MyPDFReader: MyPDFBase {
             self.setCurrentSelection(generatedSelection, animate: true)
         }
     }
-    
-    deinit {
-        Swift.print("pdf reader deallocated")
-    }
 }
 
 /// Semi-debug enum

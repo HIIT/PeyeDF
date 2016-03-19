@@ -33,10 +33,10 @@ struct PDFMarkings {
     private var allRects = [ReadingRect]()
     
     /// Reference to mypdfbase is used to get text within reading rects and scaleFactors
-    private weak var pdfBase: MyPDFBase?
+    unowned let pdfBase: MyPDFBase
     
     /// Create an empty state with markings of a given source using the given pdfBase to get text
-    init(pdfBase: MyPDFBase?) {
+    init(pdfBase: MyPDFBase) {
         self.pdfBase = pdfBase
     }
     
@@ -198,18 +198,14 @@ struct PDFMarkings {
     /// All rectangles (which will be united) are then cycled and the area of each is subtracted
     /// to calculate a proportion. Returns nil if no pdfBase is connected.
     mutating func calculateProportions_relevance() -> (proportionRead: Double, proportionInteresting: Double, proportionCritical: Double)? {
-        guard let pdf = pdfBase else {
-            AppSingleton.log.warning("Was requested to compute proportions, but did not find an associated pdfBase")
-            return nil
-        }
         flattenRectangles_relevance()
         var totalSurface = 0.0
         var readSurface = 0.0
         var interestingSurface = 0.0
         var criticalSurface = 0.0
-        for pageI in 0 ..< pdf.document().pageCount() {
-            let thePage = pdf.document().pageAtIndex(pageI)
-            let pageRect = pdf.getPageRect(thePage)
+        for pageI in 0 ..< pdfBase.document().pageCount() {
+            let thePage = pdfBase.document().pageAtIndex(pageI)
+            let pageRect = pdfBase.getPageRect(thePage)
             let pageSurface = Double(pageRect.size.height * pageRect.size.width)
             totalSurface += pageSurface
             for rect in get(ofClass: .Read, forPage: pageI) {
@@ -234,16 +230,12 @@ struct PDFMarkings {
     /// All rectangles (which will be united) are then cycled and the area of each is subtracted
     /// to calculate a proportion. Returns 0 if no pdfBase is connected.
     mutating func calculateProportion_smi() -> Double {
-        guard let pdf = pdfBase else {
-            AppSingleton.log.warning("Was requested to compute smi proportions, but did not find an associated pdfBase")
-            return 0
-        }
         flattenRectangles_eye()
         var totalSurface = 0.0
         var gazedSurface = 0.0
-        for pageI in 0..<pdf.document().pageCount() {
-            let thePage = pdf.document().pageAtIndex(pageI)
-            let pageRect = pdf.getPageRect(thePage)
+        for pageI in 0..<pdfBase.document().pageCount() {
+            let thePage = pdfBase.document().pageAtIndex(pageI)
+            let pageRect = pdfBase.getPageRect(thePage)
             let pageSurface = Double(pageRect.size.height * pageRect.size.width)
             totalSurface += pageSurface
             for rect in get(onlyClass: .Paragraph) {
