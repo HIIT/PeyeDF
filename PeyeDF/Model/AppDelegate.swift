@@ -39,6 +39,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// Refinder window
     var refinderWindow: RefinderWindowController?
     
+    /// PeyeDF closes itself to prevent potential leaks and allow opened PDFs to be deleted
+    func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {
+        return true
+    }
+    
     /// Sets up custom url handler
     func applicationWillFinishLaunching(notification: NSNotification) {
         var defaultPrefs = [String: AnyObject]()
