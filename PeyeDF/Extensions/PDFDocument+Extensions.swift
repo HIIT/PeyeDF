@@ -82,6 +82,7 @@ extension PDFDocument {
     }
     
     /// Returns a trimmed plain text of the data contained in the document, nil not present
+    /// - Warning: Takes time and memory for big documents, better to asynchronise this
     func getText() -> String? {
         var trimmedText = string()
         trimmedText = trimmedText.stringByReplacingOccurrencesOfString("\u{fffc}", withString: "")

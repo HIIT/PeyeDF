@@ -39,9 +39,6 @@ class MyPDFBase: PDFView {
     /// Whether this document contains plain text
     private(set) var containsPlainText = false
     
-    /// Plain text within this document
-    private(set) var plainText: String?
-    
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         markings = PDFMarkings(pdfBase: self)
@@ -128,7 +125,6 @@ class MyPDFBase: PDFView {
             dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
                 [weak self] in
                 if let txt = doc.getText() {
-                    self?.plainText = txt
                     self?.containsPlainText = true
                     callback?(txt)
                 } else {

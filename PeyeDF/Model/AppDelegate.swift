@@ -159,7 +159,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     /// Callback for click on connect to dime
     @IBAction func connectDime(sender: NSMenuItem) {
-        HistoryManager.sharedManager.dimeConnect()
+        HistoryManager.sharedManager.dimeConnect() {
+            success, response in
+            
+            if !success {
+                AppSingleton.alertUser("Error while communcating with DiMe. Dime has now been disconnected", infoText: "Message from dime:\n\(response.result.error!)")
+            }
+        }
     }
     
     /// Callback for connect to midas menu action

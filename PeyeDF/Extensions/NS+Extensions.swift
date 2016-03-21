@@ -133,7 +133,7 @@ extension NSURLComponents {
             callback(self)
         } else {
             HistoryManager.sharedManager.dimeConnect() {
-                success in
+                success, _ in
                 if !mustConnect || success {
                     callback(self)
                 }
