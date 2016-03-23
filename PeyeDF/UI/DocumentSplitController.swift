@@ -53,9 +53,13 @@ class DocumentSplitController: NSSplitViewController {
         // let the delegate know what happened
         sideCollapseDelegate?.sideCollapseAction(collState)
         if collState {
-            tw.setPosition(PeyeConstants.defaultThumbSideViewWidth, ofDividerAtIndex: 0)
+            dispatch_async(dispatch_get_main_queue()) {
+                tw.setPosition(PeyeConstants.defaultThumbSideViewWidth, ofDividerAtIndex: 0)
+            }
         } else {
-            tw.setPosition(0, ofDividerAtIndex: 0)
+            dispatch_async(dispatch_get_main_queue()) {
+                tw.setPosition(0, ofDividerAtIndex: 0)
+            }
         }
     }
     
