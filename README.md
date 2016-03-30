@@ -10,7 +10,7 @@ To see what data is pushed to DiMe, see the [wiki](https://github.com/HIIT/PeyeD
 
 PeyeDF can be installed like any app. After running, open the preferences window by click on PeyeDF > Preferences, or press command + comma ( **&#8984;** + **,** ). Make sure the DiMe preferences (username, password) are correct.
 
-# Addional software
+# Additional software
 
 ## Git submodules
 
