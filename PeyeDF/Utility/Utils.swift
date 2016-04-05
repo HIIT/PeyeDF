@@ -42,14 +42,14 @@ func strideArrayTest<T: Comparable>(ary ary: [T], index: Int, strideLength: Int 
         if !precedingFunc(ary[leftI], ary[index]) {
             return false
         }
-        leftI--
+        leftI -= 1
     }
     
     while rightI < ary.count && rightI <= index + strideLength {
         if !followingFunc(ary[rightI], ary[index]) {
             return false
         }
-        rightI++
+        rightI += 1
     }
     return true
 }

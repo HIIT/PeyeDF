@@ -219,13 +219,13 @@ class DiMeFetcher {
         outgoingSummaries = [(ev: SummaryReadingEvent, ie: ScientificDocument?)]()
         for readingEvent in json.arrayValue {
             outgoingSummaries.append((ev: SummaryReadingEvent(fromDime: readingEvent), ie: nil))
-            missingInfoElems++
+            missingInfoElems += 1
         }
         // convert info element ids to scientific documents and add them to outgoing data
         var i = 0
         for tuple in outgoingSummaries {
             getScientificDocument(i, infoElemId: tuple.ev.infoElemId as String)
-            i++
+            i += 1
         }
         
         // if nothing is being sent, call receiveAllSummaries with nil
@@ -242,7 +242,7 @@ class DiMeFetcher {
             newScidoc in
             
             self.outgoingSummaries[forIndex].ie = newScidoc
-            self.missingInfoElems--
+            self.missingInfoElems = self.missingInfoElems - 1
             self.receiver.updateProgress(self.outgoingSummaries.count - self.missingInfoElems, total: self.outgoingSummaries.count)
             // all data has been fetched, send it
             if self.missingInfoElems == 0 {

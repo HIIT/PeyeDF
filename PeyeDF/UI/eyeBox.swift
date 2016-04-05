@@ -53,7 +53,7 @@ class eyeBox: NSBox {
     }
     
     func registerNotification() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "newDataReceived:", name: PeyeConstants.midasEyePositionNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(newDataReceived(_:)), name: PeyeConstants.midasEyePositionNotification, object: nil)
     }
     
     func unregisterNotification() {

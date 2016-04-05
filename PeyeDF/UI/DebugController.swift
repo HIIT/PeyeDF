@@ -68,12 +68,12 @@ class DebugController: NSViewController, NSTableViewDataSource {
     func setUpMonitors(pdfReader: MyPDFReader, docWindow: NSWindow) {
         self.pdfReader = pdfReader
         self.docWindow = docWindow
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "documentChanged:", name: PeyeConstants.documentChangeNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "zoomChanged:", name: PDFViewScaleChangedNotification, object: pdfReader)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "frameChanged:", name: NSViewFrameDidChangeNotification, object: pdfReader)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowChanged:", name: NSWindowDidMoveNotification, object: docWindow)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "occlusionChanged:", name: NSWindowDidChangeOcclusionStateNotification, object: docWindow)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "scrolled:", name:
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(documentChanged(_:)), name: PeyeConstants.documentChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(zoomChanged(_:)), name: PDFViewScaleChangedNotification, object: pdfReader)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(frameChanged(_:)), name: NSViewFrameDidChangeNotification, object: pdfReader)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(windowChanged(_:)), name: NSWindowDidMoveNotification, object: docWindow)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(occlusionChanged(_:)), name: NSWindowDidChangeOcclusionStateNotification, object: docWindow)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(scrolled(_:)), name:
             NSViewBoundsDidChangeNotification, object: pdfReader.subviews[0].subviews[0] as! NSClipView)
     }
     

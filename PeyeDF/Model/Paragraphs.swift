@@ -263,7 +263,7 @@ struct PDFMarkings {
                 ary[i].unite(ary[i+1], pdfBase: pdfBase)
                 ary.removeAtIndex(i+1)
             } else {
-                ++i
+                i += 1
             }
         }
         return ary
@@ -276,7 +276,8 @@ struct PDFMarkings {
     /// - parameter minuends: The array of rectangles from which the other will be subtracted (lhs)
     /// - parameter subtrahends: The array of rectangles that will be subtracted from minuends (rhs)
     /// - returns: An array of rectangles which is the result of minuends - subtrahends
-    func subtractRectangles(forPage forPage: Int, var minuends: [ReadingRect], subtrahends: [ReadingRect]) -> [ReadingRect] {
+    func subtractRectangles(forPage forPage: Int, minuends: [ReadingRect], subtrahends: [ReadingRect]) -> [ReadingRect] {
+        var minuends = minuends
         var collidingRects: [(lhsRect: ReadingRect, rhsRect: ReadingRect)] // tuples with minuend rect and subtrahend rects which intersect (must be on the same page)
         
         // return the same result if there is nothing to subtract from / to
@@ -304,7 +305,7 @@ struct PDFMarkings {
                         break
                     }
                 }
-                ++i
+                i += 1
             }
             
             collisions = !collidingRects.isEmpty
@@ -315,7 +316,7 @@ struct PDFMarkings {
             
             minuends = result
             
-            ++loops
+            loops += 1
         } while collisions && loops < maxLoops
         if loops >= maxLoops {
             AppSingleton.log.error("Loops exceeded maximum loops, check subtraction algo")

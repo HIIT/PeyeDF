@@ -133,7 +133,7 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     
     override func viewDidAppear() {
         // set up search notifications
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "foundOneMatch:", name: PDFDocumentDidFindMatchNotification, object: pdfReader!.document())
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(foundOneMatch(_:)), name: PDFDocumentDidFindMatchNotification, object: pdfReader!.document())
     }
     
     override func viewWillDisappear() {
@@ -160,7 +160,7 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     /// Make the search field first responder, but with a delay
     func makeSearchFieldFirstResponderWithDelay() {
         labelColumnCheck()
-        NSTimer.scheduledTimerWithTimeInterval(kFirstResponderDelay, target: self, selector: "makeSearchFieldFirstResponder", userInfo: nil, repeats: false)
+        NSTimer.scheduledTimerWithTimeInterval(kFirstResponderDelay, target: self, selector: #selector(makeSearchFieldFirstResponder), userInfo: nil, repeats: false)
     }
     
     /// Make the search field the first reponder (i.e. focus on it)
@@ -207,7 +207,10 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     }
     
     /// Performs a search using the given string, with the exact phrase flag.
-    func doSearch(var theString: String, var exact: Bool) {
+    func doSearch(theString: String, exact: Bool) {
+        var theString = theString
+        var exact = exact
+        
         // if the string contains two quotes, at beginning and end, 
         // remove them and perform exact search
         if theString.countOfChar("\"") == 2 && theString.characters.first! == "\"" && theString.characters.last! == "\"" {

@@ -369,27 +369,27 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         
         // Get notifications from pdfview for window
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "autoAnnotateComplete:", name: PeyeConstants.autoAnnotationComplete, object: self.pdfReader!)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "zoomChanged:", name: PDFViewScaleChangedNotification, object: self.pdfReader!)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "frameChanged:", name: NSViewFrameDidChangeNotification, object: self.pdfReader!)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(autoAnnotateComplete(_:)), name: PeyeConstants.autoAnnotationComplete, object: self.pdfReader!)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(zoomChanged(_:)), name: PDFViewScaleChangedNotification, object: self.pdfReader!)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(frameChanged(_:)), name: NSViewFrameDidChangeNotification, object: self.pdfReader!)
         // Note: forced downcast below relies on "undocumented" view tree
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "scrollingChanged:", name: NSViewBoundsDidChangeNotification, object: self.pdfReader!.subviews[0].subviews[0] as! NSClipView)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(scrollingChanged(_:)), name: NSViewBoundsDidChangeNotification, object: self.pdfReader!.subviews[0].subviews[0] as! NSClipView)
         
         // Get notifications from managed window
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowMoved:", name: NSWindowDidMoveNotification, object: self.window)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowWillSwitchAway:", name: NSWindowDidResignKeyNotification, object: self.window)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowWantsMain:", name: NSWindowDidBecomeKeyNotification, object: self.window)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "windowOcclusionChange:", name: NSWindowDidChangeOcclusionStateNotification, object: self.window)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(windowMoved(_:)), name: NSWindowDidMoveNotification, object: self.window)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(windowWillSwitchAway(_:)), name: NSWindowDidResignKeyNotification, object: self.window)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(windowWantsMain(_:)), name: NSWindowDidBecomeKeyNotification, object: self.window)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(windowOcclusionChange(_:)), name: NSWindowDidChangeOcclusionStateNotification, object: self.window)
         
         // Get notifications from midas manager
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "eyeStateCallback:", name: PeyeConstants.eyesAvailabilityNotification, object: MidasManager.sharedInstance)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(eyeStateCallback(_:)), name: PeyeConstants.eyesAvailabilityNotification, object: MidasManager.sharedInstance)
         
         // Set up regular timer
         dispatch_sync(DocumentWindowController.timerQueue) {
             if self.regularTimer == nil {
-                self.regularTimer = NSTimer(timeInterval: PeyeConstants.regularSummaryEventInterval, target: self, selector: "regularTimerFire:", userInfo: nil, repeats: true)
+                self.regularTimer = NSTimer(timeInterval: PeyeConstants.regularSummaryEventInterval, target: self, selector: #selector(self.regularTimerFire(_:)), userInfo: nil, repeats: true)
                 NSRunLoop.currentRunLoop().addTimer(self.regularTimer!, forMode: NSRunLoopCommonModes)
             }
         }
@@ -525,7 +525,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         // Set up regular timer
         dispatch_sync(DocumentWindowController.timerQueue) {
             if self.regularTimer == nil {
-                self.regularTimer = NSTimer(timeInterval: PeyeConstants.regularSummaryEventInterval, target: self, selector: "regularTimerFire:", userInfo: nil, repeats: true)
+                self.regularTimer = NSTimer(timeInterval: PeyeConstants.regularSummaryEventInterval, target: self, selector: #selector(self.regularTimerFire(_:)), userInfo: nil, repeats: true)
                 NSRunLoop.currentRunLoop().addTimer(self.regularTimer!, forMode: NSRunLoopCommonModes)
             }
         }

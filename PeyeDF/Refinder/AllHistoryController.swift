@@ -83,7 +83,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     override func viewDidLoad() {
         // creates dime fetcher with self as receiver and prepares to receive table selection notifications
         diMeFetcher = DiMeFetcher(receiver: self)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "newHistoryTableSelection:", name: NSTableViewSelectionDidChangeNotification, object: historyTable)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(newHistoryTableSelection(_:)), name: NSTableViewSelectionDidChangeNotification, object: historyTable)
     }
     
     @objc private func newHistoryTableSelection(notification: NSNotification) {

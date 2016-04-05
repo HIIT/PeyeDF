@@ -29,7 +29,7 @@ extension String {
     /// Returns an array of the words that compose the string (skipping space and other punctuation). Returns nil if no words were found.
     func words() -> [String]? {
         
-        let range = Range<String.Index>(start: self.startIndex, end: self.endIndex)
+        let range = Range<String.Index>(self.startIndex ..< self.endIndex)
         var words = [String]()
         
         self.enumerateSubstringsInRange(range, options: NSStringEnumerationOptions.ByWords) { substring, _, _, _ in

@@ -85,7 +85,7 @@ func getTimedFixationsAfter(unixtime minUnixtime: Int, forEye eye: Eye, fromJSON
             }
         }
         
-        i++
+        i += 1
     }
     
     if retVal.count > 0 {

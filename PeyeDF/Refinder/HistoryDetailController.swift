@@ -182,7 +182,7 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
             document, _, _ in
             if let doc = document as? PeyeDocument {
                 var newRects = rects.filter({$0.classSource == .ML})
-                newRects = newRects.map() {(var rect) in rect.classSource = .Click ; return rect}
+                newRects = newRects.map() {(rect) in var rect = rect; rect.classSource = .Click ; return rect}
                 doc.setMarkings(newRects)
             }
         }

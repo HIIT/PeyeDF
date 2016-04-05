@@ -135,7 +135,7 @@ class MidasManager {
                     NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.midasConnectionNotification, object: self, userInfo: ["available": true])
                     self.midasAvailable = true
                     dispatch_sync(MidasManager.sharedQueue) {
-                        self.fetchTimer = NSTimer(timeInterval: self.kFetchInterval, target: self, selector: "fetchTimerHit:", userInfo: nil, repeats: true)
+                        self.fetchTimer = NSTimer(timeInterval: self.kFetchInterval, target: self, selector: #selector(self.fetchTimerHit(_:)), userInfo: nil, repeats: true)
                         NSRunLoop.currentRunLoop().addTimer(self.fetchTimer!, forMode: NSRunLoopCommonModes)
                     }
                 }
@@ -178,7 +178,7 @@ class MidasManager {
     /// Gets data from the given node, for the given channels
     private func fetchData(nodeName: String, channels: [String], fetchKind: MidasFetchKind) {
         
-        let chanString = midasChanString(fromChannels: channels)
+        let chanString = midasChanString(channels)
         
         let fetchString = "http://\(MidasManager.kMidasAddress):\(MidasManager.kMidasPort)/\(nodeName)/data/{\(chanString), \"time_window\":[\(kBufferLength),\(kBufferLength)]}"
         
@@ -292,17 +292,18 @@ class MidasManager {
 }
 
 /// Given a list of channels, generates a string (which should be later concatenated in a url, hence needs to be converted using stringByAddingPercentEncoding) for the midas url request.
-func midasChanString(var fromChannels listOfChannels: [String]) -> String {
+func midasChanString(listOfChannels: [String]) -> String {
     // example of a request url:
     // http://127.0.0.1:8080/sample_eyestream/data/{"channels":["x", "y"],"time_window":[0.010, 0.010]}
     
+    var fromChannels = listOfChannels
     let prefix = "\"channels\":["
     let suffix = "]"
     
-    let firstChan = listOfChannels.removeAtIndex(0)
+    let firstChan = fromChannels.removeAtIndex(0)
     var outString = prefix + "\"" + firstChan + "\""
     
-    for chan in listOfChannels {
+    for chan in fromChannels {
         outString += ", \"" + chan + "\""
     }
     

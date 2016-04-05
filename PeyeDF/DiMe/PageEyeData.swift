@@ -155,7 +155,7 @@ struct PageEyeDataChunk: Dictionariable {
                     durations.removeAtIndex(j)
                         
                 } else {
-                    j++
+                    j += 1
                 }
             }
         }
@@ -184,7 +184,7 @@ struct PageEyeDataChunk: Dictionariable {
                 }
             }
             if !foundInvalid {
-                i++
+                i += 1
             }
         }
         

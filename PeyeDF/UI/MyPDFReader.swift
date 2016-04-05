@@ -217,7 +217,7 @@ class MyPDFReader: MyPDFBase {
         }
         
         // create an undo operation for this operation
-        undoManager?.registerUndoWithTarget(self, selector: "undoMarkAndAnnotate:", object: evenPreviousState)
+        undoManager?.registerUndoWithTarget(self, selector: #selector(undoMarkAndAnnotate(_:)), object: evenPreviousState)
         undoManager?.setActionName(NSLocalizedString("actions.annotate", value: "Mark Text", comment: "Some text was marked via clicking / undoing"))
     }
     
@@ -234,7 +234,7 @@ class MyPDFReader: MyPDFBase {
             // if noting was done (i.e. no paragraph at point) do nothing, otherwise store state and annotate
             if let newMark = newMaybeMark {
                 previousState.setLastRect(newMark)
-                undoManager?.registerUndoWithTarget(self, selector: "undoMarkAndAnnotate:", object: previousState)
+                undoManager?.registerUndoWithTarget(self, selector: #selector(undoMarkAndAnnotate(_:)), object: previousState)
                 undoManager?.setActionName(NSLocalizedString("actions.annotate", value: "Mark Text", comment: "Some text was marked via clicking / undoing"))
                 autoAnnotate()
             }
@@ -249,7 +249,7 @@ class MyPDFReader: MyPDFBase {
     /// - Note: Only rects with classSource .Click will be added
     func markAndAnnotateBulk(newMarks: [ReadingRect]) {
         let previousState = PDFMarkingsState(oldState: self.markings.getAll(forSource: .Click))
-        undoManager?.registerUndoWithTarget(self, selector: "undoMarkAndAnnotate:", object: previousState)
+        undoManager?.registerUndoWithTarget(self, selector: #selector(undoMarkAndAnnotate(_:)), object: previousState)
         undoManager?.setActionName(NSLocalizedString("actions.annotate", value: "Bulk Annotate", comment: "Many annotations were changed in bulk"))
         
         self.markings.setAll(forSource: .Click, newRects: newMarks)
@@ -402,7 +402,7 @@ class MyPDFReader: MyPDFBase {
                 let visiblePageNum = visiblePageNums[vpi]
                 let newRect = ReadingRect(pageIndex: visiblePageNum, rect: rect, readingClass: ReadingClass.Viewport, classSource: ClassSource.Viewport, pdfBase: self)
                 readingRects.append(newRect)
-                vpi++
+                vpi += 1
             }
             
             return ReadingEvent(sessionId: sessionId, pageNumbers: visiblePageNums, pageLabels: visiblePageLabels, pageRects: readingRects, plainTextContent: plainTextContent, infoElemId: sciDoc!.getId())

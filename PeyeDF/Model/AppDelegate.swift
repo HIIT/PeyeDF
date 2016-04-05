@@ -66,7 +66,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         HistoryManager.sharedManager.dimeConnect()  // will automatically detect if dime is down
         
         // Set up handler for custom url types (peyedf://)
-        NSAppleEventManager.sharedAppleEventManager().setEventHandler(self, andSelector: "handleURL:", forEventClass: UInt32(kInternetEventClass), andEventID: UInt32(kAEGetURL))
+        NSAppleEventManager.sharedAppleEventManager().setEventHandler(self, andSelector: #selector(handleURL(_:)), forEventClass: UInt32(kInternetEventClass), andEventID: UInt32(kAEGetURL))
     }
     
     /// Creates default preferences and sets up dime
@@ -80,8 +80,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         
         // Dime/Midas down/up observers
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "dimeConnectionChanged:", name: PeyeConstants.diMeConnectionNotification, object: HistoryManager.sharedManager)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "midasConnectionChanged:", name: PeyeConstants.midasConnectionNotification, object: MidasManager.sharedInstance)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(dimeConnectionChanged(_:)), name: PeyeConstants.diMeConnectionNotification, object: HistoryManager.sharedManager)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(midasConnectionChanged(_:)), name: PeyeConstants.midasConnectionNotification, object: MidasManager.sharedInstance)
     }
     
     // MARK: - Opening
@@ -207,7 +207,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             outString += "-- Document \(inum) --\n" +
             "Filename: \(doc.pdfDoc!.documentURL().lastPathComponent!)\n" +
             "Title: \(doc.pdfDoc!.getTitle())\nAuthor(s):\(doc.pdfDoc!.getAuthor())\n\n"
-            ++inum
+            inum += 1
         }
         if let mainWin = NSApplication.sharedApplication().mainWindow {
             let myAl = NSAlert()

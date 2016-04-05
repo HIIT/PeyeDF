@@ -78,7 +78,7 @@ class HistoryManager: FixationDataDelegate {
     /// Creates the history manager and listens for manual marks notifications
     init() {
         manualMarkUnixtimes = [Int]()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "manualParagraphMark:", name: PeyeConstants.manualParagraphMarkNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(manualParagraphMark(_:)), name: PeyeConstants.manualParagraphMarkNotification, object: nil)
     }
     
     // MARK: - External functions
@@ -264,7 +264,7 @@ class HistoryManager: FixationDataDelegate {
     private func preparation(documentWindow: DocumentWindowController) {
         exitEvent(nil)
         dispatch_sync(timerQueue) {
-            self.entryTimer = NSTimer(timeInterval: PeyeConstants.minReadTime, target: self, selector: "entryTimerFire:", userInfo: documentWindow, repeats: false)
+            self.entryTimer = NSTimer(timeInterval: PeyeConstants.minReadTime, target: self, selector: #selector(self.entryTimerFire(_:)), userInfo: documentWindow, repeats: false)
             NSRunLoop.currentRunLoop().addTimer(self.entryTimer!, forMode: NSRunLoopCommonModes)
         }
     }
@@ -292,7 +292,7 @@ class HistoryManager: FixationDataDelegate {
                 // prepare smi rectangles
                 self.currentSMIMarks = PDFMarkings(pdfBase: pdfReader)
         
-                self.exitTimer = NSTimer(timeInterval: PeyeConstants.maxReadTime, target: self, selector: "exitEvent:", userInfo: nil, repeats: false)
+                self.exitTimer = NSTimer(timeInterval: PeyeConstants.maxReadTime, target: self, selector: #selector(self.exitEvent(_:)), userInfo: nil, repeats: false)
                 NSRunLoop.currentRunLoop().addTimer(self.exitTimer!, forMode: NSRunLoopCommonModes)
             }
         }
