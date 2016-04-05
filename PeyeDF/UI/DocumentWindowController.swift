@@ -50,6 +50,24 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     weak var clickDelegate: ClickRecognizerDelegate?
     
+    lazy var popover: NSPopover = {
+            let pop = NSPopover()
+            pop.behavior = NSPopoverBehavior.Transient
+            let tvc = AppSingleton.mainStoryboard.instantiateControllerWithIdentifier("TagViewController")
+            pop.contentViewController = tvc as! TagViewController
+            return pop
+        }()
+    
+    @IBAction func tagShow(sender: AnyObject?) {
+        if let sendBut = sender as? NSButton {
+            if !popover.shown {
+                popover.showRelativeToRect(sendBut.bounds, ofView: sendBut, preferredEdge: NSRectEdge.MinY)
+            } else {
+                popover.performClose(self)
+            }
+        }
+    }
+    
     // MARK: - Searching
     
     /// Do a search using a predefined string (when called from outside ui, e.g. from other applications)

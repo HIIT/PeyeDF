@@ -1312,11 +1312,28 @@
                                         <action selector="openInPreview:" target="H3y-Bk-Ofi" id="3Sl-BE-r9a"/>
                                     </connections>
                                 </toolbarItem>
+                                <toolbarItem implicitItemIdentifier="DCC7A3B2-6683-4CEE-8192-D425A105DD45" label="Tags" paletteLabel="Tags" image="Tag" id="LaI-PY-0lj">
+                                    <nil key="toolTip"/>
+                                    <size key="minSize" width="40" height="32"/>
+                                    <size key="maxSize" width="40" height="40"/>
+                                    <button key="view" verticalHuggingPriority="750" id="Z1q-6l-4JZ">
+                                        <rect key="frame" x="0.0" y="14" width="40" height="32"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="Tag" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="92C-0e-Vy1">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="tagShow:" target="H3y-Bk-Ofi" id="oav-HG-jdk"/>
+                                        </connections>
+                                    </button>
+                                </toolbarItem>
                             </allowedToolbarItems>
                             <defaultToolbarItems>
                                 <toolbarItem reference="8zr-Hg-gf0"/>
                                 <toolbarItem reference="mrl-au-qa7"/>
                                 <toolbarItem reference="GDs-fF-Uav"/>
+                                <toolbarItem reference="LaI-PY-0lj"/>
                                 <toolbarItem reference="l3s-5e-m3r"/>
                                 <toolbarItem reference="6Ts-EH-w4Q"/>
                                 <toolbarItem reference="dAp-G9-a6k"/>
@@ -1849,6 +1866,67 @@
             </objects>
             <point key="canvasLocation" x="-1091" y="-985.5"/>
         </scene>
+        <!--Tag View Controller-->
+        <scene sceneID="F0w-Df-KRr">
+            <objects>
+                <viewController storyboardIdentifier="TagViewController" id="JVl-a1-G8h" customClass="TagViewController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" id="Sma-39-JEp">
+                        <rect key="frame" x="0.0" y="0.0" width="218" height="119"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <stackView wantsLayer="YES" orientation="vertical" alignment="leading" spacing="0.0" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="D9E-lB-cnk" customClass="AnimatedStack" customModule="PeyeDF" customModuleProvider="target">
+                                <rect key="frame" x="10" y="37" width="208" height="77"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="30" id="B04-1x-aHB"/>
+                                    <constraint firstAttribute="width" constant="208" id="s3X-Zu-BPX"/>
+                                </constraints>
+                            </stackView>
+                            <textField verticalHuggingPriority="750" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Fer-yO-e3n">
+                                <rect key="frame" x="15" y="5" width="168" height="22"/>
+                                <textFieldCell key="cell" selectable="YES" editable="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="FO3-bl-xfT">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                                <connections>
+                                    <action selector="performClick:" target="rlk-25-YG0" id="tvb-f9-wSB"/>
+                                </connections>
+                            </textField>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rlk-25-YG0">
+                                <rect key="frame" x="187" y="7" width="18" height="19"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="18" id="tZr-iP-goZ"/>
+                                </constraints>
+                                <buttonCell key="cell" type="recessed" bezelStyle="recessed" image="RoundPlus" imagePosition="only" alignment="center" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="wYf-2Z-v2l">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
+                                    <font key="font" metaFont="systemBold" size="12"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="addPress:" target="JVl-a1-G8h" id="zNo-E7-dZv"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="D9E-lB-cnk" firstAttribute="leading" secondItem="Sma-39-JEp" secondAttribute="leading" constant="10" id="2Cb-gm-Cbe"/>
+                            <constraint firstItem="D9E-lB-cnk" firstAttribute="top" secondItem="Sma-39-JEp" secondAttribute="top" constant="5" id="2vD-bO-hCH"/>
+                            <constraint firstItem="Fer-yO-e3n" firstAttribute="leading" secondItem="D9E-lB-cnk" secondAttribute="leading" constant="5" id="L2T-9H-Out"/>
+                            <constraint firstAttribute="trailing" secondItem="D9E-lB-cnk" secondAttribute="trailing" id="aUo-H8-raJ"/>
+                            <constraint firstItem="Fer-yO-e3n" firstAttribute="top" secondItem="D9E-lB-cnk" secondAttribute="bottom" constant="10" id="cAE-BR-Ryo"/>
+                            <constraint firstItem="rlk-25-YG0" firstAttribute="trailing" secondItem="D9E-lB-cnk" secondAttribute="trailing" constant="-13" id="eXJ-Ci-tfL"/>
+                            <constraint firstItem="rlk-25-YG0" firstAttribute="centerY" secondItem="Fer-yO-e3n" secondAttribute="centerY" id="tw6-uU-oXp"/>
+                            <constraint firstItem="rlk-25-YG0" firstAttribute="trailing" secondItem="Fer-yO-e3n" secondAttribute="trailing" constant="22" id="vs1-O0-kVW"/>
+                            <constraint firstAttribute="bottom" secondItem="Fer-yO-e3n" secondAttribute="bottom" constant="5" id="wnd-KH-mDF"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="stackView" destination="D9E-lB-cnk" id="st9-N9-t2D"/>
+                        <outlet property="textField" destination="Fer-yO-e3n" id="1TM-vb-SSV"/>
+                    </connections>
+                </viewController>
+                <customObject id="t5u-Wj-PdM" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1731" y="-554.5"/>
+        </scene>
     </scenes>
     <resources>
         <image name="DiMeSettings" width="64" height="64"/>
@@ -1858,9 +1936,11 @@
         <image name="NSStatusNone" width="16" height="16"/>
         <image name="Redo" width="64" height="64"/>
         <image name="Refinder" width="64" height="64"/>
+        <image name="RoundPlus" width="16" height="16"/>
         <image name="TB_AnnotateD" width="64" height="64"/>
         <image name="TB_SearchU" width="64" height="64"/>
         <image name="TB_ThumbU" width="32" height="32"/>
+        <image name="Tag" width="64" height="64"/>
         <image name="Undo" width="64" height="64"/>
         <image name="openInPreview" width="64" height="64"/>
     </resources>

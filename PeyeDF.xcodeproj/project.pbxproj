@@ -22,6 +22,11 @@
 		A91CB9721B332FB700671868 /* PeyeDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91CB96C1B332FB700671868 /* PeyeDocument.swift */; };
 		A91DA4781C7A395200257FF0 /* FocusAreas.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91DA4771C7A395200257FF0 /* FocusAreas.swift */; };
 		A91DC4E11C22E43800BBB612 /* SummaryReadingEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A91DC4E01C22E43700BBB612 /* SummaryReadingEvent.swift */; };
+		A92322FF1CB3E13A0060AF1C /* TagView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A92322FE1CB3E13A0060AF1C /* TagView.xib */; };
+		A92323011CB3E1480060AF1C /* TagViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92323001CB3E1480060AF1C /* TagViewController.swift */; };
+		A92323031CB3E1560060AF1C /* AnimatedStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92323021CB3E1560060AF1C /* AnimatedStack.swift */; };
+		A92323051CB3E1A80060AF1C /* TagFieldDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92323041CB3E1A80060AF1C /* TagFieldDelegate.swift */; };
+		A92323071CB3E1B70060AF1C /* TagRemoveButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92323061CB3E1B70060AF1C /* TagRemoveButton.swift */; };
 		A9260F571BA4CD10005B1556 /* MyOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9260F561BA4CD10005B1556 /* MyOverlay.swift */; };
 		A935F0C61B8CC5FD00587C99 /* DesktopEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A935F0C51B8CC5FD00587C99 /* DesktopEvent.swift */; };
 		A93C53DC1B8DCEFB00179C72 /* HistoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93C53DB1B8DCEFB00179C72 /* HistoryManager.swift */; };
@@ -174,6 +179,11 @@
 		A91CB96C1B332FB700671868 /* PeyeDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeyeDocument.swift; sourceTree = "<group>"; };
 		A91DA4771C7A395200257FF0 /* FocusAreas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = FocusAreas.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A91DC4E01C22E43700BBB612 /* SummaryReadingEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SummaryReadingEvent.swift; sourceTree = "<group>"; };
+		A92322FE1CB3E13A0060AF1C /* TagView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TagView.xib; sourceTree = "<group>"; };
+		A92323001CB3E1480060AF1C /* TagViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagViewController.swift; sourceTree = "<group>"; };
+		A92323021CB3E1560060AF1C /* AnimatedStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimatedStack.swift; sourceTree = "<group>"; };
+		A92323041CB3E1A80060AF1C /* TagFieldDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagFieldDelegate.swift; sourceTree = "<group>"; };
+		A92323061CB3E1B70060AF1C /* TagRemoveButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagRemoveButton.swift; sourceTree = "<group>"; };
 		A9260F561BA4CD10005B1556 /* MyOverlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = MyOverlay.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A935F0C51B8CC5FD00587C99 /* DesktopEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DesktopEvent.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A93C53DB1B8DCEFB00179C72 /* HistoryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = HistoryManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -246,6 +256,7 @@
 		A9000C5B1B358B7F00E59C7B /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				A92322F51CB3DE750060AF1C /* Tags */,
 				A91CB9511B332EDB00671868 /* Main.storyboard */,
 				A95A8CEB1B94407D0093119E /* DebugController.swift */,
 				A913A9241BA1B047008BA10D /* MainSplitController.swift */,
@@ -361,6 +372,18 @@
 				A91CB95D1B332EDB00671868 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		A92322F51CB3DE750060AF1C /* Tags */ = {
+			isa = PBXGroup;
+			children = (
+				A92323001CB3E1480060AF1C /* TagViewController.swift */,
+				A92322FE1CB3E13A0060AF1C /* TagView.xib */,
+				A92323061CB3E1B70060AF1C /* TagRemoveButton.swift */,
+				A92323041CB3E1A80060AF1C /* TagFieldDelegate.swift */,
+				A92323021CB3E1560060AF1C /* AnimatedStack.swift */,
+			);
+			path = Tags;
 			sourceTree = "<group>";
 		};
 		A957950F1BD69B650083525C /* Refinder */ = {
@@ -588,6 +611,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A9CC31551C79FF5600AE7556 /* peyedoc.icns in Resources */,
+				A92322FF1CB3E13A0060AF1C /* TagView.xib in Resources */,
 				A91CB9501B332EDB00671868 /* Images.xcassets in Resources */,
 				A95A8CEA1B9440600093119E /* Main.storyboard in Resources */,
 				A95795151BD69BAA0083525C /* Refinder.storyboard in Resources */,
@@ -628,6 +652,7 @@
 				A95A8CF71B94407D0093119E /* DiMePreferencesViewController.swift in Sources */,
 				A9A2DFC61BC427BE006C07FD /* MetadataWindowController.swift in Sources */,
 				A95795191BD6A31B0083525C /* AllHistoryController.swift in Sources */,
+				A92323071CB3E1B70060AF1C /* TagRemoveButton.swift in Sources */,
 				A95A8CF61B94407D0093119E /* PDFSideController.swift in Sources */,
 				A957951B1BD6A35F0083525C /* HistoryTableCell.swift in Sources */,
 				A9E771111B96091F0005A4B3 /* ReadingRect.swift in Sources */,
@@ -636,10 +661,12 @@
 				A95795171BD6A1CB0083525C /* RefinderWindowController.swift in Sources */,
 				A913A9251BA1B047008BA10D /* MainSplitController.swift in Sources */,
 				A9CEAA801BE7793500E23964 /* Paragraphs.swift in Sources */,
+				A92323031CB3E1560060AF1C /* AnimatedStack.swift in Sources */,
 				A91DA4781C7A395200257FF0 /* FocusAreas.swift in Sources */,
 				A95A8CF81B94407D0093119E /* ThumbSideController.swift in Sources */,
 				A95FE9801B8B3C1D0010E813 /* SwiftyJSON.swift in Sources */,
 				A9CDB2E91B3AC49800347398 /* PeyeConstants.swift in Sources */,
+				A92323051CB3E1A80060AF1C /* TagFieldDelegate.swift in Sources */,
 				A95A8CF41B94407D0093119E /* DocumentWindowController.swift in Sources */,
 				A9F335731B3ABC090042BFB3 /* AppSingleton.swift in Sources */,
 				A918F8101BC2D71500345448 /* eyeBox.swift in Sources */,
@@ -650,6 +677,7 @@
 				A957950D1BD66A600083525C /* ScientificDocument.swift in Sources */,
 				A9A23CD81C771AB4008B61C4 /* NSRect+Extensions.swift in Sources */,
 				A95A8CF31B94407D0093119E /* DocumentSplitController.swift in Sources */,
+				A92323011CB3E1480060AF1C /* TagViewController.swift in Sources */,
 				A9038F761B8F5EE500A7D183 /* Event.swift in Sources */,
 				A9D9A8BF1C1C883D0014C1EB /* EyeRectangle.swift in Sources */,
 				A9A23CD61C771A82008B61C4 /* String+Extensions.swift in Sources */,
