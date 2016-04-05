@@ -242,7 +242,7 @@ class DiMeFetcher {
             newScidoc in
             
             self.outgoingSummaries[forIndex].ie = newScidoc
-            self.missingInfoElems = self.missingInfoElems - 1
+            self.missingInfoElems -= 1
             self.receiver.updateProgress(self.outgoingSummaries.count - self.missingInfoElems, total: self.outgoingSummaries.count)
             // all data has been fetched, send it
             if self.missingInfoElems == 0 {

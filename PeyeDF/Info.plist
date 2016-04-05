@@ -14,7 +14,7 @@
 			<key>CFBundleTypeIconFile</key>
 			<string>peyedoc.icns</string>
 			<key>CFBundleTypeName</key>
-			<string>PeyeDF</string>
+			<string>PDF Document</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
 				<string>????</string>
