@@ -9,10 +9,15 @@
 import Cocoa
 
 class TagViewController: NSViewController {
+    
+    let kInputFieldTag = 5
+    let kLabelFieldTag = 10
 
     @IBOutlet weak var stackView: AnimatedStack!
     var count = 0
-    @IBOutlet weak var textField: NSTextField!
+    @IBOutlet weak var inputField: NSTextField!
+    @IBOutlet weak var labelField: NSTextField!
+    
     var mydel = TagFieldDelegate()
     var isCompleting = false
     
@@ -20,8 +25,16 @@ class TagViewController: NSViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        textField.delegate = mydel
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(textChanged(_:)), name: NSControlTextDidChangeNotification, object: textField)
+        inputField.delegate = mydel
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(textChanged(_:)), name: NSControlTextDidChangeNotification, object: inputField)
+    }
+    
+    func setStatus(taggingDocument: Bool) {
+        if taggingDocument {
+            labelField.stringValue = "tagging document"
+        } else {
+            labelField.stringValue = "tagging text"
+        }
     }
 
     override var representedObject: AnyObject? {
@@ -38,7 +51,7 @@ class TagViewController: NSViewController {
     }
 
     @IBAction func addPress(sender: NSButton) {
-        let newTag = textField.stringValue.trimmed()
+        let newTag = inputField.stringValue.trimmed()
             if newTag.characters.count > 0 {
             var objs: NSArray?  // temporary store for items in tagview
             NSBundle.mainBundle().loadNibNamed("TagView", owner: nil, topLevelObjects: &objs)
@@ -50,8 +63,8 @@ class TagViewController: NSViewController {
                             if let but = subview as? NSButton {
                                 but.tag = count
                             }
-                            if let lab = subview as? NSTextField {
-                                lab.stringValue = newTag
+                            if let txt = subview as? NSTextField {
+                                txt.stringValue = newTag
                             }
                         }
                         count += 1
@@ -59,7 +72,7 @@ class TagViewController: NSViewController {
                 }
             }
         }
-        textField.stringValue = ""
+        inputField.stringValue = ""
     }
     
     @objc func textChanged(notification: NSNotification) {

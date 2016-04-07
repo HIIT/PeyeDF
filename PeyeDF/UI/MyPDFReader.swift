@@ -57,6 +57,20 @@ class MyPDFReader: MyPDFBase {
     /// Delegate for clicks gesture recognizer
     var clickDelegate: ClickRecognizerDelegate?
     
+    // MARK: - Tagging
+    
+    /// Overridden menu to allow extra actions such as tagging
+    override func menuForEvent(event: NSEvent) -> NSMenu? {
+        let menu = super.menuForEvent(event)
+        let docwin = self.window!.windowController! as! DocumentWindowController
+        let menuitem = NSMenuItem(title: "Tag", action: #selector(docwin.tagShow(_:)), keyEquivalent: "t")
+        menu?.insertItem(NSMenuItem.separatorItem(), atIndex: 0)
+        menu?.insertItem(menuitem, atIndex: 0)
+        
+        
+        return menu
+    }
+    
     // MARK: - Semi-debug fields
     
     /// Position of the circle
@@ -409,6 +423,10 @@ class MyPDFReader: MyPDFBase {
         } else {
             return nil
         }
+    }
+    
+    override func menuWillOpen(menu: NSMenu) {
+        super.menuWillOpen(menu)
     }
     
     /// Returns all rectangles with their corresponding class, marked by the user (and basic eye tracking)

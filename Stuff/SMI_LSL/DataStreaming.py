@@ -43,12 +43,12 @@ def marcoTime():
 # ---- connect to iViewX
 # ---------------------------------------------
 
-res = iViewXAPI.iV_SetLogger(c_int(1), c_char_p("iViewXSDK_Python_lsl_test.txt"))
 res = iViewXAPI.iV_Connect(c_char_p('127.0.0.1'), c_int(4444), c_char_p('127.0.0.1'), c_int(5555))
 if res != 1:
     HandleError(res)
     exit(0)
 
+res = iViewXAPI.iV_SetLogger(c_int(1), c_char_p("iViewXSDK_Python_lsl.txt"))
 res = iViewXAPI.iV_GetSystemInfo(byref(systemData))
 print "iV_GetSystemInfo: " + str(res)
 samplingRate = round(systemData.samplerate)

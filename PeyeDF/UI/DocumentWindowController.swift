@@ -45,6 +45,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     var debugWindowController: NSWindowController?
     @IBOutlet weak var tbMetadata: NSToolbarItem!
     @IBOutlet weak var tbAnnotate: NSToolbarItem!
+    @IBOutlet weak var tbTagButton: NSButton!
     
     var metadataWindowController: MetadataWindowController?
     
@@ -53,17 +54,37 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     lazy var popover: NSPopover = {
             let pop = NSPopover()
             pop.behavior = NSPopoverBehavior.Transient
-            let tvc = AppSingleton.mainStoryboard.instantiateControllerWithIdentifier("TagViewController")
+            let tvc = AppSingleton.tagsStoryboard.instantiateControllerWithIdentifier("TagViewController")
             pop.contentViewController = tvc as! TagViewController
             return pop
         }()
     
+    // MARK: - Tagging
+    
     @IBAction func tagShow(sender: AnyObject?) {
-        if let sendBut = sender as? NSButton {
-            if !popover.shown {
-                popover.showRelativeToRect(sendBut.bounds, ofView: sendBut, preferredEdge: NSRectEdge.MinY)
+        dispatch_async(dispatch_get_main_queue()) {
+            let tvc = self.popover.contentViewController as! TagViewController
+            if !self.popover.shown {
+                // if there is a selection, tag selection, otherwise call window's tag method
+                if (self.pdfReader!.currentSelection()?.string().trimmed().isEmpty ?? true) {
+                    self.popover.showRelativeToRect(self.tbTagButton.bounds, ofView: self.tbTagButton, preferredEdge: NSRectEdge.MinY)
+                    tvc.setStatus(true)
+                } else {
+                    let edge: NSRectEdge
+                    // selection's tag popover is shown on the right edge if selection's rect mid > pdf reader rect mid
+                    let sel = self.pdfReader!.currentSelection()
+                    var selBounds = sel.boundsForPage(sel.pages()[0] as! PDFPage)
+                    selBounds = self.pdfReader!.convertRect(selBounds, fromPage: sel.pages()[0] as! PDFPage)
+                    if (selBounds.minX + selBounds.size.width / 2) > self.pdfReader!.bounds.width / 2 {
+                        edge = NSRectEdge.MaxX
+                    } else {
+                        edge = NSRectEdge.MinX
+                    }
+                    self.popover.showRelativeToRect(selBounds, ofView: self.pdfReader!, preferredEdge: edge)
+                    tvc.setStatus(false)
+                }
             } else {
-                popover.performClose(self)
+                self.popover.performClose(self)
             }
         }
     }
@@ -124,7 +145,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             // in any other case, we check the action instead of tag
             switch menuItem.action.description {
                 // these should always be enabled
-                case "saveDocument:", "saveDocumentAs:":
+                case "saveDocument:", "saveDocumentAs:", "tagShow:":
                 return true
             default:
                 // any other tag was not considered we disable it by default

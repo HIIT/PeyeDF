@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
+    </dependencies>
+    <scenes>
+        <!--Tag View Controller-->
+        <scene sceneID="Wcl-4B-Oa2">
+            <objects>
+                <viewController storyboardIdentifier="TagViewController" id="IDI-Ot-6Tq" customClass="TagViewController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" id="iKa-qs-1xs">
+                        <rect key="frame" x="0.0" y="0.0" width="218" height="137"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <stackView wantsLayer="YES" orientation="vertical" alignment="leading" spacing="0.0" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="HEL-hF-bHY" customClass="AnimatedStack" customModule="PeyeDF" customModuleProvider="target">
+                                <rect key="frame" x="10" y="52" width="208" height="80"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="30" id="59P-wB-Rpp"/>
+                                    <constraint firstAttribute="width" constant="208" id="yhx-0T-oYe"/>
+                                </constraints>
+                            </stackView>
+                            <textField verticalHuggingPriority="750" tag="5" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hfe-nV-Tz7">
+                                <rect key="frame" x="15" y="20" width="168" height="22"/>
+                                <textFieldCell key="cell" selectable="YES" editable="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="RkO-ZA-hx2">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                                <connections>
+                                    <action selector="performClick:" target="XnC-X0-13s" id="3o0-bB-TVV"/>
+                                </connections>
+                            </textField>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="XnC-X0-13s">
+                                <rect key="frame" x="187" y="22" width="18" height="19"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="18" id="oax-4s-sgv"/>
+                                </constraints>
+                                <buttonCell key="cell" type="recessed" bezelStyle="recessed" image="RoundPlus" imagePosition="only" alignment="center" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="bIC-02-QMv">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
+                                    <font key="font" metaFont="systemBold" size="12"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="addPress:" target="IDI-Ot-6Tq" id="ZAm-YU-Xab"/>
+                                </connections>
+                            </button>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" tag="10" translatesAutoresizingMaskIntoConstraints="NO" id="uDR-Ov-PR9">
+                                <rect key="frame" x="75" y="2" width="68" height="14"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="14" id="RjF-Sq-b4S"/>
+                                </constraints>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="&lt;tagging ?&gt;" id="wrN-0N-Fl6">
+                                    <font key="font" metaFont="smallSystem"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="XnC-X0-13s" firstAttribute="trailing" secondItem="HEL-hF-bHY" secondAttribute="trailing" constant="-13" id="9lB-Lj-Zw5"/>
+                            <constraint firstItem="XnC-X0-13s" firstAttribute="centerY" secondItem="hfe-nV-Tz7" secondAttribute="centerY" id="C4A-MC-ywn"/>
+                            <constraint firstItem="HEL-hF-bHY" firstAttribute="top" secondItem="iKa-qs-1xs" secondAttribute="top" constant="5" id="CSA-xa-MkU"/>
+                            <constraint firstItem="XnC-X0-13s" firstAttribute="trailing" secondItem="hfe-nV-Tz7" secondAttribute="trailing" constant="22" id="Edp-A7-nFK"/>
+                            <constraint firstItem="hfe-nV-Tz7" firstAttribute="leading" secondItem="HEL-hF-bHY" secondAttribute="leading" constant="5" id="IZb-sM-gdN"/>
+                            <constraint firstItem="HEL-hF-bHY" firstAttribute="leading" secondItem="iKa-qs-1xs" secondAttribute="leading" constant="10" id="Mfl-ny-132"/>
+                            <constraint firstAttribute="trailing" secondItem="HEL-hF-bHY" secondAttribute="trailing" id="SpW-N5-zkV"/>
+                            <constraint firstItem="uDR-Ov-PR9" firstAttribute="top" secondItem="hfe-nV-Tz7" secondAttribute="bottom" constant="4" id="TGd-Yo-x0j"/>
+                            <constraint firstItem="uDR-Ov-PR9" firstAttribute="centerX" secondItem="iKa-qs-1xs" secondAttribute="centerX" id="oPc-L3-BnE"/>
+                            <constraint firstAttribute="bottom" secondItem="hfe-nV-Tz7" secondAttribute="bottom" constant="20" id="qas-sK-Rmy"/>
+                            <constraint firstItem="hfe-nV-Tz7" firstAttribute="top" secondItem="HEL-hF-bHY" secondAttribute="bottom" constant="10" id="qiC-rm-jct"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="inputField" destination="hfe-nV-Tz7" id="QUk-Zg-ZSt"/>
+                        <outlet property="labelField" destination="uDR-Ov-PR9" id="Ggg-4U-Lr5"/>
+                        <outlet property="stackView" destination="HEL-hF-bHY" id="9mI-qY-OCW"/>
+                    </connections>
+                </viewController>
+                <customObject id="o5r-bY-px1" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1731" y="-547.5"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="RoundPlus" width="16" height="16"/>
+    </resources>
+</document>

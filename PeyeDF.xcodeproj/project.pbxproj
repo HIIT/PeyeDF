@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		A9038F761B8F5EE500A7D183 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9038F751B8F5EE500A7D183 /* Event.swift */; };
 		A9038F7B1B8F634200A7D183 /* Dictionariable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9038F7A1B8F634200A7D183 /* Dictionariable.swift */; };
+		A90BA3111CB681A400E7303D /* Tags.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A90BA3101CB681A400E7303D /* Tags.storyboard */; };
 		A912D8A41B8B5C3A006F0657 /* DocumentInformationElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A912D8A21B8B5C3A006F0657 /* DocumentInformationElement.swift */; };
 		A912D8A51B8B5C3A006F0657 /* ReadingEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A912D8A31B8B5C3A006F0657 /* ReadingEvent.swift */; };
 		A913A9201BA1A93B008BA10D /* SearchPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A913A91F1BA1A93B008BA10D /* SearchPanelController.swift */; };
@@ -161,6 +162,7 @@
 /* Begin PBXFileReference section */
 		A9038F751B8F5EE500A7D183 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Event.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9038F7A1B8F634200A7D183 /* Dictionariable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = Dictionariable.swift; path = ../DiMe/Dictionariable.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		A90BA3101CB681A400E7303D /* Tags.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Tags.storyboard; sourceTree = "<group>"; };
 		A912D8A21B8B5C3A006F0657 /* DocumentInformationElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DocumentInformationElement.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A912D8A31B8B5C3A006F0657 /* ReadingEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadingEvent.swift; sourceTree = "<group>"; };
 		A913A91F1BA1A93B008BA10D /* SearchPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchPanelController.swift; sourceTree = "<group>"; };
@@ -378,6 +380,7 @@
 			isa = PBXGroup;
 			children = (
 				A92323001CB3E1480060AF1C /* TagViewController.swift */,
+				A90BA3101CB681A400E7303D /* Tags.storyboard */,
 				A92322FE1CB3E13A0060AF1C /* TagView.xib */,
 				A92323061CB3E1B70060AF1C /* TagRemoveButton.swift */,
 				A92323041CB3E1A80060AF1C /* TagFieldDelegate.swift */,
@@ -612,6 +615,7 @@
 			files = (
 				A9CC31551C79FF5600AE7556 /* peyedoc.icns in Resources */,
 				A92322FF1CB3E13A0060AF1C /* TagView.xib in Resources */,
+				A90BA3111CB681A400E7303D /* Tags.storyboard in Resources */,
 				A91CB9501B332EDB00671868 /* Images.xcassets in Resources */,
 				A95A8CEA1B9440600093119E /* Main.storyboard in Resources */,
 				A95795151BD69BAA0083525C /* Refinder.storyboard in Resources */,
