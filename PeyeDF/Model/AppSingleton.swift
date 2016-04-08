@@ -44,6 +44,9 @@ class AppSingleton {
     /// It is assumed there is only one screen when using eye tracking.
     static var screenRect = NSRect()
     
+    /// Position of new PDF Document window (for cascading)
+    static var nextDocWindowPos = NSPoint(x: 200, y: 350)
+    
     /// Returns dime server url
     static var dimeUrl: String = {
         return NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerURL) as! String

@@ -425,10 +425,6 @@ class MyPDFReader: MyPDFBase {
         }
     }
     
-    override func menuWillOpen(menu: NSMenu) {
-        super.menuWillOpen(menu)
-    }
-    
     /// Returns all rectangles with their corresponding class, marked by the user (and basic eye tracking)
     ///
     /// - returns: A summary reading event corresponding to all marks, nil if proportion read / interesting
