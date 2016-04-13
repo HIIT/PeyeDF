@@ -86,13 +86,12 @@ class PeyeDocument: NSDocument {
     override func makeWindowControllers() {
         let storyboard = AppSingleton.mainStoryboard
         let windowController = storyboard.instantiateControllerWithIdentifier("Document Window Controller") as! DocumentWindowController
-        self.addWindowController(windowController)
         
         // cascade windows
-        dispatch_async(dispatch_get_main_queue()) {
-            AppSingleton.nextDocWindowPos = windowController.window!.cascadeTopLeftFromPoint(AppSingleton.nextDocWindowPos)
-        }
-            
+        AppSingleton.nextDocWindowPos = windowController.window!.cascadeTopLeftFromPoint(AppSingleton.nextDocWindowPos)
+        
+        self.addWindowController(windowController)
+        
         windowController.loadDocument()
         windowController.shouldCloseDocument = true // tell to automatically close document when closing window
     }
