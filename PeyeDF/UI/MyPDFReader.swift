@@ -427,9 +427,8 @@ class MyPDFReader: MyPDFBase {
     
     /// Returns all rectangles with their corresponding class, marked by the user (and basic eye tracking)
     ///
-    /// - returns: A summary reading event corresponding to all marks, nil if proportion read / interesting
-    ///            etc was less than a minimum amount (suggesting the document wasn't actually read)
-    func getUserRectStatus() -> SummaryReadingEvent? {
+    /// - returns: A summary reading event containing to all marks
+    func makeSummaryEvent() -> SummaryReadingEvent {
         // Calculate proportion for Read, Critical and Interesting rectangles
         let prop = markings.calculateProportions_relevance()!
         
@@ -438,17 +437,11 @@ class MyPDFReader: MyPDFBase {
         totProportion += prop.proportionInteresting
         totProportion += prop.proportionCritical
         
-        let gazedArea = markings.calculateProportion_smi()
-        
-        if totProportion < PeyeConstants.minProportion && gazedArea < PeyeConstants.minProportion {
-            return nil
-        } else {
-            let retEv = SummaryReadingEvent(rects: markings.getAllReadingRects(), sessionId: sessionId, plainTextContent: nil, infoElemId: sciDoc!.getId(), foundStrings: foundStrings, proportionRead: prop.proportionRead, proportionInteresting: prop.proportionInteresting, proportionCritical: prop.proportionCritical)
-            if let id = summaryId {
-                retEv.setId(id)
-            }
-            return retEv
+        let retEv = SummaryReadingEvent(rects: markings.getAllReadingRects(), sessionId: sessionId, plainTextContent: nil, infoElemId: sciDoc!.getId(), foundStrings: foundStrings, proportionRead: prop.proportionRead, proportionInteresting: prop.proportionInteresting, proportionCritical: prop.proportionCritical)
+        if let id = summaryId {
+            retEv.setId(id)
         }
+        return retEv
     }
     
     /// Get the rectangle of the pdf view, in screen coordinates

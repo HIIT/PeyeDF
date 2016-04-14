@@ -35,6 +35,30 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     /// Regular timer for this window
     var regularTimer: NSTimer?
     
+    /// When the user started reading (stoppedReading date - this date = reading time).
+    /// Should be set to nil when the user stops reading, or on startup.
+    /// Setting this value to a new value automatically increases the totalReadingTime
+    /// (takes into consideration minimum reading values constants)
+    var lastStartedReading: NSDate? {
+        didSet {
+            // increase total reading time constant if reading time was below minimum.
+            // if reading time was above maximum, increase by maximum
+            if let rdate = oldValue {
+                let rTime = NSDate().timeIntervalSinceDate(rdate)
+                if rTime > PeyeConstants.minReadTime {
+                    if rTime < PeyeConstants.maxReadTime {
+                        totalReadingTime += rTime
+                    } else {
+                        totalReadingTime += PeyeConstants.maxReadTime
+                    }
+                }
+            }
+        }
+    }
+    
+    /// Total reading time spent on this window.
+    var totalReadingTime: NSTimeInterval = 0
+    
     /// To make sure only one summary event is sent to dime
     var closeToken: Int = 0
     
@@ -215,6 +239,24 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         }
     }
     
+    // MARK: - Reading tracking
+    
+    /// The user started, or resumed reading (e.g. this window became key, a scroll event
+    /// finished, etc.).
+    func startedReading() {
+        // Tell the history manager to "start recording"
+        HistoryManager.sharedManager.entry(self)
+        lastStartedReading = NSDate()
+    }
+    
+    /// The user stopped, or paused reading (e.g. this window lost key status, a scroll event
+    /// started, etc.).
+    func stoppedReading() {
+        // Tell the history manager to "stop recording"
+        HistoryManager.sharedManager.exit(self)
+        lastStartedReading = nil
+    }
+    
     // MARK: - DiMe communication
     
     /// Sends a desktop event directly (which includes doc metadata) for the currently displayed pdf
@@ -294,7 +336,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         let enableAnnotate: Bool = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefEnableAnnotate) as! Bool
         setAnnotate(enableAnnotate)
         
-        // Create debug window (disabled for now)
+        // Create debug window
         if PeyeConstants.debugWindow {
             debugWindowController = AppSingleton.mainStoryboard.instantiateControllerWithIdentifier("DebugWindow") as? NSWindowController
             debugWindowController?.showWindow(self)
@@ -400,8 +442,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         // Send event regarding opening of file
         sendDeskEvent()
         
-        // Tell the history manager to "start recording"
-        HistoryManager.sharedManager.entry(self)
+        startedReading()
     }
     
     
@@ -441,8 +482,10 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     /// The regular timer is a repeating timer that regularly submits a summary event to dime
     @objc private func regularTimerFire(regularTimer: NSTimer) {
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) {
-            if let mpdf = self.pdfReader, userRectStatus = mpdf.getUserRectStatus() {
-                HistoryManager.sharedManager.sendToDiMe(userRectStatus) {
+            if let mpdf = self.pdfReader where self.totalReadingTime >= PeyeConstants.minTotalReadTime {
+                let summaryEv = mpdf.makeSummaryEvent()
+                summaryEv.readingTime = self.totalReadingTime
+                HistoryManager.sharedManager.sendToDiMe(summaryEv) {
                     _, id in
                     mpdf.setSummaryId(id)
                 }
@@ -458,7 +501,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             return
         }
         closeToken += 1
-        HistoryManager.sharedManager.exit(self)
+        stoppedReading()
         self.unSetObservers()
         self.debugController?.unSetMonitors(self.pdfReader!, docWindow: self.window!)
         self.debugController?.view.window?.close()
@@ -472,8 +515,10 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             wvc.someText = "Sending data to DiMe..."
             self.window!.beginSheet(ww, completionHandler: nil)
             // send data to dime
-            if let mpdf = self.pdfReader, userRectStatus = mpdf.getUserRectStatus() {
-                HistoryManager.sharedManager.sendToDiMe(userRectStatus) {
+            if let mpdf = self.pdfReader where self.totalReadingTime >= PeyeConstants.minTotalReadTime {
+                let summaryEv = mpdf.makeSummaryEvent()
+                summaryEv.readingTime = self.totalReadingTime
+                HistoryManager.sharedManager.sendToDiMe(summaryEv) {
                     _ in
                     // signal when done
                     dispatch_async(dispatch_get_main_queue()) {
@@ -533,25 +578,21 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     // MARK: - Notification callbacks from managed pdf view
     
     @objc private func zoomChanged(notification: NSNotification) {
-        // Tell the history manager to "start recording"
-        HistoryManager.sharedManager.entry(self)
+        startedReading()
     }
     
     @objc private func frameChanged(notification: NSNotification) {
-        // Tell the history manager to "start recording"
-        HistoryManager.sharedManager.entry(self)
+        startedReading()
     }
     
     @objc private func scrollingChanged(notification: NSNotification) {
-        // Tell the history manager to "start recording"
-        HistoryManager.sharedManager.entry(self)
+        startedReading()
     }
     
     // MARK: - Notification callbacks from window
     
     @objc private func windowMoved(notification: NSNotification) {
-        // Tell the history manager to "start recording"
-        HistoryManager.sharedManager.entry(self)
+        startedReading()
     }
     
     /// Enables the annotate toolbar button when auto annotation is complete
@@ -589,8 +630,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             }
         }
         
-        // Tell the history manager to "start recording"
-        HistoryManager.sharedManager.entry(self)
+        startedReading()
     }
     
     /// Unused yet (probably not really needed as we already know when windowWillSwitchAway)
@@ -600,8 +640,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     /// The managed window will stop being key window
     @objc private func windowWillSwitchAway(notification: NSNotification) {
-        // Tell the history manager to "stop recording"
-        HistoryManager.sharedManager.exit(self)
+        stoppedReading()
         
         // Stop regular timer
         if let timer = regularTimer {
@@ -638,9 +677,9 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             let uInfo = notification.userInfo as! [String: AnyObject]
             let avail = uInfo["available"] as! Bool
             if avail {
-                HistoryManager.sharedManager.entry(self)
+                startedReading()
             } else {
-                HistoryManager.sharedManager.exit(self)
+                stoppedReading()
             }
         }
     }

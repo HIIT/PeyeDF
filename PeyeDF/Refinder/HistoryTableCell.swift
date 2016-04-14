@@ -25,11 +25,21 @@
 import Cocoa
 
 class HistoryTableCell: NSTableCellView {
+    
+    static let dateComponentsFormatter: NSDateComponentsFormatter = {
+        let formatter = NSDateComponentsFormatter()
+        formatter.zeroFormattingBehavior = .Pad
+        formatter.allowedUnits = [NSCalendarUnit.Hour, NSCalendarUnit.Minute]
+        return formatter
+    }()
 
     @IBOutlet weak var filenameLab: NSTextField!
     @IBOutlet weak var titleLab: NSTextField!
     @IBOutlet weak var authorsLab: NSTextField!
     @IBOutlet weak var dateLab: NSTextField!
+    
+    @IBOutlet weak var readingTimeLab: NSTextField!
+    @IBOutlet weak var readingTimeClock: LittleClock!
     
     @IBOutlet weak var readBar: RefinderProgressIndicator!
     @IBOutlet weak var interestingBar: RefinderProgressIndicator!
@@ -56,5 +66,13 @@ class HistoryTableCell: NSTableCellView {
         dateFormatter.dateStyle = .FullStyle
         dateFormatter.timeStyle = .MediumStyle
         dateLab.stringValue = dateFormatter.stringFromDate(readingEvent.startDate)
+        
+        if let rTime = readingEvent.readingTime {
+            self.readingTimeLab.stringValue = HistoryTableCell.dateComponentsFormatter.stringFromTimeInterval(rTime)!
+            self.readingTimeLab.hidden = false
+            self.readingTimeClock.hours = CGFloat((rTime / 3600))
+            self.readingTimeClock.minutes = CGFloat((rTime / 60) % 60)
+            self.readingTimeClock.showClock = true
+        }
     }
 }

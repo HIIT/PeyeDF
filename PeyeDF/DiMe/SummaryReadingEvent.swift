@@ -26,6 +26,9 @@ import Foundation
 
 class SummaryReadingEvent: ReadingEvent {
     
+    /// Total time spent reading the document (sec).
+    /// Set this before submitting event to dime if we want this to be sent.
+    var readingTime: Double?
     
     private(set) var proportionRead: Double?
     private(set) var proportionCritical: Double?
@@ -57,6 +60,7 @@ class SummaryReadingEvent: ReadingEvent {
         proportionRead = json["proportionRead"].double
         proportionInteresting = json["proportionInteresting"].double
         proportionCritical = json["proportionCritical"].double
+        readingTime = json["readingTime"].double
         super.init(fromDime: json)
     }
     
@@ -71,6 +75,9 @@ class SummaryReadingEvent: ReadingEvent {
         }
         if let pcrit = proportionCritical {
             retDict["proportionCritical"] = pcrit
+        }
+        if let rtime = readingTime {
+            retDict["readingTime"] = rtime
         }
         if foundStrings.count > 0 {
             retDict["foundStrings"] = foundStrings

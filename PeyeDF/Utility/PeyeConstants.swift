@@ -69,11 +69,16 @@ struct PeyeConstants {
     
     /// MARK: - History-specific constants
     
+    /// Amount of seconds which is required to assume that the user did read a specific document
+    /// during a single session
+    static let minTotalReadTime: NSTimeInterval = 60.0
+    
     /// Amount of seconds that are needed before we assume user is reading (after, we start recording the current readingevent).
     static let minReadTime: NSTimeInterval = 2.0
     
-    /// Amount of seconds after which we always close a reading event.
-    /// (It is assumed the user went away from keyboard).
+    /// Amount of seconds after which we assume the user stopped reading.
+    /// This always always close (sends to dime) a "live" reading event.
+    /// (It is assumed the user went away from keyboard after this time passes).
     static let maxReadTime: NSTimeInterval = 600
     
     /// Date formatter shared in DiMe submissions (uses date format below)
