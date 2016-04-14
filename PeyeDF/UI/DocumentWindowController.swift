@@ -295,10 +295,12 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         setAnnotate(enableAnnotate)
         
         // Create debug window (disabled for now)
-//        debugWindowController = AppSingleton.mainStoryboard.instantiateControllerWithIdentifier("DebugWindow") as? NSWindowController
-//        debugWindowController?.showWindow(self)
-//        debugController = (debugWindowController?.contentViewController as! DebugController)
-//        debugController?.setUpMonitors(pdfReader!, docWindow: self.window!)
+        if PeyeConstants.debugWindow {
+            debugWindowController = AppSingleton.mainStoryboard.instantiateControllerWithIdentifier("DebugWindow") as? NSWindowController
+            debugWindowController?.showWindow(self)
+            debugController = (debugWindowController?.contentViewController as! DebugController)
+            debugController?.setUpMonitors(pdfReader!, docWindow: self.window!)
+        }
         
         // Prepare to receive events
         setUpObservers()

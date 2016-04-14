@@ -111,6 +111,9 @@ struct PeyeConstants {
     
     // MARK: - Debug
     
+    /// Whether we want to laod and show debug window (one for each document).
+    static let debugWindow = false
+    
     /// Column name for debug table. Make sure this identifier matches the table view id in the storyboard
     static let debugTitleColName = "DebugTitleColumn"
     
