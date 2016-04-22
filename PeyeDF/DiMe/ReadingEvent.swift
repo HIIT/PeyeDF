@@ -143,18 +143,9 @@ class ReadingEvent: Event, NSCopying {
             retDict["dpi"] = dp
         }
         if pageEyeData.count > 0 {
-            var dataArray = [[String: AnyObject]]()
-            for dataChunk in pageEyeData {
-                dataArray.append(dataChunk.getDict())
-            }
-            retDict["pageEyeData"] = dataArray
+            retDict["pageEyeData"] = pageEyeData.asDictArray()
         }
-        
-        var rectArray = [[String: AnyObject]]()
-        for rect in pageRects {
-            rectArray.append(rect.getDict())
-        }
-        retDict["pageRects"] = rectArray
+        retDict["pageRects"] = pageRects.asDictArray()
         
         var infoElemDict = [String: AnyObject]()
         infoElemDict["@type"] = "ScientificDocument"

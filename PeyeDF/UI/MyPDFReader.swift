@@ -67,7 +67,6 @@ class MyPDFReader: MyPDFBase {
         menu?.insertItem(NSMenuItem.separatorItem(), atIndex: 0)
         menu?.insertItem(menuitem, atIndex: 0)
         
-        
         return menu
     }
     
@@ -419,7 +418,7 @@ class MyPDFReader: MyPDFBase {
                 vpi += 1
             }
             
-            return ReadingEvent(sessionId: sessionId, pageNumbers: visiblePageNums, pageLabels: visiblePageLabels, pageRects: readingRects, plainTextContent: plainTextContent, infoElemId: sciDoc!.getId())
+            return ReadingEvent(sessionId: sessionId, pageNumbers: visiblePageNums, pageLabels: visiblePageLabels, pageRects: readingRects, plainTextContent: plainTextContent, infoElemId: sciDoc!.getAppId())
         } else {
             return nil
         }
@@ -437,7 +436,7 @@ class MyPDFReader: MyPDFBase {
         totProportion += prop.proportionInteresting
         totProportion += prop.proportionCritical
         
-        let retEv = SummaryReadingEvent(rects: markings.getAllReadingRects(), sessionId: sessionId, plainTextContent: nil, infoElemId: sciDoc!.getId(), foundStrings: foundStrings, proportionRead: prop.proportionRead, proportionInteresting: prop.proportionInteresting, proportionCritical: prop.proportionCritical)
+        let retEv = SummaryReadingEvent(rects: markings.getAllReadingRects(), sessionId: sessionId, plainTextContent: nil, infoElemId: sciDoc!.getAppId(), foundStrings: foundStrings, proportionRead: prop.proportionRead, proportionInteresting: prop.proportionInteresting, proportionCritical: prop.proportionCritical)
         if let id = summaryId {
             retEv.setId(id)
         }

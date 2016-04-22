@@ -92,10 +92,10 @@ class DiMeFetcher {
         }
     }
     
-    /// Attempt to retrieve a single summary event for the given sessionId.
+    /// **Synchronously** attempt to retrieve a single summary event for the given sessionId.
     /// Returns a tuple containing reading event and scidoc or nil if it failed.
     /// - Attention: Don't call this from the main thread.
-    func retrieveTuple(forSessionId sesId: String) -> (ev: SummaryReadingEvent, ie: ScientificDocument)? {
+    func getTuple(forSessionId sesId: String) -> (ev: SummaryReadingEvent, ie: ScientificDocument)? {
         
         var foundEvent: SummaryReadingEvent?
         var foundDoc: ScientificDocument?
@@ -144,15 +144,61 @@ class DiMeFetcher {
         return (ev: ev, ie: ie)
     }
     
-    /// Attempt to retrieve a single ScientificDocument from a given info element id.
-    /// **Asynchronously** calls the given callback function once retrieval is complete.
-    /// Called-back function will contain nil if retrieval failed.
-    static func retrieveScientificDocument(infoElemId: String, callback: (ScientificDocument?) -> Void) {
+    /// **Synchronously** attempt to retrieve a single information element for the given contentHash.
+    /// Returns a scientific document or nil if it failed.
+    /// - Attention: Don't call this from the main thread.
+    static func getScientificDocument(contentHash hash: String) -> ScientificDocument? {
+        
+        var foundDoc: ScientificDocument?
+        
+        let dGroup = dispatch_group_create()
         
         let server_url = AppSingleton.dimeUrl
         let headers = AppSingleton.dimeHeaders()
         
-        let reqString = server_url + "/data/informationelements?appId=" + infoElemId
+        let reqString = server_url + "/data/informationelements?contentHash=" + hash
+        
+        dispatch_group_enter(dGroup)
+        Alamofire.request(.GET, reqString, headers: headers).responseJSON() {
+            response in
+            if response.result.isFailure {
+                AppSingleton.log.error("Error fetching information element: \(response.result.error!)")
+            } else {
+                // assume first returned item is the one we are looking for
+                let json = JSON(response.result.value!)[0]
+                if let error = json["error"].string {
+                    AppSingleton.log.error("Dime fetched json contains error:\n\(error)")
+                }
+                if let contentHash = json["contentHash"].string {
+                    if hash == contentHash {
+                        foundDoc = ScientificDocument(fromDime: json)
+                    } else {
+                        AppSingleton.log.error("Retrieved contentHash does not match requested contentHash: \(response.result.value!)")
+                    }
+                } else {
+                    AppSingleton.log.debug("Info element with contentHash:'\(hash)' was not found in the database.")
+                }
+            }
+            dispatch_group_leave(dGroup)
+        }
+        
+        // wait 5 seconds for operation to complete
+        let waitTime = dispatch_time(DISPATCH_TIME_NOW,
+                                     Int64(5 * Double(NSEC_PER_SEC)))
+        dispatch_group_wait(dGroup, waitTime)
+        
+        return foundDoc
+    }
+    
+    /// Attempt to retrieve a single ScientificDocument from a given info element app id.
+    /// **Asynchronously** calls the given callback function once retrieval is complete.
+    /// Called-back function will contain nil if retrieval failed.
+    static func retrieveScientificDocument(appId: String, callback: (ScientificDocument?) -> Void) {
+        
+        let server_url = AppSingleton.dimeUrl
+        let headers = AppSingleton.dimeHeaders()
+        
+        let reqString = server_url + "/data/informationelements?appId=" + appId
         
         Alamofire.request(.GET, reqString, headers: headers).responseJSON() {
             response in
@@ -166,7 +212,7 @@ class DiMeFetcher {
                     AppSingleton.log.error("Dime fetched json contains error:\n\(error)")
                 }
                 if let appId = json["appId"].string {
-                    if appId == infoElemId {
+                    if appId == appId {
                         let newScidoc = ScientificDocument(fromDime: json)
                         callback(newScidoc)
                     } else {
@@ -174,7 +220,7 @@ class DiMeFetcher {
                         callback(nil)
                     }
                 } else {
-                    AppSingleton.log.debug("Info element \(infoElemId) was not found in the database.")
+                    AppSingleton.log.debug("Info element with appId:'\(appId)' was not found in the database.")
                     callback(nil)
                 }
             }

@@ -57,13 +57,18 @@ class ScientificDocument: DocumentInformationElement {
     override init(fromDime json: JSON) {
         super.init(fromDime: json)
         if let authors = json["authors"].array {
-            if authors.count > 0 {
-                self.authors = [Person]()
-                for author in authors {
-                    self.authors!.append(Person(fromDime: author))
-                }
-            }
+            self.authors = authors.flatMap({Person(fromDime: $0)})
         }
+        if let keywords = json["keywords"].array {
+            self.keywords = keywords.flatMap({$0.string})
+        }
+        self.year = json["year"].int
+        self.publisher = json["publisher"].string
+        self.doi = json["doi"].string
+        self.volume = json["volume"].int
+        self.booktitle = json["booktitle"].string
+        self.firstPage = json["firstPage"].int
+        self.lastPage = json["lastPage"].int
     }
     
     /// Update document's fields from crossref's json.
@@ -108,11 +113,7 @@ class ScientificDocument: DocumentInformationElement {
         theDictionary["type"] = "http://www.hiit.fi/ontologies/dime/#ScientificDocument"
         
         if let authors = authors {
-            var authArray = [[String: AnyObject]]()
-            for auth in authors {
-                authArray.append(auth.getDict())
-            }
-            theDictionary["authors"] = authArray
+            theDictionary["authors"] = authors.asDictArray()
         }
         if let keywords = keywords {
             theDictionary["keywords"] = keywords

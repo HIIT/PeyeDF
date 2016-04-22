@@ -32,6 +32,15 @@ protocol Dictionariable {
     func getDict() -> [String: AnyObject]
 }
 
+/// Allows dictionariable types to return themselves as collections
+extension SequenceType where Generator.Element: Dictionariable {
+    
+    /// Returns itself as a dict array
+    func asDictArray() -> [[String: AnyObject]] {
+        return self.reduce([[String: AnyObject]](), combine: {$0 + [$1.getDict()]})
+    }
+}
+
 extension NSSize: Dictionariable {
     /// Returns width and height in a dictionary with their values as
     /// numbers (both as JSONableItem enums).

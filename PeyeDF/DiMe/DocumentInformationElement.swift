@@ -26,11 +26,13 @@ import Foundation
 
 class DocumentInformationElement: DiMeBase {
     
-    let uri: String
+    var uri: String
     var title: String?
     let plainTextContent: String?
-    let id: String
+    let appId: String
+    var id: String?
     let contentHash: String?
+    var tags = [Tag]()
     
     /// Creates this information element. The id is set to the hash of the plaintext, or hash of uri if no text was found.
     ///
@@ -43,10 +45,10 @@ class DocumentInformationElement: DiMeBase {
         self.title = title
         
         if let ptc = plainTextContent {
-            self.id = "PeyeDF_\(ptc.sha1())"
+            self.appId = "PeyeDF_\(ptc.sha1())"
             self.contentHash = ptc.sha1()
         } else {
-            self.id = "PeyeDF_\(uri.sha1())"
+            self.appId = "PeyeDF_\(uri.sha1())"
             self.contentHash = nil
         }
         
@@ -58,7 +60,7 @@ class DocumentInformationElement: DiMeBase {
     /// Sublasses must call this before editing their dictionary.
     override func getDict() -> [String : AnyObject] {
         theDictionary["uri"] = "file://" + uri
-        theDictionary["appId"] = self.id
+        theDictionary["appId"] = self.appId
         if let ptc = plainTextContent {
             theDictionary["plainTextContent"] = ptc
         }
@@ -69,6 +71,9 @@ class DocumentInformationElement: DiMeBase {
             theDictionary["title"] = title
         }
         theDictionary["mimeType"] = "application/pdf"  // forcing pdf for mime type
+        if tags.count > 0 {
+            theDictionary["tags"] = tags.asDictArray()
+        }
         
         // dime-required
         theDictionary["@type"] = "Document"
@@ -82,13 +87,17 @@ class DocumentInformationElement: DiMeBase {
     init(fromDime json: JSON) {
         self.uri = json["uri"].stringValue.skipPrefix(7) // skip file:// prefix when importing
         self.title = json["title"].string
+        self.id = json["id"].string
         self.plainTextContent = json["plainTextContent"].string
-        self.id = json["appId"].stringValue
+        self.appId = json["appId"].stringValue
         self.contentHash = json["contentHash"].string
+        if let _tags = json["tags"].array {
+            tags = _tags.flatMap({Tag(fromDiMe: $0)})
+        }
     }
     
-    /// Returns id using own dictionary
-    func getId() -> String {
+    /// Returns app id using own dictionary
+    func getAppId() -> String {
         return theDictionary["appId"]! as! String
     }
     

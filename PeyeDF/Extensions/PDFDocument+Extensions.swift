@@ -159,60 +159,66 @@ extension PDFDocument {
     
     // MARK: - Auto-Metadata
     
-    /// Asynchronously attempt to auto-set metadata using crossref.
-    /// If successful, calls callback with json from crossref, or nil if failed.
-    func autoCrossref(callback: (JSON? -> Void)? = nil) {
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
-            // Try to find doi
-            var _doi: String? = nil
+    /// **Synchronously** attempt to auto-set metadata using crossref.
+    /// - Attention: Do not call this from main thread (blocks while waiting for an answer).
+    /// - Returns: The json found with crossref, or nil if the operation failed.
+    func autoCrossref() -> JSON? {
+        // Try to find doi
+        var _doi: String? = nil
+        
+        guard let pageString = self.pageAtIndex(0).string() else {
+            return nil
+        }
+        
+        let doiSearches = ["doi ", "doi:"]
+        for doiS in doiSearches {
+            let _range = pageString.rangeOfString(doiS, options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil, locale: nil)
             
-            guard let pageString = self.pageAtIndex(0).string() else {
-                callback?(nil)
-                return
-            }
-            let doiSearches = ["doi ", "doi:"]
-            for doiS in doiSearches {
-                let _range = pageString.rangeOfString(doiS, options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil, locale: nil)
-                
-                if let r = _range, last = r.last {
-                    let s = pageString.substringFromIndex(last.advancedBy(1)).trimmed()
-                    if let doiChunk = s.firstChunk() where doiChunk.characters.count >= 5 {
-                        _doi = doiChunk
-                        break
-                    }
-                }
-            }
-            
-            // If doi was found, use the crossref api to auto-set metadata
-            guard let doi = _doi else {
-                callback?(nil)
-                return
-            }
-            
-            Alamofire.request(.GET, "http://api.crossref.org/works/\(doi)").responseJSON() {
-                response in
-                if let resp = response.result.value where response.result.isSuccess {
-                    let json = JSON(resp)
-                    if let status = json["status"].string where status == "ok" {
-                        if let title = json["message"]["title"][0].string {
-                            self.setTitle(title)
-                        }
-                        if let subj = json["message"]["container-title"][0].string {
-                            self.setSubject(subj)
-                        }
-                        if let auths = json["message"]["author"].array {
-                            let authString = auths.map({$0["given"].stringValue + " " + $0["family"].stringValue}).joinWithSeparator("; ")
-                            self.setAuthor(authString)
-                        }
-                        callback?(json)
-                    } else {
-                        callback?(nil)
-                    }
-                } else {
-                    callback?(nil)
+            if let r = _range, last = r.last {
+                let s = pageString.substringFromIndex(last.advancedBy(1)).trimmed()
+                if let doiChunk = s.firstChunk() where doiChunk.characters.count >= 5 {
+                    _doi = doiChunk
+                    break
                 }
             }
         }
+        
+        // If doi was found, use the crossref api to auto-set metadata
+        guard let doi = _doi else {
+            return nil
+        }
+        
+        var foundJson: JSON?
+        let sema = dispatch_semaphore_create(0)
+        
+        Alamofire.request(.GET, "http://api.crossref.org/works/\(doi)").responseJSON() {
+            response in
+            if let resp = response.result.value where response.result.isSuccess {
+                let _json = JSON(resp)
+                if let status = _json["status"].string where status == "ok" {
+                    if let title = _json["message"]["title"][0].string {
+                        self.setTitle(title)
+                    }
+                    if let subj = _json["message"]["container-title"][0].string {
+                        self.setSubject(subj)
+                    }
+                    if let auths = _json["message"]["author"].array {
+                        let authString = auths.map({$0["given"].stringValue + " " + $0["family"].stringValue}).joinWithSeparator("; ")
+                        self.setAuthor(authString)
+                    }
+                    foundJson = _json
+                }
+            }
+            dispatch_semaphore_signal(sema)
+        }
+        
+        // wait five seconds
+        let waitTime = dispatch_time(DISPATCH_TIME_NOW, Int64(5.0 * Float(NSEC_PER_SEC)))
+        if dispatch_semaphore_wait(sema, waitTime) != 0 {
+            AppSingleton.log.warning("Crossref request timed out")
+        }
+        
+        return foundJson
     }
     
     /// Returns the string corresponding to the block with the largest font on the first page.

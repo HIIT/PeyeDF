@@ -272,6 +272,17 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         return pdfReader!.getViewportStatus() as ReadingEvent?
     }
     
+    /// Send the scientific document associated to the reader and updates the id stored by the reader with the value
+    /// obtained from dime.
+    func sendAndUpdateScidoc(sciDoc: ScientificDocument) {
+        HistoryManager.sharedManager.sendToDiMe(sciDoc) {
+            success, id in
+            if success {
+                self.pdfReader?.sciDoc?.id = String(id!)
+            }
+        }
+    }
+    
     // MARK: - Metadata window
     
     @IBAction func thisDocMdata(sender: AnyObject?) {
@@ -382,6 +393,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     }
     
     /// Asynchronously fetch metadata (including plain text) from PDF.
+    /// Try to find the document which matches extracted data in DiMe.
     /// Enables the toolbar item when done.
     private func checkMetadata(plainText: String?) {
         guard let pdfr = self.pdfReader, _ = self.document else {
@@ -404,37 +416,42 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         guard let pdfDoc = pdfr.document() else {
             return
         }
-        let sciDoc = ScientificDocument(uri: url.path!, plainTextContent: plainText, title: pdfDoc.getTitle(), authors: pdfDoc.getAuthorsAsArray(), keywords: pdfDoc.getKeywordsAsArray(), subject: pdfDoc.getSubject())
+        let sciDoc: ScientificDocument
+        if let txt = plainText,
+            _sciDoc = DiMeFetcher.getScientificDocument(contentHash: txt.sha1()) {
+            // if found, associate object and update uri
+            sciDoc = _sciDoc
+            sciDoc.uri = url.path!
+        } else {
+            sciDoc = ScientificDocument(uri: url.path!, plainTextContent: plainText, title: pdfDoc.getTitle(), authors: pdfDoc.getAuthorsAsArray(), keywords: pdfDoc.getKeywordsAsArray(), subject: pdfDoc.getSubject())
+        }
+        
         pdfReader!.sciDoc = sciDoc
         
-        // Download metadata if needed, and send to dime if found
+        // Download metadata if needed, and send to dime if we want this and is found
+        // Dispatch this on utility queue because crossref request blocks.
         let showTime = dispatch_time(DISPATCH_TIME_NOW,
                                      Int64(1 * Double(NSEC_PER_SEC)))
         dispatch_after(showTime, dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
             [weak self] in
-            if (NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDownloadMetadata) as! Bool) {
-                self?.pdfReader?.document()?.autoCrossref() {
-                    _json in
-                    if let json = _json {
-                        // found crossref, use it
-                        sciDoc.updateFields(fromCrossRef: json)
-                        HistoryManager.sharedManager.sendToDiMe(sciDoc)
-                    } else if let tit = self?.pdfReader?.document().getTitle() {
-                        // if not, attempt to get title from document
-                        sciDoc.title = tit
-                        HistoryManager.sharedManager.sendToDiMe(sciDoc)
-                    } else if let tit = self?.pdfReader?.document().guessTitle() {
-                        // as a last resort, guess it
-                        self?.pdfReader?.document().setTitle(tit)
-                        sciDoc.title = tit
-                        HistoryManager.sharedManager.sendToDiMe(sciDoc)
-                    }
-                    // Update debug controller with metadata
-                    if let title = pdfDoc.getTitle() {
-                        dispatch_async(dispatch_get_main_queue()) {
-                            self?.debugController?.titleLabel.stringValue = title
-                        }
-                    }
+            
+            if (NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDownloadMetadata) as! Bool),
+              let json = self?.pdfReader?.document()?.autoCrossref() {
+                // found crossref, use it
+                sciDoc.updateFields(fromCrossRef: json)
+            } else if let tit = self?.pdfReader?.document().getTitle() {
+                // if not, attempt to get title from document
+                sciDoc.title = tit
+            } else if let tit = self?.pdfReader?.document().guessTitle() {
+                // as a last resort, guess it
+                self?.pdfReader?.document().setTitle(tit)
+                sciDoc.title = tit
+            }
+            self?.sendAndUpdateScidoc(sciDoc)
+            // Update debug controller with metadata
+            if let title = pdfDoc.getTitle() {
+                dispatch_async(dispatch_get_main_queue()) {
+                    self?.debugController?.titleLabel.stringValue = title
                 }
             }
         }
@@ -621,10 +638,10 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             let showTime = dispatch_time(DISPATCH_TIME_NOW,
                                          Int64(2 * Double(NSEC_PER_SEC)))
             dispatch_after(showTime, dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
-                DiMeFetcher.retrieveScientificDocument(sciDoc.id) {
+                DiMeFetcher.retrieveScientificDocument(sciDoc.appId) {
                     scidoc in
                     if scidoc == nil {
-                        HistoryManager.sharedManager.sendToDiMe(sciDoc)
+                        self.sendAndUpdateScidoc(sciDoc)
                     }
                 }
             }
