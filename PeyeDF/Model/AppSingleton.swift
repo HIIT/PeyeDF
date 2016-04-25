@@ -90,6 +90,17 @@ class AppSingleton {
         return Eye(rawValue: eyeRaw)!
     }
     
+    /// Convenience function to set recently used tags
+    static func updateRecentTags(newTag: String) {
+        /// Recent tags is a list of strings in which the first string is the most recent
+        var recentTags: [String] = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.defaultsSavedTags) as! [String]
+        recentTags.insert(newTag, atIndex: 0)
+        if recentTags.count > PeyeConstants.nOfSavedTags {
+            recentTags.removeRange(PeyeConstants.nOfSavedTags..<recentTags.count)
+        }
+        NSUserDefaults.standardUserDefaults().setValue(recentTags, forKey: PeyeConstants.defaultsSavedTags)
+    }
+    
     /// Returns HTTP headers used for DiMe connection
     static func dimeHeaders() -> [String: String] {
         let user: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerUserName) as! String

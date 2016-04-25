@@ -13,7 +13,8 @@ class TagFieldDelegate: NSObject, NSTextFieldDelegate {
     
     func control(control: NSControl, textView: NSTextView, completions words: [String], forPartialWordRange charRange: NSRange, indexOfSelectedItem index: UnsafeMutablePointer<Int>) -> [String] {
         index.memory = -1
-        return ["ciao", "come", "va"].filter({$0.hasPrefix(textView.string ?? "")})
+        let recentTags = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.defaultsSavedTags) as! [String]
+        return recentTags.sort().filter({$0.hasPrefix(textView.string ?? "")})
     }
     
 }

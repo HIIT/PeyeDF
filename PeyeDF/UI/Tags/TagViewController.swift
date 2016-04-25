@@ -98,6 +98,7 @@ class TagViewController: NSViewController {
         if newTag.characters.count > 0 && !representedTags.contains(newTag) {
             representedTags.append(newTag)
             delegate?.tagAdded(newTag)
+            AppSingleton.updateRecentTags(newTag)
             var objs: NSArray?  // temporary store for items in tagview
             NSBundle.mainBundle().loadNibNamed("TagView", owner: nil, topLevelObjects: &objs)
             if let objs = objs {

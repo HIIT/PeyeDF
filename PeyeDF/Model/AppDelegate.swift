@@ -59,6 +59,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         defaultPrefs[PeyeConstants.prefRefinderDrawGazedUpon] = 0
         defaultPrefs[PeyeConstants.prefDrawDebugCircle] = 0
         defaultPrefs[PeyeConstants.prefSendEventOnFocusSwitch] = 0
+        defaultPrefs[PeyeConstants.defaultsSavedTags] = []
         NSUserDefaults.standardUserDefaults().registerDefaults(defaultPrefs)
         NSUserDefaults.standardUserDefaults().synchronize()
         
