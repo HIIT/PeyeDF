@@ -233,6 +233,9 @@ struct PeyeConstants {
     /// To correct this issue, this constant specifies an (arbitrary) maximum acceptable page index.
     static let maxAcceptablePageIndex: Int = 50000
     
+    /// Tag value for tag menu item
+    static let tagMenuTag = UInt(194851)
+    
     // MARK: - Notifications
     
     /// String notifying that something changed in the dime connection.

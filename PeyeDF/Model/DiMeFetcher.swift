@@ -144,6 +144,42 @@ class DiMeFetcher {
         return (ev: ev, ie: ie)
     }
     
+    /// **Asynchronously** attempt to retrieve a list of tags for a given information element (using appId).
+    /// Calls the callback with a list of tags (empty if none) or nil if it failed.
+    static func retrieveTags(forAppId appId: String, callback: ([Tag]? -> Void)) {
+        
+        let server_url = AppSingleton.dimeUrl
+        let headers = AppSingleton.dimeHeaders()
+        
+        let reqString = server_url + "/data/informationelements?appId=" + appId
+        
+        Alamofire.request(.GET, reqString, headers: headers).responseJSON() {
+            response in
+            if response.result.isFailure {
+                AppSingleton.log.error("Error fetching information element: \(response.result.error!)")
+                callback(nil)
+            } else {
+                // assume first returned item is the one we are looking for
+                let json = JSON(response.result.value!)[0]
+                if let error = json["error"].string {
+                    AppSingleton.log.error("Dime fetched json contains error:\n\(error)")
+                }
+                if let appId = json["appId"].string {
+                    if appId == appId {
+                        let newInfoElem = DocumentInformationElement(fromDime: json)
+                        callback(newInfoElem.tags)
+                    } else {
+                        AppSingleton.log.error("Retrieved info element id does not match requested id: \(response.result.value!)")
+                        callback(nil)
+                    }
+                } else {
+                    AppSingleton.log.warning("Info element with appId:'\(appId)' was not found in the database.")
+                    callback(nil)
+                }
+            }
+        }
+    }
+    
     /// **Synchronously** attempt to retrieve a single information element for the given contentHash.
     /// Returns a scientific document or nil if it failed.
     /// - Attention: Don't call this from the main thread.

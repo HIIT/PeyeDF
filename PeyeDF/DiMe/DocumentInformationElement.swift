@@ -32,7 +32,11 @@ class DocumentInformationElement: DiMeBase {
     let appId: String
     var id: String?
     let contentHash: String?
-    var tags = [Tag]()
+    private(set) var tags = [Tag]()
+    
+    var tagStrings: [String] { get {
+        return tags.map({$0.text})
+    } }
     
     /// Creates this information element. The id is set to the hash of the plaintext, or hash of uri if no text was found.
     ///
@@ -101,4 +105,61 @@ class DocumentInformationElement: DiMeBase {
         return theDictionary["appId"]! as! String
     }
     
+    /// Adds a tag to the information element.
+    /// - Attention: automatically tells DiMe to also perform this operation and uses its response to set own tags
+    func addTag(tag: Tag) {
+        if !tags.contains(tag) {
+            if HistoryManager.sharedManager.dimeAvailable {
+                HistoryManager.sharedManager.editTag(.Add, tagText: tag.text, forId: self.id!) {
+                    tags in
+                    if tags != nil {
+                        self.tags = tags!
+                    }
+                }
+            } else {
+                AppSingleton.log.error("Tried to add a tag, but DiMe was down")
+            }
+        } else {
+            AppSingleton.log.warning("Adding a tag which is already in the info element")
+        }
+    }
+    
+    /// Removes a tag from the information element.
+    /// - Attention: automatically tells DiMe to also perform this operation and uses its response to set own tags
+    func removeTag(tag: Tag) {
+        if tags.contains(tag) {
+            if HistoryManager.sharedManager.dimeAvailable {
+                HistoryManager.sharedManager.editTag(.Remove, tagText: tag.text, forId: self.id!) {
+                    tags in
+                    if tags != nil {
+                        self.tags = tags!
+                    }
+                }
+            } else {
+                AppSingleton.log.error("Tried to remove a tag, but DiMe was down")
+            }
+        } else {
+            AppSingleton.log.error("Tag to remove not found in the info element")
+        }
+    }
+    
+    /// Updates own tags from DiMe.
+    func updateTags() {
+        DiMeFetcher.retrieveTags(forAppId: appId) {
+            tags in
+            if tags != nil {
+                self.tags = tags!
+            }
+        }
+    }
+    
+    /// Adds a tag using text (creates a new tag).
+    func addTag(tag: String) {
+        addTag(Tag(withText: tag))
+    }
+    
+    /// Removes a tag using text match (works because all tags are considered equal when their text is equal).
+    func removeTag(tag: String) {
+        removeTag(Tag(withText: tag))
+    }
 }

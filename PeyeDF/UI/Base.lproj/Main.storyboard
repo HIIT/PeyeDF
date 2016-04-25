@@ -536,7 +536,7 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="uyl-h8-XO2"/>
-                                        <menuItem title="Tag" keyEquivalent="t" id="qj1-9m-dSa">
+                                        <menuItem title="Tag" tag="194851" keyEquivalent="t" id="qj1-9m-dSa">
                                             <connections>
                                                 <action selector="tagShow:" target="Ady-hI-5gd" id="Eoo-em-Wcv"/>
                                             </connections>
@@ -1271,7 +1271,7 @@
                                         <action selector="thisDocMdata:" target="H3y-Bk-Ofi" id="prl-UE-k7l"/>
                                     </connections>
                                 </toolbarItem>
-                                <toolbarItem implicitItemIdentifier="D39BF8F4-E8F8-4708-82CC-5506275CE680" label="Annotate" paletteLabel="Annotate" tag="-1" image="TB_AnnotateD" autovalidates="NO" id="GDs-fF-Uav">
+                                <toolbarItem implicitItemIdentifier="D39BF8F4-E8F8-4708-82CC-5506275CE680" label=" Quick Mark" paletteLabel=" Quick Mark" toolTip="Double or Triple click to quickly mark a paragraph as interesting or critical" tag="-1" image="TB_AnnotateD" autovalidates="NO" id="GDs-fF-Uav">
                                     <connections>
                                         <action selector="toggleAnnotate:" target="H3y-Bk-Ofi" id="wvf-8o-EJA"/>
                                     </connections>
@@ -1318,11 +1318,11 @@
                                         <action selector="openInPreview:" target="H3y-Bk-Ofi" id="3Sl-BE-r9a"/>
                                     </connections>
                                 </toolbarItem>
-                                <toolbarItem implicitItemIdentifier="DCC7A3B2-6683-4CEE-8192-D425A105DD45" label="Tag" paletteLabel="Tag" image="Tag" id="LaI-PY-0lj">
+                                <toolbarItem implicitItemIdentifier="DCC7A3B2-6683-4CEE-8192-D425A105DD45" label="Tag" paletteLabel="Tag" tag="194851" image="Tag" id="LaI-PY-0lj">
                                     <nil key="toolTip"/>
                                     <size key="minSize" width="39" height="32"/>
                                     <size key="maxSize" width="44" height="40"/>
-                                    <button key="view" verticalHuggingPriority="750" id="Z1q-6l-4JZ">
+                                    <button key="view" verticalHuggingPriority="750" tag="194851" id="Z1q-6l-4JZ">
                                         <rect key="frame" x="0.0" y="14" width="40" height="32"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="Tag" imagePosition="overlaps" alignment="center" controlSize="mini" imageScaling="proportionallyDown" inset="2" id="92C-0e-Vy1">
@@ -1339,6 +1339,7 @@
                                 <toolbarItem reference="8zr-Hg-gf0"/>
                                 <toolbarItem reference="mrl-au-qa7"/>
                                 <toolbarItem reference="GDs-fF-Uav"/>
+                                <toolbarItem reference="6Ts-EH-w4Q"/>
                                 <toolbarItem reference="LaI-PY-0lj"/>
                                 <toolbarItem reference="l3s-5e-m3r"/>
                                 <toolbarItem reference="6Ts-EH-w4Q"/>

@@ -28,7 +28,7 @@
                         <constraint firstAttribute="width" constant="30" id="4vV-fk-MkL"/>
                         <constraint firstAttribute="height" constant="24" id="YpE-Oi-KVj"/>
                     </constraints>
-                    <buttonCell key="cell" type="recessed" title="Remove" bezelStyle="recessed" image="B57F96E7-EB79-42C6-9954-F7755E0F83FE" imagePosition="only" alignment="center" borderStyle="border" inset="2" id="i7U-wB-6C6">
+                    <buttonCell key="cell" type="recessed" title="Remove" bezelStyle="recessed" image="BAAABC06-1152-448D-961C-9B0E5E262A3B" imagePosition="only" alignment="center" borderStyle="border" inset="2" id="i7U-wB-6C6">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
                         <font key="font" metaFont="systemBold" size="12"/>
                     </buttonCell>
@@ -49,7 +49,7 @@
         </customView>
     </objects>
     <resources>
-        <image name="B57F96E7-EB79-42C6-9954-F7755E0F83FE" width="16" height="16">
+        <image name="BAAABC06-1152-448D-961C-9B0E5E262A3B" width="16" height="16">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGQkNYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK8QDwcI
 ERYbHCUmJygwMzY8P1UkbnVsbNQJCgsMDQ4PEFYkY2xhc3NcTlNJbWFnZUZsYWdzVk5TUmVwc1dOU0Nv

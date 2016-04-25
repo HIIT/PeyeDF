@@ -32,10 +32,10 @@ protocol Dictionariable {
     func getDict() -> [String: AnyObject]
 }
 
-/// Allows dictionariable types to return themselves as collections
+/// Allows collections of dictionariable types to return themselves as array of dicts
 extension SequenceType where Generator.Element: Dictionariable {
     
-    /// Returns itself as a dict array
+    /// Returns itself as an array of dicts
     func asDictArray() -> [[String: AnyObject]] {
         return self.reduce([[String: AnyObject]](), combine: {$0 + [$1.getDict()]})
     }

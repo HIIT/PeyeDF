@@ -46,4 +46,9 @@ class AnimatedStack: NSStackView {
         })
     }
     
+    func removeAllViews() {
+        for v in self.views {
+            self.removeView(v)
+        }
+    }
 }

@@ -27,7 +27,7 @@ import Foundation
 import Quartz
 
 /// Manages the "Document Window", which comprises two split views, one inside the other
-class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollapseToggleDelegate, SearchPanelCollapseDelegate {
+class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollapseToggleDelegate, SearchPanelCollapseDelegate, TagDelegate {
     
     /// The "global" GCD queue in which all timers are created / destroyed (to prevent potential memory leaks, they all run here)
     static let timerQueue = dispatch_queue_create("hiit.PeyeDF.DocumentWindowController.timerQueue", DISPATCH_QUEUE_SERIAL)
@@ -86,13 +86,27 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     // MARK: - Tagging
     
     @IBAction func tagShow(sender: AnyObject?) {
+        
+        // Skip if dime is out
+        guard HistoryManager.sharedManager.dimeAvailable else {
+            return
+        }
+        
         dispatch_async(dispatch_get_main_queue()) {
             let tvc = self.popover.contentViewController as! TagViewController
             if !self.popover.shown {
                 // if there is a selection, tag selection, otherwise call window's tag method
                 if (self.pdfReader!.currentSelection()?.string().trimmed().isEmpty ?? true) {
+                    
                     self.popover.showRelativeToRect(self.tbTagButton.bounds, ofView: self.tbTagButton, preferredEdge: NSRectEdge.MinY)
                     tvc.setStatus(true)
+                    
+                    // refresh tags if different from what's stored
+                    if tvc.representedTags != self.pdfReader!.sciDoc!.tagStrings {
+                        tvc.setTags(self.pdfReader!.sciDoc!.tagStrings)
+                    }
+                    
+                    tvc.delegate = self // prepare to receive tag updates
                 } else {
                     let edge: NSRectEdge
                     // selection's tag popover is shown on the right edge if selection's rect mid > pdf reader rect mid
@@ -111,6 +125,14 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                 self.popover.performClose(self)
             }
         }
+    }
+    
+    func tagAdded(theTag: String) {
+        pdfReader?.sciDoc?.addTag(theTag)
+    }
+    
+    func tagRemoved(theTag: String) {
+        pdfReader?.sciDoc?.removeTag(theTag)
     }
     
     // MARK: - Searching
@@ -165,11 +187,14 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             }
             return false
             
+        case PeyeConstants.tagMenuTag:
+            return HistoryManager.sharedManager.dimeAvailable
+            
         default:
             // in any other case, we check the action instead of tag
             switch menuItem.action.description {
                 // these should always be enabled
-                case "saveDocument:", "saveDocumentAs:", "tagShow:":
+                case "saveDocument:", "saveDocumentAs:":
                 return true
             default:
                 // any other tag was not considered we disable it by default
@@ -384,6 +409,9 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                 AppSingleton.screenRect = screen.frame
             }
             
+            // Set tag button status to DiMe's status
+            tbTagButton.enabled = HistoryManager.sharedManager.dimeAvailable
+            
             // Asynchronously fetch text from document (if no text is found, nill we be passed)
             pdfReader?.checkPlainText() {
                 [weak self] result in
@@ -485,6 +513,10 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(eyeStateCallback(_:)), name: PeyeConstants.eyesAvailabilityNotification, object: MidasManager.sharedInstance)
         
+        // Get notification from DiMe connection status
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(dimeConnectionChanged(_:)), name: PeyeConstants.diMeConnectionNotification, object: HistoryManager.sharedManager)
+        
         // Set up regular timer
         dispatch_sync(DocumentWindowController.timerQueue) {
             if self.regularTimer == nil {
@@ -565,23 +597,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     /// Removes all the observers created in setUpObservers()
     private func unSetObservers() {
         
-        // Remove notifications from pdfView
-        
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: PeyeConstants.autoAnnotationComplete, object: self.pdfReader!)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: PDFViewScaleChangedNotification, object: self.pdfReader!)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSViewFrameDidChangeNotification, object: self.pdfReader!)
-        // Note: forced downcast, etc.
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSViewBoundsDidChangeNotification, object: self.pdfReader!.subviews[0].subviews[0] as! NSClipView)
-        
-        // Remove notifications from managed window
-        
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowDidMoveNotification, object: self.window)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowDidResignKeyNotification, object: self.window)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowDidBecomeKeyNotification, object: self.window)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: NSWindowDidChangeOcclusionStateNotification, object: self.window)
-        
-        // Remove notifications from midas manager
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: PeyeConstants.eyesAvailabilityNotification, object: MidasManager.sharedInstance)
+        // Notifications unloading is no longer required (observers autoallocate automatically)
         
         // Stop regular timer
         if let timer = regularTimer {
@@ -685,7 +701,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         }
     }
     
-    // MARK: - Notification callbacks from MidasManager
+    // MARK: - Notification callbacks
     
     /// Reacts to eye being lost / found. If status changes when this is
     /// key window, send exit / enter event as necessary
@@ -697,6 +713,20 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                 startedReading()
             } else {
                 stoppedReading()
+            }
+        }
+    }
+    
+    /// Enable functions related to dime (e.g. tags) and refreshes scidoc when dime comes online
+    @objc private func dimeConnectionChanged(notification: NSNotification) {
+        let userInfo = notification.userInfo as! [String: Bool]
+        let dimeAvailable = userInfo["available"]!
+        tbTagButton.enabled = dimeAvailable
+        
+        if dimeAvailable {
+            if let own_sciDoc = pdfReader!.sciDoc, cHash = own_sciDoc.contentHash, dime_sciDoc = DiMeFetcher.getScientificDocument(contentHash: cHash) {
+                pdfReader!.sciDoc!.id = dime_sciDoc.id!
+                pdfReader!.sciDoc!.updateTags()
             }
         }
     }

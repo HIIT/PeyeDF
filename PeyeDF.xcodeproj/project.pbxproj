@@ -385,11 +385,11 @@
 		A92322F51CB3DE750060AF1C /* Tags */ = {
 			isa = PBXGroup;
 			children = (
+				A92323041CB3E1A80060AF1C /* TagFieldDelegate.swift */,
 				A92323001CB3E1480060AF1C /* TagViewController.swift */,
 				A90BA3101CB681A400E7303D /* Tags.storyboard */,
 				A92322FE1CB3E13A0060AF1C /* TagView.xib */,
 				A92323061CB3E1B70060AF1C /* TagRemoveButton.swift */,
-				A92323041CB3E1A80060AF1C /* TagFieldDelegate.swift */,
 				A92323021CB3E1560060AF1C /* AnimatedStack.swift */,
 				A96731B91CCA69FD001A5C9F /* HistoryManager+tags.swift */,
 			);

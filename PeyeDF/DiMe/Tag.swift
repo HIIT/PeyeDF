@@ -24,6 +24,7 @@ public struct Tag: Dictionariable, Equatable {
         var theDictionary = [String: AnyObject]()
         
         theDictionary["text"] = text
+        theDictionary["@type"] = "Tag"
     
         if let hostname = NSHost.currentHost().name {
             theDictionary["origin"] = hostname
