@@ -70,6 +70,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     @IBOutlet weak var tbMetadata: NSToolbarItem!
     @IBOutlet weak var tbAnnotate: NSToolbarItem!
     @IBOutlet weak var tbTagButton: NSButton!
+    @IBOutlet weak var tbTagItem: NSToolbarItem!
     
     var metadataWindowController: MetadataWindowController?
     
@@ -303,7 +304,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         HistoryManager.sharedManager.sendToDiMe(sciDoc) {
             success, id in
             if success {
-                self.pdfReader?.sciDoc?.id = String(id!)
+                self.pdfReader?.sciDoc?.id = id!
             }
         }
     }
@@ -402,6 +403,10 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             
             dispatch_async(dispatch_get_main_queue()) {
                 NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.documentChangeNotification, object: self.document)
+                
+                // Set tag button and toolbar status to DiMe's status
+                self.tbTagButton.enabled = HistoryManager.sharedManager.dimeAvailable
+                self.tbTagItem.enabled = HistoryManager.sharedManager.dimeAvailable
             }
             
             // Tell app singleton which screen size we are using
@@ -409,8 +414,6 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                 AppSingleton.screenRect = screen.frame
             }
             
-            // Set tag button status to DiMe's status
-            tbTagButton.enabled = HistoryManager.sharedManager.dimeAvailable
             
             // Asynchronously fetch text from document (if no text is found, nill we be passed)
             pdfReader?.checkPlainText() {
@@ -721,12 +724,22 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     @objc private func dimeConnectionChanged(notification: NSNotification) {
         let userInfo = notification.userInfo as! [String: Bool]
         let dimeAvailable = userInfo["available"]!
-        tbTagButton.enabled = dimeAvailable
         
+        dispatch_async(dispatch_get_main_queue()) {
+            self.tbTagButton.enabled = dimeAvailable
+            self.tbTagItem.enabled = dimeAvailable
+        }
+        
+        // update data from dime after a small random delay
         if dimeAvailable {
-            if let own_sciDoc = pdfReader!.sciDoc, cHash = own_sciDoc.contentHash, dime_sciDoc = DiMeFetcher.getScientificDocument(contentHash: cHash) {
-                pdfReader!.sciDoc!.id = dime_sciDoc.id!
-                pdfReader!.sciDoc!.updateTags()
+            let randWait = 1 + drand48() * 0.5  // random amount between 1 and 1.5
+            let showTime = dispatch_time(DISPATCH_TIME_NOW,
+                                         Int64(randWait * Double(NSEC_PER_SEC)))
+            dispatch_after(showTime, dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) {
+                if let own_sciDoc = self.pdfReader!.sciDoc, cHash = own_sciDoc.contentHash, dime_sciDoc = DiMeFetcher.getScientificDocument(contentHash: cHash) {
+                    self.pdfReader!.sciDoc!.id = dime_sciDoc.id!
+                    self.pdfReader!.sciDoc!.updateTags()
+                }
             }
         }
     }

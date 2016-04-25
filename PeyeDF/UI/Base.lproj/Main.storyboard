@@ -1362,6 +1362,7 @@
                         <outlet property="tbAnnotate" destination="GDs-fF-Uav" id="Dn7-Uk-RBy"/>
                         <outlet property="tbMetadata" destination="l3s-5e-m3r" id="LVb-qE-pkk"/>
                         <outlet property="tbTagButton" destination="Z1q-6l-4JZ" id="81T-qo-b6X"/>
+                        <outlet property="tbTagItem" destination="LaI-PY-0lj" id="K3W-e1-eFT"/>
                         <outlet property="thumbTB" destination="8zr-Hg-gf0" id="kBi-3Q-0wK"/>
                         <segue destination="f9L-GU-eYT" kind="relationship" relationship="window.shadowedContentViewController" id="t30-fj-7gb"/>
                     </connections>

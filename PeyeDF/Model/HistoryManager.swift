@@ -119,9 +119,8 @@ class HistoryManager: FixationDataDelegate {
             
             // assume json conversion was a success, hence send to dime
             let server_url = AppSingleton.dimeUrl
-            let headers = AppSingleton.dimeHeaders()
             
-            Alamofire.request(Alamofire.Method.POST, server_url + "/data/\(endPoint.rawValue)", parameters: dimeData.getDict(), encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON {
+            AppSingleton.dimefire.request(Alamofire.Method.POST, server_url + "/data/\(endPoint.rawValue)", parameters: dimeData.getDict(), encoding: Alamofire.ParameterEncoding.JSON).responseJSON {
                 response in
                 if response.result.isFailure {
                     AppSingleton.log.error("Error while reading json response from DiMe: \(response.result.error)")
@@ -153,11 +152,10 @@ class HistoryManager: FixationDataDelegate {
     func dimeConnect(callback: ((Bool, Response<AnyObject, NSError>) -> ())? = nil) {
         
         let server_url = AppSingleton.dimeUrl
-        let headers = AppSingleton.dimeHeaders()
         
         let dictionaryObject = ["test": "test"]
         
-        Alamofire.request(Alamofire.Method.POST, server_url + "/ping", parameters: dictionaryObject, encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON {
+        AppSingleton.dimefire.request(Alamofire.Method.POST, server_url + "/ping", parameters: dictionaryObject, encoding: Alamofire.ParameterEncoding.JSON).responseJSON {
             response in
             if response.result.isFailure {
                 // connection failed

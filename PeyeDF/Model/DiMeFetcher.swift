@@ -149,11 +149,10 @@ class DiMeFetcher {
     static func retrieveTags(forAppId appId: String, callback: ([Tag]? -> Void)) {
         
         let server_url = AppSingleton.dimeUrl
-        let headers = AppSingleton.dimeHeaders()
         
         let reqString = server_url + "/data/informationelements?appId=" + appId
         
-        Alamofire.request(.GET, reqString, headers: headers).responseJSON() {
+        AppSingleton.dimefire.request(.GET, reqString).responseJSON() {
             response in
             if response.result.isFailure {
                 AppSingleton.log.error("Error fetching information element: \(response.result.error!)")
@@ -190,12 +189,11 @@ class DiMeFetcher {
         let dGroup = dispatch_group_create()
         
         let server_url = AppSingleton.dimeUrl
-        let headers = AppSingleton.dimeHeaders()
         
         let reqString = server_url + "/data/informationelements?contentHash=" + hash
         
         dispatch_group_enter(dGroup)
-        Alamofire.request(.GET, reqString, headers: headers).responseJSON() {
+        AppSingleton.dimefire.request(.GET, reqString).responseJSON() {
             response in
             if response.result.isFailure {
                 AppSingleton.log.error("Error fetching information element: \(response.result.error!)")
@@ -232,11 +230,10 @@ class DiMeFetcher {
     static func retrieveScientificDocument(appId: String, callback: (ScientificDocument?) -> Void) {
         
         let server_url = AppSingleton.dimeUrl
-        let headers = AppSingleton.dimeHeaders()
         
         let reqString = server_url + "/data/informationelements?appId=" + appId
         
-        Alamofire.request(.GET, reqString, headers: headers).responseJSON() {
+        AppSingleton.dimefire.request(.GET, reqString).responseJSON() {
             response in
             if response.result.isFailure {
                 AppSingleton.log.error("Error fetching information element: \(response.result.error!)")
@@ -283,7 +280,7 @@ class DiMeFetcher {
             typeString = "ReadingEvent"
         }
         
-        Alamofire.request(.GET, server_url + "/data/events?actor=PeyeDF&type=http://www.hiit.fi/ontologies/dime/%23\(typeString)" + filterString, headers: headers).responseJSON() {
+        AppSingleton.dimefire.request(.GET, server_url + "/data/events?actor=PeyeDF&type=http://www.hiit.fi/ontologies/dime/%23\(typeString)" + filterString, headers: headers).responseJSON() {
             response in
             if response.result.isFailure {
                 AppSingleton.log.error("Error fetching list of PeyeDF events: \(response.result.error!)")

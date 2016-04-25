@@ -14,7 +14,7 @@ extension HistoryManager {
     /// Add / remove a tag associated to a scientific document (which is an information element. Only information
     /// elements tag operations are supported.
     /// Calls the given callback with the updated list of tags from dime, nil if the operation failed.
-    func editTag(action: TagAction, tagText: String, forId: String, callback: ([Tag]? -> Void)? = nil) {
+    func editTag(action: TagAction, tagText: String, forId: Int, callback: ([Tag]? -> Void)? = nil) {
         guard dimeAvailable else {
             return
         }
@@ -30,9 +30,8 @@ extension HistoryManager {
             
             // assume json conversion was a success, hence send to dime
             let server_url = AppSingleton.dimeUrl
-            let headers = AppSingleton.dimeHeaders()
             
-            Alamofire.request(Alamofire.Method.POST, server_url + "/data/\(endpoint.rawValue)/\(forId)/\(action.rawValue)", parameters: tag.getDict(), encoding: Alamofire.ParameterEncoding.JSON, headers: headers).responseJSON {
+            AppSingleton.dimefire.request(Alamofire.Method.POST, server_url + "/data/\(endpoint.rawValue)/\(forId)/\(action.rawValue)", parameters: tag.getDict(), encoding: Alamofire.ParameterEncoding.JSON).responseJSON {
                 response in
                 if response.result.isFailure {
                     AppSingleton.log.error("Error while reading json response from DiMe: \(response.result.error)")

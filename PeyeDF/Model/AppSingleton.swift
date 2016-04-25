@@ -25,6 +25,7 @@
 import Foundation
 import Cocoa
 import Quartz
+import Alamofire
 
 /// Used to share states across the whole application, including posting history notifications to store. Contains:
 ///
@@ -36,6 +37,16 @@ class AppSingleton {
     static let refinderStoryboard = NSStoryboard(name: "Refinder", bundle: nil)
     static let tagsStoryboard = NSStoryboard(name: "Tags", bundle: nil)
     static let appDelegate = NSApplication.sharedApplication().delegate! as! AppDelegate
+    
+    /// Static holder for alamofire manager (to use this configuration)
+    static let dimefire: Manager = {
+        var manager = Alamofire.Manager.sharedInstance
+        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+        configuration.HTTPAdditionalHeaders = AppSingleton.dimeHeaders()
+        configuration.timeoutIntervalForRequest = 4 // seconds
+        configuration.timeoutIntervalForResource = 4
+        return Alamofire.Manager(configuration: configuration)
+    }()
     
     static let log = AppSingleton.createLog()
     static private(set) var logsURL = NSURL()

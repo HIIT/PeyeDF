@@ -30,7 +30,7 @@ class DocumentInformationElement: DiMeBase {
     var title: String?
     let plainTextContent: String?
     let appId: String
-    var id: String?
+    var id: Int?
     let contentHash: String?
     private(set) var tags = [Tag]()
     
@@ -91,7 +91,7 @@ class DocumentInformationElement: DiMeBase {
     init(fromDime json: JSON) {
         self.uri = json["uri"].stringValue.skipPrefix(7) // skip file:// prefix when importing
         self.title = json["title"].string
-        self.id = json["id"].string
+        self.id = json["id"].intValue
         self.plainTextContent = json["plainTextContent"].string
         self.appId = json["appId"].stringValue
         self.contentHash = json["contentHash"].string
