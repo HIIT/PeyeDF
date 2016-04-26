@@ -27,7 +27,7 @@ import Foundation
 import Quartz
 
 /// Manages the "Document Window", which comprises two split views, one inside the other
-class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollapseToggleDelegate, SearchPanelCollapseDelegate, TagDelegate {
+class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollapseToggleDelegate, SearchPanelCollapseDelegate, TagDelegate, NSPopoverDelegate {
     
     /// The "global" GCD queue in which all timers are created / destroyed (to prevent potential memory leaks, they all run here)
     static let timerQueue = dispatch_queue_create("hiit.PeyeDF.DocumentWindowController.timerQueue", DISPATCH_QUEUE_SERIAL)
@@ -69,22 +69,26 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     var debugWindowController: NSWindowController?
     @IBOutlet weak var tbMetadata: NSToolbarItem!
     @IBOutlet weak var tbAnnotate: NSToolbarItem!
-    @IBOutlet weak var tbTagButton: NSButton!
-    @IBOutlet weak var tbTagItem: NSToolbarItem!
     
     var metadataWindowController: MetadataWindowController?
     
     weak var clickDelegate: ClickRecognizerDelegate?
     
-    lazy var popover: NSPopover = {
-            let pop = NSPopover()
-            pop.behavior = NSPopoverBehavior.Transient
-            let tvc = AppSingleton.tagsStoryboard.instantiateControllerWithIdentifier("TagViewController")
-            pop.contentViewController = tvc as! TagViewController
-            return pop
-        }()
-    
     // MARK: - Tagging
+    
+    @IBOutlet weak var tbTagButton: NSButton!
+    @IBOutlet weak var tbTagItem: NSToolbarItem!
+    
+    private var taggingSelection: PDFSelection?
+    
+    lazy var popover: NSPopover = {
+        let pop = NSPopover()
+        pop.behavior = NSPopoverBehavior.Transient
+        let tvc = AppSingleton.tagsStoryboard.instantiateControllerWithIdentifier("TagViewController")
+        pop.contentViewController = tvc as! TagViewController
+        pop.delegate = self
+        return pop
+    }()
     
     @IBAction func tagShow(sender: AnyObject?) {
         
@@ -94,22 +98,30 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         }
         
         dispatch_async(dispatch_get_main_queue()) {
+            
             let tvc = self.popover.contentViewController as! TagViewController
+            tvc.tagDelegate = self // prepare to receive tag updates
+            
+            // if popover is not shown, show it, otherwise close it
+            
             if !self.popover.shown {
+                
                 // if there is a selection, tag selection, otherwise call window's tag method
+                
                 if (self.pdfReader!.currentSelection()?.string().trimmed().isEmpty ?? true) {
                     
                     self.popover.showRelativeToRect(self.tbTagButton.bounds, ofView: self.tbTagButton, preferredEdge: NSRectEdge.MinY)
                     tvc.setStatus(true)
                     
-                    // refresh tags if different from what's stored
+                    // refresh document tags if different from what's stored
                     if tvc.representedTags != self.pdfReader!.sciDoc!.tagStrings {
                         tvc.setTags(self.pdfReader!.sciDoc!.tagStrings)
                     }
                     
-                    tvc.delegate = self // prepare to receive tag updates
+                    self.taggingSelection = nil
                 } else {
                     let edge: NSRectEdge
+                    
                     // selection's tag popover is shown on the right edge if selection's rect mid > pdf reader rect mid
                     let sel = self.pdfReader!.currentSelection()
                     var selBounds = sel.boundsForPage(sel.pages()[0] as! PDFPage)
@@ -120,20 +132,53 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                         edge = NSRectEdge.MinX
                     }
                     self.popover.showRelativeToRect(selBounds, ofView: self.pdfReader!, preferredEdge: edge)
+                    
                     tvc.setStatus(false)
+                    
+                    // set tags in popup to none TODO: allow for tag editing
+                    tvc.setTags([])
+                    
+                    self.taggingSelection = sel
                 }
             } else {
+                self.taggingSelection = nil
                 self.popover.performClose(self)
             }
         }
     }
     
     func tagAdded(theTag: String) {
-        pdfReader?.sciDoc?.addTag(theTag)
+        if self.taggingSelection == nil {
+            pdfReader?.sciDoc?.addTag(theTag)
+        } else {
+            if let sel = self.taggingSelection, pages = sel.pages() as? [PDFPage] {
+                var rects = [NSRect]()
+                var idxs = [Int]()
+                for p in pages {
+                    let pageIndex = pdfReader!.document().indexForPage(p)
+                    let rect = sel.boundsForPage(p)
+                    rects.append(rect)
+                    idxs.append(pageIndex)
+                }
+                if rects.count > 0 {
+                    let sdTag = SubDocumentTag(text: theTag, withRects: rects, pages: idxs, pdfBase: self.pdfReader)
+                    pdfReader?.sciDoc?.addTag(sdTag)
+                }
+            }
+        }
     }
     
     func tagRemoved(theTag: String) {
-        pdfReader?.sciDoc?.removeTag(theTag)
+        // TODO: allow for removing existing sub document tags
+        
+        if self.taggingSelection == nil {
+            pdfReader?.sciDoc?.removeTag(theTag)
+        }
+    }
+    
+    /// Implemented to detect when the tag popover is closed (to nullify taggingSelection
+    func popoverDidClose(notification: NSNotification) {
+        self.taggingSelection = nil
     }
     
     // MARK: - Searching

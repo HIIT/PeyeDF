@@ -9,7 +9,7 @@
 import Cocoa
 
 /// Objects which set themselves as a tag delegate receive updates regarding tags
-protocol TagDelegate {
+protocol TagDelegate: class {
     
     /// Tells the delegate that a tag was added
     func tagAdded(theTag: String)
@@ -31,7 +31,7 @@ class TagViewController: NSViewController {
     private var isCompleting = false
     private var count = 0
     
-    var delegate: TagDelegate?
+    weak var tagDelegate: TagDelegate?
     
     /// Returns all tags currently displayed in the view
     private(set) var representedTags = [String]()
@@ -85,7 +85,7 @@ class TagViewController: NSViewController {
             but.enabled = false  // must disable button to prevent clicking again
             for view in but.superview!.subviews {
                 if let txt = view as? NSTextField {
-                    delegate?.tagRemoved(txt.stringValue)
+                    tagDelegate?.tagRemoved(txt.stringValue)
                     self.representedTags.removeAtIndex(self.representedTags.indexOf(txt.stringValue)!)
                 }
             }
@@ -97,7 +97,7 @@ class TagViewController: NSViewController {
         let newTag = inputField.stringValue.trimmed()
         if newTag.characters.count > 0 && !representedTags.contains(newTag) {
             representedTags.append(newTag)
-            delegate?.tagAdded(newTag)
+            tagDelegate?.tagAdded(newTag)
             AppSingleton.updateRecentTags(newTag)
             var objs: NSArray?  // temporary store for items in tagview
             NSBundle.mainBundle().loadNibNamed("TagView", owner: nil, topLevelObjects: &objs)
