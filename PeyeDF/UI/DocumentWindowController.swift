@@ -148,9 +148,12 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     }
     
     func tagAdded(theTag: String) {
+        // simple tag
         if self.taggingSelection == nil {
             pdfReader?.sciDoc?.addTag(theTag)
         } else {
+            
+        // reading tag
             if let sel = self.taggingSelection, pages = sel.pages() as? [PDFPage] {
                 var rects = [NSRect]()
                 var idxs = [Int]()
@@ -161,7 +164,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                     idxs.append(pageIndex)
                 }
                 if rects.count > 0 {
-                    let sdTag = SubDocumentTag(text: theTag, withRects: rects, pages: idxs, pdfBase: self.pdfReader)
+                    let sdTag = ReadingTag(text: theTag, withRects: rects, pages: idxs, pdfBase: self.pdfReader)
                     pdfReader?.sciDoc?.addTag(sdTag)
                 }
             }

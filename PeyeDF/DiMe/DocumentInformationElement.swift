@@ -110,7 +110,7 @@ class DocumentInformationElement: DiMeBase {
     func addTag(tag: Tag) {
         if !tags.contains(tag) {
             if HistoryManager.sharedManager.dimeAvailable {
-                HistoryManager.sharedManager.editTag(.Add, tagText: tag.text, forId: self.id!) {
+                HistoryManager.sharedManager.editTag(.Add, tag: tag, forId: self.id!) {
                     tags in
                     if tags != nil {
                         self.tags = tags!
@@ -129,7 +129,7 @@ class DocumentInformationElement: DiMeBase {
     func removeTag(tag: Tag) {
         if tags.contains(tag) {
             if HistoryManager.sharedManager.dimeAvailable {
-                HistoryManager.sharedManager.editTag(.Remove, tagText: tag.text, forId: self.id!) {
+                HistoryManager.sharedManager.editTag(.Remove, tag: tag, forId: self.id!) {
                     tags in
                     if tags != nil {
                         self.tags = tags!
@@ -154,12 +154,12 @@ class DocumentInformationElement: DiMeBase {
     }
     
     /// Adds a tag using text (creates a new tag).
-    func addTag(tag: String) {
-        addTag(Tag(withText: tag))
+    func addTag(tagText: String) {
+        addTag(Tag(withText: tagText))
     }
     
     /// Removes a tag using text match (works because all tags are considered equal when their text is equal).
-    func removeTag(tag: String) {
-        removeTag(Tag(withText: tag))
+    func removeTag(tagText: String) {
+        removeTag(Tag(withText: tagText))
     }
 }

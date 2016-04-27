@@ -34,9 +34,9 @@ public class Tag: Dictionariable, Equatable {
     }
 }
 
-public class SubDocumentTag: Tag {
+public class ReadingTag: Tag {
     
-    let pageRects: [ReadingRect]
+    let rects: [ReadingRect]
     
     /// Creates a new tag. Rects' scalefactor will be set to -1.
     init(text: String, withRects: [NSRect], pages: [Int], pdfBase: MyPDFBase?) {
@@ -48,19 +48,19 @@ public class SubDocumentTag: Tag {
             pageRects.append(r)
         }
         
-        self.pageRects = pageRects
+        self.rects = pageRects
         super.init(withText: text)
     }
     
     override init(fromDiMe json: JSON) {
-        self.pageRects = json["pageRects"].arrayValue.flatMap({ReadingRect(fromJson: $0)})
+        self.rects = json["rects"].arrayValue.flatMap({ReadingRect(fromJson: $0)})
         super.init(fromDiMe: json)
     }
     
     override func getDict() -> [String : AnyObject] {
         var theDictionary = super.getDict()
-        theDictionary["pageRects"] = pageRects.asDictArray()
-        theDictionary["@type"] = "SubDocumentTag"
+        theDictionary["rects"] = rects.asDictArray()
+        theDictionary["@type"] = "ReadingTag"
         return theDictionary
     }
 }
@@ -69,6 +69,6 @@ public func == (lhs: Tag, rhs: Tag) -> Bool {
     return lhs.text == rhs.text
 }
 
-public func == (lhs: SubDocumentTag, rhs: SubDocumentTag) -> Bool {
+public func == (lhs: ReadingTag, rhs: ReadingTag) -> Bool {
     return lhs.text == rhs.text
 }

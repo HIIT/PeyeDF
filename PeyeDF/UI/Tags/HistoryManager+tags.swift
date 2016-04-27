@@ -14,12 +14,10 @@ extension HistoryManager {
     /// Add / remove a tag associated to a scientific document (which is an information element. Only information
     /// elements tag operations are supported.
     /// Calls the given callback with the updated list of tags from dime, nil if the operation failed.
-    func editTag(action: TagAction, tagText: String, forId: Int, callback: ([Tag]? -> Void)? = nil) {
+    func editTag(action: TagAction, tag: Tag, forId: Int, callback: ([Tag]? -> Void)? = nil) {
         guard dimeAvailable else {
             return
         }
-        
-        let tag = Tag(withText: tagText)
         
         do {
             // attempt to translate json
