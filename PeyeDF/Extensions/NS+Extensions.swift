@@ -64,6 +64,12 @@ extension NSSize {
     
 }
 
+extension NSSize: Hashable {
+    public var hashValue: Int { get {
+        return self.height.hashValue ^ self.width.hashValue
+    } }
+}
+
 extension NSColor {
     
     /// Returns true if all the components of the colour (rgb and alpha) are the same as the other color,
@@ -104,6 +110,12 @@ extension NSPoint {
     func pointInRectCoords(theRect: NSRect) -> NSPoint {
         return NSPoint(x: self.x - theRect.origin.x, y: self.y - theRect.origin.y)
     }
+}
+
+extension NSPoint: Hashable {
+    public var hashValue: Int { get {
+        return x.hashValue ^ y.hashValue
+    } }
 }
 
 extension NSURLComponents {

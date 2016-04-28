@@ -34,8 +34,9 @@ class DocumentInformationElement: DiMeBase {
     let contentHash: String?
     private(set) var tags = [Tag]()
     
+    /// Get only strings, only for simple tags
     var tagStrings: [String] { get {
-        return tags.map({$0.text})
+        return tags.filter({($0 as Tag).dynamicType == Tag.self}).map({$0.text})
     } }
     
     /// Creates this information element. The id is set to the hash of the plaintext, or hash of uri if no text was found.
@@ -96,7 +97,7 @@ class DocumentInformationElement: DiMeBase {
         self.appId = json["appId"].stringValue
         self.contentHash = json["contentHash"].string
         if let _tags = json["tags"].array {
-            tags = _tags.flatMap({Tag(fromDiMe: $0)})
+            tags = _tags.flatMap({makeTag(fromJson: $0)})
         }
     }
     
@@ -105,7 +106,7 @@ class DocumentInformationElement: DiMeBase {
         return theDictionary["appId"]! as! String
     }
     
-    /// Adds a tag to the information element.
+    /// Adds a tag to the information element. Posts a tags changed notification on success.
     /// - Attention: automatically tells DiMe to also perform this operation and uses its response to set own tags
     func addTag(tag: Tag) {
         if !tags.contains(tag) {
@@ -113,7 +114,11 @@ class DocumentInformationElement: DiMeBase {
                 HistoryManager.sharedManager.editTag(.Add, tag: tag, forId: self.id!) {
                     tags in
                     if tags != nil {
-                        self.tags = tags!
+                        if self.tags != tags! {
+                            self.tags = tags!
+                            let uInfo = ["tags": tags!]
+                            NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.tagsChangedNotification, object: self, userInfo: uInfo)
+                        }
                     }
                 }
             } else {
@@ -124,7 +129,7 @@ class DocumentInformationElement: DiMeBase {
         }
     }
     
-    /// Removes a tag from the information element.
+    /// Removes a tag from the information element. Posts a tag changed notification on success.
     /// - Attention: automatically tells DiMe to also perform this operation and uses its response to set own tags
     func removeTag(tag: Tag) {
         if tags.contains(tag) {
@@ -132,7 +137,11 @@ class DocumentInformationElement: DiMeBase {
                 HistoryManager.sharedManager.editTag(.Remove, tag: tag, forId: self.id!) {
                     tags in
                     if tags != nil {
-                        self.tags = tags!
+                        if self.tags != tags! {
+                            self.tags = tags!
+                            let uInfo = ["tags": tags!]
+                            NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.tagsChangedNotification, object: self, userInfo: uInfo)
+                        }
                     }
                 }
             } else {
@@ -143,22 +152,26 @@ class DocumentInformationElement: DiMeBase {
         }
     }
     
-    /// Updates own tags from DiMe.
+    /// Updates own tags from DiMe. Posts a tag notification changed on success.
     func updateTags() {
         DiMeFetcher.retrieveTags(forAppId: appId) {
             tags in
             if tags != nil {
-                self.tags = tags!
+                if self.tags != tags! {
+                    self.tags = tags!
+                    let uInfo = ["tags": tags!]
+                    NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.tagsChangedNotification, object: self, userInfo: uInfo)
+                }
             }
         }
     }
     
-    /// Adds a tag using text (creates a new tag).
+    /// Convenience function to add a tag using a String (creates a new Tag).
     func addTag(tagText: String) {
         addTag(Tag(withText: tagText))
     }
     
-    /// Removes a tag using text match (works because all tags are considered equal when their text is equal).
+    /// Convenience function to remove a tag using a String (for simple tags).
     func removeTag(tagText: String) {
         removeTag(Tag(withText: tagText))
     }

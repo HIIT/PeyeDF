@@ -8,7 +8,11 @@
 
 import Foundation
 
-public class Tag: Dictionariable, Equatable {
+public class Tag: Dictionariable, Equatable, Hashable {
+    
+    public var hashValue: Int { get {
+        return text.hashValue
+    } }
     
     let text: String
     
@@ -35,6 +39,10 @@ public class Tag: Dictionariable, Equatable {
 }
 
 public class ReadingTag: Tag {
+    
+    override public var hashValue: Int { get {
+        return rects.reduce(super.hashValue, combine: {$0 ^ $1.hashValue})
+    } }
     
     let rects: [ReadingRect]
     
@@ -70,5 +78,16 @@ public func == (lhs: Tag, rhs: Tag) -> Bool {
 }
 
 public func == (lhs: ReadingTag, rhs: ReadingTag) -> Bool {
-    return lhs.text == rhs.text
+    return lhs.text == rhs.text && lhs.rects == rhs.rects
+}
+
+func makeTag(fromJson json: JSON) -> Tag? {
+    if json["@type"].stringValue == "Tag" {
+        return Tag(fromDiMe: json)
+    } else if json["@type"].stringValue == "ReadingTag" {
+        return ReadingTag(fromDiMe: json)
+    } else {
+        AppSingleton.log.error("Unrecognized tag @type")
+        return nil
+    }
 }

@@ -52,12 +52,25 @@ class MyPDFReader: MyPDFBase {
     
     /// Stores the information element for the current document.
     /// Set by DocumentWindowController.loadDocument()
-    var sciDoc: ScientificDocument?
+    var sciDoc: ScientificDocument? { didSet {
+        
+        if let sd = sciDoc {
+            // pdf reader gets notification from info elem tag changes
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(tagsChanged(_:)), name: PeyeConstants.tagsChangedNotification, object: sd)
+            
+            readingTags = sd.tags.flatMap({$0 as? ReadingTag})
+        }
+        
+    } }
     
     /// Delegate for clicks gesture recognizer
     var clickDelegate: ClickRecognizerDelegate?
     
     // MARK: - Tagging
+    
+    /// Keeps track of index of the last block of tags that was selected
+    /// (so that when multiple tagged blocks of text overlap, multiple clicks cycle through them)
+    private var lastTagSelClick: Int = 0
     
     /// Overridden menu to allow extra actions such as tagging
     override func menuForEvent(event: NSEvent) -> NSMenu? {
@@ -145,6 +158,13 @@ class MyPDFReader: MyPDFBase {
         case .Default:
             super.mouseDown(theEvent)
             
+        }
+    }
+    
+    /// SciDoc tags changed
+    func tagsChanged(notification: NSNotification) {
+        if let uInfo = notification.userInfo, newTags = uInfo["tags"] as? [Tag] {
+            readingTags = newTags.flatMap({$0 as? ReadingTag})
         }
     }
     

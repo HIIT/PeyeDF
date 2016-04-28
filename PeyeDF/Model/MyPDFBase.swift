@@ -49,6 +49,71 @@ class MyPDFBase: PDFView {
         markings = PDFMarkings(pdfBase: self)
     }
     
+    // MARK: - Tagging (for ReadingTags)
+    
+    /// Keeps track of index of the last block of tags that was selected
+    /// (so that when multiple tagged blocks of text overlap, multiple clicks cycle through them)
+    private var lastTagSelClick: Int = 0
+    
+    /// All tags currently stored (changing this causes refresh of display and adjusts related annotations)
+    var readingTags = [ReadingTag]() { willSet {
+        let added = newValue.filter({!readingTags.contains($0)})  // added items
+        let removed = readingTags.filter({!newValue.contains($0)})  // removed items
+        added.forEach({makeTagAnnotation(forTag: $0)})
+        removed.forEach({removeTagAnnotation(forTag: $0)})
+    } }
+    
+    /// Dictionary that relates every reading tag to its set of pdf annotations
+    private var tagAnnotations = [ReadingTag: [PDFAnnotationMarkup]]()
+    
+    /// Creates annotation(s) for the given tag (and stores this relationship for lates use)
+    private func makeTagAnnotation(forTag tag: ReadingTag) {
+        
+        // make sure tag is not already added
+        guard tagAnnotations[tag] == nil else {
+            return
+        }
+        
+        var annots = [PDFAnnotationMarkup]()
+        for rRect in tag.rects {
+            let annotation = PDFAnnotationMarkup(bounds: rRect.rect)
+            annotation.setColor(PeyeConstants.annotationColourTagged)
+            
+            let pdfPage = self.document().pageAtIndex(rRect.pageIndex as Int)
+            
+            pdfPage.addAnnotation(annotation)
+            annots.append(annotation)
+            
+            // refresh view
+            dispatch_async(dispatch_get_main_queue()) {
+                self.setNeedsDisplayInRect(self.convertRect(rRect.rect, fromPage: pdfPage))
+            }
+        }
+        
+        tagAnnotations[tag] = annots
+    }
+    
+    /// Removes annotation(s) for the given tag (removing both)
+    private func removeTagAnnotation(forTag tag: ReadingTag) {
+        
+        // make sure tag exists and remove it
+        guard let annots = tagAnnotations.removeValueForKey(tag) else {
+            return
+        }
+        
+        for annot in annots {
+            let pdfPage = annot.page()
+            
+            pdfPage.removeAnnotation(annot)
+            
+            // refresh view
+            dispatch_async(dispatch_get_main_queue()) {
+                self.setNeedsDisplayInRect(self.convertRect(annot.bounds(), fromPage: pdfPage))
+            }
+        }
+        
+    }
+    
     // MARK: - External functions
     
     /// Get media box for page, representing coordinates which take into account if
@@ -203,11 +268,11 @@ class MyPDFBase: PDFView {
     }
     
     /// Remove all annotations which are a "square" and match the annotations colours
-    /// defined in PeyeConstants
-    func removeAllAnnotations() {
+    /// (corresponding to interesting/ etc. marks) defined in PeyeConstants
+    func removeAllParagraphAnnotations() {
         for i in 0..<document()!.pageCount() {
             let page = document()!.pageAtIndex(i)
-            for annColour in PeyeConstants.annotationAllColours {
+            for annColour in PeyeConstants.markAnnotationColours.values {
                 for annotation in page.annotations() {
                     if let annotation = annotation as? PDFAnnotationSquare {
                         if annotation.color().practicallyEqual(annColour) {
@@ -222,7 +287,7 @@ class MyPDFBase: PDFView {
     /// Writes all annotations corresponding to all marks, and deletes intersecting rectangles for "lower-class" rectangles which
     /// intersect with "higher-class" rectangles
     func autoAnnotate() {
-        removeAllAnnotations()
+        removeAllParagraphAnnotations()
         markings.flattenRectangles_relevance()
         outputAnnotations(.Critical, colour: PeyeConstants.annotationColourCritical)
         outputAnnotations(.Interesting, colour: PeyeConstants.annotationColourInteresting)

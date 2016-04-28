@@ -154,14 +154,16 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         } else {
             
         // reading tag
-            if let sel = self.taggingSelection, pages = sel.pages() as? [PDFPage] {
+            if let sel = self.taggingSelection {
                 var rects = [NSRect]()
                 var idxs = [Int]()
-                for p in pages {
-                    let pageIndex = pdfReader!.document().indexForPage(p)
-                    let rect = sel.boundsForPage(p)
-                    rects.append(rect)
-                    idxs.append(pageIndex)
+                for subSel in (sel.selectionsByLine() as! [PDFSelection]) {
+                    for p in subSel.pages() as! [PDFPage] {
+                        let pageIndex = pdfReader!.document().indexForPage(p)
+                        let rect = subSel.boundsForPage(p)
+                        rects.append(rect)
+                        idxs.append(pageIndex)
+                    }
                 }
                 if rects.count > 0 {
                     let sdTag = ReadingTag(text: theTag, withRects: rects, pages: idxs, pdfBase: self.pdfReader)
@@ -583,11 +585,18 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     @objc private func regularTimerFire(regularTimer: NSTimer) {
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) {
             if let mpdf = self.pdfReader where self.totalReadingTime >= PeyeConstants.minTotalReadTime {
+                // update id of summary event
                 let summaryEv = mpdf.makeSummaryEvent()
                 summaryEv.readingTime = self.totalReadingTime
                 HistoryManager.sharedManager.sendToDiMe(summaryEv) {
                     _, id in
                     mpdf.setSummaryId(id)
+                }
+                
+                // update tags
+                if let own_sciDoc = self.pdfReader!.sciDoc, cHash = own_sciDoc.contentHash, dime_sciDoc = DiMeFetcher.getScientificDocument(contentHash: cHash) {
+                    self.pdfReader!.sciDoc!.id = dime_sciDoc.id!
+                    self.pdfReader!.sciDoc!.updateTags()
                 }
             }
         }

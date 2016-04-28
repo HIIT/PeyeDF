@@ -25,7 +25,8 @@
 import Foundation
 
 /// Represents a rect for DiMe usage ("replaces" NSRect in "external" communications)
-public struct ReadingRect: Comparable, Equatable, Dictionariable {
+public struct ReadingRect: Comparable, Equatable, Hashable, Dictionariable {
+    
     var pageIndex: NSNumber
     var rect: NSRect
     var readingClass: ReadingClass = ReadingClass.Unset
@@ -36,6 +37,13 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable {
     var scaleFactor: NSNumber
     var screenDistance: NSNumber
     var attnVal: NSNumber?
+    
+    public var hashValue: Int { get {
+        return rect.hashValue ^ pageIndex.hashValue ^
+                readingClass.rawValue.hashValue ^ classSource.rawValue.hashValue ^
+                unixt.count.hashValue ^ floating.hashValue ^ scaleFactor.hashValue ^
+                screenDistance.hashValue
+    } }
     
     init(pageIndex: Int, origin: NSPoint, size: NSSize, readingClass: ReadingClass, classSource: ClassSource, pdfBase: MyPDFBase?) {
         let newUnixt = NSDate().unixTime

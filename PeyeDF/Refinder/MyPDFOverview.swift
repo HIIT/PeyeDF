@@ -66,7 +66,7 @@ class MyPDFOverview: MyPDFBase {
                     // if rect has an attention value, use that instead of the default color
                     let rectCol: NSColor
                     if let av = rect.attnVal {
-                        rectCol = PeyeConstants.markColourAttnVal(av)
+                        rectCol = PeyeConstants.colourAttnVal(av)
                     } else {
                         rectCol = PeyeConstants.smiColours[.Paragraph]!.colorWithAlphaComponent(0.9)
                     }
@@ -95,7 +95,7 @@ class MyPDFOverview: MyPDFBase {
             	
                     // Draw.
                     for rect in rectsToDraw {
-                        let rectCol = PeyeConstants.annotationColours[rc]!.colorWithAlphaComponent(0.9)
+                        let rectCol = PeyeConstants.markAnnotationColours[rc]!.colorWithAlphaComponent(0.9)
                         let adjRect = rect.rect.offset(byPoint: pointDiff)
                         let rectPath: NSBezierPath = NSBezierPath(rect: adjRect)
                         rectCol.setFill()
@@ -115,7 +115,7 @@ class MyPDFOverview: MyPDFBase {
         	
                 // Draw.
                 for rect in rectsToDraw {
-                    let rectCol = PeyeConstants.markColourFoundStrings
+                    let rectCol = PeyeConstants.colourFoundStrings
                     // scale rect up to make it more visible
                     let rectPath: NSBezierPath = NSBezierPath(rect: rect.rect.scale(3))
                     rectCol.setFill()

@@ -137,38 +137,36 @@ struct PeyeConstants {
     /// Space between the "selection" (seen paragraph) rectangle and its line (in page points)
     static let annotationLineDistance: CGFloat = 7
     
-    /// Default color of the read annotation lines
+    /// Default color for tagged text
+    static let annotationColourTagged: NSColor = NSColor(red: 0.84, green: 0.51, blue: 1, alpha: 0.50)
+    
+    /// Default color of the read annotation lines (reading marks)
     static let annotationColourRead: NSColor = NSColor(red: 0.24, green: 0.74, blue: 0.97, alpha: 0.75)
     
-    /// Default color of the "interesting" annotation lines
+    /// Default color of the "interesting" annotation lines (interesting marks)
     static let annotationColourInteresting: NSColor = NSColor(red: 0.92, green: 0.71, blue: 0.43, alpha: 0.75)
     
-    /// Default color of the "critical" annotation lines
+    /// Default color of the "critical" annotation lines (critical marks)
     static let annotationColourCritical: NSColor = NSColor(red: 0.99, green: 0.24, blue: 0.26, alpha: 0.75)
     
     /// Default color for "floating" paragraphs detected using fixations
-    static let markColourParagraph: NSColor = NSColor(red: 0.40, green: 0.40, blue: 0.40, alpha: 0.75)
+    static let colourParagraph: NSColor = NSColor(red: 0.40, green: 0.40, blue: 0.40, alpha: 0.75)
     
     /// Default color for paragraphs when showing raw attention value (assuming attVal between 0 and 1)
-    static func markColourAttnVal(attnVal: NSNumber) -> NSColor {
+    static func colourAttnVal(attnVal: NSNumber) -> NSColor {
         return NSColor(red: 0.675, green: 0.25, blue: 0.675, alpha: attnVal as CGFloat)
     }
     
     /// Default color for searched, found and looked at string queries
-    static let markColourFoundStrings: NSColor = NSColor(red: 0.88, green: 0.89, blue: 0.0, alpha: 0.85)
+    static let colourFoundStrings: NSColor = NSColor(red: 0.88, green: 0.89, blue: 0.0, alpha: 0.85)
     
-    /// Array of all annotation colours, in ascending order of importance
-    static let annotationAllColours = [PeyeConstants.annotationColourRead,
-                                       PeyeConstants.annotationColourInteresting,
-                                       PeyeConstants.annotationColourCritical]
-    
-    /// Dictionary of annotation colours for their given "importance"
-    static let annotationColours: [ReadingClass: NSColor] = [.Read: annotationColourRead,
+    /// Dictionary of annotation colours for marks, based on their given "class"
+    static let markAnnotationColours: [ReadingClass: NSColor] = [.Read: annotationColourRead,
                                                              .Interesting: annotationColourInteresting,
                                                              .Critical: annotationColourCritical]
     
     /// Dictionary of annotation colours for smi
-    static let smiColours: [ReadingClass: NSColor] = [.Paragraph: markColourParagraph]
+    static let smiColours: [ReadingClass: NSColor] = [.Paragraph: colourParagraph]
     
     // MARK: - Other globals
     
@@ -243,6 +241,13 @@ struct PeyeConstants {
     static let tagMenuTag = UInt(194851)
     
     // MARK: - Notifications
+    
+    /// String used to idenfity the notification related to changes in an object's tags (the notification's
+    /// object.)
+    ///
+    /// **UserInfo dictionary fields**:
+    /// - "newTags": The updated list of tags
+    static let tagsChangedNotification = "hiit.PeyeDF.tagsChanged"
     
     /// String notifying that something changed in the dime connection.
     ///

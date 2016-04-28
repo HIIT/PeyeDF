@@ -149,3 +149,9 @@ extension NSRect {
         return NSRect(origin: newOrigin, size: self.size)
     }
 }
+
+extension NSRect: Hashable {
+    public var hashValue: Int { get {
+        return size.hashValue ^ origin.hashValue
+    } }
+}

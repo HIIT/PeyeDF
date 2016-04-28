@@ -357,7 +357,7 @@ class PDFMarkingsState: NSObject {
 /// How important is a paragraph
 public enum ReadingClass: Int {
     case Unset = 0
-    case Tag = 1
+    case Tag = 1  // note: this is treated separately ("tags" are not "marks")
     case Viewport = 10
     case Paragraph = 15
     case Read = 20
