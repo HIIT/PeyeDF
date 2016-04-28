@@ -10,6 +10,18 @@ import Foundation
 
 public class Tag: Dictionariable, Equatable, Hashable {
     
+    /// Creates a tag of the correct type depending on the json's type annotation
+    static func makeTag(fromJson json: JSON) -> Tag? {
+        if json["@type"].stringValue == "Tag" {
+            return Tag(fromDiMe: json)
+        } else if json["@type"].stringValue == "ReadingTag" {
+            return ReadingTag(fromDiMe: json)
+        } else {
+            AppSingleton.log.error("Unrecognized tag @type")
+            return nil
+        }
+    }
+    
     public var hashValue: Int { get {
         return text.hashValue
     } }
@@ -72,32 +84,31 @@ public class ReadingTag: Tag {
         return theDictionary
     }
     
-    /// Returns true if the given NSRect is part of this tag's rects
-    func containsNSRect(nsrect: NSRect) -> Bool {
-        return self.rects.reduce(false, combine: {$0 || $1.rect == nsrect})
+    /// Returns true if the given NSRect is part of this tag's rects, on the given page
+    func containsNSRect(nsrect: NSRect, onPage: Int) -> Bool {
+        return self.rects.reduce(false, combine: {$0 || ($1.rect == nsrect && $1.pageIndex == onPage)})
     }
     
     /// Returns true if the given collection of NSRects corresponds to this tag's rects
-    func containsNSRects(nsrects: [NSRect]) -> Bool {
-        return nsrects.reduce(true, combine: {$0 && containsNSRect($1)})
+    func containsNSRects(nsrects: [NSRect], onPages: [Int]) -> Bool {
+        return nsrects.enumerate().reduce(true, combine: {$0 && containsNSRect($1.element, onPage: onPages[$1.index])})
     }
 }
 
+/// Checks if two tags are equal (and if they are both reading tags, uses the reading tag
+/// specific comparison)
 public func == (lhs: Tag, rhs: Tag) -> Bool {
-    return lhs.text == rhs.text
+    if lhs.dynamicType == rhs.dynamicType {
+        if let rrl = lhs as? ReadingTag, rrr = rhs as? ReadingTag {
+            return rrl == rrr
+        } else {
+            return lhs.text == rhs.text
+        }
+    } else {
+        return false
+    }
 }
 
 public func == (lhs: ReadingTag, rhs: ReadingTag) -> Bool {
     return lhs.text == rhs.text && lhs.rects == rhs.rects
-}
-
-func makeTag(fromJson json: JSON) -> Tag? {
-    if json["@type"].stringValue == "Tag" {
-        return Tag(fromDiMe: json)
-    } else if json["@type"].stringValue == "ReadingTag" {
-        return ReadingTag(fromDiMe: json)
-    } else {
-        AppSingleton.log.error("Unrecognized tag @type")
-        return nil
-    }
 }

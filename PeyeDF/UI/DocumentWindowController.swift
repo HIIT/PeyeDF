@@ -155,16 +155,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             
         // reading tag
             if let sel = self.taggingSelection {
-                var rects = [NSRect]()
-                var idxs = [Int]()
-                for subSel in (sel.selectionsByLine() as! [PDFSelection]) {
-                    for p in subSel.pages() as! [PDFPage] {
-                        let pageIndex = pdfReader!.document().indexForPage(p)
-                        let rect = subSel.boundsForPage(p)
-                        rects.append(rect)
-                        idxs.append(pageIndex)
-                    }
-                }
+                let (rects, idxs) = pdfReader!.getLineRects(sel)
                 if rects.count > 0 {
                     let sdTag = ReadingTag(text: theTag, withRects: rects, pages: idxs, pdfBase: self.pdfReader)
                     pdfReader?.sciDoc?.addTag(sdTag)
@@ -174,9 +165,18 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     }
     
     func tagRemoved(theTag: String) {
-        // TODO: allow for removing existing sub document tags
-        
-        if self.taggingSelection == nil {
+        if let sel = self.taggingSelection, tags = pdfReader?.tagsForSelection(sel) where tags.count > 0 {
+            // remove reading tag
+            let toRemove = tags.filter({$0.text == theTag})
+            guard toRemove.count == 1 else {
+                AppSingleton.log.error("Count of tags to be removed different than one")
+                return
+            }
+            pdfReader?.sciDoc?.removeTag(toRemove[0])
+            
+        } else {
+            
+            // removing simple tags
             pdfReader?.sciDoc?.removeTag(theTag)
         }
     }

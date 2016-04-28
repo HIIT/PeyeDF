@@ -49,7 +49,7 @@ class MyPDFBase: PDFView {
         markings = PDFMarkings(pdfBase: self)
     }
     
-    // MARK: - Tagging (for ReadingTags)
+    // MARK: - Tagging (external)
     
     /// All tags currently stored (changing this causes refresh of display and adjusts related annotations)
     var readingTags = [ReadingTag]() { willSet {
@@ -58,6 +58,14 @@ class MyPDFBase: PDFView {
         added.forEach({makeTagAnnotation(forTag: $0)})
         removed.forEach({removeTagAnnotation(forTag: $0)})
     } }
+    
+    /// Returns a list of tags associated to a given selection
+    func tagsForSelection(sel: PDFSelection) -> [ReadingTag] {
+        var (rects, idxs) = getLineRects(sel)
+        return readingTags.filter({$0.containsNSRects(rects, onPages: idxs)})
+    }
+    
+    // MARK: - Tagging (private)
     
     /// Tuples that relate sets of pdf annotations to their related tags
     /// (since a block of text can have multiple tags)
@@ -82,7 +90,8 @@ class MyPDFBase: PDFView {
         var foundI = -1
         for (i, t) in tagAnnotations.enumerate() {
             let tagRects = tag.rects.map{$0.rect}
-            if t.tags[0].containsNSRects(tagRects) {  // assume the first tag refers to the same regions as the others in the tuple
+            let pages = tag.rects.map{$0.pageIndex as Int}
+            if t.tags[0].containsNSRects(tagRects, onPages: pages) {  // assume the first tag refers to the same regions as the others in the tuple
                 foundI = i
                 break
             }
@@ -163,6 +172,21 @@ class MyPDFBase: PDFView {
     }
     
     // MARK: - External functions
+    
+    /// Returns all rects and page indices covered by this selection, line by line
+    func getLineRects(sel: PDFSelection) -> ([NSRect], [Int]) {
+        var rects = [NSRect]()
+        var idxs = [Int]()
+        for subSel in (sel.selectionsByLine() as! [PDFSelection]) {
+            for p in subSel.pages() as! [PDFPage] {
+                let pageIndex = self.document().indexForPage(p)
+                let rect = subSel.boundsForPage(p)
+                rects.append(rect)
+                idxs.append(pageIndex)
+            }
+        }
+        return (rects, idxs)
+    }
     
     /// Get media box for page, representing coordinates which take into account if
     /// page has been cropped (in Preview, for example). By default returns

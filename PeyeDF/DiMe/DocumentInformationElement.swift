@@ -97,7 +97,7 @@ class DocumentInformationElement: DiMeBase {
         self.appId = json["appId"].stringValue
         self.contentHash = json["contentHash"].string
         if let _tags = json["tags"].array {
-            tags = _tags.flatMap({makeTag(fromJson: $0)})
+            tags = _tags.flatMap({Tag.makeTag(fromJson: $0)})
         }
     }
     
