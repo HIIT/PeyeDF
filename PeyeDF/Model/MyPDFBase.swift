@@ -51,10 +51,6 @@ class MyPDFBase: PDFView {
     
     // MARK: - Tagging (for ReadingTags)
     
-    /// Keeps track of index of the last block of tags that was selected
-    /// (so that when multiple tagged blocks of text overlap, multiple clicks cycle through them)
-    private var lastTagSelClick: Int = 0
-    
     /// All tags currently stored (changing this causes refresh of display and adjusts related annotations)
     var readingTags = [ReadingTag]() { willSet {
         let added = newValue.filter({!readingTags.contains($0)})  // added items
@@ -63,53 +59,105 @@ class MyPDFBase: PDFView {
         removed.forEach({removeTagAnnotation(forTag: $0)})
     } }
     
-    /// Dictionary that relates every reading tag to its set of pdf annotations
-    private var tagAnnotations = [ReadingTag: [PDFAnnotationMarkup]]()
+    /// Tuples that relate sets of pdf annotations to their related tags
+    /// (since a block of text can have multiple tags)
+    private var tagAnnotations = [(annotations: [PDFAnnotationMarkup], tags: [ReadingTag])]()
     
-    /// Creates annotation(s) for the given tag (and stores this relationship for lates use)
+    /// Keeps track of index of the last tuple of tags that was selected
+    /// (so that when multiple tagged blocks of text overlap, multiple clicks cycle through them)
+    private var lastTagAnnotationIndex: Int = 0
+    
+    /// Creates annotation(s) for the given tag (and stores this relationship for later use)
     private func makeTagAnnotation(forTag tag: ReadingTag) {
         
-        // make sure tag is not already added
-        guard tagAnnotations[tag] == nil else {
+        // Make sure tag was not already added
+        guard tagAnnotations.reduce(false, combine: {$0 || $1.tags.contains(tag) }) == false else {
             return
         }
         
-        var annots = [PDFAnnotationMarkup]()
-        for rRect in tag.rects {
-            let annotation = PDFAnnotationMarkup(bounds: rRect.rect)
-            annotation.setColor(PeyeConstants.annotationColourTagged)
-            
-            let pdfPage = self.document().pageAtIndex(rRect.pageIndex as Int)
-            
-            pdfPage.addAnnotation(annotation)
-            annots.append(annotation)
-            
-            // refresh view
-            dispatch_async(dispatch_get_main_queue()) {
-                self.setNeedsDisplayInRect(self.convertRect(rRect.rect, fromPage: pdfPage))
+        // find which group of annotations corresponds to this tag.
+        // if none are related, create a new group of annotations.
+        // if there is a relationship, add this tag to the tuple without creating new annotations.
+        
+        var foundI = -1
+        for (i, t) in tagAnnotations.enumerate() {
+            let tagRects = tag.rects.map{$0.rect}
+            if t.tags[0].containsNSRects(tagRects) {  // assume the first tag refers to the same regions as the others in the tuple
+                foundI = i
+                break
             }
         }
         
-        tagAnnotations[tag] = annots
+        if foundI == -1 {
+            
+            // no tags already exist which relate to this block of text
+            
+            var annots = [PDFAnnotationMarkup]()
+            for rRect in tag.rects {
+                let annotation = PDFAnnotationMarkup(bounds: rRect.rect)
+                annotation.setColor(PeyeConstants.annotationColourTagged)
+                
+                let pdfPage = self.document().pageAtIndex(rRect.pageIndex as Int)
+                
+                pdfPage.addAnnotation(annotation)
+                annots.append(annotation)
+                
+                // refresh view
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.setNeedsDisplayInRect(self.convertRect(rRect.rect, fromPage: pdfPage))
+                }
+            }
+            
+            // create new entry in tuple
+            tagAnnotations.append((annotations: annots, tags: [tag]))
+            
+        } else {
+            // add tag to tuple
+            tagAnnotations[foundI].tags.append(tag)
+        }
+        
     }
     
     /// Removes annotation(s) for the given tag (removing both)
     private func removeTagAnnotation(forTag tag: ReadingTag) {
         
-        // make sure tag exists and remove it
-        guard let annots = tagAnnotations.removeValueForKey(tag) else {
+        // make sure tag exists and get index in its tuple
+        
+        var tupleI = -1
+        var tagI = -1
+        
+        for (i, t) in tagAnnotations.enumerate() {
+            if let j = t.tags.indexOf(tag) {  // assume the first tag refers to the same regions as the others in the tuple
+                tupleI = i
+                tagI = j
+                break
+            }
+        }
+        
+        guard tupleI != -1 else {
+            AppSingleton.log.error("Tag not found in already existing tags")
             return
         }
         
-        for annot in annots {
-            let pdfPage = annot.page()
+        // remove tag from tuple. if no tags are left in that tuple, delete entry and annotations
+        
+        tagAnnotations[tupleI].tags.removeAtIndex(tagI)
+        
+        if tagAnnotations[tupleI].tags.count == 0 {
             
-            pdfPage.removeAnnotation(annot)
+            for annot in tagAnnotations[tupleI].annotations {
             
-            // refresh view
-            dispatch_async(dispatch_get_main_queue()) {
-                self.setNeedsDisplayInRect(self.convertRect(annot.bounds(), fromPage: pdfPage))
+                let pdfPage = annot.page()
+                
+                pdfPage.removeAnnotation(annot)
+                
+                // refresh view
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.setNeedsDisplayInRect(self.convertRect(annot.bounds(), fromPage: pdfPage))
+                }
             }
+            
+            tagAnnotations.removeAtIndex(tupleI)
         }
         
     }

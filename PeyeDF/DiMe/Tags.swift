@@ -71,6 +71,16 @@ public class ReadingTag: Tag {
         theDictionary["@type"] = "ReadingTag"
         return theDictionary
     }
+    
+    /// Returns true if the given NSRect is part of this tag's rects
+    func containsNSRect(nsrect: NSRect) -> Bool {
+        return self.rects.reduce(false, combine: {$0 || $1.rect == nsrect})
+    }
+    
+    /// Returns true if the given collection of NSRects corresponds to this tag's rects
+    func containsNSRects(nsrects: [NSRect]) -> Bool {
+        return nsrects.reduce(true, combine: {$0 && containsNSRect($1)})
+    }
 }
 
 public func == (lhs: Tag, rhs: Tag) -> Bool {

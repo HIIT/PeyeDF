@@ -153,3 +153,12 @@ extension NSURLComponents {
         }
     }
 }
+
+/// Allows to calculate a hash for collections which contain hashables
+extension CollectionType where Generator.Element: Hashable {
+    
+    /// Returns a hash made by starting from 0 and xorring all elements' hashes
+    public var xorHash: Int { get {
+        return reduce(0, combine: {$0 ^ $1.hashValue})
+    } }
+}

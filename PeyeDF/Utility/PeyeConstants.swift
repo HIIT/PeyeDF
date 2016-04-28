@@ -138,7 +138,7 @@ struct PeyeConstants {
     static let annotationLineDistance: CGFloat = 7
     
     /// Default color for tagged text
-    static let annotationColourTagged: NSColor = NSColor(red: 0.84, green: 0.51, blue: 1, alpha: 0.50)
+    static let annotationColourTagged: NSColor = NSColor(red: 0.84, green: 0.51, blue: 1, alpha: 0.35)
     
     /// Default color of the read annotation lines (reading marks)
     static let annotationColourRead: NSColor = NSColor(red: 0.24, green: 0.74, blue: 0.97, alpha: 0.75)
