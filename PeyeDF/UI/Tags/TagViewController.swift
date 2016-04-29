@@ -16,12 +16,16 @@ protocol TagDelegate: class {
     
     /// Tells the delegate that a tag was removed
     func tagRemoved(theTag: String)
+    
+    /// Asks the delegate whether we are adding a reading tag
+    func isNextTagReading() -> Bool
 }
 
 class TagViewController: NSViewController {
     
     let kInputFieldTag = 5
     let kLabelFieldTag = 10
+    let kLookupButId = "lookupButton"  // make sure this is the same in IB
 
     @IBOutlet weak var stackView: AnimatedStack!
     @IBOutlet weak var inputField: NSTextField!
@@ -46,33 +50,6 @@ class TagViewController: NSViewController {
     
     /// Resets the managed stackview and replaces it with a new list of tags (in order).
     /// Does not tell delegate about this operation.
-    func setTags(tagStrings: [String]) {
-        // TODO: convert this to a method that receives [Tag] and adjusts itself depending
-        // on whether Tag.dynamicType == ReadingTag.self
-        stackView.removeAllViews()
-        self.representedTags = tagStrings
-        for tag in tagStrings {
-            var objs: NSArray?  // temporary store for items in tagview
-            NSBundle.mainBundle().loadNibNamed("TagView", owner: nil, topLevelObjects: &objs)
-            if let objs = objs {
-                for obj in objs {
-                    if let view = obj as? NSView {
-                        stackView.addView(view, inGravity: .Top)
-                        for subview in view.subviews {
-                            if let but = subview as? NSButton {
-                                but.tag = count
-                            }
-                            if let txt = subview as? NSTextField {
-                                txt.stringValue = tag
-                            }
-                        }
-                        count += 1
-                    }
-                }
-            }
-        }
-    }
-    
     func setTags(tags: [Tag]) {
         stackView.removeAllViews()
         self.representedTags = tags.map({$0.text})
@@ -86,6 +63,14 @@ class TagViewController: NSViewController {
                         for subview in view.subviews {
                             if let but = subview as? NSButton {
                                 but.tag = count
+                                // show lookup button only if tag is a readingtag
+                                if let butI = but.identifier where butI == kLookupButId {
+                                    if tag.dynamicType == ReadingTag.self {
+                                        but.hidden = false
+                                    } else {
+                                        but.hidden = true
+                                    }
+                                }
                             }
                             if let txt = subview as? NSTextField {
                                 txt.stringValue = tag.text
@@ -135,6 +120,11 @@ class TagViewController: NSViewController {
                         for subview in view.subviews {
                             if let but = subview as? NSButton {
                                 but.tag = count
+                                if let butI = but.identifier where butI == kLookupButId {
+                                    if tagDelegate!.isNextTagReading() {
+                                        but.hidden = false
+                                    }
+                                }
                             }
                             if let txt = subview as? NSTextField {
                                 txt.stringValue = newTag

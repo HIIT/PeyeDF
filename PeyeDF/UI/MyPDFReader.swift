@@ -68,10 +68,6 @@ class MyPDFReader: MyPDFBase {
     
     // MARK: - Tagging
     
-    /// Keeps track of index of the last block of tags that was selected
-    /// (so that when multiple tagged blocks of text overlap, multiple clicks cycle through them)
-    private var lastTagSelClick: Int = 0
-    
     /// Overridden menu to allow extra actions such as tagging
     override func menuForEvent(event: NSEvent) -> NSMenu? {
         let menu = super.menuForEvent(event)

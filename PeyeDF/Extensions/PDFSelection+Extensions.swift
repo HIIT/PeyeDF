@@ -80,7 +80,7 @@ extension PDFSelection {
     /// to this selection.
     /// - Note: Must make sure that these two selections are on the same page before comparing them.
     func isAdjacent(toSelection otherSel: PDFSelection) -> Bool {
-        let page = self.pages()[0] as! PDFPage
+        // NOTE: untested
         let otherPage = otherSel.pages()[0] as! PDFPage
         let otherSelRect = otherSel.boundsForPage(otherPage)
         if let nRect = adjacentLineRect(1) {

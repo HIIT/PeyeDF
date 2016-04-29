@@ -65,6 +65,11 @@ class MyPDFBase: PDFView {
         return readingTags.filter({$0.containsNSRects(rects, onPages: idxs)})
     }
     
+    /// Select
+    func showTags(forPoint: NSPoint) {
+        
+    }
+    
     // MARK: - Tagging (private)
     
     /// Tuples that relate sets of pdf annotations to their related tags

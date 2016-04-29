@@ -34,12 +34,6 @@ class DocumentInformationElement: DiMeBase {
     let contentHash: String?
     private(set) var tags = [Tag]()
     
-    /// Get only strings, only for simple tags
-    // TODO: remove this
-    var tagStrings: [String] { get {
-        return tags.map({$0.text})
-    } }
-    
     /// Creates this information element. The id is set to the hash of the plaintext, or hash of uri if no text was found.
     ///
     /// - parameter uri: Path on file or web

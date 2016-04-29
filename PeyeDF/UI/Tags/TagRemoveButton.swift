@@ -8,7 +8,7 @@
 
 import Cocoa
 
-class TagRemoveButton: NSButton {
+class TagViewButton: NSButton {
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)

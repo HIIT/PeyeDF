@@ -114,8 +114,9 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                     tvc.setStatus(true)
                     
                     // refresh document tags if different from what's stored
-                    if tvc.representedTags != self.pdfReader!.sciDoc!.tagStrings {
-                        tvc.setTags(self.pdfReader!.sciDoc!.tagStrings)
+                    // TODO: represented tags should be changed from a string to something else?
+                    if tvc.representedTags != self.pdfReader!.sciDoc!.tags.map({$0.text}) {
+                        tvc.setTags(self.pdfReader!.sciDoc!.tags)
                     }
                     
                     self.taggingSelection = nil
@@ -184,6 +185,10 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             // remove simple tag
             pdfReader?.sciDoc?.removeTag(theTag)
         }
+    }
+    
+    func isNextTagReading() -> Bool {
+        return self.taggingSelection != nil
     }
     
     /// Implemented to detect when the tag popover is closed (to nullify taggingSelection
