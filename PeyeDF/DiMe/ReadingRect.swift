@@ -25,7 +25,7 @@
 import Foundation
 
 /// Represents a rect for DiMe usage ("replaces" NSRect in "external" communications)
-public struct ReadingRect: Comparable, Equatable, Hashable, Dictionariable {
+public struct ReadingRect: Comparable, Equatable, Dictionariable, NearlyEquatable {
     
     var pageIndex: NSNumber
     var rect: NSRect
@@ -37,13 +37,6 @@ public struct ReadingRect: Comparable, Equatable, Hashable, Dictionariable {
     var scaleFactor: NSNumber
     var screenDistance: NSNumber
     var attnVal: NSNumber?
-    
-    public var hashValue: Int { get {
-        return rect.hashValue ^ pageIndex.hashValue ^
-                readingClass.rawValue.hashValue ^ classSource.rawValue.hashValue ^
-                unixt.count.hashValue ^ floating.hashValue ^ scaleFactor.hashValue ^
-                screenDistance.hashValue
-    } }
     
     init(pageIndex: Int, origin: NSPoint, size: NSSize, readingClass: ReadingClass, classSource: ClassSource, pdfBase: MyPDFBase?) {
         let newUnixt = NSDate().unixTime
@@ -233,6 +226,13 @@ public struct ReadingRect: Comparable, Equatable, Hashable, Dictionariable {
         }
         return retDict
     }
+    
+    func nearlyEqual(other: ReadingRect) -> Bool {
+        return self.pageIndex == other.pageIndex &&
+               self.rect.nearlyEqual(other.rect) &&
+               self.readingClass == other.readingClass &&
+               self.classSource == other.classSource
+     }
 }
 
 /// ReadingRects are equal if all their properties are equal

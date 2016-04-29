@@ -35,8 +35,9 @@ class DocumentInformationElement: DiMeBase {
     private(set) var tags = [Tag]()
     
     /// Get only strings, only for simple tags
+    // TODO: remove this
     var tagStrings: [String] { get {
-        return tags.filter({($0 as Tag).dynamicType == Tag.self}).map({$0.text})
+        return tags.map({$0.text})
     } }
     
     /// Creates this information element. The id is set to the hash of the plaintext, or hash of uri if no text was found.
@@ -106,49 +107,75 @@ class DocumentInformationElement: DiMeBase {
         return theDictionary["appId"]! as! String
     }
     
-    /// Adds a tag to the information element. Posts a tags changed notification on success.
+    /// Adds a reading tag to the information element. If a simple tag was already present, it will be
+    /// "upgraded" to a reading tag. If a reading tag with the same name was present adds the new blocks
+    /// of text to it.
     /// - Attention: automatically tells DiMe to also perform this operation and uses its response to set own tags
-    func addTag(tag: Tag) {
-        if !tags.contains(tag) {
-            if HistoryManager.sharedManager.dimeAvailable {
-                HistoryManager.sharedManager.editTag(.Add, tag: tag, forId: self.id!) {
-                    tags in
-                    if tags != nil {
-                        if self.tags != tags! {
-                            self.tags = tags!
-                            let uInfo = ["tags": tags!]
-                            NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.tagsChangedNotification, object: self, userInfo: uInfo)
-                        }
-                    }
-                }
+    func addTag(newTag: Tag) {
+        
+        var tagToAdd: Tag
+        
+        // check if old tags with the same name exists and combine them if so
+        // (tags with same name overwrite previous ones in DiMe)
+        if let oldTag = tags.getTag(newTag.text) {
+            if oldTag.dynamicType == Tag.self {
+                tagToAdd = newTag
             } else {
-                AppSingleton.log.error("Tried to add a tag, but DiMe was down")
+                // combine reading tags
+                tagToAdd = (oldTag as! ReadingTag).combine(newTag as! ReadingTag)
             }
         } else {
-            AppSingleton.log.warning("Adding a tag which is already in the info element")
+            tagToAdd = newTag
+        }
+        
+        // send data to dime
+        if HistoryManager.sharedManager.dimeAvailable {
+            HistoryManager.sharedManager.editTag(.Add, tag: tagToAdd, forId: self.id!) {
+                tags in
+                if tags != nil {
+                    if self.tags != tags! {
+                        self.tags = tags!
+                        let uInfo = ["tags": tags!]
+                        NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.tagsChangedNotification, object: self, userInfo: uInfo)
+                    }
+                }
+            }
+        } else {
+            AppSingleton.log.error("Tried to add a tag, but DiMe was down")
         }
     }
     
-    /// Removes a tag from the information element. Posts a tag changed notification on success.
+    /// Subtracts a reading tag from this documents' tags. If the resulting reading tag contains no rects,
+    /// it will be "downgraded" to a simple tag.
     /// - Attention: automatically tells DiMe to also perform this operation and uses its response to set own tags
-    func removeTag(tag: Tag) {
-        if tags.contains(tag) {
-            if HistoryManager.sharedManager.dimeAvailable {
-                HistoryManager.sharedManager.editTag(.Remove, tag: tag, forId: self.id!) {
-                    tags in
-                    if tags != nil {
-                        if self.tags != tags! {
-                            self.tags = tags!
-                            let uInfo = ["tags": tags!]
-                            NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.tagsChangedNotification, object: self, userInfo: uInfo)
-                        }
+    func subtractTag(newTag: ReadingTag) {
+        
+        guard let oldTag = tags.getTag(newTag.text) else {
+            AppSingleton.log.error("Could not find a tag to subtract")
+            return
+        }
+        
+        guard let oldReadingTag = oldTag as? ReadingTag else {
+            AppSingleton.log.error("Tag to subtract was not a reading tag")
+            return
+        }
+        
+        let tagToAdd = oldReadingTag.subtract(newTag)
+        
+        // send data to dime
+        if HistoryManager.sharedManager.dimeAvailable {
+            HistoryManager.sharedManager.editTag(.Add, tag: tagToAdd, forId: self.id!) {
+                tags in
+                if tags != nil {
+                    if self.tags != tags! {
+                        self.tags = tags!
+                        let uInfo = ["tags": tags!]
+                        NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.tagsChangedNotification, object: self, userInfo: uInfo)
                     }
                 }
-            } else {
-                AppSingleton.log.error("Tried to remove a tag, but DiMe was down")
             }
         } else {
-            AppSingleton.log.error("Tag to remove not found in the info element")
+            AppSingleton.log.error("Tried to remove a tag, but DiMe was down")
         }
     }
     
@@ -166,13 +193,35 @@ class DocumentInformationElement: DiMeBase {
         }
     }
     
-    /// Convenience function to add a tag using a String (creates a new Tag).
+    /// Convenience function to add a tag using a String (creates a new Tag if it doesn't exists already).
     func addTag(tagText: String) {
-        addTag(Tag(withText: tagText))
+        // if tag is already present, don't add anything (tags overwrite each other)
+        if !tags.containsTag(withText: tagText) {
+            addTag(Tag(withText: tagText))
+        }
     }
     
-    /// Convenience function to remove a tag using a String (for simple tags).
+    /// Removes a tag using a String.
+    /// Deletes the tag completely even if it's a reading tag with some associated text.
     func removeTag(tagText: String) {
-        removeTag(Tag(withText: tagText))
+        let tag = Tag(withText: tagText)
+        if tags.containsTag(withText: tagText) {
+            if HistoryManager.sharedManager.dimeAvailable {
+                HistoryManager.sharedManager.editTag(.Remove, tag: tag, forId: self.id!) {
+                    tags in
+                    if tags != nil {
+                        if self.tags != tags! {
+                            self.tags = tags!
+                            let uInfo = ["tags": tags!]
+                            NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.tagsChangedNotification, object: self, userInfo: uInfo)
+                        }
+                    }
+                }
+            } else {
+                AppSingleton.log.error("Tried to remove a tag, but DiMe was down")
+            }
+        } else {
+            AppSingleton.log.error("Tag to remove not found in the info element")
+        }
     }
 }

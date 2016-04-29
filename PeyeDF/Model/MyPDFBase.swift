@@ -61,7 +61,7 @@ class MyPDFBase: PDFView {
     
     /// Returns a list of tags associated to a given selection
     func tagsForSelection(sel: PDFSelection) -> [ReadingTag] {
-        var (rects, idxs) = getLineRects(sel)
+        let (rects, idxs) = getLineRects(sel)
         return readingTags.filter({$0.containsNSRects(rects, onPages: idxs)})
     }
     

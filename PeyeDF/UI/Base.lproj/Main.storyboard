@@ -1801,6 +1801,11 @@
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="200" id="uZL-UY-4Xd"/>
                                 </constraints>
                                 <gestureRecognizers>
+                                    <clickGestureRecognizer delaysPrimaryMouseButtonEvents="YES" numberOfClicksRequired="1" id="47l-Yf-Ty5" userLabel="Single click recognizer">
+                                        <connections>
+                                            <action selector="singleClick:" target="XfG-lQ-9wD" id="6RT-Pe-AuE"/>
+                                        </connections>
+                                    </clickGestureRecognizer>
                                     <clickGestureRecognizer delaysPrimaryMouseButtonEvents="YES" numberOfClicksRequired="2" id="ifg-Tf-3YL" userLabel="Double click recognizer">
                                         <connections>
                                             <action selector="doubleClick:" target="XfG-lQ-9wD" id="XsX-eT-2bS"/>
@@ -1832,6 +1837,7 @@
                         <outlet property="doubleClickRecognizer" destination="ifg-Tf-3YL" id="Cgl-nJ-Ein"/>
                         <outlet property="overlay" destination="lWC-Pn-r7j" id="WcG-Fv-63r"/>
                         <outlet property="pdfReader" destination="0Dp-rz-UVv" id="2KW-8r-cPo"/>
+                        <outlet property="singleClickRecognizer" destination="47l-Yf-Ty5" id="kSn-DP-bk4"/>
                         <outlet property="tripleClickRecognizer" destination="u0J-k5-keg" id="mUQ-aJ-FWB"/>
                     </connections>
                 </viewController>

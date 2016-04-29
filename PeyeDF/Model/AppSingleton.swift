@@ -94,11 +94,13 @@ class AppSingleton {
     static func updateRecentTags(newTag: String) {
         /// Recent tags is a list of strings in which the first string is the most recent
         var recentTags: [String] = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.defaultsSavedTags) as! [String]
-        recentTags.insert(newTag, atIndex: 0)
-        if recentTags.count > PeyeConstants.nOfSavedTags {
-            recentTags.removeRange(PeyeConstants.nOfSavedTags..<recentTags.count)
+        if !recentTags.contains(newTag) {
+            recentTags.insert(newTag, atIndex: 0)
+            if recentTags.count > PeyeConstants.nOfSavedTags {
+                recentTags.removeRange(PeyeConstants.nOfSavedTags..<recentTags.count)
+            }
+            NSUserDefaults.standardUserDefaults().setValue(recentTags, forKey: PeyeConstants.defaultsSavedTags)
         }
-        NSUserDefaults.standardUserDefaults().setValue(recentTags, forKey: PeyeConstants.defaultsSavedTags)
     }
     
     /// Returns HTTP headers used for DiMe connection

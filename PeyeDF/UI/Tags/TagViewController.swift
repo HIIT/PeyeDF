@@ -46,10 +46,12 @@ class TagViewController: NSViewController {
     
     /// Resets the managed stackview and replaces it with a new list of tags (in order).
     /// Does not tell delegate about this operation.
-    func setTags(tags: [String]) {
+    func setTags(tagStrings: [String]) {
+        // TODO: convert this to a method that receives [Tag] and adjusts itself depending
+        // on whether Tag.dynamicType == ReadingTag.self
         stackView.removeAllViews()
-        self.representedTags = tags
-        for tag in tags {
+        self.representedTags = tagStrings
+        for tag in tagStrings {
             var objs: NSArray?  // temporary store for items in tagview
             NSBundle.mainBundle().loadNibNamed("TagView", owner: nil, topLevelObjects: &objs)
             if let objs = objs {
@@ -62,6 +64,31 @@ class TagViewController: NSViewController {
                             }
                             if let txt = subview as? NSTextField {
                                 txt.stringValue = tag
+                            }
+                        }
+                        count += 1
+                    }
+                }
+            }
+        }
+    }
+    
+    func setTags(tags: [Tag]) {
+        stackView.removeAllViews()
+        self.representedTags = tags.map({$0.text})
+        for tag in tags {
+            var objs: NSArray?  // temporary store for items in tagview
+            NSBundle.mainBundle().loadNibNamed("TagView", owner: nil, topLevelObjects: &objs)
+            if let objs = objs {
+                for obj in objs {
+                    if let view = obj as? NSView {
+                        stackView.addView(view, inGravity: .Top)
+                        for subview in view.subviews {
+                            if let but = subview as? NSButton {
+                                but.tag = count
+                            }
+                            if let txt = subview as? NSTextField {
+                                txt.stringValue = tag.text
                             }
                         }
                         count += 1

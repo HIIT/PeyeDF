@@ -135,10 +135,14 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                     
                     tvc.setStatus(false)
                     
-                    // set tags in popup to none TODO: allow for tag editing
-                    tvc.setTags([])
                     
                     self.taggingSelection = sel
+                    
+                    // set tags in popup
+                    let (selRects, selIdxs) = self.pdfReader!.getLineRects(sel)
+                    if let cTags = self.pdfReader!.sciDoc?.tags.getReadingTags(selRects, onPages: selIdxs) {
+                        tvc.setTags(cTags)
+                    }
                 }
             } else {
                 self.taggingSelection = nil
@@ -148,12 +152,12 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     }
     
     func tagAdded(theTag: String) {
-        // simple tag
         if self.taggingSelection == nil {
+            // simple tag
             pdfReader?.sciDoc?.addTag(theTag)
         } else {
             
-        // reading tag
+            // reading tag
             if let sel = self.taggingSelection {
                 let (rects, idxs) = pdfReader!.getLineRects(sel)
                 if rects.count > 0 {
@@ -166,17 +170,18 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     func tagRemoved(theTag: String) {
         if let sel = self.taggingSelection, tags = pdfReader?.tagsForSelection(sel) where tags.count > 0 {
+            
             // remove reading tag
-            let toRemove = tags.filter({$0.text == theTag})
-            guard toRemove.count == 1 else {
-                AppSingleton.log.error("Count of tags to be removed different than one")
-                return
+            if let sel = self.taggingSelection {
+                let (rects, idxs) = pdfReader!.getLineRects(sel)
+                if rects.count > 0 {
+                    let sdTag = ReadingTag(text: theTag, withRects: rects, pages: idxs, pdfBase: self.pdfReader)
+                    pdfReader?.sciDoc?.subtractTag(sdTag)
+                }
             }
-            pdfReader?.sciDoc?.removeTag(toRemove[0])
             
         } else {
-            
-            // removing simple tags
+            // remove simple tag
             pdfReader?.sciDoc?.removeTag(theTag)
         }
     }

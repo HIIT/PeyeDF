@@ -42,19 +42,20 @@ class PDFSideController: NSViewController, ClickRecognizerDelegate, NSGestureRec
     
     @IBOutlet weak var doubleClickRecognizer: NSClickGestureRecognizer!
     @IBOutlet weak var tripleClickRecognizer: NSClickGestureRecognizer!
+    @IBOutlet weak var singleClickRecognizer: NSClickGestureRecognizer!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         overlay.otherView = pdfReader  // tell circleOverlay to be transparent
         doubleClickRecognizer.delegate = self  // to prevent immediate double click recognition
-    }
-
-    override var representedObject: AnyObject? {
-        didSet {
-        // Update the view, if already loaded.
-        }
+        singleClickRecognizer.delegate = self  // idem
     }
     
+    /// Target for the gesture recognizer used to detect sigle clicks
+    @IBAction func singleClick(sender: NSClickGestureRecognizer) {
+        // TODO: check if location corresponds to tag, if so open popup
+    }
+
     /// Target for the gesture recognizer used to detect double clicks
     @IBAction func doubleClick(sender: NSClickGestureRecognizer) {
         pdfReader.markAndAnnotate(sender.locationInView(pdfReader), importance: ReadingClass.Interesting)
@@ -69,18 +70,23 @@ class PDFSideController: NSViewController, ClickRecognizerDelegate, NSGestureRec
     func setRecognizersTo(enabled: Bool) {
         doubleClickRecognizer.enabled = enabled
         tripleClickRecognizer.enabled = enabled
+        singleClickRecognizer.enabled = enabled
     }
     
     /// Check if recognizers are enabled
     func getRecognizersState() -> Bool {
-        return doubleClickRecognizer.enabled && tripleClickRecognizer.enabled
+        return doubleClickRecognizer.enabled && tripleClickRecognizer.enabled && singleClickRecognizer.enabled
     }
     
     // MARK: Delegation
     
-    /// Overriding this method to prevent double clicks from registering immediately
+    /// Overriding this method to prevent double and single clicks from registering immediately
     func gestureRecognizer(gestureRecognizer: NSGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: NSGestureRecognizer) -> Bool {
-        if otherGestureRecognizer === tripleClickRecognizer {
+        if gestureRecognizer === doubleClickRecognizer && otherGestureRecognizer === tripleClickRecognizer {
+            return true
+        } else if gestureRecognizer === singleClickRecognizer && otherGestureRecognizer === doubleClickRecognizer {
+            return true
+        } else if gestureRecognizer === singleClickRecognizer && otherGestureRecognizer === tripleClickRecognizer {
             return true
         } else {
             return false

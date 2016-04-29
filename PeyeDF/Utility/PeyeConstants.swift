@@ -171,7 +171,7 @@ struct PeyeConstants {
     // MARK: - Other globals
     
     /// Amount of tags stored in user defaults (for auto completion)
-    static let nOfSavedTags = 5
+    static let nOfSavedTags = 25
     
     /// Name of user defaults identifying saved tags
     static let defaultsSavedTags = "defaults.savedTags"

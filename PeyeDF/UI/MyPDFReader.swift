@@ -91,76 +91,6 @@ class MyPDFReader: MyPDFBase {
     /// Size of circle
     var circleSize = NSSize(width: 20, height: 20)
     
-    /// What single click does
-    var singleClickMode: SingleClickMode = SingleClickMode.Default
-    
-    // MARK: - Event callbacks
-    
-    /// To receive single click actions (create "read" mark)
-    override func mouseDown(theEvent: NSEvent) {
-        switch singleClickMode {
-        case .MarkAsRead:
-            
-            if theEvent.clickCount == 1 {
-                // Only proceed if there is actually text to select
-                if containsRawString {
-                    // -- OLD STARTS HERE
-    //                // Mouse in display view coordinates.
-    //                var mouseDownLoc = self.convertPoint(theEvent.locationInWindow, fromView: nil)
-    //                markAndAnnotate(mouseDownLoc, importance: Importance.Read)
-                    // -- OLD ENDS HERE
-                    
-                    /// GETTING MOUSE LOCATION IN WINDOW FROM SCREEN COORDINATES
-                    // get mouse in screen coordinates
-                    let mouseLoc = NSEvent.mouseLocation()
-                    for screen in (NSScreen.screens() as [NSScreen]!) {
-                        if NSMouseInRect(mouseLoc, screen.frame, false) {
-                            let tinySize = NSSize(width: 1, height: 1)
-                            let mouseRect = NSRect(origin: mouseLoc, size: tinySize)
-                            //let rawLocation = screen.convertRectToBacking(mouseRect)
-                            
-                            // use raw location to map back into view coordinates
-                            let mouseInWindow = self.window!.convertRectFromScreen(mouseRect)
-                            let mouseInView = self.convertRect(mouseInWindow, fromView: self.window!.contentViewController!.view)
-                            markAndAnnotate(mouseInView.origin, importance: ReadingClass.Read)
-                        }
-                    }
-                } else {
-                    super.mouseDown(theEvent)
-                }
-            }
-            
-        case .MoveCrosshair:
-            /// GETTING MOUSE LOCATION IN WINDOW FROM SCREEN COORDINATES
-            // get mouse in screen coordinates
-            let mouseLoc = NSEvent.mouseLocation()
-            for screen in NSScreen.screens() as [NSScreen]! {
-                if NSMouseInRect(mouseLoc, screen.frame, false) {
-                    let tinySize = NSSize(width: 1, height: 1)
-                    let mouseRect = NSRect(origin: mouseLoc, size: tinySize)
-                    let mouseInWindow = self.window!.convertRectFromScreen(mouseRect)
-                    let mouseInView = self.convertRect(mouseInWindow, fromView: self.window!.contentViewController!.view)
-                    
-                    if let oldPosition = circlePosition {
-                        let oldPageRect = NSRect(origin: oldPosition, size: circleSize)
-                        let screenRect = convertRect(oldPageRect, fromPage: currentPage())
-                        setNeedsDisplayInRect(screenRect.addTo(scaleFactor()))
-                    }
-                    
-                    circlePosition = convertPoint(mouseInView.origin, toPage: currentPage())
-                    var screenRect = NSRect(origin: circlePosition!, size: circleSize)
-                    screenRect = convertRect(screenRect, fromPage: currentPage())
-                    setNeedsDisplayInRect(screenRect.addTo(scaleFactor()))
-
-                }
-            }
-            
-        case .Default:
-            super.mouseDown(theEvent)
-            
-        }
-    }
-    
     /// SciDoc tags changed
     func tagsChanged(notification: NSNotification) {
         if let uInfo = notification.userInfo, newTags = uInfo["tags"] as? [Tag] {
@@ -537,11 +467,4 @@ class MyPDFReader: MyPDFBase {
             self.setCurrentSelection(generatedSelection, animate: true)
         }
     }
-}
-
-/// Semi-debug enum
-enum SingleClickMode {
-    case Default
-    case MarkAsRead
-    case MoveCrosshair
 }
