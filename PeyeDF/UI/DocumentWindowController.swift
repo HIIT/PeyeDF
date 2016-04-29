@@ -114,7 +114,6 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                     tvc.setStatus(true)
                     
                     // refresh document tags if different from what's stored
-                    // TODO: represented tags should be changed from a string to something else?
                     if tvc.representedTags != self.pdfReader!.sciDoc!.tags.map({$0.text}) {
                         tvc.setTags(self.pdfReader!.sciDoc!.tags)
                     }

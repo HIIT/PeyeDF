@@ -87,6 +87,41 @@ class MyPDFReader: MyPDFBase {
     /// Size of circle
     var circleSize = NSSize(width: 20, height: 20)
     
+    // MARK: - Event callbacks
+    
+    /// To receive single click actions (select tag corresponding to text)
+    override func mouseDown(theEvent: NSEvent) {
+        
+        if theEvent.clickCount == 1 {
+            // Only proceed if there is actually text to select
+            if containsRawString {
+                /// GETTING MOUSE LOCATION IN WINDOW FROM SCREEN COORDINATES
+                // get mouse in screen coordinates
+                let mouseLoc = NSEvent.mouseLocation()
+                for screen in (NSScreen.screens() as [NSScreen]!) {
+                    if NSMouseInRect(mouseLoc, screen.frame, false) {
+                        let tinySize = NSSize(width: 1, height: 1)
+                        let mouseRect = NSRect(origin: mouseLoc, size: tinySize)
+                        //let rawLocation = screen.convertRectToBacking(mouseRect)
+                        
+                        // use raw location to map back into view coordinates
+                        let mouseInWindow = self.window!.convertRectFromScreen(mouseRect)
+                        let mouseInView = self.convertRect(mouseInWindow, fromView: self.window!.contentViewController!.view)
+                        
+                        // if there are no tags here, propagate event
+                        if !showTags(mouseInView.origin) {
+                            super.mouseDown(theEvent)
+                        }
+                    }
+                }
+            } else {
+                super.mouseDown(theEvent)
+            }
+        } else {
+            super.mouseDown(theEvent)
+        }
+    }
+    
     /// SciDoc tags changed
     func tagsChanged(notification: NSNotification) {
         if let uInfo = notification.userInfo, newTags = uInfo["tags"] as? [Tag] {

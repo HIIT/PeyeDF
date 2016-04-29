@@ -65,9 +65,34 @@ class MyPDFBase: PDFView {
         return readingTags.filter({$0.containsNSRects(rects, onPages: idxs)})
     }
     
-    /// Select
-    func showTags(forPoint: NSPoint) {
+    /// Show tag popup for readingtags at this point.
+    /// Returns true if some tags where indeed present (false if the point is a "miss").
+    func showTags(forPoint: NSPoint) -> Bool {
         
+        
+        // Page we're on.
+        let activePage = self.pageForPoint(forPoint, nearest: true)
+        
+        // Index for current page
+        let pageIndex = self.document().indexForPage(activePage)
+        
+        // Point in page space
+        let pagePoint = convertPoint(forPoint, toPage: activePage)
+        
+        // Find tuples for which this point falls in an annotation
+        let tuples = tagAnnotations.filter({$0.annotations.contains({$0.page() === activePage && NSPointInRect(pagePoint, $0.bounds())})})
+        
+        if tuples.count > 0 {
+            
+            let sel = activePage.selectionForRect(tuples[0].annotations[0].bounds())
+            dispatch_async(dispatch_get_main_queue()) {
+                self.setCurrentSelection(sel)
+            }
+            
+            return true
+        } else {
+            return false
+        }
     }
     
     // MARK: - Tagging (private)
