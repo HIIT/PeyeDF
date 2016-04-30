@@ -79,7 +79,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     @IBOutlet weak var tbTagButton: NSButton!
     @IBOutlet weak var tbTagItem: NSToolbarItem!
     
-    private var taggingSelection: PDFSelection?
+    private var currentTagOperation: TagOperation = .None
     
     lazy var popover: NSPopover = {
         let pop = NSPopover()
@@ -106,9 +106,42 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             
             if !self.popover.shown {
                 
-                // if there is a selection, tag selection, otherwise call window's tag method
-                
-                if (self.pdfReader!.currentSelection()?.string().trimmed().isEmpty ?? true) {
+                // decide what to do when popover appears
+                // if the pdfReader wants to show it in relation to tags,
+                // retrieve tags from it and show them
+                // if not, if the current selection is empty, show tags for document
+                // lastly, if there is a selection, show tags corresponding to that selection
+                if let clickTags = self.pdfReader!.currentlyClickedOnTags() {
+                    
+                    // tag pdfReader's currently selected tag
+                    
+                    let edge: NSRectEdge
+                    
+                    // use first tag to get rect encompassing the whole tagged paragraph
+                    let tagRect = clickTags[0].rects.reduce(NSRect(), combine: {
+                        p, r in
+                        let page = self.pdfReader!.document().pageAtIndex(Int(r.pageIndex))
+                        let pageRect = self.pdfReader!.convertRect(r.rect, fromPage: page)
+                        return NSUnionRect(p, pageRect)
+                    })
+                    
+                    if (tagRect.minX + tagRect.size.width / 2) > self.pdfReader!.bounds.width / 2 {
+                        edge = NSRectEdge.MaxX
+                    } else {
+                        edge = NSRectEdge.MinX
+                    }
+                    
+                    self.popover.showRelativeToRect(tagRect, ofView: self.pdfReader!, preferredEdge: edge)
+                    
+                    tvc.setStatus(false)
+                    
+                    tvc.setTags(clickTags)
+                    
+                    self.currentTagOperation = .PreviousReading(clickTags)
+                    
+                } else if (self.pdfReader!.currentSelection()?.string().trimmed().isEmpty ?? true) {
+                    
+                    // document-level tagging
                     
                     self.popover.showRelativeToRect(self.tbTagButton.bounds, ofView: self.tbTagButton, preferredEdge: NSRectEdge.MinY)
                     tvc.setStatus(true)
@@ -118,8 +151,12 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                         tvc.setTags(self.pdfReader!.sciDoc!.tags)
                     }
                     
-                    self.taggingSelection = nil
+                    self.currentTagOperation = .Document
+                    
                 } else {
+                    
+                    // manual selection tagging
+                    
                     let edge: NSRectEdge
                     
                     // selection's tag popover is shown on the right edge if selection's rect mid > pdf reader rect mid
@@ -135,8 +172,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                     
                     tvc.setStatus(false)
                     
-                    
-                    self.taggingSelection = sel
+                    self.currentTagOperation = .ManualSelection(sel)
                     
                     // set tags in popup
                     let (selRects, selIdxs) = self.pdfReader!.getLineRects(sel)
@@ -144,55 +180,66 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                         tvc.setTags(cTags)
                     }
                 }
+                
             } else {
-                self.taggingSelection = nil
+                self.currentTagOperation = .None
                 self.popover.performClose(self)
             }
         }
     }
     
     func tagAdded(theTag: String) {
-        if self.taggingSelection == nil {
+        switch currentTagOperation {
+        case .Document:
             // simple tag
             pdfReader?.sciDoc?.addTag(theTag)
-        } else {
-            
-            // reading tag
-            if let sel = self.taggingSelection {
-                let (rects, idxs) = pdfReader!.getLineRects(sel)
-                if rects.count > 0 {
-                    let sdTag = ReadingTag(text: theTag, withRects: rects, pages: idxs, pdfBase: self.pdfReader)
-                    pdfReader?.sciDoc?.addTag(sdTag)
-                }
+        case .ManualSelection(let sel):
+            let (rects, idxs) = pdfReader!.getLineRects(sel)
+            if rects.count > 0 {
+                let sdTag = ReadingTag(text: theTag, withRects: rects, pages: idxs, pdfBase: self.pdfReader)
+                pdfReader?.sciDoc?.addTag(sdTag)
             }
+        case .PreviousReading(let readingTags):
+            let theTag = ReadingTag(withText: theTag, fromTag: readingTags[0])
+            pdfReader?.sciDoc?.addTag(theTag)
+        case .None:
+            AppSingleton.log.error("Adding a tag when no tags are currently being edited")
         }
     }
     
     func tagRemoved(theTag: String) {
-        if let sel = self.taggingSelection, tags = pdfReader?.tagsForSelection(sel) where tags.count > 0 {
-            
-            // remove reading tag
-            if let sel = self.taggingSelection {
+        switch currentTagOperation {
+        case .Document:
+            pdfReader?.sciDoc?.removeTag(theTag)
+        case .ManualSelection(let sel):
+            if let tags = pdfReader?.tagsForSelection(sel) where tags.count > 0 {
                 let (rects, idxs) = pdfReader!.getLineRects(sel)
                 if rects.count > 0 {
                     let sdTag = ReadingTag(text: theTag, withRects: rects, pages: idxs, pdfBase: self.pdfReader)
                     pdfReader?.sciDoc?.subtractTag(sdTag)
                 }
             }
-            
-        } else {
-            // remove simple tag
-            pdfReader?.sciDoc?.removeTag(theTag)
+        case .PreviousReading(let readingTags):
+            let theTag = ReadingTag(withText: theTag, fromTag: readingTags[0])
+            pdfReader?.sciDoc?.subtractTag(theTag)
+        case .None:
+            AppSingleton.log.error("Removing a tag when no tags are currently being edited")
         }
     }
     
     func isNextTagReading() -> Bool {
-        return self.taggingSelection != nil
+        switch currentTagOperation {
+        case .PreviousReading, .ManualSelection:
+             return true
+        default:
+            return false
+        }
     }
     
-    /// Implemented to detect when the tag popover is closed (to nullify taggingSelection
+    /// Implemented to detect when the tag popover is closed (to clear current tag)
     func popoverDidClose(notification: NSNotification) {
-        self.taggingSelection = nil
+        self.currentTagOperation = .None
+        pdfReader!.clearClickedOnTags()
     }
     
     // MARK: - Searching
@@ -809,4 +856,11 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             }
         }
     }
+}
+
+enum TagOperation {
+    case None  // we are not tagging
+    case Document  // tagging the document as a whole
+    case ManualSelection(PDFSelection)  // tagging a manual selection
+    case PreviousReading([ReadingTag])  // tagging previously existing reading tags (user clicked on them)
 }

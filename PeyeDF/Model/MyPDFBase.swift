@@ -30,14 +30,57 @@ import Quartz
 /// support custom "markings" and their writing to annotation
 class MyPDFBase: PDFView {
     
+    /// The index of last tuple selected is set to this value when nothing is selected
+    private static let TAGI_NONE: Int = 99999
+    
     let extraLineAmount = 2 // 1/this number is the amount of extra lines that we want to discard
     // if we are at beginning or end of paragraph
 
     /// Stores all markings
     var markings: PDFMarkings!
     
+    /// All tags currently stored (changing this causes refresh of display and adjusts related annotations)
+    var readingTags = [ReadingTag]() { willSet {
+        let added = newValue.filter({!readingTags.contains($0)})  // added items
+        let removed = readingTags.filter({!newValue.contains($0)})  // removed items
+        added.forEach({makeTagAnnotation(forTag: $0)})
+        removed.forEach({removeTagAnnotation(forTag: $0)})
+    } }
+    
     /// Whether this document contains plain text
     private(set) var containsPlainText = false
+    
+    /// Tuples that relate sets of pdf annotations to their related tags
+    /// (since a block of text can have multiple tags)
+    private var tagAnnotations = [(annotations: [PDFAnnotationMarkup], tags: [ReadingTag])]()
+    
+    /// Keeps track of index of the last tuple of tags that was selected
+    /// Setting this value automatically sets tag colour and refreshes view
+    /// TAGI_NONE means nothng is selected
+    private var lastTagAnnotationIndex: Int = MyPDFBase.TAGI_NONE { didSet {
+        
+        // set colours
+        dispatch_async(dispatch_get_main_queue()) {
+            // new selection colour
+            if self.lastTagAnnotationIndex != MyPDFBase.TAGI_NONE {
+                self.tagAnnotations[self.lastTagAnnotationIndex].annotations.forEach({
+                    $0.setColor(PeyeConstants.annotationColourTaggedSelected)
+                    let annRect = self.convertRect($0.bounds(), fromPage: $0.page())
+                    self.setNeedsDisplayInRect(annRect)
+                })
+            }
+            
+            // previously selected back to normal
+            if oldValue != MyPDFBase.TAGI_NONE {
+                self.tagAnnotations[oldValue].annotations.forEach({
+                    $0.setColor(PeyeConstants.annotationColourTagged)
+                    let annRect = self.convertRect($0.bounds(), fromPage: $0.page())
+                    self.setNeedsDisplayInRect(annRect)
+                })
+            }
+        }
+        
+    } }
     
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
@@ -51,13 +94,20 @@ class MyPDFBase: PDFView {
     
     // MARK: - Tagging (external)
     
-    /// All tags currently stored (changing this causes refresh of display and adjusts related annotations)
-    var readingTags = [ReadingTag]() { willSet {
-        let added = newValue.filter({!readingTags.contains($0)})  // added items
-        let removed = readingTags.filter({!newValue.contains($0)})  // removed items
-        added.forEach({makeTagAnnotation(forTag: $0)})
-        removed.forEach({removeTagAnnotation(forTag: $0)})
-    } }
+    /// If there is a block of text currently being clicked on,
+    /// returns the tags associated to it.
+    func currentlyClickedOnTags() -> [ReadingTag]? {
+        if lastTagAnnotationIndex != MyPDFBase.TAGI_NONE {
+            return tagAnnotations[lastTagAnnotationIndex].tags
+        } else {
+            return nil
+        }
+    }
+    
+    /// Acknowledges the fact that the user is not interested in a specific tag.
+    func clearClickedOnTags() {
+        lastTagAnnotationIndex = MyPDFBase.TAGI_NONE
+    }
     
     /// Returns a list of tags associated to a given selection
     func tagsForSelection(sel: PDFSelection) -> [ReadingTag] {
@@ -69,41 +119,30 @@ class MyPDFBase: PDFView {
     /// Returns true if some tags where indeed present (false if the point is a "miss").
     func showTags(forPoint: NSPoint) -> Bool {
         
-        
         // Page we're on.
         let activePage = self.pageForPoint(forPoint, nearest: true)
-        
-        // Index for current page
-        let pageIndex = self.document().indexForPage(activePage)
         
         // Point in page space
         let pagePoint = convertPoint(forPoint, toPage: activePage)
         
         // Find tuples for which this point falls in an annotation
-        let tuples = tagAnnotations.filter({$0.annotations.contains({$0.page() === activePage && NSPointInRect(pagePoint, $0.bounds())})})
+        let tupleI = tagAnnotations.indexOf({$0.annotations.contains({$0.page() === activePage && NSPointInRect(pagePoint, $0.bounds())})})
         
-        if tuples.count > 0 {
+        if let i = tupleI {
             
-            let sel = activePage.selectionForRect(tuples[0].annotations[0].bounds())
-            dispatch_async(dispatch_get_main_queue()) {
-                self.setCurrentSelection(sel)
-            }
+            lastTagAnnotationIndex = i  // automatically refreshes view
+            
+            (self.window!.windowController as! DocumentWindowController).tagShow(self)
             
             return true
         } else {
+            // no tuples found
+            clearClickedOnTags()
             return false
         }
     }
     
     // MARK: - Tagging (private)
-    
-    /// Tuples that relate sets of pdf annotations to their related tags
-    /// (since a block of text can have multiple tags)
-    private var tagAnnotations = [(annotations: [PDFAnnotationMarkup], tags: [ReadingTag])]()
-    
-    /// Keeps track of index of the last tuple of tags that was selected
-    /// (so that when multiple tagged blocks of text overlap, multiple clicks cycle through them)
-    private var lastTagAnnotationIndex: Int = 0
     
     /// Creates annotation(s) for the given tag (and stores this relationship for later use)
     private func makeTagAnnotation(forTag tag: ReadingTag) {

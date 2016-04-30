@@ -75,6 +75,12 @@ public class ReadingTag: Tag {
         super.init(withText: fromTag.text)
     }
     
+    /// Creates a new tag from another tag, but with different text
+    init(withText: String, fromTag: ReadingTag) {
+        rects = fromTag.rects
+        super.init(withText: withText)
+    }
+    
     /// Combines this tag with another, and returns the new tag.
     /// In other words, adds the parts of document referenced by the new tag with "these" parts of a document.
     /// Used to combine two tags with the same text but that refer to different parts of a document.

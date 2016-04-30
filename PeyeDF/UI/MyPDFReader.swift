@@ -73,6 +73,7 @@ class MyPDFReader: MyPDFBase {
         let menu = super.menuForEvent(event)
         let docwin = self.window!.windowController! as! DocumentWindowController
         let menuitem = NSMenuItem(title: "Tag", action: #selector(docwin.tagShow(_:)), keyEquivalent: "t")
+        menuitem.tag = Int(PeyeConstants.tagMenuTag)
         menu?.insertItem(NSMenuItem.separatorItem(), atIndex: 0)
         menu?.insertItem(menuitem, atIndex: 0)
         
