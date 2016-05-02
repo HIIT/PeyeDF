@@ -129,6 +129,7 @@ extension NSRect {
     }
     
     /// Scale this rect by a given factor (by addition) and return a new rect.
+    /// Returns rounded values (used for "pixel-perfect" display).
     func addTo(scale: CGFloat) -> NSRect {
         var newOrigin = NSPoint()
     
@@ -140,6 +141,19 @@ extension NSRect {
         return NSMakeRect(newOrigin.x, newOrigin.y, maxX - newOrigin.x, maxY - newOrigin.y);
     }
     
+    /// Scale this rect by a given factor (by addition) and return a new rect.
+    /// Returns an unrounded rect (used for documents).
+    func outset(scale: CGFloat) -> NSRect {
+        var newOrigin = NSPoint()
+    
+        let maxX = self.origin.x + self.size.width + scale / 2.0
+        let maxY = self.origin.y + self.size.height + scale / 2.0
+        newOrigin.x = self.origin.x - scale / 2.0
+        newOrigin.y = self.origin.y - scale / 2.0
+        
+        return NSMakeRect(newOrigin.x, newOrigin.y, maxX - newOrigin.x, maxY - newOrigin.y);
+    }
+    
     /// Returns a new rectangle based on this one but with the origin offset
     /// by adding the given point to it.
     func offset(byPoint point: NSPoint) -> NSRect {
@@ -147,6 +161,24 @@ extension NSRect {
         newOrigin.x += point.x
         newOrigin.y += point.y
         return NSRect(origin: newOrigin, size: self.size)
+    }
+    
+    /// Returns true if this rect is "near" the other rect.
+    /// Uses values optimised for PDF (page space) coordinates.
+    func isNear(toRect: NSRect) -> Bool {
+        // half the size of the narrower rect
+        let maxXdiff = min(self.size.width, toRect.size.width)
+        // minimum between distance of extremes (left / right alignment)
+        let maxYdiff = min(self.size.height, toRect.size.height)
+        
+        let xDiff1 = abs(self.origin.x - toRect.origin.x)
+        let xDiff2 = abs((self.origin.x + self.size.width) -
+                         (toRect.origin.x + toRect.size.width))
+        let xDiff = min(xDiff1, xDiff2)
+        let yDiff1 = abs(self.origin.y - (toRect.origin.y + toRect.size.height))
+        let yDiff2 = abs(self.origin.y + self.size.height - toRect.origin.y)
+        let yDiff = min(yDiff1, yDiff2)
+        return xDiff <= maxXdiff && yDiff <= maxYdiff
     }
 }
 

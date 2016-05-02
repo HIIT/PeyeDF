@@ -51,6 +51,9 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     let kColumnTitlePageLabel = "Page Label"
     let kColumnTitleLine = "Line"
     
+    // String used to make tag searches
+    let kTagSString = PeyeConstants.tagSearchPrefix
+    
     /// The column which contains labels (is collapsed if numbers==labels)
     @IBOutlet weak var labelColumn: NSTableColumn!
     
@@ -132,13 +135,16 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     }
     
     override func viewDidAppear() {
-        // set up search notifications
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(foundOneMatch(_:)), name: PDFDocumentDidFindMatchNotification, object: pdfReader!.document())
+        // set up PDFView search notification
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(foundPDFSearchItem(_:)), name: PDFDocumentDidFindMatchNotification, object: pdfReader!.document())
+        // set up MyPDFBase tag search notification
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(foundPDFSearchItem(_:)), name: PeyeConstants.tagStringFoundNotification, object: pdfReader!)
     }
     
     override func viewWillDisappear() {
         // unset search notifications
         NSNotificationCenter.defaultCenter().removeObserver(self, name: PDFDocumentDidFindMatchNotification, object: pdfReader!.document())
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: PeyeConstants.tagStringFoundNotification, object: pdfReader!)
         
         // table unset
         resultTable.setDataSource(nil)
@@ -207,9 +213,30 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     }
     
     /// Performs a search using the given string, with the exact phrase flag.
+    /// If the string is between quotes ("something") forces an exact phrase search.
+    /// If the string starts with "#tag:" (kTagSString) searches for tags with that name instead.
     func doSearch(theString: String, exact: Bool) {
         var theString = theString
         var exact = exact
+        
+        // -- check if recent search element is present in recent searches --
+        let recentSearches = searchCell.recentSearches
+        // if list is empty add it
+        if recentSearches.isEmpty {
+            searchCell.recentSearches.append(theString)
+        } else {
+            for i in 0..<recentSearches.count {
+                // if item present, remove it
+                let item = recentSearches[i] 
+                if item == searchString {
+                    searchCell.recentSearches.removeAtIndex(i)
+                    break
+                }
+            }
+            // add it at "bottom of list"
+            searchCell.recentSearches.append(theString)
+        }
+        // -- end recent searches check --
         
         // if the string contains two quotes, at beginning and end, 
         // remove them and perform exact search
@@ -233,38 +260,37 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
         }
         searchString = searchField.stringValue
         
-        // -- check if recent search element is present in recent searches --
-        let recentSearches = searchCell.recentSearches
-        // if list is empty add it
-        if recentSearches.isEmpty {
-            searchCell.recentSearches.append(theString)
-        } else {
-            for i in 0..<recentSearches.count {
-                // if item present, remove it
-                let item = recentSearches[i] 
-                if item == searchString {
-                    searchCell.recentSearches.removeAtIndex(i)
-                    break
-                }
-            }
-            // add it at "bottom of list"
-            searchCell.recentSearches.append(theString)
-        }
-        // -- end recent searches check --
-        
         numberOfResultsFound = 0
         foundSelections = [PDFSelection]()
         resultNumberField.stringValue = "\(numberOfResultsFound)"
         resultTable.reloadData()
         selectedSelection = nil
         
-        if exact {
-            pdfReader!.document().beginFindString(theString, withOptions: Int(NSStringCompareOptions.CaseInsensitiveSearch.rawValue))
-        } else {
-            guard let searchS = theString.split(" ") else {
+        if theString.hasPrefix(kTagSString) {
+            // tag search
+            
+            // get wanted text of tag from string (if present)
+            guard let r = theString.rangeOfString(kTagSString) else {
                 return
             }
-            pdfReader!.document().beginFindStrings(searchS, withOptions: Int(NSStringCompareOptions.CaseInsensitiveSearch.rawValue))
+            let tagString = theString.substringFromIndex(r.endIndex)
+            guard tagString.characters.count > 0 else {
+                return
+            }
+            
+            pdfReader!.beginTagStringSearch(tagString)
+            
+        } else {
+            
+            // normal search
+            if exact {
+                pdfReader!.document().beginFindString(theString, withOptions: Int(NSStringCompareOptions.CaseInsensitiveSearch.rawValue))
+            } else {
+                guard let searchS = theString.split(" ") else {
+                    return
+                }
+                pdfReader!.document().beginFindStrings(searchS, withOptions: Int(NSStringCompareOptions.CaseInsensitiveSearch.rawValue))
+            }
         }
         
         previousButton.enabled = false
@@ -278,15 +304,26 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
         if pdfReader!.document().isFinding() {
             pdfReader!.document().cancelFindString()
         }
-        
+        if pdfReader!.searching {
+            pdfReader!.searching = false
+        }
         doSearch(sender.stringValue, exact: exactMatch)
     }
     
     // MARK: - Notification callbacks
     
-    @objc func foundOneMatch(notification: NSNotification) {
+    @objc func foundPDFSearchItem(notification: NSNotification) {
         let infoDict = notification.userInfo as! [String: AnyObject]
-        let pdfSel = infoDict["PDFDocumentFoundSelection"] as! PDFSelection
+        
+        let pdfSel: PDFSelection
+        // discriminate between pdfView string and MyPDF tag string searches
+        if notification.name == PDFDocumentDidFindMatchNotification {
+            pdfSel = infoDict["PDFDocumentFoundSelection"] as! PDFSelection
+        } else if notification.name == PeyeConstants.tagStringFoundNotification {
+            pdfSel = infoDict["MyPDFTagFoundSelection"] as! PDFSelection
+        } else {
+            fatalError("Unrecognized notification name!")
+        }
         
         numberOfResultsFound += 1
         foundSelections.append(pdfSel.copy() as! PDFSelection)

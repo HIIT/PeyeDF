@@ -118,7 +118,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                     let edge: NSRectEdge
                     
                     // use first tag to get rect encompassing the whole tagged paragraph
-                    let tagRect = clickTags[0].rects.reduce(NSRect(), combine: {
+                    let tagRect = clickTags[0].rRects.reduce(NSRect(), combine: {
                         p, r in
                         let page = self.pdfReader!.document().pageAtIndex(Int(r.pageIndex))
                         let pageRect = self.pdfReader!.convertRect(r.rect, fromPage: page)
@@ -227,6 +227,10 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         }
     }
     
+    func tagInfo(theTag: String) {
+        doSearch(PeyeConstants.tagSearchPrefix + theTag, exact: false)
+    }
+    
     func isNextTagReading() -> Bool {
         switch currentTagOperation {
         case .PreviousReading, .ManualSelection:
@@ -237,7 +241,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     }
     
     /// Implemented to detect when the tag popover is closed (to clear current tag)
-    func popoverDidClose(notification: NSNotification) {
+    func popoverWillClose(notification: NSNotification) {
         self.currentTagOperation = .None
         pdfReader!.clearClickedOnTags()
     }
@@ -272,6 +276,8 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             exception.raise()
         }
     }
+    
+    // MARK: - Menu validation
     
     /// Checks which menu items should be enabled (some logic used for find next and previous menu items).
     @objc override func validateMenuItem(menuItem: NSMenuItem) -> Bool {

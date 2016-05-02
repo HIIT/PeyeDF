@@ -19,6 +19,9 @@ protocol TagDelegate: class {
     
     /// Asks the delegate whether we are adding a reading tag
     func isNextTagReading() -> Bool
+    
+    /// Tells the delegate that the "text" button was pressed
+    func tagInfo(theTag: String)
 }
 
 class TagViewController: NSViewController {
@@ -90,6 +93,18 @@ class TagViewController: NSViewController {
             labelField.stringValue = "tagging text"
         }
     }
+    
+    /// Tells the delegate that we want info for a spefic tag and closes its own window.
+    @IBAction func textPress(sender: AnyObject) {
+        if let but = sender as? NSButton {
+            for view in but.superview!.subviews {
+                if let txt = view as? NSTextField {
+                    tagDelegate?.tagInfo(txt.stringValue)
+                    self.view.window?.performClose(self)
+                }
+            }
+        }
+    }
 
     /// Deletes a tag, and tells the delegate about it.
     @IBAction func deletePress(sender: AnyObject) {
@@ -105,6 +120,7 @@ class TagViewController: NSViewController {
         }
     }
 
+    /// Adds a tag, and tells the delegate about it.
     @IBAction func addPress(sender: NSButton) {
         let newTag = inputField.stringValue.trimmed()
         if newTag.characters.count > 0 && !representedTags.contains(newTag) {

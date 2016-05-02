@@ -27,12 +27,15 @@ import Quartz
 
 extension PDFSelection {
     
-    /// Returns a string corresponding to all text found on the same line
-    /// as this selection.
+    /// Returns a string corresponding to all text found on the first line
+    /// of this selection.
     func lineString() -> String {
         let page = pages()[0] as! PDFPage
         let selRect = boundsForPage(page)
-        let selPoint = NSPoint(x: selRect.origin.x + selRect.width / 2, y: selRect.origin.y + selRect.height / 2)
+        // point for line is 0.5 points down in both directions from top left
+        let x = selRect.origin.x + 0.5
+        let y = selRect.origin.y + selRect.size.height + 0.5
+        let selPoint = NSPoint(x: x, y: y)
         let lineSel = page.selectionForLineAtPoint(selPoint)
         return lineSel.string().trimmed()
     }
@@ -41,8 +44,10 @@ extension PDFSelection {
     /// - Parameter direction: If ≥ 0, find to the next line (downwards on page, lower y origin).
     /// If direction is negative, go to previous line (upwards on page, higher y).
     /// - Returns: The rect corresponding to the adjacent line, or nil if there is no adjacent line.
+    /// - Attention: PDF Selections comparisons are not so accurate (make sure they contain
+    ///   some text before using them.
     func adjacentLineRect(direction: CGFloat) -> NSRect? {
-        let kStep: CGFloat = 3  // how many points we step
+        let kStep: CGFloat = 0.5  // how many points we step
         let vStep: CGFloat  // repeatedly step this amount of points back / forward to find line
         
         if direction >= 0 {
@@ -78,10 +83,13 @@ extension PDFSelection {
     
     /// Return trues if the given selection is adjacent (is on the next / previous line relative)
     /// to this selection.
-    /// - Note: Must make sure that these two selections are on the same page before comparing them.
+    /// - Attention: PDF Selections comparisons are not so accurate (make sure they contain
+    ///   some text before using them).
     func isAdjacent(toSelection otherSel: PDFSelection) -> Bool {
-        // NOTE: untested
         let otherPage = otherSel.pages()[0] as! PDFPage
+        if self.pages()[0] as! PDFPage != otherPage {
+            return false
+        }
         let otherSelRect = otherSel.boundsForPage(otherPage)
         if let nRect = adjacentLineRect(1) {
             if nRect.intersects(otherSelRect) {

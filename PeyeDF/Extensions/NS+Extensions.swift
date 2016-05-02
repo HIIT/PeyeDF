@@ -162,3 +162,72 @@ extension CollectionType where Generator.Element: Hashable {
         return reduce(0, combine: {$0 ^ $1.hashValue})
     } }
 }
+
+/// Used to split collection into subsets based on when a "big step" is detected
+extension CollectionType where Index: RandomAccessIndexType, Generator.Element: Comparable {
+    
+    /// Splits a collection every time there is a "big enough" difference between
+    /// two items (i.e. splits on the boundary).
+    /// In other words, splits a collection into multiple subsets based on a given comparison function.
+    /// This operation will be performed on a sorted copy of self, and the result(s) will be sorted.
+    ///
+    /// ### Example:
+    /// ```
+    /// func isBigStep(p: Int, _ s: Int) -> Bool {
+    ///    return s - p > 3 ? true : false
+    /// }
+    /// ```
+    /// The above function is a comparison function that tells that steps above 3 are "big"
+    /// ```
+    /// let myVals = [1,2,3,22,34,35,36]
+    /// returned = myVals.splittedOnBigSteps(isBigStep)
+    /// ```
+    /// the returned value should be `[[1, 2, 3], [22], [34, 35, 36]]`
+    /// - Parameter comparison: The comparison function takes two arguments, a preceding and succeeding items.
+    /// The collection is split every time the comparison function returns true, so that the
+    /// preceding items will be together, and the succeeding items if any placed in subsequent collection(s).
+    func splittedOnBigSteps<T: Comparable>(comparison: (T, T) -> Bool) -> [[T]] {
+        
+        /// Inner function to repeatedly split the collection into two subsets.
+        /// Returns nil when the first is empty.
+        /// Otherwise, attempts to split the argument into two sets, what comes before
+        /// the big step and what comes after it.
+        func innersplit<T>(inVal: [T], comparison: (T, T) -> Bool) -> (before: [T], after: [T])? {
+            if inVal.isEmpty {
+                return nil
+            }
+            if inVal.count == 1 {
+                return (before: inVal, after: [])
+            }
+            for i in 1..<inVal.count {
+                if comparison(inVal[i-1], inVal[i]) {
+                    return (before: Array(inVal[0..<i]), after: Array(inVal[i..<inVal.count]))
+                }
+            }
+            return (before: inVal, after: [])
+        }
+        
+        // perform operation on sorted self
+        if var converted = (self as? Array<T>) {
+            converted.sortInPlace()
+            
+            // first split
+            var beforeVals = Array<Array<T>>()
+            var s = innersplit(converted, comparison: comparison)
+            guard s != nil else {
+                // return empty collection of collections if no items are present
+                return beforeVals
+            }
+            beforeVals.append(s!.before)
+            // repeatedly split until nothing in `after` is left
+            while s != nil && !s!.after.isEmpty {
+                s = innersplit(s!.after, comparison: comparison)
+                beforeVals.append(s!.before)
+            }
+            return beforeVals
+        } else {
+            fatalError("Could not cast collection to an Array (should never happen)")
+        }
+    }
+    
+}

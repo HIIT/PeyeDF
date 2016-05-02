@@ -30,8 +30,14 @@ import Quartz
 /// support custom "markings" and their writing to annotation
 class MyPDFBase: PDFView {
     
+    /// Whether we are searching (set this to false to stop search)
+    var searching = false
+    
     /// The index of last tuple selected is set to this value when nothing is selected
     private static let TAGI_NONE: Int = 99999
+    
+    /// Ignore TAG selection colour
+    private static let TAGI_SKIP: Int = 99998
     
     let extraLineAmount = 2 // 1/this number is the amount of extra lines that we want to discard
     // if we are at beginning or end of paragraph
@@ -39,25 +45,79 @@ class MyPDFBase: PDFView {
     /// Stores all markings
     var markings: PDFMarkings!
     
-    /// All tags currently stored (changing this causes refresh of display and adjusts related annotations)
-    var readingTags = [ReadingTag]() { willSet {
-        let added = newValue.filter({!readingTags.contains($0)})  // added items
-        let removed = readingTags.filter({!newValue.contains($0)})  // removed items
-        added.forEach({makeTagAnnotation(forTag: $0)})
-        removed.forEach({removeTagAnnotation(forTag: $0)})
-    } }
+    /// All tags currently stored.
+    /// This is in the same structure as DiMe's tags (one tag can reference multiple parts of the text).
+    /// Changing this value updates the internal representation (`splitTagAnnotations`), which stores tags in a
+    /// different way (one tag per nearby block of text, tags with the same name can be duplicated).
+    var readingTags = [ReadingTag]() {
+        willSet {
+            let oldTagStrings = Set(readingTags.map({$0.text}))
+            let newTagStrings = Set(newValue.map({$0.text}))
+            let changedTagStrings = oldTagStrings.intersect(newTagStrings)
+            
+            // put old and new changed tags in a tuple (if different)
+            let changedTags: [(ReadingTag, ReadingTag)] = changedTagStrings.flatMap({
+                string in
+                let oldTag = readingTags.filter({$0.text == string})
+                let newTag = newValue.filter({$0.text == string})
+                if oldTag.count != 1 || newTag.count != 1 {
+                    AppSingleton.log.error("Changed tag filter returned more than one tag")
+                }
+                if newTag[0].rRects.nearlyEqual(oldTag[0].rRects) {
+                    return nil
+                } else {
+                    return (oldTag[0], newTag[0])
+                }
+            })
+            
+            // get difference for each tag, and apply add or remove accordingly
+            changedTags.forEach({
+                (oldTag, newTag) in
+                let (added, removed) = oldTag.rectDifference(newTag)
+                if added.count > 0 {
+                    let newTag = ReadingTag(withRects: added, withText: oldTag.text)
+                    makeTagAnnotation(forTag: newTag)
+                }
+                if removed.count > 0 {
+                    let delTag = ReadingTag(withRects: removed, withText: oldTag.text)
+                    removeTagAnnotation(forTag: delTag)
+                }
+            })
+            
+            // calculate completely (not changed) new tags
+            let added = newValue.filter({!changedTagStrings.contains($0.text) && !readingTags.contains($0)})
+            // calculate completely (not changed) removed tags
+            let removed = readingTags.filter({!changedTagStrings.contains($0.text) && !newValue.contains($0)})
+            
+            // split completely new tags, and for each collection of split tags, make an annotation for each
+            added.map({splitTag($0)}).forEach({$0.forEach({makeTagAnnotation(forTag: $0)})})
+            
+            // just remove completely removed tags
+            removed.forEach({removeTagAnnotation(forTag: $0)})
+        }
+    }
     
     /// Whether this document contains plain text
     private(set) var containsPlainText = false
     
-    /// Tuples that relate sets of pdf annotations to their related tags
-    /// (since a block of text can have multiple tags)
+    /// For each entry in this tuple, we store tags and annotations that refer to a single block of
+    /// text (block being defined as text in contiguous lines in the PDF).
+    /// Each entry can have multiple annotations and multiple tags. In this structure,
+    /// multiple lines can have the same tag repeated (unlike in DiMe, were there can only be
+    /// one tag with a given name). For example, we can have two instances of tag with name "useful",
+    /// one on page two and another on page three. In this tuple, they would appear in two separate entries.
     private var tagAnnotations = [(annotations: [PDFAnnotationMarkup], tags: [ReadingTag])]()
     
     /// Keeps track of index of the last tuple of tags that was selected
     /// Setting this value automatically sets tag colour and refreshes view
     /// TAGI_NONE means nothng is selected
     private var lastTagAnnotationIndex: Int = MyPDFBase.TAGI_NONE { didSet {
+        
+        // if skiped, assume we selected none next time and abort
+        guard lastTagAnnotationIndex != MyPDFBase.TAGI_SKIP else {
+            lastTagAnnotationIndex = MyPDFBase.TAGI_NONE
+            return
+        }
         
         // set colours
         dispatch_async(dispatch_get_main_queue()) {
@@ -104,7 +164,17 @@ class MyPDFBase: PDFView {
         }
     }
     
-    /// Acknowledges the fact that the user is not interested in a specific tag.
+    /// Returns true if any tag overlaps with the given rect on the given page
+    func anyTagOverlapsWith(rect: NSRect, pageIndex: Int) -> Bool {
+        for t in readingTags {
+            if t.rRects.filter({$0.pageIndex == pageIndex}).contains({NSIntersectsRect($0.rect, rect)}) {
+                return true
+            }
+        }
+        return false
+    }
+    
+    /// Acknowledges the fact that the user is not interested in a specific tag anymore.
     func clearClickedOnTags() {
         lastTagAnnotationIndex = MyPDFBase.TAGI_NONE
     }
@@ -142,7 +212,76 @@ class MyPDFBase: PDFView {
         }
     }
     
+    /// Performs an asynchronous tag (readingtag) search on the utility queue.
+    /// For every instance of a tag found, sends a tagStringFoundNotification back on the main queue.
+    func beginTagStringSearch(tagString: String) {
+        
+        self.searching = true
+        
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
+            // loop on tag annotations, since those are split by "closeness" (unlike the readingTags array, which contains whole tags)
+            self.tagAnnotations.forEach() {
+                (annotations, tags) in
+                
+                // check if we are searching (if not, skip rest)
+                guard self.searching else {
+                    return
+                }
+                
+                // filter should return only one match
+                let wantedTags = tags.filter({$0.text == tagString})
+                if wantedTags.count > 1 {
+                    AppSingleton.log.error("More than one tag in tuple with the same text")
+                }
+                
+                wantedTags.forEach() {
+                    wantedTag in
+                    if wantedTag.rRects.count < 1 {
+                        AppSingleton.log.error("Tag has less than one rect")
+                        return
+                    }
+                    // selection for first rect
+                    guard let pdfSel = self.document().pageAtIndex(wantedTag.rRects[0].pageIndex as Int).selectionForRect(wantedTag.rRects[0].rect.outset(1.0)) else {
+                        AppSingleton.log.error("Selection is nil")
+                        return
+                    }
+                    
+                    // subsequent rects
+                    wantedTag.rRects[1..<wantedTag.rRects.count].forEach({pdfSel.addSelection(self.document().pageAtIndex($0.pageIndex as Int).selectionForRect($0.rect.outset(1.0)))})
+                    
+                    // create and send notification
+                    var uInfo = [String: AnyObject]()
+                    uInfo["MyPDFTagFoundSelection"] = pdfSel
+                    dispatch_async(dispatch_get_main_queue()) {
+                        NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.tagStringFoundNotification, object: self, userInfo: uInfo)
+                    }
+                }
+            }
+            
+            self.searching = false
+        }
+    }
+    
     // MARK: - Tagging (private)
+    
+    /// Splits the given tag into multiple tags, so that if it refers to multiple blocks of text,
+    /// multiple tags will be returned (block of text is defined as text for which rects are nearby).
+    private func splitTag(tag: ReadingTag) -> [ReadingTag] {
+        
+        /// inner function that defines that two reading rect are too different (hence will be put in
+        /// different tags) when they are not adjacent (or on different pages)
+        func bigRectDifference(p: ReadingRect, _ s: ReadingRect) -> Bool {
+            if p.pageIndex != s.pageIndex {
+                return true
+            } else {
+                return !p.rect.isNear(s.rect)
+            }
+        }
+        
+        let splitRects = tag.rRects.splittedOnBigSteps(bigRectDifference)
+        
+        return splitRects.map({ReadingTag(withRects: $0, withText: tag.text)})
+    }
     
     /// Creates annotation(s) for the given tag (and stores this relationship for later use)
     private func makeTagAnnotation(forTag tag: ReadingTag) {
@@ -158,8 +297,8 @@ class MyPDFBase: PDFView {
         
         var foundI = -1
         for (i, t) in tagAnnotations.enumerate() {
-            let tagRects = tag.rects.map{$0.rect}
-            let pages = tag.rects.map{$0.pageIndex as Int}
+            let tagRects = tag.rRects.map{$0.rect}
+            let pages = tag.rRects.map{$0.pageIndex as Int}
             if t.tags[0].containsNSRects(tagRects, onPages: pages) {  // assume the first tag refers to the same regions as the others in the tuple
                 foundI = i
                 break
@@ -171,7 +310,7 @@ class MyPDFBase: PDFView {
             // no tags already exist which relate to this block of text
             
             var annots = [PDFAnnotationMarkup]()
-            for rRect in tag.rects {
+            for rRect in tag.rRects {
                 let annotation = PDFAnnotationMarkup(bounds: rRect.rect)
                 annotation.setColor(PeyeConstants.annotationColourTagged)
                 
@@ -216,6 +355,10 @@ class MyPDFBase: PDFView {
             AppSingleton.log.error("Tag not found in already existing tags")
             return
         }
+        
+        // before annotation removal, set selection to none
+        
+        self.lastTagAnnotationIndex = self.dynamicType.TAGI_SKIP
         
         // remove tag from tuple. if no tags are left in that tuple, delete entry and annotations
         

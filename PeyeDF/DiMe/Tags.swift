@@ -52,8 +52,8 @@ public class Tag: Dictionariable, Equatable {
 
 public class ReadingTag: Tag {
     
-    /// All parts of the document referenced by this tag (not necessarily in order).
-    private(set) var rects: [ReadingRect]
+    /// All parts of the document referenced by this tag.
+    private(set) var rRects: [ReadingRect]
     
     /// Creates a new tag. Rects' scalefactor will be set to -1.
     init(text: String, withRects: [NSRect], pages: [Int], pdfBase: MyPDFBase?) {
@@ -65,19 +65,25 @@ public class ReadingTag: Tag {
             pageRects.append(r)
         }
         
-        self.rects = pageRects
+        self.rRects = pageRects
         super.init(withText: text)
     }
     
     /// Creates a new tag from another tag.
     init(fromTag: ReadingTag) {
-        rects = fromTag.rects
+        rRects = fromTag.rRects
         super.init(withText: fromTag.text)
     }
     
     /// Creates a new tag from another tag, but with different text
     init(withText: String, fromTag: ReadingTag) {
-        rects = fromTag.rects
+        rRects = fromTag.rRects
+        super.init(withText: withText)
+    }
+    
+    /// Creates new tag with a given text, with predefined ReadingRects
+    init(withRects: [ReadingRect], withText: String) {
+        rRects = withRects
         super.init(withText: withText)
     }
     
@@ -87,7 +93,7 @@ public class ReadingTag: Tag {
     func combine(otherTag: ReadingTag) -> ReadingTag {
         let newTag = ReadingTag(fromTag: self)
         // only append rects which are not already in this tag
-        newTag.rects.appendContentsOf(otherTag.rects.filter({!newTag.rects.containsSimilar($0)}))
+        newTag.rRects.appendContentsOf(otherTag.rRects.filter({!newTag.rRects.containsSimilar($0)}))
         return newTag
     }
     
@@ -96,9 +102,9 @@ public class ReadingTag: Tag {
     func subtract(otherTag: ReadingTag) -> Tag {
         let newTag = ReadingTag(fromTag: self)
         // get all rects which are not in othertag
-        newTag.rects = newTag.rects.filter({!otherTag.rects.containsSimilar($0)})
+        newTag.rRects = newTag.rRects.filter({!otherTag.rRects.containsSimilar($0)})
         // if something is left, return the result (as a ReadingTag), otherwise a simple tag.
-        if newTag.rects.count > 0 {
+        if newTag.rRects.count > 0 {
             return newTag
         } else {
             return Tag(withText: newTag.text)
@@ -106,26 +112,50 @@ public class ReadingTag: Tag {
     }
     
     override init(fromDiMe json: JSON) {
-        self.rects = json["rects"].arrayValue.flatMap({ReadingRect(fromJson: $0)})
+        self.rRects = json["rects"].arrayValue.flatMap({ReadingRect(fromJson: $0)})
         super.init(fromDiMe: json)
     }
     
     override func getDict() -> [String : AnyObject] {
         var theDictionary = super.getDict()
-        theDictionary["rects"] = rects.asDictArray()
+        theDictionary["rects"] = rRects.asDictArray()
         theDictionary["@type"] = "ReadingTag"
         return theDictionary
     }
     
     /// Returns true if the given NSRect is part of this tag's rects, on the given page
     func containsNSRect(nsrect: NSRect, onPage: Int) -> Bool {
-        return self.rects.reduce(false, combine: {$0 || ($1.rect.nearlyEqual(nsrect) && $1.pageIndex == onPage)})
+        return self.rRects.reduce(false, combine: {$0 || ($1.rect.nearlyEqual(nsrect) && $1.pageIndex == onPage)})
     }
     
     /// Returns true if the given collection of NSRects corresponds to this tag's rects
     func containsNSRects(nsrects: [NSRect], onPages: [Int]) -> Bool {
         return nsrects.enumerate().reduce(true, combine: {$0 && containsNSRect($1.element, onPage: onPages[$1.index])})
     }
+    
+    /// Returns the difference in terms of ReadingRect between this and another ReadingTag.
+    /// Returns a tuple with the ReadingRects which have been added in other (relative complement of this in other)
+    /// and the ReadingRects which have been removed (relative complement of other in this).
+    /// Generates a fatalError if the tags' texts are not the same.
+    func rectDifference(other: ReadingTag) -> (added: [ReadingRect], removed: [ReadingRect]) {
+        if self.text != other.text {
+            fatalError("Taking difference of two tags with different text!")
+        }
+        var added = [ReadingRect]()
+        for r in other.rRects {
+            if !self.rRects.containsSimilar(r) {
+                added.append(r)
+            }
+        }
+        var removed = [ReadingRect]()
+        for r in self.rRects {
+            if !other.rRects.containsSimilar(r) {
+                removed.append(r)
+            }
+        }
+        return (added: added, removed: removed)
+    }
+    
 }
 
 /// Checks if two tags are equal (and if they are both reading tags, uses the reading tag
@@ -144,7 +174,7 @@ public func == (lhs: Tag, rhs: Tag) -> Bool {
 
 /// Note: two ReadingTags are equal even when all their rects are all *nearly* equal
 public func == (lhs: ReadingTag, rhs: ReadingTag) -> Bool {
-    return lhs.text == rhs.text && lhs.rects.nearlyEqual(rhs.rects)
+    return lhs.text == rhs.text && lhs.rRects.nearlyEqual(rhs.rRects)
 }
 
 extension CollectionType where Generator.Element: Tag {

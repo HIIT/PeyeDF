@@ -179,6 +179,9 @@ struct PeyeConstants {
     /// Name of user defaults identifying saved tags
     static let defaultsSavedTags = "defaults.savedTags"
     
+    /// String used to identify searches for tags
+    static let tagSearchPrefix = "#tag:"
+    
     /// Open windows regularly submit a summary event every time this amount of time passes
     static let regularSummaryEventInterval: NSTimeInterval = 1 * 60
     
@@ -251,6 +254,13 @@ struct PeyeConstants {
     /// **UserInfo dictionary fields**:
     /// - "newTags": The updated list of tags
     static let tagsChangedNotification = "hiit.PeyeDF.tagsChanged"
+    
+    /// String used to identify the notification sent when a tag search match within a document is found.
+    /// The notification's object is a MyPDFBase.
+    ///
+    /// **UserInfo dictionary fields**:
+    /// - "MyPDFTagFoundSelection": The selection corresponding to the text referenced by this tag.
+    static let tagStringFoundNotification = "hiit.PeyeDF.tagStringFound"
     
     /// String notifying that something changed in the dime connection.
     ///

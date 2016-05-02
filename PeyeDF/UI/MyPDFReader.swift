@@ -134,9 +134,11 @@ class MyPDFReader: MyPDFBase {
     
     /// Looks up a found selection, used when a user selects a search result
     func foundResult(selectedResult: PDFSelection) {
-        setCurrentSelection(selectedResult, animate: false)
-        scrollSelectionToVisible(self)
-        setCurrentSelection(selectedResult, animate: true)
+        dispatch_async(dispatch_get_main_queue()) {
+            self.setCurrentSelection(selectedResult, animate: false)
+            self.scrollSelectionToVisible(self)
+            self.setCurrentSelection(selectedResult, animate: true)
+        }
         let foundString = selectedResult.string().lowercaseString
         if foundStrings.indexOf(foundString) == nil {
             foundStrings.append(foundString)

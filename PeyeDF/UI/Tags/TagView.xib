@@ -28,7 +28,7 @@
                         <constraint firstAttribute="width" constant="30" id="4vV-fk-MkL"/>
                         <constraint firstAttribute="height" constant="24" id="YpE-Oi-KVj"/>
                     </constraints>
-                    <buttonCell key="cell" type="recessed" title="Remove" bezelStyle="recessed" image="6700AEF0-5DD1-4518-B75C-A07BADE8F41B" imagePosition="only" alignment="center" borderStyle="border" inset="2" id="i7U-wB-6C6">
+                    <buttonCell key="cell" type="recessed" title="Remove" bezelStyle="recessed" image="4F4155DE-A64A-4E35-BD93-4FD0EC476732" imagePosition="only" alignment="center" borderStyle="border" inset="2" id="i7U-wB-6C6">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
                         <font key="font" metaFont="systemBold" size="12"/>
                     </buttonCell>
@@ -46,6 +46,9 @@
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="systemBold" size="12"/>
                     </buttonCell>
+                    <connections>
+                        <action selector="textPress:" target="-1" id="FJz-ew-ZkC"/>
+                    </connections>
                 </button>
             </subviews>
             <constraints>
@@ -61,7 +64,7 @@
         </customView>
     </objects>
     <resources>
-        <image name="6700AEF0-5DD1-4518-B75C-A07BADE8F41B" width="16" height="16">
+        <image name="4F4155DE-A64A-4E35-BD93-4FD0EC476732" width="16" height="16">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGQkNYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK8QDwcI
 ERYbHCUmJygwMzY8P1UkbnVsbNQJCgsMDQ4PEFYkY2xhc3NcTlNJbWFnZUZsYWdzVk5TUmVwc1dOU0Nv

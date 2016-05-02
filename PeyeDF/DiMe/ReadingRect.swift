@@ -246,20 +246,23 @@ public func == (lhs: ReadingRect, rhs: ReadingRect) -> Bool {
 
 /// To allow sorting arrays of readingrects (when uniting them, for example),
 /// ReadingRects can be compared based on the position of their rectangles.
-/// This function traps if they are not on the same page or if they are not the same class! (fatalError)
-/// See also: public func < (lhs: NSRect, rhs: NSRect) 
+/// This function traps if they are not the same class! (fatalError).
+/// See also: public func < (lhs: NSRect, rhs: NSRect)
 public func < (lhs: ReadingRect, rhs: ReadingRect) -> Bool {
     if lhs.readingClass != rhs.readingClass {
         fatalError("Two rects of a different class are being compared")
     }
     
-    if lhs.pageIndex != rhs.pageIndex {
-        fatalError("Two rects on a different page are being compared")
-    }
-    
     let constant: CGFloat = PeyeConstants.rectHorizontalTolerance
     let lrect = lhs.rect
     let rrect = rhs.rect
+    
+    // first compare page
+    if lhs.pageIndex != rhs.pageIndex {
+        return lhs.pageIndex < rhs.pageIndex
+    }
+    
+    // then compare position on page
     if withinRange(lrect.origin.x, rhs: rrect.origin.x, range: constant) {
         return lrect.origin.y > rrect.origin.y
     } else {
