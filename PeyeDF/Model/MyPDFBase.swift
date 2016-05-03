@@ -278,7 +278,7 @@ class MyPDFBase: PDFView {
             }
         }
         
-        let splitRects = tag.rRects.splittedOnBigSteps(bigRectDifference)
+        let splitRects = tag.rRects.splitOnBigSteps(bigRectDifference)
         
         return splitRects.map({ReadingTag(withRects: $0, withText: tag.text)})
     }

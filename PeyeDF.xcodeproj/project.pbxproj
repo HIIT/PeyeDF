@@ -48,6 +48,8 @@
 		A95DF5651BC511A400EA1157 /* PDFDocument+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95DF5641BC511A400EA1157 /* PDFDocument+Extensions.swift */; };
 		A95FE9801B8B3C1D0010E813 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FE97F1B8B3C1D0010E813 /* SwiftyJSON.swift */; };
 		A95FE9911B8B3F7D0010E813 /* Alamofire.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A95FE98B1B8B3EC60010E813 /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		A964E1001CD8F23D00EE72B5 /* PeyeDFUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A964E0FF1CD8F23D00EE72B5 /* PeyeDFUITests.swift */; };
+		A964E10E1CD8F50400EE72B5 /* CalvoDMello.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A964E10D1CD8F50400EE72B5 /* CalvoDMello.pdf */; };
 		A96731B21CCA64DA001A5C9F /* Tags.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96731B11CCA64DA001A5C9F /* Tags.swift */; };
 		A96731BA1CCA69FD001A5C9F /* HistoryManager+tags.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96731B91CCA69FD001A5C9F /* HistoryManager+tags.swift */; };
 		A9677F921BA806F700DC48CC /* MidasManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9677F911BA806F700DC48CC /* MidasManager.swift */; };
@@ -133,6 +135,13 @@
 			remoteGlobalIDString = 4DD67C0A1A5C55C900ED2280;
 			remoteInfo = "Alamofire OSX";
 		};
+		A964E1021CD8F23D00EE72B5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A91CB93C1B332EDB00671868 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A91CB9431B332EDB00671868;
+			remoteInfo = PeyeDF;
+		};
 		A9D9A8BA1C1C87AE0014C1EB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A95FE9811B8B3EC60010E813 /* Alamofire.xcodeproj */;
@@ -209,6 +218,10 @@
 		A95DF5641BC511A400EA1157 /* PDFDocument+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "PDFDocument+Extensions.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A95FE97F1B8B3C1D0010E813 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
 		A95FE9811B8B3EC60010E813 /* Alamofire.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Alamofire.xcodeproj; path = Alamofire/Alamofire.xcodeproj; sourceTree = "<group>"; };
+		A964E0FD1CD8F23D00EE72B5 /* PeyeDFUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PeyeDFUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A964E0FF1CD8F23D00EE72B5 /* PeyeDFUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeyeDFUITests.swift; sourceTree = "<group>"; };
+		A964E1011CD8F23D00EE72B5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A964E10D1CD8F50400EE72B5 /* CalvoDMello.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = CalvoDMello.pdf; sourceTree = "<group>"; };
 		A96731B11CCA64DA001A5C9F /* Tags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tags.swift; sourceTree = "<group>"; };
 		A96731B91CCA69FD001A5C9F /* HistoryManager+tags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "HistoryManager+tags.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9677F911BA806F700DC48CC /* MidasManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = MidasManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -254,6 +267,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		A91CB9551B332EDB00671868 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A964E0FA1CD8F23D00EE72B5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -337,6 +357,7 @@
 				A957950F1BD69B650083525C /* Refinder */,
 				A91CB9461B332EDB00671868 /* PeyeDF */,
 				A91CB95B1B332EDB00671868 /* PeyeDFTests */,
+				A964E0FE1CD8F23D00EE72B5 /* PeyeDFUITests */,
 				A91CB9451B332EDB00671868 /* Products */,
 				A95FE9811B8B3EC60010E813 /* Alamofire.xcodeproj */,
 			);
@@ -347,6 +368,7 @@
 			children = (
 				A91CB9441B332EDB00671868 /* PeyeDF.app */,
 				A91CB9581B332EDB00671868 /* PeyeDFTests.xctest */,
+				A964E0FD1CD8F23D00EE72B5 /* PeyeDFUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -428,6 +450,16 @@
 				A906D9021BAD827800DF10C4 /* Alamofire.framework */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		A964E0FE1CD8F23D00EE72B5 /* PeyeDFUITests */ = {
+			isa = PBXGroup;
+			children = (
+				A964E10D1CD8F50400EE72B5 /* CalvoDMello.pdf */,
+				A964E0FF1CD8F23D00EE72B5 /* PeyeDFUITests.swift */,
+				A964E1011CD8F23D00EE72B5 /* Info.plist */,
+			);
+			path = PeyeDFUITests;
 			sourceTree = "<group>";
 		};
 		A9A23CCC1C771A3B008B61C4 /* Extensions */ = {
@@ -522,6 +554,24 @@
 			productReference = A91CB9581B332EDB00671868 /* PeyeDFTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		A964E0FC1CD8F23D00EE72B5 /* PeyeDFUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A964E10C1CD8F23E00EE72B5 /* Build configuration list for PBXNativeTarget "PeyeDFUITests" */;
+			buildPhases = (
+				A964E0F91CD8F23D00EE72B5 /* Sources */,
+				A964E0FA1CD8F23D00EE72B5 /* Frameworks */,
+				A964E0FB1CD8F23D00EE72B5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A964E1031CD8F23D00EE72B5 /* PBXTargetDependency */,
+			);
+			name = PeyeDFUITests;
+			productName = PeyeDFUITests;
+			productReference = A964E0FD1CD8F23D00EE72B5 /* PeyeDFUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -529,7 +579,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftMigration = 0700;
-				LastSwiftUpdateCheck = 0700;
+				LastSwiftUpdateCheck = 0730;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = HIIT;
 				TargetAttributes = {
@@ -539,6 +589,10 @@
 					};
 					A91CB9571B332EDB00671868 = {
 						CreatedOnToolsVersion = 6.3.2;
+						TestTargetID = A91CB9431B332EDB00671868;
+					};
+					A964E0FC1CD8F23D00EE72B5 = {
+						CreatedOnToolsVersion = 7.3;
 						TestTargetID = A91CB9431B332EDB00671868;
 					};
 				};
@@ -564,6 +618,7 @@
 			targets = (
 				A91CB9431B332EDB00671868 /* PeyeDF */,
 				A91CB9571B332EDB00671868 /* PeyeDFTests */,
+				A964E0FC1CD8F23D00EE72B5 /* PeyeDFUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -639,6 +694,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A964E0FB1CD8F23D00EE72B5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A964E10E1CD8F50400EE72B5 /* CalvoDMello.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -725,6 +788,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A964E0F91CD8F23D00EE72B5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A964E1001CD8F23D00EE72B5 /* PeyeDFUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -737,6 +808,11 @@
 			isa = PBXTargetDependency;
 			name = "Alamofire OSX";
 			targetProxy = A95FE9921B8B3F7D0010E813 /* PBXContainerItemProxy */;
+		};
+		A964E1031CD8F23D00EE72B5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A91CB9431B332EDB00671868 /* PeyeDF */;
+			targetProxy = A964E1021CD8F23D00EE72B5 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -909,6 +985,34 @@
 			};
 			name = Release;
 		};
+		A964E1041CD8F23D00EE72B5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = PeyeDFUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = mf.PeyeDFUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = PeyeDF;
+			};
+			name = Debug;
+		};
+		A964E1051CD8F23D00EE72B5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = PeyeDFUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = mf.PeyeDFUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = PeyeDF;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -935,6 +1039,15 @@
 			buildConfigurations = (
 				A91CB9661B332EDB00671868 /* Debug */,
 				A91CB9671B332EDB00671868 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A964E10C1CD8F23E00EE72B5 /* Build configuration list for PBXNativeTarget "PeyeDFUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A964E1041CD8F23D00EE72B5 /* Debug */,
+				A964E1051CD8F23D00EE72B5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

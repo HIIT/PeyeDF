@@ -180,13 +180,13 @@ extension CollectionType where Index: RandomAccessIndexType, Generator.Element: 
     /// The above function is a comparison function that tells that steps above 3 are "big"
     /// ```
     /// let myVals = [1,2,3,22,34,35,36]
-    /// returned = myVals.splittedOnBigSteps(isBigStep)
+    /// returned = myVals.splitOnBigSteps(isBigStep)
     /// ```
     /// the returned value should be `[[1, 2, 3], [22], [34, 35, 36]]`
     /// - Parameter comparison: The comparison function takes two arguments, a preceding and succeeding items.
     /// The collection is split every time the comparison function returns true, so that the
     /// preceding items will be together, and the succeeding items if any placed in subsequent collection(s).
-    func splittedOnBigSteps<T: Comparable>(comparison: (T, T) -> Bool) -> [[T]] {
+    func splitOnBigSteps<T: Comparable>(comparison: (T, T) -> Bool) -> [[T]] {
         
         /// Inner function to repeatedly split the collection into two subsets.
         /// Returns nil when the first is empty.
