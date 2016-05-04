@@ -37,14 +37,22 @@ class PeyeDFUITests: XCTestCase {
         let calvodmelloPdfWindow = app.windows["CalvoDMello.pdf"]
         
         let toolbarsQuery = calvodmelloPdfWindow.toolbars
-        let popoversQuery = toolbarsQuery.popovers
         toolbarsQuery.buttons["Tag"].click()
-        popoversQuery.childrenMatchingType(.CheckBox).matchingIdentifier("Remove Tag Button").elementBoundByIndex(1).click()
-//        let textField = popoversQuery.childrenMatchingType(.TextField).element
-//        textField.typeText("test\r")
-//        textField.typeText("test2\r")
-//        
         
+        let calvoEtAl2009PdfWindow = XCUIApplication().windows["CalvoDMello.pdf"]
+        calvoEtAl2009PdfWindow.groups["PDF Content"].click()
+        
+        let clickVector = CGVector(dx: 0.2, dy: 0.5)
+        calvoEtAl2009PdfWindow.groups["PDF Content"].staticTexts["PDF Static Text"].coordinateWithNormalizedOffset(clickVector).doubleClick()
+        
+        toolbarsQuery.buttons["Tag"].click()
+        
+        putInPasteboard("test")
+        let windowPopovers = calvodmelloPdfWindow.popovers
+        let textField = windowPopovers.childrenMatchingType(.TextField).element
+        textField.typeKey("v", modifierFlags:.Command)  // gets stuck here because of auto completion
+        windowPopovers.staticTexts["tagging text"].click()
+        windowPopovers.childrenMatchingType(.CheckBox).matchingIdentifier("Add Tag Button").element.click()
     }
     
     /// Opens a pdf file found in the test bundle (Calvo and Dmello)
@@ -70,6 +78,7 @@ class PeyeDFUITests: XCTestCase {
         
         app.sheets.buttons["Go"].click()
         app.buttons["Open"].click()
+        
     }
     
     /// Places an arbitrary string in the global pasteboard

@@ -8,6 +8,8 @@
 
 import Cocoa
 
+// MARK: - Protocol
+
 /// Objects which set themselves as a tag delegate receive updates regarding tags
 protocol TagDelegate: class {
     
@@ -23,6 +25,8 @@ protocol TagDelegate: class {
     /// Tells the delegate that the "text" button was pressed
     func tagInfo(theTag: String)
 }
+
+// MARK: - View Controller
 
 class TagViewController: NSViewController {
     
@@ -50,6 +54,8 @@ class TagViewController: NSViewController {
         inputField.delegate = mydel
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(textChanged(_:)), name: NSControlTextDidChangeNotification, object: inputField)
     }
+    
+    // MARK: - External
     
     /// Resets the managed stackview and replaces it with a new list of tags (in order).
     /// Does not tell delegate about this operation.
@@ -86,6 +92,7 @@ class TagViewController: NSViewController {
         }
     }
     
+    /// Sets the label text
     func setStatus(taggingDocument: Bool) {
         if taggingDocument {
             labelField.stringValue = "tagging document"
@@ -93,6 +100,8 @@ class TagViewController: NSViewController {
             labelField.stringValue = "tagging text"
         }
     }
+    
+    // MARK: - Event receipt
     
     /// Tells the delegate that we want info for a spefic tag and closes its own window.
     @IBAction func textPress(sender: AnyObject) {
@@ -154,6 +163,9 @@ class TagViewController: NSViewController {
         inputField.stringValue = ""
     }
     
+    // MARK: - Notification callbacks
+    
+    /// Notification callback for changed text (for auto-completion)
     @objc func textChanged(notification: NSNotification) {
         let fieldEditor = notification.userInfo!["NSFieldEditor"]!
         if !isCompleting {

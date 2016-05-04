@@ -8,6 +8,7 @@
 
 import Cocoa
 
+/// Custom button which changes text of associated tag when hovering with mouse
 class TagViewButton: NSButton {
     
     required init?(coder: NSCoder) {

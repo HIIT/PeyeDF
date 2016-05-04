@@ -9,6 +9,7 @@
 import Foundation
 import Cocoa
 
+/// Class used to auto complete recently inputted tags
 class TagFieldDelegate: NSObject, NSTextFieldDelegate {
     
     func control(control: NSControl, textView: NSTextView, completions words: [String], forPartialWordRange charRange: NSRange, indexOfSelectedItem index: UnsafeMutablePointer<Int>) -> [String] {
