@@ -126,7 +126,9 @@ class AppSingleton {
         if let infoText = infoText {
             myAl.informativeText = infoText
         }
-        myAl.runModal()
+        dispatch_async(dispatch_get_main_queue()) {
+            myAl.runModal()
+        }
     }
     
     /// Set up console and file log
