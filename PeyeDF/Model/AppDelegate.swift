@@ -39,9 +39,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// Refinder window
     var refinderWindow: RefinderWindowController?
     
-    /// PeyeDF closes itself to prevent potential leaks and allow opened PDFs to be deleted
+    /// When the application launched
+    let launchDate = NSDate()
+    
+    /// PeyeDF closes itself to prevent potential leaks and allow opened PDFs to be deleted (after a given amount of time passed)
     func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {
-        return true
+        return NSDate().timeIntervalSinceDate(launchDate) > PeyeConstants.closeAfterLaunch
     }
     
     /// Sets up custom url handler
