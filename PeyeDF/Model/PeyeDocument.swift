@@ -87,8 +87,20 @@ class PeyeDocument: NSDocument {
         let storyboard = AppSingleton.mainStoryboard
         let windowController = storyboard.instantiateControllerWithIdentifier("Document Window Controller") as! DocumentWindowController
         
-        // cascade windows
-        AppSingleton.nextDocWindowPos = windowController.window!.cascadeTopLeftFromPoint(AppSingleton.nextDocWindowPos)
+        // if midas is not active, cascade window, otherwise constrain to center of screen
+        if !MidasManager.sharedInstance.midasAvailable {
+            // cascade window
+            AppSingleton.nextDocWindowPos = windowController.window!.cascadeTopLeftFromPoint(AppSingleton.nextDocWindowPos)
+        } else {
+            // constrain window
+            if let window = windowController.window, screen = window.screen {
+                let shrankRect = DocumentWindow.getConstrainingRect(forScreen: screen)
+                let intersectedRect = shrankRect.intersect(window.frame)
+                if intersectedRect != window.frame {
+                    window.setFrame(intersectedRect, display: true)
+                }
+            }
+        }
         
         self.addWindowController(windowController)
         
