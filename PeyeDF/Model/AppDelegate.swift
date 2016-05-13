@@ -44,7 +44,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     /// PeyeDF closes itself to prevent potential leaks and allow opened PDFs to be deleted (after a given amount of time passed)
     func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {
-        return NSDate().timeIntervalSinceDate(launchDate) > PeyeConstants.closeAfterLaunch
+        return NSDate().timeIntervalSinceDate(launchDate) > PeyeConstants.closeAfterLaunch && !MidasManager.sharedInstance.midasAvailable
     }
     
     /// Sets up custom url handler
