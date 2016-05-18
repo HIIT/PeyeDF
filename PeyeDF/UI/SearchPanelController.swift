@@ -345,18 +345,22 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     }
     
     func tableView(tableView: NSTableView, objectValueForTableColumn tableColumn: NSTableColumn?, row: Int) -> AnyObject? {
+        
+        // check that foundSelections contains valid data first and unwrap values
+        guard foundSelections.count > row && foundSelections[row].pages().count > 0,
+              let pages = foundSelections[row].pages() where pages.count > 0,
+              let page = pages[0] as? PDFPage, document = page.document() else {
+            return nil
+        }
+        
         if tableColumn?.identifier == kColumnTitlePageLabel {
             
             // get found selection for this row
-            let pages = foundSelections[row].pages()
-            let page = pages[0] as! PDFPage
             return page.label()
             
         } else if tableColumn?.identifier == kColumnTitlePageNumber {
             
-            let pages = foundSelections[row].pages()
-            let page = pages[0] as! PDFPage
-            return page.document().indexForPage(page) + 1
+            return document.indexForPage(page) + 1
             
         } else if tableColumn?.identifier == kColumnTitleLine {
             
