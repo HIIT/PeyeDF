@@ -26,10 +26,30 @@ import Cocoa
 import Quartz
 import Foundation
 
+private let maskColour = NSColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 0.2)
+
 /// Extends the basic pdf support to allow an overview of a document
 class MyPDFOverview: MyPDFBase {
     
     weak var pdfDetail: MyPDFBase?
+    
+    /// The page at this index will be "highlighted" (whiter than the others).
+    var highlightPage = 0 { didSet {
+        // Changing this value will cause a display refresh (if older than previous value).
+        if oldValue != highlightPage {
+            guard let doc = self.document(), oldPage = doc.pageAtIndex(oldValue),
+              newPage = doc.pageAtIndex(highlightPage) else {
+                return
+            }
+            
+            let oldRect = oldPage.boundsForBox(kPDFDisplayBoxCropBox)
+            var refRect = self.convertRect(oldRect, fromPage: oldPage)
+            self.setNeedsDisplayInRect(refRect)
+            let newRect = newPage.boundsForBox(kPDFDisplayBoxCropBox)
+            refRect = self.convertRect(newRect, fromPage: newPage)
+            self.setNeedsDisplayInRect(refRect)
+        }
+    } }
     
     /// Whether we want to draw rect which were simply gazed upon (useful for debugging)
     var drawGazedRects: Bool { get {
@@ -53,9 +73,25 @@ class MyPDFOverview: MyPDFBase {
             pointDiff.y = mediaBoxo.y - cropBoxo.y
         }
         
+        let pageIndex = self.document().indexForPage(page)
+        
+        // draw gray mask if this page is not the highlight page
+        if pageIndex != highlightPage {
+            // Save.
+            NSGraphicsContext.saveGraphicsState()
+            
+            // Draw.
+            let pageRect = self.getPageRect(page)
+            let rectPath: NSBezierPath = NSBezierPath(rect: pageRect.offset(byPoint: pointDiff))
+            maskColour.setFill()
+            rectPath.fill()
+            
+            // Restore.
+            NSGraphicsContext.restoreGraphicsState()
+        }
+        
         // draw gazed upon rects if desired
         if drawGazedRects {
-            let pageIndex = self.document().indexForPage(page)
             let rectsToDraw = markings.get(ofClass: .Paragraph, forPage: pageIndex)
             if rectsToDraw.count > 0 {
                 // Save.
@@ -151,4 +187,15 @@ class MyPDFOverview: MyPDFBase {
         
         pdfDetail?.focusOn(FocusArea(forPoint: pagePoint, onPage: pageIndex))
     }
+    
+    /// Called when the pdfDetail (on right) lands on a new current page
+    @objc func pdfDetailHasNewPage(notification: NSNotification) {
+        guard let mypdb = notification.object as? MyPDFBase, doc = mypdb.document() else {
+            return
+        }
+        let newCurrentPage = mypdb.currentPage()
+        let cpi = doc.indexForPage(newCurrentPage)
+        highlightPage = cpi
+    }
+    
 }

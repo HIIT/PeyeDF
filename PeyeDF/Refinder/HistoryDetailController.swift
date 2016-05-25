@@ -81,7 +81,7 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
             pageRects = tuple.ev.pageRects
             let pdfDoc1 = PDFDocument(URL: lastUrl)
             let pdfDoc2 = PDFDocument(URL: lastUrl)
-            pdfOverview.setScaleFactor(0.1)
+            pdfOverview.setScaleFactor(0.2)
             pdfOverview.setDocument(pdfDoc1)
             pdfOverview.scrollToBeginningOfDocument(self)
             pdfOverview.markings.setAll(pageRects!)
@@ -89,6 +89,7 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
             pdfDetail.markings.setAll(pageRects!)
             pdfDetail.autoAnnotate()
             pdfOverview.pdfDetail = pdfDetail
+            NSNotificationCenter.defaultCenter().addObserver(pdfOverview, selector: #selector(pdfOverview.pdfDetailHasNewPage(_:)), name: PDFViewPageChangedNotification, object: pdfDetail)
         } else {
             AppSingleton.alertUser("Can't find original file", infoText: tuple.ie.uri)
         }
@@ -194,5 +195,16 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
         } else {
             return super.validateMenuItem(menuItem)
         }
+    }
+    
+    /// Focuses the PDFOverview on the page currently shown in the PDFDetail
+    @IBAction func overviewCurrentPage(sender: AnyObject) {
+        guard let cp = pdfDetail.currentPage(),
+                  doc = pdfDetail.document() else {
+            return
+        }
+        
+        let cpi = doc.indexForPage(cp)
+        pdfOverview.focusOn(FocusArea(forPage: cpi), delay: 0.0)
     }
 }

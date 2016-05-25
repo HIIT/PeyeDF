@@ -61,6 +61,11 @@ struct FocusArea {
         self.pageIndex = onPage
     }
     
+    init(forPage: Int) {
+        self.pageIndex = forPage
+        self.type = .Page
+    }
+    
     /// Fails if page is missing is below 0, or did not contain a type
     init?(fromURLComponents comps: NSURLComponents) {
         guard let params = comps.parameterDictionary, pageS = params["page"], pageIndex = Int(pageS) where pageIndex >= 0 else {
@@ -82,14 +87,14 @@ extension MyPDFBase {
     /// Focuses on a rect / point on a given page (if the points are within the page,
     /// and the page exists).
     /// When focusing on a point, adds a half the frame size to y to "center" the desired point in the view.
-    func focusOn(f: FocusArea) {
+    func focusOn(f: FocusArea, delay: Double = 0.5) {
         guard f.pageIndex < self.document().pageCount() else {
            AppSingleton.log.warning("Attempted to focus on a non-existing page")
             return
         }
         
         let showTime = dispatch_time(DISPATCH_TIME_NOW,
-                                     Int64(0.5 * Double(NSEC_PER_SEC)))
+                                     Int64(delay * Double(NSEC_PER_SEC)))
         dispatch_after(showTime, dispatch_get_main_queue()) {
             
             let pdfpage = self.document().pageAtIndex(f.pageIndex)
@@ -116,7 +121,7 @@ extension MyPDFBase {
                 // Get tiny rect of selected position
                 var pointRect = NSRect(origin: p, size: NSSize())
                 
-                pointRect.origin.y += self.frame.size.height / 3
+                pointRect.origin.y += self.frame.size.height / 5
                 self.goToRect(pointRect, onPage: pdfpage)
                 
             case .Page:

@@ -462,12 +462,24 @@
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="600" id="sgb-oH-7Ra"/>
                                 </constraints>
                             </pdfView>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bK8-2r-If3">
+                                <rect key="frame" x="60" y="548" width="120" height="32"/>
+                                <buttonCell key="cell" type="push" title="Current Page" bezelStyle="rounded" image="NSGoLeftTemplate" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="u4o-iv-qS9">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="overviewCurrentPage:" target="dw0-Ff-K13" id="XVe-rB-fDV"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="bK8-2r-If3" firstAttribute="centerX" secondItem="Pp2-ez-teK" secondAttribute="centerX" id="3X7-QG-UFu"/>
                             <constraint firstItem="Qs2-8R-88d" firstAttribute="leading" secondItem="Pp2-ez-teK" secondAttribute="trailing" constant="8" id="CXd-tp-BDS"/>
                             <constraint firstAttribute="trailing" secondItem="Qs2-8R-88d" secondAttribute="trailing" id="TJf-fW-veZ"/>
                             <constraint firstAttribute="bottom" secondItem="Qs2-8R-88d" secondAttribute="bottom" constant="20" id="ZAY-Li-fpA"/>
                             <constraint firstItem="Pp2-ez-teK" firstAttribute="leading" secondItem="jMU-mc-1pg" secondAttribute="leading" constant="20" id="aEq-jl-ib5"/>
+                            <constraint firstItem="Pp2-ez-teK" firstAttribute="top" secondItem="bK8-2r-If3" secondAttribute="bottom" id="rdd-4k-Pd5"/>
                             <constraint firstItem="Qs2-8R-88d" firstAttribute="top" secondItem="jMU-mc-1pg" secondAttribute="top" constant="20" id="rwq-uG-mpw"/>
                             <constraint firstItem="Pp2-ez-teK" firstAttribute="top" secondItem="jMU-mc-1pg" secondAttribute="top" constant="20" id="tek-uc-ZkU"/>
                             <constraint firstAttribute="bottom" secondItem="Pp2-ez-teK" secondAttribute="bottom" constant="20" id="xSk-XA-wE2"/>
@@ -483,4 +495,7 @@
             <point key="canvasLocation" x="1116" y="930.5"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="NSGoLeftTemplate" width="9" height="12"/>
+    </resources>
 </document>
