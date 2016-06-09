@@ -37,8 +37,8 @@ class MyPDFOverview: MyPDFBase {
     var highlightPage = 0 { didSet {
         // Changing this value will cause a display refresh (if older than previous value).
         if oldValue != highlightPage {
-            guard let doc = self.document(), oldPage = doc.pageAtIndex(oldValue),
-              newPage = doc.pageAtIndex(highlightPage) else {
+            guard let doc = self.document(), oldPage = doc.getPage(atIndex: oldValue),
+                newPage = doc.getPage(atIndex: highlightPage) else {
                 return
             }
             

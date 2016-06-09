@@ -88,16 +88,15 @@ extension MyPDFBase {
     /// and the page exists).
     /// When focusing on a point, adds a half the frame size to y to "center" the desired point in the view.
     func focusOn(f: FocusArea, delay: Double = 0.5) {
-        guard f.pageIndex < self.document().pageCount() else {
-           AppSingleton.log.warning("Attempted to focus on a non-existing page")
-            return
-        }
         
         let showTime = dispatch_time(DISPATCH_TIME_NOW,
                                      Int64(delay * Double(NSEC_PER_SEC)))
         dispatch_after(showTime, dispatch_get_main_queue()) {
             
-            let pdfpage = self.document().pageAtIndex(f.pageIndex)
+            guard f.pageIndex < self.document().pageCount(), let pdfpage = self.document().getPage(atIndex: f.pageIndex) else {
+                return
+            }
+            
             let pageRect = self.getPageRect(pdfpage)
             
             switch f.type {

@@ -271,6 +271,19 @@ extension PDFDocument {
         docAttrib[PDFDocumentKeywordsAttribute] = newKeywords
         setDocumentAttributes(docAttrib)
     }
+    
+    /**
+     Get the page at the specified index (unlike the PDFKit function, returns nil
+     if the index is out of bounds, but logs a warning).
+     */
+    public func getPage(atIndex index: Int) -> PDFPage? {
+        if index < 0 || index >= self.pageCount() {
+            AppSingleton.log.warning("Attempted to retrieve a page at index \(index), while the document has \(self.pageCount()) pages.")
+            return nil
+        } else {
+            return self.pageAtIndex(index)
+        }
+    }
 }
 
 extension PDFSelection {
