@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
-        <plugIn identifier="com.apple.pdfkit.ibplugin" version="10116"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
+        <plugIn identifier="com.apple.pdfkit.ibplugin" version="10117"/>
     </dependencies>
     <scenes>
         <!--Window Controller-->
@@ -99,21 +99,21 @@
                                 </connections>
                             </button>
                             <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hcN-4x-pg0">
-                                <rect key="frame" x="98" y="109" width="272" height="21"/>
+                                <rect key="frame" x="98" y="109" width="272" height="20"/>
                                 <sliderCell key="cell" continuous="YES" state="on" alignment="left" maxValue="1" tickMarkPosition="above" sliderType="linear" id="mDB-9B-1rY"/>
                                 <connections>
                                     <action selector="takeDoubleValueFrom:" target="3Sf-9b-tBT" id="5XD-9h-Vb7"/>
                                 </connections>
                             </slider>
                             <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gqN-Ax-dEb">
-                                <rect key="frame" x="98" y="84" width="272" height="21"/>
+                                <rect key="frame" x="98" y="84" width="272" height="20"/>
                                 <sliderCell key="cell" continuous="YES" state="on" alignment="left" maxValue="1" doubleValue="0.29999999999999999" tickMarkPosition="above" sliderType="linear" id="MA0-BU-0ye"/>
                                 <connections>
                                     <action selector="takeDoubleValueFrom:" target="jIp-kn-DY7" id="UKG-R4-ByH"/>
                                 </connections>
                             </slider>
                             <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="MEO-AZ-WOP">
-                                <rect key="frame" x="98" y="59" width="273" height="21"/>
+                                <rect key="frame" x="98" y="59" width="273" height="20"/>
                                 <sliderCell key="cell" continuous="YES" state="on" alignment="left" maxValue="1" doubleValue="0.80000000000000004" tickMarkPosition="above" sliderType="linear" id="hNx-3t-LYQ"/>
                                 <connections>
                                     <action selector="takeDoubleValueFrom:" target="mOl-UH-jLg" id="u6Z-Nl-oDC"/>
@@ -189,7 +189,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="349" height="575"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <scrollView autohidesScrollers="YES" horizontalLineScroll="236" horizontalPageScroll="10" verticalLineScroll="236" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PiP-7z-YlQ">
+                            <scrollView wantsLayer="YES" autohidesScrollers="YES" horizontalLineScroll="236" horizontalPageScroll="10" verticalLineScroll="236" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PiP-7z-YlQ">
                                 <rect key="frame" x="0.0" y="20" width="349" height="535"/>
                                 <clipView key="contentView" copiesOnScroll="NO" id="nxx-8l-Vpa">
                                     <rect key="frame" x="1" y="1" width="347" height="533"/>

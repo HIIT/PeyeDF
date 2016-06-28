@@ -26,6 +26,42 @@ import Cocoa
 
 class RefinderProgressIndicator: NSView {
     
+    /// Corner radius for display (higher values might crash)
+    let kCr: CGFloat = 2
+    
+    override var wantsUpdateLayer: Bool { get {
+        return true
+    } }
+    
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        completeInit()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        completeInit()
+    }
+    
+    /// Convenience function to complete initialization
+    func completeInit() {
+        self.wantsLayer = true
+        self.layer?.addSublayer(frontLayer)
+        self.layer?.addSublayer(backLayer)
+        self.layerContentsRedrawPolicy = NSViewLayerContentsRedrawPolicy.DuringViewResize
+    }
+    
+    /// Drawn "outside" to show borders
+    let backLayer: CAShapeLayer = {
+        let shape = CAShapeLayer()
+        shape.lineWidth = 0.5
+        shape.fillColor = nil
+        return shape
+    }()
+    
+    /// Drawn "inside" with a colour
+    let frontLayer = CAShapeLayer()
+    
     /// Progress in a proportion
     var progress = 0.0
     
@@ -35,16 +71,8 @@ class RefinderProgressIndicator: NSView {
     func setProgress(newProgress: Double, forClass: ReadingClass) {
         self.progress = newProgress
         self.readingC = forClass
-    }
-    
-    override func drawRect(dirtyRect: NSRect) {
-        super.drawRect(dirtyRect)
-    
-        NSColor.grayColor().setStroke()
-        let backPath = NSBezierPath(rect: dirtyRect)
-        backPath.lineCapStyle = .RoundLineCapStyle
-        backPath.stroke()
         
+        // set own colours depending on class
         var colour = NSColor.whiteColor()
         if readingC == ReadingClass.Read {
             colour = PeyeConstants.annotationColourRead.colorWithAlphaComponent(1)
@@ -54,14 +82,24 @@ class RefinderProgressIndicator: NSView {
             colour = PeyeConstants.annotationColourCritical.colorWithAlphaComponent(1)
         }
         
-        var rect = dirtyRect
+        backLayer.strokeColor = colour.CGColor
+        frontLayer.fillColor = colour.CGColor
+    }
+    
+    /// Overriden to readjust its own size
+    override func updateLayer() {
+        super.updateLayer()
+        
+        // use rounded rect and subtract a little to fit corners in view
+        var rect = self.bounds.addTo(-1.5)
+        
+        let backPath = CGPathCreateWithRoundedRect(rect, kCr, kCr, nil)
+        
         rect.size.width *= CGFloat(progress)
-        let frontPath = NSBezierPath(rect: rect)
-        colour.setStroke()
-        colour.setFill()
-        frontPath.lineCapStyle = .RoundLineCapStyle
-        frontPath.stroke()
-        frontPath.fill()
+        let frontPath = CGPathCreateWithRoundedRect(rect, kCr, kCr, nil)
+        
+        backLayer.path = backPath
+        frontLayer.path = frontPath
     }
     
 }
