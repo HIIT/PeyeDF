@@ -175,7 +175,7 @@ struct PeyeConstants {
     
     /// The application will auto close when the last window is closed
     /// and this amount of time passed
-    static let closeAfterLaunch: NSTimeInterval = 30
+    static let closeAfterLaunch: NSTimeInterval = 60 * 60  // one hour
     
     /// Amount of tags stored in user defaults (for auto completion)
     static let nOfSavedTags = 25
