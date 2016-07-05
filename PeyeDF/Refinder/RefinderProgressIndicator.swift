@@ -27,7 +27,7 @@ import Cocoa
 class RefinderProgressIndicator: NSView {
     
     /// Corner radius for display (higher values might crash)
-    let kCr: CGFloat = 2
+    let kCr: CGFloat = 1.5
     
     override var wantsUpdateLayer: Bool { get {
         return true
@@ -94,12 +94,18 @@ class RefinderProgressIndicator: NSView {
         var rect = self.bounds.addTo(-1.5)
         
         let backPath = CGPathCreateWithRoundedRect(rect, kCr, kCr, nil)
-        
-        rect.size.width *= CGFloat(progress)
-        let frontPath = CGPathCreateWithRoundedRect(rect, kCr, kCr, nil)
-        
         backLayer.path = backPath
-        frontLayer.path = frontPath
+        
+        // hide front layer if width is less than twice the corner (otherwise would crash)
+        rect.size.width *= CGFloat(progress)
+        if rect.size.width > kCr * 2 {
+            let frontPath = CGPathCreateWithRoundedRect(rect, kCr, kCr, nil)
+            frontLayer.path = frontPath
+            frontLayer.hidden = false
+        } else {
+            frontLayer.hidden = true
+        }
+        
     }
     
 }
