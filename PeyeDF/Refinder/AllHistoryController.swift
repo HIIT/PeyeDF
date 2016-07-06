@@ -207,39 +207,42 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
         
             let panel = NSOpenPanel()
             panel.allowedFileTypes = ["json", "JSON"]
-            if panel.runModal() == NSFileHandlingPanelOKButton {
-                let inURL = panel.URL!
-                let data = NSData(contentsOfURL: inURL)
-                let json = JSON(data: data!)
-                
-                // check that loaded session id matches selection
-                let fileSessionId = json["outData"]["sessionId"].stringValue
-                let tableSessionId = allHistoryTuples[row].ev.sessionId
-                if fileSessionId != tableSessionId {
-                    AppSingleton.alertUser("Json file's id does not match table's id (selected wrong row or file?)")
+            panel.beginSheetModalForWindow(self.view.window!, completionHandler: {
+                result in
+                if result == NSFileHandlingPanelOKButton {
+                    let inURL = panel.URL!
+                    let data = NSData(contentsOfURL: inURL)
+                    let json = JSON(data: data!)
                     
-                    lastImportedIndex = -1
-                    lastImportedSessionId = ""
-                } else {
-                    
-                    var outRects = [EyeRectangle]()
-                    for outR in json["outData"]["outRects"].arrayValue {
-                        outRects.append(EyeRectangle(fromJson: outR))
+                    // check that loaded session id matches selection
+                    let fileSessionId = json["outData"]["sessionId"].stringValue
+                    let tableSessionId = self.allHistoryTuples[row].ev.sessionId
+                    if fileSessionId != tableSessionId {
+                        AppSingleton.alertUser("Json file's id does not match table's id (selected wrong row or file?)")
+                        
+                        self.lastImportedIndex = -1
+                        self.lastImportedSessionId = ""
+                    } else {
+                        
+                        var outRects = [EyeRectangle]()
+                        for outR in json["outData"]["outRects"].arrayValue {
+                            outRects.append(EyeRectangle(fromJson: outR))
+                        }
+                        
+                        // normalize imported rects so attnVal_n ranges between 0 and 1
+                        outRects = outRects.normalize()
+                        
+                        self.performSegueWithIdentifier("showThresholdEditor", sender: self)
+                        self.delegate?.setEyeRects(outRects)
+                        
+                        self.lastImportedIndex = row
+                        self.lastImportedSessionId = tableSessionId
                     }
-                    
-                    // normalize imported rects so attnVal_n ranges between 0 and 1
-                    outRects = outRects.normalize()
-                    
-                    self.performSegueWithIdentifier("showThresholdEditor", sender: self)
-                    delegate?.setEyeRects(outRects)
-                    
-                    lastImportedIndex = row
-                    lastImportedSessionId = tableSessionId
+                } else {
+                    self.lastImportedIndex = -1
+                    self.lastImportedSessionId = ""
                 }
-            } else {
-                lastImportedIndex = -1
-                lastImportedSessionId = ""
-            }
+            })
         } else {
             lastImportedIndex = -1
             lastImportedSessionId = ""
