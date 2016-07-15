@@ -462,7 +462,13 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         // metadata disabled at start (will be enabled in checkMetadata(_) )
         tbMetadata.enabled = false
         
-        let oldFrame = NSRect(origin: self.window!.frame.origin, size: NSSize(width: PeyeConstants.docWindowWidth, height: PeyeConstants.docWindowHeight))
+        // set size of window to 2/3 of screen size, if avaiable, otherwise use contants
+        let oldFrame: NSRect
+        if let screen = self.window?.screen {
+            oldFrame = NSRect(origin: self.window!.frame.origin, size: NSSize(width: screen.visibleFrame.width / 3 * 2, height: screen.visibleFrame.height / 3 * 2))
+        } else {
+            oldFrame = NSRect(origin: self.window!.frame.origin, size: NSSize(width: PeyeConstants.docWindowWidth, height: PeyeConstants.docWindowHeight))
+        }
         self.window!.setFrame(oldFrame, display: true)
         
         // Set reference to pdfReader for convenience by using references to children of this window

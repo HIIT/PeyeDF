@@ -52,25 +52,25 @@
             <objects>
                 <viewController title="General Settings" showSeguePresentationStyle="single" id="62w-oK-rf7" customClass="GeneralSettingsController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="WGw-LJ-0lD">
-                        <rect key="frame" x="0.0" y="0.0" width="462" height="302"/>
+                        <rect key="frame" x="0.0" y="0.0" width="462" height="304"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="wEK-ud-1k4">
-                                <rect key="frame" x="18" y="266" width="288" height="18"/>
+                                <rect key="frame" x="18" y="268" width="288" height="18"/>
                                 <buttonCell key="cell" type="check" title="Annotate function enabled for new windows" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="seh-ry-ahZ">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="PGH-u0-em8">
-                                <rect key="frame" x="18" y="246" width="327" height="18"/>
+                                <rect key="frame" x="18" y="248" width="327" height="18"/>
                                 <buttonCell key="cell" type="check" title="Attempt to download metadata on document open" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="dby-mW-4qK">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="BVV-hH-JyH">
-                                <rect key="frame" x="18" y="226" width="440" height="18"/>
+                                <rect key="frame" x="18" y="228" width="440" height="18"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="14" id="Shn-cO-s2n"/>
                                 </constraints>
@@ -80,7 +80,7 @@
                                 </buttonCell>
                             </button>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="GFc-xH-ekV">
-                                <rect key="frame" x="18" y="206" width="326" height="18"/>
+                                <rect key="frame" x="18" y="208" width="326" height="18"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="14" id="6F4-sE-tBv"/>
                                 </constraints>
@@ -90,13 +90,13 @@
                                 </buttonCell>
                             </button>
                             <box title="Annotation line thickness" borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="UC7-V4-Wrp">
-                                <rect key="frame" x="17" y="16" width="428" height="66"/>
+                                <rect key="frame" x="17" y="16" width="428" height="68"/>
                                 <view key="contentView" id="cbh-La-9jU">
-                                    <rect key="frame" x="1" y="1" width="426" height="47"/>
+                                    <rect key="frame" x="1" y="1" width="426" height="49"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="E15-lK-fvD">
-                                            <rect key="frame" x="16" y="10" width="340" height="25"/>
+                                            <rect key="frame" x="16" y="11" width="340" height="26"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="336" id="dtF-MU-gHK"/>
                                             </constraints>
@@ -106,7 +106,7 @@
                                             </connections>
                                         </slider>
                                         <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uRt-4J-vlE">
-                                            <rect key="frame" x="360" y="13" width="54" height="22"/>
+                                            <rect key="frame" x="360" y="14" width="54" height="22"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="54" id="N2Q-Hu-YTx"/>
                                             </constraints>
@@ -117,21 +117,23 @@
                                             </textFieldCell>
                                         </textField>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstItem="E15-lK-fvD" firstAttribute="centerY" secondItem="cbh-La-9jU" secondAttribute="centerY" id="2Rq-xI-SCE"/>
+                                    </constraints>
                                 </view>
                                 <constraints>
-                                    <constraint firstItem="E15-lK-fvD" firstAttribute="top" secondItem="UC7-V4-Wrp" secondAttribute="top" constant="30" id="4fd-U8-hze"/>
                                     <constraint firstItem="uRt-4J-vlE" firstAttribute="leading" secondItem="E15-lK-fvD" secondAttribute="trailing" constant="6" id="MSs-hS-xe7"/>
                                     <constraint firstAttribute="trailing" secondItem="uRt-4J-vlE" secondAttribute="trailing" constant="10" id="VQS-HC-Mwq"/>
                                     <constraint firstItem="E15-lK-fvD" firstAttribute="leading" secondItem="UC7-V4-Wrp" secondAttribute="leading" constant="16" id="Wud-dI-VYU"/>
                                     <constraint firstItem="uRt-4J-vlE" firstAttribute="centerY" secondItem="E15-lK-fvD" secondAttribute="centerY" id="h2v-jE-CsO"/>
-                                    <constraint firstAttribute="height" constant="62" id="yrF-Ac-hSa"/>
+                                    <constraint firstAttribute="height" constant="64" id="yrF-Ac-hSa"/>
                                 </constraints>
                                 <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                 <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <font key="titleFont" metaFont="system"/>
                             </box>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="kwa-ow-smM">
-                                <rect key="frame" x="18" y="93" width="76" height="17"/>
+                                <rect key="frame" x="18" y="95" width="76" height="17"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Monitor DPI" id="H12-Iy-AxQ">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -139,7 +141,7 @@
                                 </textFieldCell>
                             </textField>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gxa-Hp-eF0">
-                                <rect key="frame" x="107" y="90" width="96" height="22"/>
+                                <rect key="frame" x="107" y="92" width="96" height="22"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="96" id="muS-6h-TCJ"/>
                                 </constraints>
@@ -150,13 +152,13 @@
                                 </textFieldCell>
                             </textField>
                             <box title="Dominant Eye" borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="afp-6T-41F">
-                                <rect key="frame" x="17" y="114" width="234" height="66"/>
+                                <rect key="frame" x="17" y="116" width="234" height="66"/>
                                 <view key="contentView" id="59u-gM-x6L">
                                     <rect key="frame" x="1" y="1" width="232" height="47"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <button identifier="rightDomEyeButton" translatesAutoresizingMaskIntoConstraints="NO" id="8qy-dl-5fN">
-                                            <rect key="frame" x="116" y="15" width="54" height="18"/>
+                                            <rect key="frame" x="116" y="14" width="54" height="18"/>
                                             <buttonCell key="cell" type="radio" title="Right" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="b8U-Ci-elD">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
@@ -166,7 +168,7 @@
                                             </connections>
                                         </button>
                                         <button identifier="leftDomEyeButton" translatesAutoresizingMaskIntoConstraints="NO" id="I21-cq-meB">
-                                            <rect key="frame" x="47" y="15" width="46" height="18"/>
+                                            <rect key="frame" x="47" y="14" width="46" height="18"/>
                                             <buttonCell key="cell" type="radio" title="Left" bezelStyle="regularSquare" imagePosition="right" alignment="left" inset="2" id="owH-dP-d1g">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
@@ -178,21 +180,21 @@
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="8qy-dl-5fN" firstAttribute="leading" secondItem="I21-cq-meB" secondAttribute="trailing" constant="26" id="5es-Xl-0Cy"/>
+                                        <constraint firstItem="8qy-dl-5fN" firstAttribute="centerY" secondItem="I21-cq-meB" secondAttribute="centerY" id="Com-Yi-JaM"/>
                                         <constraint firstItem="I21-cq-meB" firstAttribute="leading" secondItem="59u-gM-x6L" secondAttribute="leading" constant="48" id="arQ-W9-eG3"/>
-                                        <constraint firstItem="8qy-dl-5fN" firstAttribute="top" secondItem="59u-gM-x6L" secondAttribute="top" constant="15" id="kUU-Qz-t6Z"/>
                                     </constraints>
                                 </view>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="62" id="1I9-gW-eKI"/>
                                     <constraint firstAttribute="width" constant="228" id="G7Y-0g-sV0"/>
-                                    <constraint firstItem="I21-cq-meB" firstAttribute="top" secondItem="afp-6T-41F" secondAttribute="top" constant="33" id="LKD-gp-5Ac"/>
+                                    <constraint firstItem="I21-cq-meB" firstAttribute="top" secondItem="afp-6T-41F" secondAttribute="top" constant="34" id="LKD-gp-5Ac"/>
                                 </constraints>
                                 <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                 <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <font key="titleFont" metaFont="system"/>
                             </box>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="S1W-xx-0w2">
-                                <rect key="frame" x="18" y="186" width="300" height="18"/>
+                                <rect key="frame" x="18" y="188" width="300" height="18"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="14" id="B6H-4d-R2y"/>
                                 </constraints>
@@ -241,7 +243,7 @@
                 </viewController>
                 <customObject id="ThY-Hh-P4H" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="508" y="-1783"/>
+            <point key="canvasLocation" x="508" y="-1783.5"/>
         </scene>
         <!--DiMe Preferences-->
         <scene sceneID="JFC-Eo-9Mb">
@@ -1251,7 +1253,7 @@
         <scene sceneID="f6R-Kc-PFL">
             <objects>
                 <windowController storyboardIdentifier="Document Window Controller" id="sy6-nO-Tdf" userLabel="Document Window Controller" customClass="DocumentWindowController" customModule="PeyeDF" sceneMemberID="viewController">
-                    <window key="window" title="Window for &lt;&lt;Filename&gt;&gt;" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="Ezf-2B-VUj" customClass="DocumentWindow" customModule="PeyeDF" customModuleProvider="target">
+                    <window key="window" title="Window for &lt;&lt;Filename&gt;&gt;" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="Ezf-2B-VUj" customClass="DocumentWindow" customModule="PeyeDF" customModuleProvider="target">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="200" y="350" width="810" height="485"/>
@@ -1477,7 +1479,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="60" id="Vzr-WU-4oi"/>
                                 </constraints>
-                                <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="95A-eE-ckT">
+                                <scroller key="horizontalScroller" verticalHuggingPriority="750" doubleValue="0.0018345746163955878" horizontal="YES" id="95A-eE-ckT">
                                     <rect key="frame" x="1" y="128" width="322" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
