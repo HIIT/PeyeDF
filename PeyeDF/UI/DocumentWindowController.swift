@@ -188,6 +188,57 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         }
     }
     
+    /// Exports all readingtags (tags referring to blocks of text) to a json
+    /// file specified by the user.
+    @IBAction func exportReadingTags(sender: AnyObject?) {
+        guard let pdfReader = self.pdfReader, win = self.window
+          where pdfReader.readingTags.count > 0 else {
+            AppSingleton.alertUser("Could not find any text-related tags")
+            return
+        }
+        
+        let panel = NSSavePanel()
+        panel.allowedFileTypes = ["json", "JSON"]
+        panel.canSelectHiddenExtension = true
+        panel.nameFieldStringValue = "\((self.document as! PeyeDocument).fileURL!.URLByDeletingPathExtension!.lastPathComponent!)-Tags.json"
+        panel.beginSheetModalForWindow(win, completionHandler: {
+            result in
+            if result == NSFileHandlingPanelOKButton {
+                let outURL = panel.URL!
+                let options = NSJSONWritingOptions.PrettyPrinted
+                
+                do {
+                    let outDict = pdfReader.readingTags.flatMap({$0.getDict()}) as AnyObject
+                    let outData = try NSJSONSerialization.dataWithJSONObject(outDict, options: options)
+                    
+                    // create output file if it doesn't exist
+                    if !NSFileManager.defaultManager().fileExistsAtPath(outURL.path!) {
+                        NSFileManager.defaultManager().createFileAtPath(outURL.path!, contents: nil, attributes: nil)
+                    } else {
+                    // if file exists, delete it and create id
+                        do {
+                            try NSFileManager.defaultManager().removeItemAtURL(outURL)
+                            NSFileManager.defaultManager().createFileAtPath(outURL.path!, contents: nil, attributes: nil)
+                        } catch {
+                            AppSingleton.log.error("Could not delete file at \(outURL): \(error)")
+                        }
+                    }
+                    
+                    // write data to existing file
+                    do {
+                        let file = try NSFileHandle(forWritingToURL: outURL)
+                        file.writeData(outData)
+                    } catch {
+                        AppSingleton.alertUser("Error while creating output file", infoText: "\(error)")
+                    }
+                    
+                } catch {
+                    AppSingleton.alertUser("Error while serializing json", infoText: "\(error)")
+                }
+            }
+        })
+    }
+    
     func tagAdded(theTag: String) {
         switch currentTagOperation {
         case .Document:
@@ -307,7 +358,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             // in any other case, we check the action instead of tag
             switch menuItem.action.description {
                 // these should always be enabled
-                case "saveDocument:", "saveDocumentAs:":
+                case "saveDocument:", "saveDocumentAs:", "exportReadingTags:":
                 return true
             default:
                 // any other tag was not considered we disable it by default
