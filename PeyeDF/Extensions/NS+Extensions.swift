@@ -62,6 +62,12 @@ extension NSSize {
                self.width < maxWidth
     }
     
+    func scale(factor: CGFloat) -> NSSize {
+        var newSize = self
+        newSize.width *= factor
+        newSize.height *= factor
+        return newSize
+    }
 }
 
 extension NSSize: Hashable {
@@ -88,11 +94,12 @@ extension NSColor {
 
 extension NSPoint {
     
-    /// Creates a point from string specifying (x,y)
+    /// Creates a point from string specifying 'x,y'
     /// - returns: nil if conversion failed
     init?(string: String) {
         if let spl = string.split(",") where spl.count == 2 {
             let nf = NSNumberFormatter()
+            nf.localizesFormat = false  // to be locale-independent
             if let x = nf.numberFromString(spl[0]) as? CGFloat,
               y = nf.numberFromString(spl[1]) as? CGFloat {
                 self.x = x
@@ -115,6 +122,15 @@ extension NSPoint {
 extension NSPoint: Hashable {
     public var hashValue: Int { get {
         return x.hashValue ^ y.hashValue
+    } }
+}
+
+extension NSPoint: CustomStringConvertible {
+    /**
+    Format: 'x,y'
+    */
+    public var description: String { get {
+        return "\(self.x),\(self.y)"
     } }
 }
 
@@ -141,10 +157,10 @@ extension NSURLComponents {
     /// - parameter mustConnect: If true, proceeds only if dime connects after trying. If false, 
     ///  tries once but then proceeds even if dime is off.
     func onDiMeAvail(callback: (NSURLComponents -> Void), mustConnect: Bool) {
-        if HistoryManager.sharedManager.dimeAvailable {
+        if DiMePusher.dimeAvailable {
             callback(self)
         } else {
-            HistoryManager.sharedManager.dimeConnect() {
+            DiMePusher.dimeConnect() {
                 success, _ in
                 if !mustConnect || success {
                     callback(self)

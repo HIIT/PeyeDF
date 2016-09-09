@@ -52,7 +52,7 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     let kColumnTitleLine = "Line"
     
     // String used to make tag searches
-    let kTagSString = PeyeConstants.tagSearchPrefix
+    let kTagSString = TagConstants.tagSearchPrefix
     
     /// The column which contains labels (is collapsed if numbers==labels)
     @IBOutlet weak var labelColumn: NSTableColumn!
@@ -81,7 +81,7 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     @IBOutlet weak var separateWordsButton: NSButton!
     @IBOutlet weak var exactMatchButton: NSButton!
     
-    weak var pdfReader: MyPDFReader?
+    weak var pdfReader: PDFReader?
     
     /// Keeps track of the number of results found
     var numberOfResultsFound = 0
@@ -137,14 +137,14 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     override func viewDidAppear() {
         // set up PDFView search notification
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(foundPDFSearchItem(_:)), name: PDFDocumentDidFindMatchNotification, object: pdfReader!.document())
-        // set up MyPDFBase tag search notification
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(foundPDFSearchItem(_:)), name: PeyeConstants.tagStringFoundNotification, object: pdfReader!)
+        // set up PDFBase tag search notification
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(foundPDFSearchItem(_:)), name: TagConstants.tagStringFoundNotification, object: pdfReader!)
     }
     
     override func viewWillDisappear() {
         // unset search notifications
         NSNotificationCenter.defaultCenter().removeObserver(self, name: PDFDocumentDidFindMatchNotification, object: pdfReader!.document())
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: PeyeConstants.tagStringFoundNotification, object: pdfReader!)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: TagConstants.tagStringFoundNotification, object: pdfReader!)
         
         // table unset
         resultTable.setDataSource(nil)
@@ -319,7 +319,7 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
         // discriminate between pdfView string and MyPDF tag string searches
         if notification.name == PDFDocumentDidFindMatchNotification {
             pdfSel = infoDict["PDFDocumentFoundSelection"] as! PDFSelection
-        } else if notification.name == PeyeConstants.tagStringFoundNotification {
+        } else if notification.name == TagConstants.tagStringFoundNotification {
             pdfSel = infoDict["MyPDFTagFoundSelection"] as! PDFSelection
         } else {
             fatalError("Unrecognized notification name!")

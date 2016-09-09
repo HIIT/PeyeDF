@@ -37,7 +37,7 @@ protocol ClickRecognizerDelegate: class {
 /// Controller for the PDF-side Document split view
 class PDFSideController: NSViewController, ClickRecognizerDelegate, NSGestureRecognizerDelegate {
     
-    @IBOutlet weak var pdfReader: MyPDFReader!
+    @IBOutlet weak var pdfReader: PDFReader!
     @IBOutlet weak var overlay: MyOverlay!
     
     @IBOutlet weak var doubleClickRecognizer: NSClickGestureRecognizer!
@@ -51,12 +51,12 @@ class PDFSideController: NSViewController, ClickRecognizerDelegate, NSGestureRec
     
     /// Target for the gesture recognizer used to detect double clicks
     @IBAction func doubleClick(sender: NSClickGestureRecognizer) {
-        pdfReader.markAndAnnotate(sender.locationInView(pdfReader), importance: ReadingClass.Interesting)
+        pdfReader.markAndAnnotate(sender.locationInView(pdfReader), importance: ReadingClass.Medium)
     }
     
     /// Target for the gesture recognizer used to detect double clicks
     @IBAction func tripleClick(sender: NSClickGestureRecognizer) {
-        pdfReader.markAndAnnotate(sender.locationInView(pdfReader), importance: ReadingClass.Critical)
+        pdfReader.markAndAnnotate(sender.locationInView(pdfReader), importance: ReadingClass.High)
     }
     
     /// Set the enabled state of the recognizer to the given value

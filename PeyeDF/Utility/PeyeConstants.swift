@@ -26,7 +26,7 @@ import Foundation
 import Cocoa
 
 /// All constants used are put here for convenience.
-struct PeyeConstants {
+class PeyeConstants {
     
     // MARK: - Preferences
     // Remember to set some default values in the appdelegate for each preference
@@ -109,47 +109,15 @@ struct PeyeConstants {
     /// marking events
     static let excludeEyeUnixTimeMs = 1000
     
-    // MARK: - Eye Analysis
+    // MARK: - Colours
     
-    /// Minimum number of fixations for data to be exported
-    static let minNOfFixations = 3
-    
-    // MARK: - Debug
-    
-    /// Whether we want to laod and show debug window (one for each document).
-    static let debugWindow = false
-    
-    /// Column name for debug table. Make sure this identifier matches the table view id in the storyboard
-    static let debugTitleColName = "DebugTitleColumn"
-    
-    /// Column name for debug table. Make sure this identifier matches the table view id in the storyboard
-    static let debugDescColName = "DebugDescriptionColumn"
-    
-    /// Column name for debug table. Make sure this identifier matches the table view id in the storyboard
-    static let debugTimeColName = "DebugTimeColumn"
-    
-    // MARK: - Annotations
-    
-    /// Documents which have been seen / read / marked as interesting less than this amount won't be sent
-    /// as summary events to DiMe
-    static let minProportion = 0.001
-    
-    /// Space between the "selection" (seen paragraph) rectangle and its line (in page points)
-    static let annotationLineDistance: CGFloat = 7
-    
-    /// Default color for tagged text
-    static let annotationColourTagged: NSColor = NSColor(red: 0.84, green: 0.51, blue: 1, alpha: 0.35)
-    
-    /// Default color for tagged and selected text
-    static let annotationColourTaggedSelected: NSColor = NSColor(red: 0.94, green: 0.31, blue: 1, alpha: 0.55)
-    
-    /// Default color of the read annotation lines (reading marks)
+    /// Default color of the read annotation lines (in single user case)
     static let annotationColourRead: NSColor = NSColor(red: 0.24, green: 0.74, blue: 0.97, alpha: 0.75)
     
-    /// Default color of the "interesting" annotation lines (interesting marks)
+    /// Default color of the "interesting" annotation lines (in single user case)
     static let annotationColourInteresting: NSColor = NSColor(red: 0.92, green: 0.71, blue: 0.43, alpha: 0.75)
     
-    /// Default color of the "critical" annotation lines (critical marks)
+    /// Default color of the "critical" annotation lines (in single user case)
     static let annotationColourCritical: NSColor = NSColor(red: 0.99, green: 0.24, blue: 0.26, alpha: 0.75)
     
     /// Default color for "floating" paragraphs detected using fixations
@@ -163,28 +131,31 @@ struct PeyeConstants {
     /// Default color for searched, found and looked at string queries
     static let colourFoundStrings: NSColor = NSColor(red: 0.88, green: 0.89, blue: 0.0, alpha: 0.85)
     
-    /// Dictionary of annotation colours for marks, based on their given "class"
-    static let markAnnotationColours: [ReadingClass: NSColor] = [.Read: annotationColourRead,
-                                                             .Interesting: annotationColourInteresting,
-                                                             .Critical: annotationColourCritical]
-    
     /// Dictionary of annotation colours for smi
     static let smiColours: [ReadingClass: NSColor] = [.Paragraph: colourParagraph]
+    
+    /// Colour for highlighted rect (PDFBase.highlightRect)
+    static let highlightRectColour = NSColor(red: 0.79, green: 0.99, blue: 0.82, alpha: 0.25)
+    
+    // MARK: - Annotations
+    
+    /// Documents which have been seen / read / marked as interesting less than this amount won't be sent
+    /// as summary events to DiMe
+    static let minProportion = 0.001
+    
+    /// Space between the "selection" (seen paragraph) rectangle and its line (in page points)
+    static let annotationLineDistance: CGFloat = 7
+    
+    // MARK: - Eye Analysis
+    
+    /// Minimum number of fixations for data to be exported
+    static let minNOfFixations = 3
     
     // MARK: - Other globals
     
     /// The application will auto close when the last window is closed
     /// and this amount of time passed
     static let closeAfterLaunch: NSTimeInterval = 60 * 60  // one hour
-    
-    /// Amount of tags stored in user defaults (for auto completion)
-    static let nOfSavedTags = 25
-    
-    /// Name of user defaults identifying saved tags
-    static let defaultsSavedTags = "defaults.savedTags"
-    
-    /// String used to identify searches for tags
-    static let tagSearchPrefix = "#tag:"
     
     /// Open windows regularly submit a summary event every time this amount of time passes
     static let regularSummaryEventInterval: NSTimeInterval = 1 * 60
@@ -247,24 +218,7 @@ struct PeyeConstants {
     /// To correct this issue, this constant specifies an (arbitrary) maximum acceptable page index.
     static let maxAcceptablePageIndex: Int = 50000
     
-    /// Tag value for tag menu item
-    static let tagMenuTag = UInt(194851)
-    
     // MARK: - Notifications
-    
-    /// String used to idenfity the notification related to changes in an object's tags (the notification's
-    /// object.)
-    ///
-    /// **UserInfo dictionary fields**:
-    /// - "newTags": The updated list of tags
-    static let tagsChangedNotification = "hiit.PeyeDF.tagsChanged"
-    
-    /// String used to identify the notification sent when a tag search match within a document is found.
-    /// The notification's object is a MyPDFBase.
-    ///
-    /// **UserInfo dictionary fields**:
-    /// - "MyPDFTagFoundSelection": The selection corresponding to the text referenced by this tag.
-    static let tagStringFoundNotification = "hiit.PeyeDF.tagStringFound"
     
     /// String notifying that something changed in the dime connection.
     ///

@@ -28,7 +28,7 @@ import Quartz
 
 /// Implementation of a custom PDFView class, used to implement additional function related to
 /// psychophysiology and user activity tracking
-class MyPDFReader: MyPDFBase {
+class PDFReader: PDFBase {
     
     /// Whether we want to annotate by clicking
     private var clickAnnotationEnabled = true
@@ -56,7 +56,7 @@ class MyPDFReader: MyPDFBase {
         
         if let sd = sciDoc {
             // pdf reader gets notification from info elem tag changes
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(tagsChanged(_:)), name: PeyeConstants.tagsChangedNotification, object: sd)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(tagsChanged(_:)), name: TagConstants.tagsChangedNotification, object: sd)
             
             readingTags = sd.tags.flatMap({$0 as? ReadingTag})
         }
@@ -73,7 +73,7 @@ class MyPDFReader: MyPDFBase {
         let menu = super.menuForEvent(event)
         let docwin = self.window!.windowController! as! DocumentWindowController
         let menuitem = NSMenuItem(title: "Tag", action: #selector(docwin.tagShow(_:)), keyEquivalent: "t")
-        menuitem.tag = Int(PeyeConstants.tagMenuTag)
+        menuitem.tag = Int(TagConstants.tagMenuTag)
         menu?.insertItem(NSMenuItem.separatorItem(), atIndex: 0)
         menu?.insertItem(menuitem, atIndex: 0)
         
@@ -91,12 +91,12 @@ class MyPDFReader: MyPDFBase {
     // MARK: - Event callbacks
     
     /// To receive single click actions (select tag corresponding to text)
-    override func mouseDown(theEvent: NSEvent) {
+    override func mouseUp(theEvent: NSEvent) {
         
-        if theEvent.clickCount == 1 {
+        if theEvent.clickCount == 1 && !mouseDragging {
             // Only proceed if there is actually text to select
             if containsRawString {
-                /// GETTING MOUSE LOCATION IN WINDOW FROM SCREEN COORDINATES
+                /// GETTING MOUSE LOCATION IN WINDOW FROM SCREEN COORDINATES (for debug reasons)
                 // get mouse in screen coordinates
                 let mouseLoc = NSEvent.mouseLocation()
                 for screen in (NSScreen.screens() as [NSScreen]!) {
@@ -111,16 +111,24 @@ class MyPDFReader: MyPDFBase {
                         
                         // if there are no tags here, propagate event
                         if !showTags(mouseInView.origin) {
-                            super.mouseDown(theEvent)
+                            // MF: TODO: remove this once debugging is complete
+                            let activePage = self.pageForPoint(mouseInView.origin, nearest: true)
+                            let pointOnPage = self.convertPoint(mouseInView.origin, toPage: activePage)
+                            if let rect = pointToParagraphRect(pointOnPage, forPage: activePage),
+                               let doc = self.document() {
+                                let area = FocusArea(forRect: rect, onPage: doc.indexForPage(activePage))
+                                if let cHash = sciDoc?.contentHash {
+                                    Multipeer.overviewControllers[cHash]?.pdfOverview.addAreaForLocal(area)
+                                }
+                                CollaborationMessage.ReadAreas([area]).sendToAll()
+                            }
                         }
                     }
                 }
-            } else {
-                super.mouseDown(theEvent)
             }
-        } else {
-            super.mouseDown(theEvent)
         }
+        
+        super.mouseUp(theEvent)
     }
     
     /// SciDoc tags changed
@@ -273,7 +281,7 @@ class MyPDFReader: MyPDFBase {
             return nil
         }
         
-        if importance != ReadingClass.Read && importance != ReadingClass.Interesting && importance != ReadingClass.Critical {
+        if importance != ReadingClass.Low && importance != ReadingClass.Medium && importance != ReadingClass.High {
             let exception = NSException(name: "Not implemented", reason: "Unsupported reading class for annotation", userInfo: nil)
             exception.raise()
         }

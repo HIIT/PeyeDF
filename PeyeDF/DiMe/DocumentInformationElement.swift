@@ -123,14 +123,14 @@ class DocumentInformationElement: DiMeBase {
         }
         
         // send data to dime
-        if HistoryManager.sharedManager.dimeAvailable {
-            HistoryManager.sharedManager.editTag(.Add, tag: tagToAdd, forId: self.id!) {
+        if DiMePusher.dimeAvailable {
+            DiMePusher.editTag(.Add, tag: tagToAdd, forId: self.id!) {
                 tags in
                 if tags != nil {
                     if self.tags != tags! {
                         self.tags = tags!
                         let uInfo = ["tags": tags!]
-                        NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.tagsChangedNotification, object: self, userInfo: uInfo)
+                        NSNotificationCenter.defaultCenter().postNotificationName(TagConstants.tagsChangedNotification, object: self, userInfo: uInfo)
                     }
                 }
             }
@@ -157,14 +157,14 @@ class DocumentInformationElement: DiMeBase {
         let tagToAdd = oldReadingTag.subtract(newTag)
         
         // send data to dime
-        if HistoryManager.sharedManager.dimeAvailable {
-            HistoryManager.sharedManager.editTag(.Add, tag: tagToAdd, forId: self.id!) {
+        if DiMePusher.dimeAvailable {
+            DiMePusher.editTag(.Add, tag: tagToAdd, forId: self.id!) {
                 tags in
                 if tags != nil {
                     if self.tags != tags! {
                         self.tags = tags!
                         let uInfo = ["tags": tags!]
-                        NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.tagsChangedNotification, object: self, userInfo: uInfo)
+                        NSNotificationCenter.defaultCenter().postNotificationName(TagConstants.tagsChangedNotification, object: self, userInfo: uInfo)
                     }
                 }
             }
@@ -181,7 +181,7 @@ class DocumentInformationElement: DiMeBase {
                 if self.tags != tags! {
                     self.tags = tags!
                     let uInfo = ["tags": tags!]
-                    NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.tagsChangedNotification, object: self, userInfo: uInfo)
+                    NSNotificationCenter.defaultCenter().postNotificationName(TagConstants.tagsChangedNotification, object: self, userInfo: uInfo)
                 }
             }
         }
@@ -200,14 +200,14 @@ class DocumentInformationElement: DiMeBase {
     func removeTag(tagText: String) {
         let tag = Tag(withText: tagText)
         if tags.containsTag(withText: tagText) {
-            if HistoryManager.sharedManager.dimeAvailable {
-                HistoryManager.sharedManager.editTag(.Remove, tag: tag, forId: self.id!) {
+            if DiMePusher.dimeAvailable {
+                DiMePusher.editTag(.Remove, tag: tag, forId: self.id!) {
                     tags in
                     if tags != nil {
                         if self.tags != tags! {
                             self.tags = tags!
                             let uInfo = ["tags": tags!]
-                            NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.tagsChangedNotification, object: self, userInfo: uInfo)
+                            NSNotificationCenter.defaultCenter().postNotificationName(TagConstants.tagsChangedNotification, object: self, userInfo: uInfo)
                         }
                     }
                 }

@@ -22,7 +22,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-// This source file contains classes helpful in identifying paragraphs (interesting / etc) in PDF documents
+// This source file contains classes helpful in storing paragraph (of various classes of "importance") in PDF documents
 
 import Foundation
 
@@ -32,11 +32,11 @@ struct PDFMarkings {
     /// All rectangles (markings) for the given document.
     private var allRects = [ReadingRect]()
     
-    /// Reference to mypdfbase is used to get text within reading rects and scaleFactors
-    unowned let pdfBase: MyPDFBase
+    /// Reference to PDFBase is used to get text within reading rects and scaleFactors
+    unowned let pdfBase: PDFBase
     
     /// Create an empty state with markings of a given source using the given pdfBase to get text
-    init(pdfBase: MyPDFBase) {
+    init(pdfBase: PDFBase) {
         self.pdfBase = pdfBase
     }
     
@@ -126,23 +126,63 @@ struct PDFMarkings {
     ///
     /// - No rectangles overlap
     /// - Rectangles of a lower class are overwritten by rectangles of a higher class.
-    ///   For example, we show critical rectangles first, then interesting rectangles, then read ones.
+    ///   For example, we show critical rectangles first, then interesting rectangles, then read ones at the bottom.
     
     ///   This is because critical rectangles are assumed to be both interesting and read.
     mutating func flattenRectangles_relevance() {
         // "relevance" classes in order of importance: Critical, Interesting, Read
-        uniteRectangles(.Critical)
-        uniteRectangles(.Interesting)
-        uniteRectangles(.Read)
-        // Subtract critical rects from interesting and read rects
-        subtractRectsOfClass(minuend: .Interesting, subtrahend: .Critical)
-        subtractRectsOfClass(minuend: .Read, subtrahend: .Critical)
+        uniteRectangles(.High)
+        uniteRectangles(.Medium)
+        uniteRectangles(.Low)
+        // Subtract critical (high) rects from interesting (medium) and read (low) rects
+        subtractRectsOfClass(minuend: .Medium, subtrahend: .High)
+        subtractRectsOfClass(minuend: .Low, subtrahend: .High)
         
-        uniteRectangles(.Interesting)
+        uniteRectangles(.Medium)
         // Subtract (remaining) interesting rects from read rects
-        subtractRectsOfClass(minuend: .Read, subtrahend: .Interesting)
+        subtractRectsOfClass(minuend: .Low, subtrahend: .Medium)
         
-        uniteRectangles(.Read)
+        uniteRectangles(.Low)
+    }
+    
+    /// "Flatten" all "relevant" rectangles so that:
+    ///
+    /// - Intersections of low and medium rects are "upgraded" to rects of high importance (different from flattenRectangles_relevance)
+    /// - No rectangles overlap
+    /// - Rectangles of a lower class are overwritten by rectangles of a higher class.
+    ///   For example, we show critical rectangles first, then interesting rectangles, then read ones at the bottom.
+    
+    ///   This is because critical rectangles are assumed to be both interesting and read.
+    mutating func flattenRectangles_intersectToHigh() {
+        // "relevance" classes in order of importance: Critical, Interesting, Read
+        uniteRectangles(.High)
+        uniteRectangles(.Medium)
+        uniteRectangles(.Low)
+        
+        // - start intersection (low and medium class interesecting sections will result in high class rect)
+        let mediumRects = allRects.filter({$0.readingClass == .Medium})
+        for mRect in mediumRects {
+            let lowRects = allRects.filter({$0.readingClass == .Low && $0.pageIndex == mRect.pageIndex})
+            for lRect in lowRects {
+                let intersection = NSIntersectionRect(mRect.rect, lRect.rect)
+                if !NSIsEmptyRect(intersection) {
+                    allRects.append(ReadingRect(pageIndex: mRect.pageIndex as Int, rect: intersection, readingClass: .High, classSource: mRect.classSource, pdfBase: pdfBase))
+                }
+            }
+        }
+        
+        uniteRectangles(.High)
+        // - end intersection
+        
+        // Subtract critical (high) rects from interesting (medium) and read (low) rects
+        subtractRectsOfClass(minuend: .Medium, subtrahend: .High)
+        subtractRectsOfClass(minuend: .Low, subtrahend: .High)
+        
+        uniteRectangles(.Medium)
+        // Subtract (remaining) interesting rects from read rects
+        subtractRectsOfClass(minuend: .Low, subtrahend: .Medium)
+        
+        uniteRectangles(.Low)
     }
     
     /// Unite all floating eye rectangles into bigger rectangles that enclose them
@@ -208,13 +248,13 @@ struct PDFMarkings {
             let pageRect = pdfBase.getPageRect(thePage)
             let pageSurface = Double(pageRect.size.height * pageRect.size.width)
             totalSurface += pageSurface
-            for rect in get(ofClass: .Read, forPage: pageI) {
+            for rect in get(ofClass: .Low, forPage: pageI) {
                 readSurface += Double(rect.rect.size.height * rect.rect.size.width)
             }
-            for rect in get(ofClass: .Interesting, forPage: pageI) {
+            for rect in get(ofClass: .Medium, forPage: pageI) {
                 interestingSurface += Double(rect.rect.size.height * rect.rect.size.width)
             }
-            for rect in get(ofClass: .Critical, forPage: pageI) {
+            for rect in get(ofClass: .High, forPage: pageI) {
                 criticalSurface += Double(rect.rect.size.height * rect.rect.size.width)
             }
         }
@@ -360,10 +400,10 @@ public enum ReadingClass: Int {
     case Tag = 1  // note: this is treated separately ("tags" are not "marks")
     case Viewport = 10
     case Paragraph = 15
-    case Read = 20
+    case Low = 20  // known as "read" in dime
     case FoundString = 25
-    case Interesting = 30
-    case Critical = 40
+    case Medium = 30  // known as "critical" in dime
+    case High = 40  // known as "high" in dime
 }
 
 /// What decided that a paragraph is important
@@ -374,4 +414,6 @@ public enum ClassSource: Int {
     case SMI = 3
     case ML = 4
     case Search = 5
+    case LocalPeer = 6  // TODO: `Peer`s are not currently considered in DiMe
+    case NetworkPeer = 7
 }

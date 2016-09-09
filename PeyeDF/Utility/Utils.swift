@@ -180,3 +180,16 @@ func binaryGreaterOrEqOnSortedArray<T: Comparable>(ary: [T], target: T) -> Int {
     
     fatalError("Loop terminated without finding a value")
 }
+
+/// Returns the size needed to fit the given string, with the given font (of size at
+/// most width, after which will be broken on multiple lines)
+public func sizeForText(str: String, font: NSFont) -> CGSize {
+    
+    var dd = [String: AnyObject]()
+    
+    dd[NSFontAttributeName] = font
+    
+    let AS = NSAttributedString(string: str, attributes: dd)
+    
+    return AS.boundingRectWithSize(CGSize(width: 200, height: 400), options: NSStringDrawingOptions.UsesDeviceMetrics).addTo(2.5).size
+}

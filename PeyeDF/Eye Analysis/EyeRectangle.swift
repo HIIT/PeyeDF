@@ -166,7 +166,7 @@ struct EyeRectangle: Dictionariable {
     /// one so that the height of each new rectangle corresponds to the given value
     /// - parameter maxHeight: the maximum height of the returned rectangles. Current rectangle will be divided into many rectangles of equal height (which will be less than this value)
     /// - parameter pdfBase: If set, will use given class to extract plainTextContent from PDF (plainTextContent will be nil otherwise)
-    func splitAndCrop(dpi: Int, _ pdfBase: MyPDFBase?) -> [EyeRectangle] {
+    func splitAndCrop(dpi: Int, _ pdfBase: PDFBase?) -> [EyeRectangle] {
         // calculate max height by multiplying standard box size (3 visual angle calc) * 1.5
         let maxHeight = pointSpan(zoomLevel: CGFloat(self.scaleFactor), dpi: dpi, distancemm: CGFloat(self.screenDistance)) * 1.5
         
@@ -214,7 +214,7 @@ struct EyeRectangle: Dictionariable {
     
     /// Given a readingevent and a PageEyeData (array of chunks), generate an EyeRectangle
     /// for each rectangle
-    static func allEyeRectangles(fromReadingEvent readingEvent: ReadingEvent, forReadingClass readingClass: ReadingClass, andSource classSource: ClassSource, withPdfBase: MyPDFBase?) -> [EyeRectangle] {
+    static func allEyeRectangles(fromReadingEvent readingEvent: ReadingEvent, forReadingClass readingClass: ReadingClass, andSource classSource: ClassSource, withPdfBase: PDFBase?) -> [EyeRectangle] {
         
         var retVal = [EyeRectangle]()
         let eyeData = readingEvent.pageEyeData

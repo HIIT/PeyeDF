@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner"/>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="c22-O7-iKe">
+            <rect key="frame" x="0.0" y="0.0" width="230" height="27"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="sMI-LI-wg1">
+                    <rect key="frame" x="38" y="5" width="154" height="17"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="150" id="dZ3-vv-pC6"/>
+                    </constraints>
+                    <textFieldCell key="cell" lineBreakMode="truncatingMiddle" sendsActionOnEndEditing="YES" title="Hello" id="rBC-Dm-rOW">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <button verticalHuggingPriority="750" tag="-1" translatesAutoresizingMaskIntoConstraints="NO" id="ceG-Lw-1S2" customClass="TagViewButton" customModule="PeyeDF" customModuleProvider="target">
+                    <rect key="frame" x="6" y="0.0" width="30" height="25"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="30" id="4vV-fk-MkL"/>
+                        <constraint firstAttribute="height" constant="24" id="YpE-Oi-KVj"/>
+                    </constraints>
+                    <buttonCell key="cell" type="recessed" title="Remove" bezelStyle="recessed" image="RoundCross" imagePosition="only" alignment="center" borderStyle="border" inset="2" id="i7U-wB-6C6">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
+                        <font key="font" metaFont="systemBold" size="12"/>
+                    </buttonCell>
+                    <accessibility description="Remove Tag Button"/>
+                    <connections>
+                        <action selector="deletePress:" target="-1" id="HHh-vY-bHs"/>
+                    </connections>
+                </button>
+                <button identifier="lookupButton" hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="KRt-xd-bGD" customClass="TagViewButton" customModule="PeyeDF" customModuleProvider="target">
+                    <rect key="frame" x="194" y="3" width="30" height="19"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="30" id="8Zl-kk-cs7"/>
+                        <constraint firstAttribute="height" constant="18" id="mqH-oX-OdI"/>
+                    </constraints>
+                    <buttonCell key="cell" type="recessed" title="Lookup" bezelStyle="recessed" image="tinyText" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="sup-gK-vd3">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="systemBold" size="12"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="textPress:" target="-1" id="FJz-ew-ZkC"/>
+                    </connections>
+                </button>
+            </subviews>
+            <constraints>
+                <constraint firstItem="sMI-LI-wg1" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="5" id="3eQ-Sx-FXc"/>
+                <constraint firstItem="KRt-xd-bGD" firstAttribute="centerY" secondItem="sMI-LI-wg1" secondAttribute="centerY" id="5gR-sq-jA1"/>
+                <constraint firstAttribute="trailing" secondItem="KRt-xd-bGD" secondAttribute="trailing" constant="6" id="ABL-6O-6IJ"/>
+                <constraint firstItem="sMI-LI-wg1" firstAttribute="leading" secondItem="ceG-Lw-1S2" secondAttribute="trailing" constant="4" id="O81-aQ-d7R"/>
+                <constraint firstAttribute="bottom" secondItem="sMI-LI-wg1" secondAttribute="bottom" constant="5" id="Tpo-9v-upg"/>
+                <constraint firstItem="ceG-Lw-1S2" firstAttribute="centerY" secondItem="sMI-LI-wg1" secondAttribute="centerY" id="stO-BL-e7B"/>
+                <constraint firstItem="ceG-Lw-1S2" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="6" id="vZA-X6-p06"/>
+            </constraints>
+            <point key="canvasLocation" x="437" y="328.5"/>
+        </customView>
+    </objects>
+    <resources>
+        <image name="RoundCross" width="16" height="16"/>
+        <image name="tinyText" width="16" height="16"/>
+    </resources>
+</document>

@@ -1,14 +1,38 @@
 //
-//  Tag.swift
-//  PeyeDF
+// Copyright (c) 2015 Aalto University
 //
-//  Created by Marco Filetti on 22/04/2016.
-//  Copyright © 2016 HIIT. All rights reserved.
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation
+// files (the "Software"), to deal in the Software without
+// restriction, including without limitation the rights to use,
+// copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following
+// conditions:
 //
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
 
 import Foundation
 
-public class Tag: Dictionariable, Equatable {
+public class Tag: Dictionariable, Equatable, CustomStringConvertible {
+    
+    /// The tag's description is the tag's text
+    public var description: String { get {
+        return self.text
+    } }
+    
+    /// The actual text of the tag (or its "name")
+    let text: String
     
     /// Creates a tag of the correct type depending on the json's type annotation
     static func makeTag(fromJson json: JSON) -> Tag? {
@@ -25,8 +49,6 @@ public class Tag: Dictionariable, Equatable {
     public var hashValue: Int { get {
         return text.hashValue
     } }
-    
-    let text: String
     
     init(withText: String) {
         self.text = withText
@@ -55,8 +77,20 @@ public class ReadingTag: Tag {
     /// All parts of the document referenced by this tag.
     private(set) var rRects: [ReadingRect]
     
+    /// The ReadingTag has a more complex description, which includes
+    /// rects and pages associated to it.
+    /// Format: `tagName:<pages>::<rects>` where pages and rects are separated by `;`,
+    /// and each page has one rect associated to it.
+    /// For example: `a tag:1;2::0,0,20,30;1,1,40,50`
+    /// (rects are x,y,w,h).
+    override public var description: String { get {
+        let pages = self.rRects.map {String($0.pageIndex)} .joinWithSeparator(";")
+        let rects = self.rRects.map {$0.rect.description} .joinWithSeparator(";")
+        return self.text + ":" + pages + "::" + rects
+    } }
+    
     /// Creates a new tag. Rects' scalefactor will be set to -1.
-    init(text: String, withRects: [NSRect], pages: [Int], pdfBase: MyPDFBase?) {
+    init(text: String, withRects: [NSRect], pages: [Int], pdfBase: PDFBase?) {
         var pageRects = [ReadingRect]()
         
         for (n, r) in withRects.enumerate() {
@@ -85,6 +119,35 @@ public class ReadingTag: Tag {
     init(withRects: [ReadingRect], withText: String) {
         rRects = withRects
         super.init(withText: withText)
+    }
+    
+    /// Creates a new tag from a string (such as the one created by calling .description)
+    convenience init?(fromString string: String, pdfBase: PDFBase?) {
+        guard let pr = string.rangeOfString(":") else {
+            return nil
+        }
+        
+        let text = string.substringToIndex(pr.startIndex)
+        let suffix = string.substringFromIndex(pr.endIndex)
+        let components = suffix.componentsSeparatedByString("::")
+        
+        guard components.count == 2 else {
+            AppSingleton.log.error("Unexpected number of components. Input was:\n\(string)")
+            return nil
+        }
+        
+        let pagesString = components[0]
+        let rectsString = components[1]
+        
+        let pages = pagesString.componentsSeparatedByString(";").flatMap {Int($0)}
+        let rects = rectsString.componentsSeparatedByString(";").flatMap {NSRect(string: $0)}
+        
+        guard pages.count == rects.count else {
+            AppSingleton.log.error("Pages and rect counts do not match. Input was:\n\(string)")
+            return nil
+        }
+        
+        self.init(text: text, withRects: rects, pages: pages, pdfBase: pdfBase)
     }
     
     /// Combines this tag with another, and returns the new tag.

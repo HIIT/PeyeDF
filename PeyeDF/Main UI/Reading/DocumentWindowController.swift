@@ -62,11 +62,9 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     /// To make sure only one summary event is sent to dime
     var closeToken: Int = 0
     
-    weak var pdfReader: MyPDFReader?
+    weak var pdfReader: PDFReader?
     weak var docSplitController: DocumentSplitController?
     weak var mainSplitController: MainSplitController?
-    var debugController: DebugController?
-    var debugWindowController: NSWindowController?
     @IBOutlet weak var tbMetadata: NSToolbarItem!
     @IBOutlet weak var tbAnnotate: NSToolbarItem!
     
@@ -93,7 +91,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     @IBAction func tagShow(sender: AnyObject?) {
         
         // Skip if dime is out
-        guard HistoryManager.sharedManager.dimeAvailable else {
+        guard DiMePusher.dimeAvailable else {
             return
         }
         
@@ -248,11 +246,13 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             let (rects, idxs) = pdfReader!.getLineRects(sel)
             if rects.count > 0 {
                 let sdTag = ReadingTag(text: theTag, withRects: rects, pages: idxs, pdfBase: self.pdfReader)
-                pdfReader?.sciDoc?.addTag(sdTag)
+                pdfReader?.sciDoc?.addTag(sdTag)  // add reading tag to scidoc
+                CollaborationMessage.AddReadingTag(sdTag).sendToAll()  // tell peers we added this tag
             }
         case .PreviousReading(let readingTags):
             let theTag = ReadingTag(withText: theTag, fromTag: readingTags[0])
-            pdfReader?.sciDoc?.addTag(theTag)
+            pdfReader?.sciDoc?.addTag(theTag)  // add reading tag to scidoc
+            CollaborationMessage.AddReadingTag(theTag).sendToAll()  // tell peers we added this tag
         case .None:
             AppSingleton.log.error("Adding a tag when no tags are currently being edited")
         }
@@ -267,19 +267,21 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                 let (rects, idxs) = pdfReader!.getLineRects(sel)
                 if rects.count > 0 {
                     let sdTag = ReadingTag(text: theTag, withRects: rects, pages: idxs, pdfBase: self.pdfReader)
-                    pdfReader?.sciDoc?.subtractTag(sdTag)
+                    pdfReader?.sciDoc?.subtractTag(sdTag)  // remove tag from scidoc
+                    CollaborationMessage.RemoveReadingTag(sdTag).sendToAll()  // tell peers we removed this tag
                 }
             }
         case .PreviousReading(let readingTags):
             let theTag = ReadingTag(withText: theTag, fromTag: readingTags[0])
-            pdfReader?.sciDoc?.subtractTag(theTag)
+            pdfReader?.sciDoc?.subtractTag(theTag)  // remove tag from scidoc
+            CollaborationMessage.RemoveReadingTag(theTag).sendToAll()  // tell peers we removed this tag
         case .None:
             AppSingleton.log.error("Removing a tag when no tags are currently being edited")
         }
     }
     
     func tagInfo(theTag: String) {
-        doSearch(PeyeConstants.tagSearchPrefix + theTag, exact: false)
+        doSearch(TagConstants.tagSearchPrefix + theTag, exact: false)
     }
     
     func isNextTagReading() -> Bool {
@@ -351,8 +353,8 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             }
             return false
             
-        case PeyeConstants.tagMenuTag:
-            return HistoryManager.sharedManager.dimeAvailable
+        case TagConstants.tagMenuTag:
+            return DiMePusher.dimeAvailable
             
         default:
             // in any other case, we check the action instead of tag
@@ -436,6 +438,11 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         // Tell the history manager to "start recording"
         HistoryManager.sharedManager.entry(self)
         lastStartedReading = NSDate()
+        
+        // Send current position to peers, if connected
+        if Multipeer.session.connectedPeers.count > 0, let cp = pdfReader?.getCurrentPoint() {
+            CollaborationMessage.ScrollTo(area: cp).sendToAll(.Unreliable)
+        }
     }
     
     /// The user stopped, or paused reading (e.g. this window lost key status, a scroll event
@@ -452,7 +459,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     func sendDeskEvent() {
         if let sciDoc = pdfReader!.sciDoc {
             let deskEvent = DesktopEvent(sciDoc: sciDoc)
-            HistoryManager.sharedManager.sendToDiMe(deskEvent)
+            DiMePusher.sendToDiMe(deskEvent)
         }
     }
     
@@ -464,7 +471,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     /// Send the scientific document associated to the reader and updates the id stored by the reader with the value
     /// obtained from dime.
     func sendAndUpdateScidoc(sciDoc: ScientificDocument) {
-        HistoryManager.sharedManager.sendToDiMe(sciDoc) {
+        DiMePusher.sendToDiMe(sciDoc) {
             success, id in
             if success {
                 self.pdfReader?.sciDoc?.id = id!
@@ -542,14 +549,6 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         let enableAnnotate: Bool = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefEnableAnnotate) as! Bool
         setAnnotate(enableAnnotate)
         
-        // Create debug window
-        if PeyeConstants.debugWindow {
-            debugWindowController = AppSingleton.mainStoryboard.instantiateControllerWithIdentifier("DebugWindow") as? NSWindowController
-            debugWindowController?.showWindow(self)
-            debugController = (debugWindowController?.contentViewController as! DebugController)
-            debugController?.setUpMonitors(pdfReader!, docWindow: self.window!)
-        }
-        
         // Prepare to receive events
         setUpObservers()
     }
@@ -574,8 +573,8 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                 NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.documentChangeNotification, object: self.document)
                 
                 // Set tag button and toolbar status to DiMe's status
-                self.tbTagButton.enabled = HistoryManager.sharedManager.dimeAvailable
-                self.tbTagItem.enabled = HistoryManager.sharedManager.dimeAvailable
+                self.tbTagButton.enabled = DiMePusher.dimeAvailable
+                self.tbTagItem.enabled = DiMePusher.dimeAvailable
             }
             
             // Tell app singleton which screen size we are using
@@ -595,6 +594,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     /// Asynchronously fetch metadata (including plain text) from PDF.
     /// Try to find the document which matches extracted data in DiMe.
     /// Enables the toolbar item when done.
+    /// Tells multipeer that this window is associated to the found contentHash (if file has text).
     private func checkMetadata(plainText: String?) {
         guard let pdfr = self.pdfReader, _ = self.document else {
             return
@@ -628,6 +628,12 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         
         pdfReader!.sciDoc = sciDoc
         
+        // Multipeer-related (requires a content hash)
+        if let cHash = sciDoc.contentHash {
+            // tell multipeer about the contenthash related to the file we have open in this window
+            Multipeer.ourWindows[cHash] = self
+        }
+        
         // Download metadata if needed, and send to dime if we want this and is found
         // Dispatch this on utility queue because crossref request blocks.
         let showTime = dispatch_time(DISPATCH_TIME_NOW,
@@ -648,12 +654,6 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                 sciDoc.title = tit
             }
             self?.sendAndUpdateScidoc(sciDoc)
-            // Update debug controller with metadata
-            if let title = pdfDoc.getTitle() {
-                dispatch_async(dispatch_get_main_queue()) {
-                    self?.debugController?.titleLabel.stringValue = title
-                }
-            }
         }
         
         // Send event regarding opening of file
@@ -687,7 +687,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         
         // Get notification from DiMe connection status
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(dimeConnectionChanged(_:)), name: PeyeConstants.diMeConnectionNotification, object: HistoryManager.sharedManager)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(dimeConnectionChanged(_:)), name: PeyeConstants.diMeConnectionNotification, object: nil)
         
         // Set up regular timer
         dispatch_sync(DocumentWindowController.timerQueue) {
@@ -707,7 +707,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                 // update id of summary event
                 let summaryEv = mpdf.makeSummaryEvent()
                 summaryEv.readingTime = self.totalReadingTime
-                HistoryManager.sharedManager.sendToDiMe(summaryEv) {
+                DiMePusher.sendToDiMe(summaryEv) {
                     _, id in
                     mpdf.setSummaryId(id)
                 }
@@ -731,12 +731,18 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         closeToken += 1
         stoppedReading()
         self.unSetObservers()
-        self.debugController?.unSetMonitors(self.pdfReader!, docWindow: self.window!)
-        self.debugController?.view.window?.close()
         self.metadataWindowController?.close()
+        
+        // tell multipeer to forget about this window
+        if let cHash = pdfReader?.sciDoc?.contentHash {
+            Multipeer.ourWindows.removeValueForKey(cHash)
+        }
+        // tell other peers that we are now idle
+        CollaborationMessage.ReportIdle.sendToAll()
+        
         // If dime is available, call the callback after the dime operation is done,
         // otherwise call the callback right now
-        if HistoryManager.sharedManager.dimeAvailable {
+        if DiMePusher.dimeAvailable {
             let ww = NSWindow()
             let wvc = AppSingleton.mainStoryboard.instantiateControllerWithIdentifier("WaitVC") as! WaitViewController
             ww.contentViewController = wvc
@@ -746,7 +752,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             if let mpdf = self.pdfReader where self.totalReadingTime >= PeyeConstants.minTotalReadTime {
                 let summaryEv = mpdf.makeSummaryEvent()
                 summaryEv.readingTime = self.totalReadingTime
-                HistoryManager.sharedManager.sendToDiMe(summaryEv) {
+                DiMePusher.sendToDiMe(summaryEv) {
                     _ in
                     // signal when done
                     dispatch_async(dispatch_get_main_queue()) {
@@ -776,7 +782,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     /// Removes all the observers created in setUpObservers()
     private func unSetObservers() {
         
-        // Notifications unloading is no longer required (observers autoallocate automatically)
+        // Notifications unloading is no longer required (observers deallocate automatically)
         
         // Stop regular timer
         if let timer = regularTimer {
@@ -841,6 +847,8 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                 }
             }
         }
+        
+        // Tell peers we started reading this document
         
         startedReading()
     }

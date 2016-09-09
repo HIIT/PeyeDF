@@ -26,12 +26,18 @@ import Cocoa
 import Foundation
 import Quartz
 
-/// Base class extended by all PDF renderers (MyPDFReader, MyPDFOverview, MyPDFDetail) used in PeyeDF
+/// Base class extended by all PDF renderers (PDFReader, PDFOverview, MyPDFDetail) used in PeyeDF
 /// support custom "markings" and their writing to annotation
-class MyPDFBase: PDFView {
+class PDFBase: PDFView {
     
     /// Whether we are searching (set this to false to stop search)
     var searching = false
+    
+    /// Whether the mouse is currently being dragged
+    private(set) var mouseDragging = false
+    
+    /// The TagAnnotation currently being dragged
+    private(set) var draggedTagAnnotation: Int?
     
     /// The index of last tuple selected is set to this value when nothing is selected
     private static let TAGI_NONE: Int = 99999
@@ -45,9 +51,37 @@ class MyPDFBase: PDFView {
     /// Stores all markings
     var markings: PDFMarkings!
     
+    /// Which colours are associated to which reading class (can be overridden in subclasses)
+    var markAnnotationColours: [ReadingClass: NSColor] { get {
+        return [.Low: PeyeConstants.annotationColourRead,
+                .Medium: PeyeConstants.annotationColourInteresting,
+                .High: PeyeConstants.annotationColourCritical]
+    } }
+    
+    /// This rect (in page coordinates) on this page index will be "highlighted"
+    var highlightRect: (pageIndex: Int, rect: NSRect)? = nil { didSet {
+        // Changing this value will cause a display refresh (if old if different than current value).
+        if let (newPageI, newRect) = highlightRect {
+            // refresh new and old if different, or just new if old was nil
+            if let (oldPageI, oldRect) = oldValue {
+                if oldPageI != newPageI || oldRect != newRect {
+                    refreshPage(atIndex: oldPageI, rect: oldRect)
+                    refreshPage(atIndex: newPageI, rect: newRect)
+                }
+            } else {
+                refreshPage(atIndex: newPageI, rect: newRect)
+            }
+        } else {
+            // new value is nil, refresh old if present
+            if let (oldPageI, oldRect) = oldValue {
+                refreshPage(atIndex: oldPageI, rect: oldRect)
+            }
+        }
+    } }
+   
     /// All tags currently stored.
     /// This is in the same structure as DiMe's tags (one tag can reference multiple parts of the text).
-    /// Changing this value updates the internal representation (`splitTagAnnotations`), which stores tags in a
+    /// Changing this value updates the internal representation (`splitTag`), which stores tags in a
     /// different way (one tag per nearby block of text, tags with the same name can be duplicated).
     var readingTags = [ReadingTag]() {
         willSet {
@@ -76,7 +110,7 @@ class MyPDFBase: PDFView {
                 let (added, removed) = oldTag.rectDifference(newTag)
                 if added.count > 0 {
                     let newTag = ReadingTag(withRects: added, withText: oldTag.text)
-                    makeTagAnnotation(forTag: newTag)
+                    appendTagAnnotation(forTag: newTag)
                 }
                 if removed.count > 0 {
                     let delTag = ReadingTag(withRects: removed, withText: oldTag.text)
@@ -90,7 +124,7 @@ class MyPDFBase: PDFView {
             let removed = readingTags.filter({!changedTagStrings.contains($0.text) && !newValue.contains($0)})
             
             // split completely new tags, and for each collection of split tags, make an annotation for each
-            added.map({splitTag($0)}).forEach({$0.forEach({makeTagAnnotation(forTag: $0)})})
+            added.forEach({appendTagAnnotation(forTag: $0)})
             
             // just remove completely removed tags
             removed.forEach({removeTagAnnotation(forTag: $0)})
@@ -100,43 +134,35 @@ class MyPDFBase: PDFView {
     /// Whether this document contains plain text
     private(set) var containsPlainText = false
     
-    /// For each entry in this tuple, we store tags and annotations that refer to a single block of
+    /// Here we store tags and annotations that refer to a single block of
     /// text (block being defined as text in contiguous lines in the PDF).
     /// Each entry can have multiple annotations and multiple tags. In this structure,
     /// multiple lines can have the same tag repeated (unlike in DiMe, were there can only be
     /// one tag with a given name). For example, we can have two instances of tag with name "useful",
-    /// one on page two and another on page three. In this tuple, they would appear in two separate entries.
-    private var tagAnnotations = [(annotations: [PDFAnnotationMarkup], tags: [ReadingTag])]()
+    /// one on page two and another on page three.
+    private var tagAnnotations = [TagAnnotation]()
     
     /// Keeps track of index of the last tuple of tags that was selected
     /// Setting this value automatically sets tag colour and refreshes view
     /// TAGI_NONE means nothng is selected
-    private var lastTagAnnotationIndex: Int = MyPDFBase.TAGI_NONE { didSet {
+    private var lastTagAnnotationIndex: Int = PDFBase.TAGI_NONE { didSet {
         
         // if skiped, assume we selected none next time and abort
-        guard lastTagAnnotationIndex != MyPDFBase.TAGI_SKIP else {
-            lastTagAnnotationIndex = MyPDFBase.TAGI_NONE
+        guard lastTagAnnotationIndex != PDFBase.TAGI_SKIP else {
+            lastTagAnnotationIndex = PDFBase.TAGI_NONE
             return
         }
         
         // set colours
         dispatch_async(dispatch_get_main_queue()) {
             // new selection colour
-            if self.lastTagAnnotationIndex != MyPDFBase.TAGI_NONE {
-                self.tagAnnotations[self.lastTagAnnotationIndex].annotations.forEach({
-                    $0.setColor(PeyeConstants.annotationColourTaggedSelected)
-                    let annRect = self.convertRect($0.bounds(), fromPage: $0.page())
-                    self.setNeedsDisplayInRect(annRect)
-                })
+            if self.lastTagAnnotationIndex != PDFBase.TAGI_NONE {
+                self.tagAnnotations[self.lastTagAnnotationIndex].setSelected()
             }
             
             // previously selected back to normal
-            if oldValue != MyPDFBase.TAGI_NONE {
-                self.tagAnnotations[oldValue].annotations.forEach({
-                    $0.setColor(PeyeConstants.annotationColourTagged)
-                    let annRect = self.convertRect($0.bounds(), fromPage: $0.page())
-                    self.setNeedsDisplayInRect(annRect)
-                })
+            if oldValue != PDFBase.TAGI_NONE {
+                self.tagAnnotations[oldValue].setUnselected()
             }
         }
         
@@ -152,31 +178,125 @@ class MyPDFBase: PDFView {
         markings = PDFMarkings(pdfBase: self)
     }
     
-    // MARK: - Tagging (external)
+    // MARK: - Drawing
+    
+    /**
+    Causes a display refresh on the given page index.
+    - Parameter rect: The rect to refresh (in page coordinates). If nil (default), refreshes the whole page (crop box).
+    */
+    func refreshPage(atIndex index: Int, rect: NSRect? = nil) {
+        guard let doc = document(), page = doc.getPage(atIndex: index) else {
+            return
+        }
+        var refRect: NSRect
+        if rect == nil {
+            refRect = page.boundsForBox(kPDFDisplayBoxCropBox)
+        } else {
+            refRect = rect!
+        }
+        refRect = self.convertRect(refRect, fromPage: page)
+        dispatch_async(dispatch_get_main_queue()) {
+            self.setNeedsDisplayInRect(refRect)
+        }
+    }
+    
+    /**
+    Gets a point representing the offset (from 0,0) between media box and crop box.
+    Normally, we use the media box to store rect coordinates. In case there is a difference with the
+     crop box (for display reasons), this function returns that difference.
+    */
+    func offSetToCropBox(page: PDFPage!) -> NSPoint {
+        // if origins of media and boxes are different, obtain difference
+        // to later apply it to each readingrect's origin
+        let mediaBoxo = page.boundsForBox(kPDFDisplayBoxMediaBox).origin
+        let cropBoxo = page.boundsForBox(kPDFDisplayBoxCropBox).origin
+        var pointDiff = NSPoint(x: 0, y: 0)
+        if mediaBoxo != cropBoxo {
+            pointDiff.x = mediaBoxo.x - cropBoxo.x
+            pointDiff.y = mediaBoxo.y - cropBoxo.y
+        }
+        return pointDiff
+    }
+
+    override func drawPage(page: PDFPage!) {
+        super.drawPage(page)
+        
+        // get difference between media and crop box
+        let pointDiff = offSetToCropBox(page)
+        
+        // if the highlight rect is present on the current page, draw it
+        if let (pageIndex, rect) = highlightRect where document().indexForPage(page) == pageIndex {
+            
+            // Save.
+            NSGraphicsContext.saveGraphicsState()
+            
+            let rectCol = PeyeConstants.highlightRectColour
+            let adjRect = rect.offset(byPoint: pointDiff)
+            let rectPath: NSBezierPath = NSBezierPath(rect: adjRect)
+            rectCol.setFill()
+            rectPath.fill()
+            
+            // Restore.
+            NSGraphicsContext.restoreGraphicsState()
+        }
+    }
+    
+    // MARK: - Input overrides
+    
+    /// Mouse down captures (does not send to super) when there is a tag label underneath
+    override func mouseDown(theEvent: NSEvent) {
+        let mouseInWindow = theEvent.locationInWindow
+        let mouseInView = self.convertPoint(mouseInWindow, fromView: self.window!.contentViewController!.view)
+        guard let activePage = self.pageForPoint(mouseInView, nearest: false) else {
+            super.mouseDown(theEvent)
+            return
+        }
+        let pointOnPage = self.convertPoint(mouseInView, toPage: activePage)
+        if let i = tagAnnotations.indexOf({$0.labelHitTest(pointOnPage, page: activePage)}) {
+            draggedTagAnnotation = i
+        } else {
+            super.mouseDown(theEvent)
+            draggedTagAnnotation = nil
+        }
+    }
+    
+    /// Dragging is overriden to allow us to drag labels
+    override func mouseDragged(theEvent: NSEvent) {
+        self.mouseDragging = true
+        // if we are dragging a tag label, override so we move label, otherwise not
+        let mouseInWindow = theEvent.locationInWindow
+        let mouseInView = self.convertPoint(mouseInWindow, fromView: self.window!.contentViewController!.view)
+        guard let activePage = self.pageForPoint(mouseInView, nearest: false), draggedTagI = self.draggedTagAnnotation else {
+            super.mouseDragged(theEvent)
+            self.draggedTagAnnotation = nil
+            return
+        }
+        let mouseOnPage = self.convertPoint(mouseInView, toPage: activePage)
+        tagAnnotations[draggedTagI].moveLabel(mouseOnPage)
+    }
+    
+    /// Mouse up is overridden to allow "dropping" the dragged tag label
+    override func mouseUp(theEvent: NSEvent) {
+        self.mouseDragging = false
+        self.draggedTagAnnotation = nil
+        super.mouseUp(theEvent)
+    }
+    
+    // MARK: - Tagging (internal)
     
     /// If there is a block of text currently being clicked on,
     /// returns the tags associated to it.
     func currentlyClickedOnTags() -> [ReadingTag]? {
-        if lastTagAnnotationIndex != MyPDFBase.TAGI_NONE {
+        if lastTagAnnotationIndex != PDFBase.TAGI_NONE {
             return tagAnnotations[lastTagAnnotationIndex].tags
         } else {
             return nil
         }
     }
     
-    /// Returns true if any tag overlaps with the given rect on the given page
-    func anyTagOverlapsWith(rect: NSRect, pageIndex: Int) -> Bool {
-        for t in readingTags {
-            if t.rRects.filter({$0.pageIndex == pageIndex}).contains({NSIntersectsRect($0.rect, rect)}) {
-                return true
-            }
-        }
-        return false
-    }
-    
     /// Acknowledges the fact that the user is not interested in a specific tag anymore.
     func clearClickedOnTags() {
-        lastTagAnnotationIndex = MyPDFBase.TAGI_NONE
+        lastTagAnnotationIndex = PDFBase.TAGI_NONE
     }
     
     /// Returns a list of tags associated to a given selection
@@ -196,7 +316,7 @@ class MyPDFBase: PDFView {
         let pagePoint = convertPoint(forPoint, toPage: activePage)
         
         // Find tuples for which this point falls in an annotation
-        let tupleI = tagAnnotations.indexOf({$0.annotations.contains({$0.page() === activePage && NSPointInRect(pagePoint, $0.bounds())})})
+        let tupleI = tagAnnotations.indexOf({$0.hitTest(pagePoint, page: activePage)})
         
         if let i = tupleI {
             
@@ -221,39 +341,18 @@ class MyPDFBase: PDFView {
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
             // loop on tag annotations, since those are split by "closeness" (unlike the readingTags array, which contains whole tags)
             self.tagAnnotations.forEach() {
-                (annotations, tags) in
                 
                 // check if we are searching (if not, skip rest)
                 guard self.searching else {
                     return
                 }
                 
-                // filter should return only one match
-                let wantedTags = tags.filter({$0.text == tagString})
-                if wantedTags.count > 1 {
-                    AppSingleton.log.error("More than one tag in tuple with the same text")
-                }
-                
-                wantedTags.forEach() {
-                    wantedTag in
-                    if wantedTag.rRects.count < 1 {
-                        AppSingleton.log.error("Tag has less than one rect")
-                        return
-                    }
-                    // selection for first rect
-                    guard let pdfSel = self.document().pageAtIndex(wantedTag.rRects[0].pageIndex as Int).selectionForRect(wantedTag.rRects[0].rect.outset(1.0)) else {
-                        AppSingleton.log.error("Selection is nil")
-                        return
-                    }
-                    
-                    // subsequent rects
-                    wantedTag.rRects[1..<wantedTag.rRects.count].forEach({pdfSel.addSelection(self.document().pageAtIndex($0.pageIndex as Int).selectionForRect($0.rect.outset(1.0)))})
-                    
+                if let foundSel = $0.getPdfSelection(tagString) {
                     // create and send notification
                     var uInfo = [String: AnyObject]()
-                    uInfo["MyPDFTagFoundSelection"] = pdfSel
+                    uInfo["MyPDFTagFoundSelection"] = foundSel
                     dispatch_async(dispatch_get_main_queue()) {
-                        NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.tagStringFoundNotification, object: self, userInfo: uInfo)
+                        NSNotificationCenter.defaultCenter().postNotificationName(TagConstants.tagStringFoundNotification, object: self, userInfo: uInfo)
                     }
                 }
             }
@@ -262,75 +361,38 @@ class MyPDFBase: PDFView {
         }
     }
     
-    // MARK: - Tagging (private)
-    
-    /// Splits the given tag into multiple tags, so that if it refers to multiple blocks of text,
-    /// multiple tags will be returned (block of text is defined as text for which rects are nearby).
-    private func splitTag(tag: ReadingTag) -> [ReadingTag] {
-        
-        /// inner function that defines that two reading rect are too different (hence will be put in
-        /// different tags) when they are not adjacent (or on different pages)
-        func bigRectDifference(p: ReadingRect, _ s: ReadingRect) -> Bool {
-            if p.pageIndex != s.pageIndex {
-                return true
-            } else {
-                return !p.rect.isNear(s.rect)
-            }
-        }
-        
-        let splitRects = tag.rRects.splitOnBigSteps(bigRectDifference)
-        
-        return splitRects.map({ReadingTag(withRects: $0, withText: tag.text)})
-    }
-    
-    /// Creates annotation(s) for the given tag (and stores this relationship for later use)
-    private func makeTagAnnotation(forTag tag: ReadingTag) {
+    /// Creates annotation(s) for the given tag or add it to already present annotations.
+    /// Splits them as necessary.
+    private func appendTagAnnotation(forTag tag: ReadingTag) {
         
         // Make sure tag was not already added
         guard tagAnnotations.reduce(false, combine: {$0 || $1.tags.contains(tag) }) == false else {
+            AppSingleton.log.error("A tag exactly the same as this was already present")
             return
         }
         
         // find which group of annotations corresponds to this tag.
         // if none are related, create a new group of annotations.
-        // if there is a relationship, add this tag to the tuple without creating new annotations.
+        // if there is a relationship, add this tag without creating new annotations.
         
-        var foundI = -1
-        for (i, t) in tagAnnotations.enumerate() {
-            let tagRects = tag.rRects.map{$0.rect}
-            let pages = tag.rRects.map{$0.pageIndex as Int}
-            if t.tags[0].containsNSRects(tagRects, onPages: pages) {  // assume the first tag refers to the same regions as the others in the tuple
-                foundI = i
-                break
+        let previous = tagAnnotations.filter({$0.sameAnnotationsAs(tag)})
+        if previous.count == 0 {
+            // since no tags already exist which relate to this block of text, split them
+            // split Tags, map each returned collection to a new reading tag
+            let splitTags = tag.rRects.splitOnBigSteps(self.document().areFar).map({ReadingTag(withRects: $0, withText: tag.text)})
+            // if split count is more than 1, call this method recursively, otherwise create a new tag annotation for the new tag
+            if splitTags.count > 1 {
+                splitTags.forEach({appendTagAnnotation(forTag: $0)})
+            } else if splitTags.count == 1 {
+                tagAnnotations.append(TagAnnotation(fromReadingTag: splitTags[0], pdfBase: self))
+            } else {
+                AppSingleton.log.error("Zero tags where obtained by splitting a tag that contained something")
             }
-        }
-        
-        if foundI == -1 {
-            
-            // no tags already exist which relate to this block of text
-            
-            var annots = [PDFAnnotationMarkup]()
-            for rRect in tag.rRects {
-                let annotation = PDFAnnotationMarkup(bounds: rRect.rect)
-                annotation.setColor(PeyeConstants.annotationColourTagged)
-                
-                let pdfPage = self.document().pageAtIndex(rRect.pageIndex as Int)
-                
-                pdfPage.addAnnotation(annotation)
-                annots.append(annotation)
-                
-                // refresh view
-                dispatch_async(dispatch_get_main_queue()) {
-                    self.setNeedsDisplayInRect(self.convertRect(rRect.rect, fromPage: pdfPage))
-                }
-            }
-            
-            // create new entry in tuple
-            tagAnnotations.append((annotations: annots, tags: [tag]))
-            
         } else {
-            // add tag to tuple
-            tagAnnotations[foundI].tags.append(tag)
+            if previous.count != 1 {
+                AppSingleton.log.error("More than one tag annotation was already related to an existing tag")
+            }
+            previous[0].addTag(tag)
         }
         
     }
@@ -338,20 +400,12 @@ class MyPDFBase: PDFView {
     /// Removes annotation(s) for the given tag (removing both)
     private func removeTagAnnotation(forTag tag: ReadingTag) {
         
-        // make sure tag exists and get index in its tuple
+        // make sure tag exists and get index
+        // remove tag and if remaining 0 remove from collection
         
-        var tupleI = -1
-        var tagI = -1
+        let _found = tagAnnotations.indexOf({$0.sameAnnotationsAs(tag)})
         
-        for (i, t) in tagAnnotations.enumerate() {
-            if let j = t.tags.indexOf(tag) {  // assume the first tag refers to the same regions as the others in the tuple
-                tupleI = i
-                tagI = j
-                break
-            }
-        }
-        
-        guard tupleI != -1 else {
+        guard let foundI = _found else {
             AppSingleton.log.error("Tag not found in already existing tags")
             return
         }
@@ -360,27 +414,10 @@ class MyPDFBase: PDFView {
         
         self.lastTagAnnotationIndex = self.dynamicType.TAGI_SKIP
         
-        // remove tag from tuple. if no tags are left in that tuple, delete entry and annotations
-        
-        tagAnnotations[tupleI].tags.removeAtIndex(tagI)
-        
-        if tagAnnotations[tupleI].tags.count == 0 {
-            
-            for annot in tagAnnotations[tupleI].annotations {
-            
-                let pdfPage = annot.page()
-                
-                pdfPage.removeAnnotation(annot)
-                
-                // refresh view
-                dispatch_async(dispatch_get_main_queue()) {
-                    self.setNeedsDisplayInRect(self.convertRect(annot.bounds(), fromPage: pdfPage))
-                }
-            }
-            
-            tagAnnotations.removeAtIndex(tupleI)
+        if tagAnnotations[foundI].removeTag(tag) < 1 {
+            tagAnnotations[foundI].removeAll()
+            tagAnnotations.removeAtIndex(foundI)
         }
-        
     }
     
     // MARK: - External functions
@@ -466,7 +503,7 @@ class MyPDFBase: PDFView {
             return nil
         }
     }
-
+    
     /// Asynchronously gets text within document (if any) and
     /// calls callback with the result.
     func checkPlainText(callback: (String? -> Void)?) {
@@ -541,26 +578,21 @@ class MyPDFBase: PDFView {
             
             let pdfPage = self.document().pageAtIndex(rect.pageIndex.integerValue)
             
-            pdfPage.addAnnotation(annotation)
+            addAnnotation(annotation, onPage: pdfPage)
             
-            // tell the view to immediately refresh itself in an area which includes the
-            // line's "border"
-            dispatch_async(dispatch_get_main_queue()) {
-                self.setNeedsDisplayInRect(self.convertRect(newRect, fromPage: pdfPage))
-            }
         }
     }
     
     /// Remove all annotations which are a "square" and match the annotations colours
-    /// (corresponding to interesting/ etc. marks) defined in PeyeConstants
+    /// (corresponding to low/medium/high marks) defined in PeyeConstants
     func removeAllParagraphAnnotations() {
         for i in 0..<document()!.pageCount() {
             let page = document()!.pageAtIndex(i)
-            for annColour in PeyeConstants.markAnnotationColours.values {
+            for annColour in markAnnotationColours.values {
                 for annotation in page.annotations() {
                     if let annotation = annotation as? PDFAnnotationSquare {
                         if annotation.color().practicallyEqual(annColour) {
-                            page.removeAnnotation(annotation)
+                            removeAnnotation(annotation, onPage: page)
                         }
                     }
                 }
@@ -573,12 +605,40 @@ class MyPDFBase: PDFView {
     func autoAnnotate() {
         removeAllParagraphAnnotations()
         markings.flattenRectangles_relevance()
-        outputAnnotations(.Critical, colour: PeyeConstants.annotationColourCritical)
-        outputAnnotations(.Interesting, colour: PeyeConstants.annotationColourInteresting)
-        outputAnnotations(.Read, colour: PeyeConstants.annotationColourRead)
+        outputAnnotations(.High, colour: PeyeConstants.annotationColourCritical)
+        outputAnnotations(.Medium, colour: PeyeConstants.annotationColourInteresting)
+        outputAnnotations(.Low, colour: PeyeConstants.annotationColourRead)
     }
     
-    // MARK: - Internal functions
+    // MARK: - Convenience functions
+    
+    /// Adds the given annotation on the given page and refreshes display
+    internal func addAnnotation(annotation: PDFAnnotation, onPage: PDFPage) {
+        onPage.addAnnotation(annotation)
+        dispatch_async(dispatch_get_main_queue()) {
+            self.setNeedsDisplayInRect(self.convertRect(annotation.bounds(), fromPage: onPage))
+        }
+    }
+    
+    /// Removes the given annotation from the given page and refreshes display
+    internal func removeAnnotation(annotation: PDFAnnotation, onPage: PDFPage) {
+        onPage.removeAnnotation(annotation)
+        dispatch_async(dispatch_get_main_queue()) {
+            self.setNeedsDisplayInRect(self.convertRect(annotation.bounds(), fromPage: onPage))
+        }
+    }
+    
+    /// Moves the given annotation so that is centred on a given point (in page coordinates).
+    internal func moveAnnotation(annotation: PDFAnnotation, toPoint: NSPoint) {
+        let oldBounds = annotation.bounds()
+        let newOrigin = NSPoint(x: toPoint.x - annotation.bounds().size.width / 2, y: toPoint.y - annotation.bounds().size.height / 2)
+        let newBounds = NSRect(origin: newOrigin, size: oldBounds.size)
+        annotation.setBounds(newBounds)
+        dispatch_async(dispatch_get_main_queue()) {
+            self.setNeedsDisplayInRect(self.convertRect(oldBounds, fromPage: annotation.page()))
+            self.setNeedsDisplayInRect(self.convertRect(newBounds, fromPage: annotation.page()))
+        }
+    }
     
     /// Converts a point to a rectangle corresponding to the paragraph in which the point resides.
     ///
@@ -707,6 +767,14 @@ class MyPDFBase: PDFView {
         
         // The new rectangle for this point
         return pdfSel.boundsForPage(activePage)
+    }
+    
+    /// Re-loads the view on the main queue.
+    func refreshAll() {
+        dispatch_async(dispatch_get_main_queue()) {
+            self.layoutDocumentView()
+            self.display()
+        }
     }
     
 }

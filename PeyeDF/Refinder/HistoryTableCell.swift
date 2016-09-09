@@ -46,9 +46,9 @@ class HistoryTableCell: NSTableCellView {
     @IBOutlet weak var criticalBar: RefinderProgressIndicator!
     
     func setValues(fromReadingEvent readingEvent: SummaryReadingEvent, sciDoc: ScientificDocument) {
-        readBar.setProgress(readingEvent.proportionRead!, forClass: .Read)
-        interestingBar.setProgress(readingEvent.proportionInteresting!, forClass: .Interesting)
-        criticalBar.setProgress(readingEvent.proportionCritical!, forClass: .Critical)
+        readBar.setProgress(readingEvent.proportionRead!, forClass: .Low)
+        interestingBar.setProgress(readingEvent.proportionInteresting!, forClass: .Medium)
+        criticalBar.setProgress(readingEvent.proportionCritical!, forClass: .High)
         
         let fnameUrl = NSURL(fileURLWithPath: sciDoc.uri)
         filenameLab.stringValue = fnameUrl.lastPathComponent!

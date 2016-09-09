@@ -10,6 +10,7 @@
 		A9038F761B8F5EE500A7D183 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9038F751B8F5EE500A7D183 /* Event.swift */; };
 		A9038F7B1B8F634200A7D183 /* Dictionariable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9038F7A1B8F634200A7D183 /* Dictionariable.swift */; };
 		A90BA3111CB681A400E7303D /* Tags.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A90BA3101CB681A400E7303D /* Tags.storyboard */; };
+		A90C0AD61CEE0F22000D4B75 /* Multipeer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90C0AD51CEE0F22000D4B75 /* Multipeer.swift */; };
 		A912D8A41B8B5C3A006F0657 /* DocumentInformationElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A912D8A21B8B5C3A006F0657 /* DocumentInformationElement.swift */; };
 		A912D8A51B8B5C3A006F0657 /* ReadingEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A912D8A31B8B5C3A006F0657 /* ReadingEvent.swift */; };
 		A913A9201BA1A93B008BA10D /* SearchPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A913A91F1BA1A93B008BA10D /* SearchPanelController.swift */; };
@@ -31,17 +32,21 @@
 		A9260F571BA4CD10005B1556 /* MyOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9260F561BA4CD10005B1556 /* MyOverlay.swift */; };
 		A935F0C61B8CC5FD00587C99 /* DesktopEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A935F0C51B8CC5FD00587C99 /* DesktopEvent.swift */; };
 		A93C53DC1B8DCEFB00179C72 /* HistoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93C53DB1B8DCEFB00179C72 /* HistoryManager.swift */; };
+		A948C0ED1CF734D000625FF4 /* CollaborationMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948C0EC1CF734D000625FF4 /* CollaborationMessage.swift */; };
+		A954F8C11D1DA1E5003A23F1 /* PDFPeerOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = A954F8C01D1DA1E5003A23F1 /* PDFPeerOverview.swift */; };
+		A954F8C91D1DA318003A23F1 /* PeerOverviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A954F8C81D1DA318003A23F1 /* PeerOverviewController.swift */; };
 		A95795071BD668E40083525C /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95795061BD668E40083525C /* Person.swift */; };
 		A957950D1BD66A600083525C /* ScientificDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = A957950C1BD66A600083525C /* ScientificDocument.swift */; };
 		A95795151BD69BAA0083525C /* Refinder.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A95795141BD69BAA0083525C /* Refinder.storyboard */; };
 		A95795171BD6A1CB0083525C /* RefinderWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95795161BD6A1CB0083525C /* RefinderWindowController.swift */; };
 		A95795191BD6A31B0083525C /* AllHistoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95795181BD6A31B0083525C /* AllHistoryController.swift */; };
 		A957951B1BD6A35F0083525C /* HistoryTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A957951A1BD6A35F0083525C /* HistoryTableCell.swift */; };
+		A95A29041CFD9BD900BB4741 /* DiMePusher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95A29031CFD9BD900BB4741 /* DiMePusher.swift */; };
+		A95A290C1CFD9EEA00BB4741 /* DiMePusher+tags.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95A290B1CFD9EEA00BB4741 /* DiMePusher+tags.swift */; };
 		A95A8CEA1B9440600093119E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A91CB9511B332EDB00671868 /* Main.storyboard */; };
-		A95A8CF21B94407D0093119E /* DebugController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95A8CEB1B94407D0093119E /* DebugController.swift */; };
 		A95A8CF31B94407D0093119E /* DocumentSplitController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95A8CEC1B94407D0093119E /* DocumentSplitController.swift */; };
 		A95A8CF41B94407D0093119E /* DocumentWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95A8CED1B94407D0093119E /* DocumentWindowController.swift */; };
-		A95A8CF51B94407D0093119E /* MyPDFReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95A8CEE1B94407D0093119E /* MyPDFReader.swift */; };
+		A95A8CF51B94407D0093119E /* PDFReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95A8CEE1B94407D0093119E /* PDFReader.swift */; };
 		A95A8CF61B94407D0093119E /* PDFSideController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95A8CEF1B94407D0093119E /* PDFSideController.swift */; };
 		A95A8CF71B94407D0093119E /* DiMePreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95A8CF01B94407D0093119E /* DiMePreferencesViewController.swift */; };
 		A95A8CF81B94407D0093119E /* ThumbSideController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95A8CF11B94407D0093119E /* ThumbSideController.swift */; };
@@ -50,13 +55,18 @@
 		A95FE9911B8B3F7D0010E813 /* Alamofire.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A95FE98B1B8B3EC60010E813 /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A964E1001CD8F23D00EE72B5 /* PeyeDFUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A964E0FF1CD8F23D00EE72B5 /* PeyeDFUITests.swift */; };
 		A964E10E1CD8F50400EE72B5 /* CalvoDMello.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A964E10D1CD8F50400EE72B5 /* CalvoDMello.pdf */; };
+		A966DD801D0C16AB00FF93BE /* TagAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A966DD7F1D0C16AB00FF93BE /* TagAnnotation.swift */; };
 		A96731B21CCA64DA001A5C9F /* Tags.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96731B11CCA64DA001A5C9F /* Tags.swift */; };
-		A96731BA1CCA69FD001A5C9F /* HistoryManager+tags.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96731B91CCA69FD001A5C9F /* HistoryManager+tags.swift */; };
 		A9677F921BA806F700DC48CC /* MidasManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9677F911BA806F700DC48CC /* MidasManager.swift */; };
 		A97230761B8B60C8005D29E0 /* DiMeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97230751B8B60C8005D29E0 /* DiMeData.swift */; };
 		A972BC9B1C7CC0B40076BEF0 /* PDFSelection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A972BC9A1C7CC0B40076BEF0 /* PDFSelection+Extensions.swift */; };
 		A974ADD81BD169E0008AB977 /* DocumentWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A974ADD71BD169E0008AB977 /* DocumentWindow.swift */; };
+		A9794D8D1D0D9CE2003FBFD4 /* PDFPage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9794D8C1D0D9CE2003FBFD4 /* PDFPage+Extensions.swift */; };
+		A97D46761CF4527000377BB2 /* TagConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97D46751CF4527000377BB2 /* TagConstants.swift */; };
+		A97D46781CF453AE00377BB2 /* MPConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97D46771CF453AE00377BB2 /* MPConstants.swift */; };
+		A97D467D1CF4570900377BB2 /* AllPeersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97D467B1CF4570900377BB2 /* AllPeersController.swift */; };
 		A981F69D1B42FC4C00E7E9BD /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A981F69C1B42FC4C00E7E9BD /* Utils.swift */; };
+		A999D3311CFDF6410057F561 /* SecondaryWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A999D3301CFDF6410057F561 /* SecondaryWindow.swift */; };
 		A99C22FB1BE8EC9D005EDFD9 /* WaitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99C22FA1BE8EC9D005EDFD9 /* WaitViewController.swift */; };
 		A99C23031BE92536005EDFD9 /* DiMeFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99C23021BE92536005EDFD9 /* DiMeFetcher.swift */; };
 		A9A23CD41C771A5D008B61C4 /* NSDate+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A23CD31C771A5D008B61C4 /* NSDate+Extensions.swift */; };
@@ -69,13 +79,16 @@
 		A9A793541CD35E1F00E14CCF /* NearlyEquatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A793531CD35E1F00E14CCF /* NearlyEquatable.swift */; };
 		A9B36CA31BEA0FE300A27861 /* RefinderProgressIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B36CA21BEA0FE300A27861 /* RefinderProgressIndicator.swift */; };
 		A9B36CA91BEA2E0800A27861 /* HistoryDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B36CA81BEA2E0800A27861 /* HistoryDetailController.swift */; };
-		A9B36CAB1BEA30BF00A27861 /* MyPDFOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B36CAA1BEA30BF00A27861 /* MyPDFOverview.swift */; };
-		A9B36CB01BEA4A3A00A27861 /* MyPDFBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B36CAF1BEA4A3A00A27861 /* MyPDFBase.swift */; };
+		A9B36CAB1BEA30BF00A27861 /* PDFOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B36CAA1BEA30BF00A27861 /* PDFOverview.swift */; };
+		A9B36CB01BEA4A3A00A27861 /* PDFBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B36CAF1BEA4A3A00A27861 /* PDFBase.swift */; };
 		A9C8F0251BC2B309007ABE1A /* Fixation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C8F0241BC2B309007ABE1A /* Fixation.swift */; };
 		A9C8F0271BC2B31A007ABE1A /* Raw.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C8F0261BC2B31A007ABE1A /* Raw.swift */; };
 		A9CC31551C79FF5600AE7556 /* peyedoc.icns in Resources */ = {isa = PBXBuildFile; fileRef = A9CC31541C79FF5600AE7556 /* peyedoc.icns */; };
 		A9CDB2E91B3AC49800347398 /* PeyeConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CDB2E81B3AC49800347398 /* PeyeConstants.swift */; };
+		A9CDFD8B1CF7424C000C4282 /* Collaboration.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A9CDFD8A1CF7424C000C4282 /* Collaboration.storyboard */; };
+		A9CDFD931CF74717000C4282 /* SessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CDFD921CF74717000C4282 /* SessionDelegate.swift */; };
 		A9CEAA801BE7793500E23964 /* Paragraphs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CEAA7F1BE7793500E23964 /* Paragraphs.swift */; };
+		A9D362A11CF86196003E5DAF /* PeerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D362A01CF86196003E5DAF /* PeerViewController.swift */; };
 		A9D833AD1BA868520046B21F /* PageEyeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D833AC1BA868520046B21F /* PageEyeData.swift */; };
 		A9D9A8BF1C1C883D0014C1EB /* EyeRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D9A8BE1C1C883D0014C1EB /* EyeRectangle.swift */; };
 		A9DFF1721B7E3D1A008CFF0C /* XCGLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DFF1711B7E3D1A008CFF0C /* XCGLogger.swift */; };
@@ -176,6 +189,7 @@
 		A9038F751B8F5EE500A7D183 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Event.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9038F7A1B8F634200A7D183 /* Dictionariable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = Dictionariable.swift; path = ../DiMe/Dictionariable.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A90BA3101CB681A400E7303D /* Tags.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Tags.storyboard; sourceTree = "<group>"; };
+		A90C0AD51CEE0F22000D4B75 /* Multipeer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Multipeer.swift; sourceTree = "<group>"; };
 		A912D8A21B8B5C3A006F0657 /* DocumentInformationElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DocumentInformationElement.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A912D8A31B8B5C3A006F0657 /* ReadingEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadingEvent.swift; sourceTree = "<group>"; };
 		A913A91F1BA1A93B008BA10D /* SearchPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchPanelController.swift; sourceTree = "<group>"; };
@@ -199,19 +213,23 @@
 		A92323021CB3E1560060AF1C /* AnimatedStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimatedStack.swift; sourceTree = "<group>"; };
 		A92323041CB3E1A80060AF1C /* TagFieldDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagFieldDelegate.swift; sourceTree = "<group>"; };
 		A92323061CB3E1B70060AF1C /* TagRemoveButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagRemoveButton.swift; sourceTree = "<group>"; };
-		A9260F561BA4CD10005B1556 /* MyOverlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = MyOverlay.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		A9260F561BA4CD10005B1556 /* MyOverlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = MyOverlay.swift; sourceTree = "<group>"; };
 		A935F0C51B8CC5FD00587C99 /* DesktopEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DesktopEvent.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A93C53DB1B8DCEFB00179C72 /* HistoryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = HistoryManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		A948C0EC1CF734D000625FF4 /* CollaborationMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollaborationMessage.swift; sourceTree = "<group>"; };
+		A954F8C01D1DA1E5003A23F1 /* PDFPeerOverview.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFPeerOverview.swift; sourceTree = "<group>"; };
+		A954F8C81D1DA318003A23F1 /* PeerOverviewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeerOverviewController.swift; sourceTree = "<group>"; };
 		A95795061BD668E40083525C /* Person.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
 		A957950C1BD66A600083525C /* ScientificDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScientificDocument.swift; sourceTree = "<group>"; };
 		A95795141BD69BAA0083525C /* Refinder.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Refinder.storyboard; sourceTree = "<group>"; };
 		A95795161BD6A1CB0083525C /* RefinderWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefinderWindowController.swift; sourceTree = "<group>"; };
 		A95795181BD6A31B0083525C /* AllHistoryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AllHistoryController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A957951A1BD6A35F0083525C /* HistoryTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = HistoryTableCell.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		A95A8CEB1B94407D0093119E /* DebugController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DebugController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		A95A29031CFD9BD900BB4741 /* DiMePusher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiMePusher.swift; sourceTree = "<group>"; };
+		A95A290B1CFD9EEA00BB4741 /* DiMePusher+tags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DiMePusher+tags.swift"; sourceTree = "<group>"; };
 		A95A8CEC1B94407D0093119E /* DocumentSplitController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DocumentSplitController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A95A8CED1B94407D0093119E /* DocumentWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DocumentWindowController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		A95A8CEE1B94407D0093119E /* MyPDFReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = MyPDFReader.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		A95A8CEE1B94407D0093119E /* PDFReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PDFReader.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A95A8CEF1B94407D0093119E /* PDFSideController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFSideController.swift; sourceTree = "<group>"; };
 		A95A8CF01B94407D0093119E /* DiMePreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DiMePreferencesViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A95A8CF11B94407D0093119E /* ThumbSideController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThumbSideController.swift; sourceTree = "<group>"; };
@@ -222,14 +240,19 @@
 		A964E0FF1CD8F23D00EE72B5 /* PeyeDFUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeyeDFUITests.swift; sourceTree = "<group>"; };
 		A964E1011CD8F23D00EE72B5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A964E10D1CD8F50400EE72B5 /* CalvoDMello.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = CalvoDMello.pdf; sourceTree = "<group>"; };
+		A966DD7F1D0C16AB00FF93BE /* TagAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagAnnotation.swift; sourceTree = "<group>"; };
 		A96731B11CCA64DA001A5C9F /* Tags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tags.swift; sourceTree = "<group>"; };
-		A96731B91CCA69FD001A5C9F /* HistoryManager+tags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "HistoryManager+tags.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9677F911BA806F700DC48CC /* MidasManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = MidasManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A97230751B8B60C8005D29E0 /* DiMeData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DiMeData.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A972BC9A1C7CC0B40076BEF0 /* PDFSelection+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PDFSelection+Extensions.swift"; sourceTree = "<group>"; };
 		A974ADD71BD169E0008AB977 /* DocumentWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DocumentWindow.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		A9794D8C1D0D9CE2003FBFD4 /* PDFPage+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PDFPage+Extensions.swift"; sourceTree = "<group>"; };
+		A97D46751CF4527000377BB2 /* TagConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagConstants.swift; sourceTree = "<group>"; };
+		A97D46771CF453AE00377BB2 /* MPConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPConstants.swift; sourceTree = "<group>"; };
+		A97D467B1CF4570900377BB2 /* AllPeersController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllPeersController.swift; sourceTree = "<group>"; };
 		A97F7B951B8CB32700013E26 /* PeyeDF-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PeyeDF-Bridging-Header.h"; sourceTree = "<group>"; };
 		A981F69C1B42FC4C00E7E9BD /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		A999D3301CFDF6410057F561 /* SecondaryWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecondaryWindow.swift; sourceTree = "<group>"; };
 		A99C22FA1BE8EC9D005EDFD9 /* WaitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaitViewController.swift; sourceTree = "<group>"; };
 		A99C23021BE92536005EDFD9 /* DiMeFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DiMeFetcher.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9A23CD31C771A5D008B61C4 /* NSDate+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDate+Extensions.swift"; sourceTree = "<group>"; };
@@ -242,13 +265,16 @@
 		A9A793531CD35E1F00E14CCF /* NearlyEquatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NearlyEquatable.swift; sourceTree = "<group>"; };
 		A9B36CA21BEA0FE300A27861 /* RefinderProgressIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefinderProgressIndicator.swift; sourceTree = "<group>"; };
 		A9B36CA81BEA2E0800A27861 /* HistoryDetailController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = HistoryDetailController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		A9B36CAA1BEA30BF00A27861 /* MyPDFOverview.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = MyPDFOverview.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		A9B36CAF1BEA4A3A00A27861 /* MyPDFBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = MyPDFBase.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		A9B36CAA1BEA30BF00A27861 /* PDFOverview.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PDFOverview.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		A9B36CAF1BEA4A3A00A27861 /* PDFBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PDFBase.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9C8F0241BC2B309007ABE1A /* Fixation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Fixation.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9C8F0261BC2B31A007ABE1A /* Raw.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Raw.swift; sourceTree = "<group>"; };
 		A9CC31541C79FF5600AE7556 /* peyedoc.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = peyedoc.icns; sourceTree = "<group>"; };
 		A9CDB2E81B3AC49800347398 /* PeyeConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeyeConstants.swift; sourceTree = "<group>"; };
+		A9CDFD8A1CF7424C000C4282 /* Collaboration.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Collaboration.storyboard; sourceTree = "<group>"; };
+		A9CDFD921CF74717000C4282 /* SessionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionDelegate.swift; sourceTree = "<group>"; };
 		A9CEAA7F1BE7793500E23964 /* Paragraphs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Paragraphs.swift; sourceTree = "<group>"; };
+		A9D362A01CF86196003E5DAF /* PeerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeerViewController.swift; sourceTree = "<group>"; };
 		A9D833AC1BA868520046B21F /* PageEyeData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageEyeData.swift; sourceTree = "<group>"; };
 		A9D9A8BE1C1C883D0014C1EB /* EyeRectangle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = EyeRectangle.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9DFF1711B7E3D1A008CFF0C /* XCGLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCGLogger.swift; sourceTree = "<group>"; };
@@ -283,30 +309,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		A9000C5B1B358B7F00E59C7B /* UI */ = {
+		A9000C5B1B358B7F00E59C7B /* Main UI */ = {
 			isa = PBXGroup;
 			children = (
+				A90C0AD71CEE169C000D4B75 /* Reading */,
 				A92322F51CB3DE750060AF1C /* Tags */,
 				A91CB9511B332EDB00671868 /* Main.storyboard */,
-				A95A8CEB1B94407D0093119E /* DebugController.swift */,
-				A913A9241BA1B047008BA10D /* MainSplitController.swift */,
+				A9B36CAF1BEA4A3A00A27861 /* PDFBase.swift */,
+				A9B36CAA1BEA30BF00A27861 /* PDFOverview.swift */,
 				A9FE38A71B98497400680F31 /* GeneralSettingsController.swift */,
-				A918F80F1BC2D71500345448 /* eyeBox.swift */,
-				A95A8CEC1B94407D0093119E /* DocumentSplitController.swift */,
-				A9260F561BA4CD10005B1556 /* MyOverlay.swift */,
-				A974ADD71BD169E0008AB977 /* DocumentWindow.swift */,
-				A95A8CED1B94407D0093119E /* DocumentWindowController.swift */,
-				A913A91F1BA1A93B008BA10D /* SearchPanelController.swift */,
-				A95A8CEE1B94407D0093119E /* MyPDFReader.swift */,
-				A95A8CEF1B94407D0093119E /* PDFSideController.swift */,
+				A92323021CB3E1560060AF1C /* AnimatedStack.swift */,
 				A95A8CF01B94407D0093119E /* DiMePreferencesViewController.swift */,
-				A95A8CF11B94407D0093119E /* ThumbSideController.swift */,
 				A9A2DFC51BC427BE006C07FD /* MetadataWindowController.swift */,
 				A9A2DFCB1BC427D2006C07FD /* MetadataViewController.swift */,
 				A99C22FA1BE8EC9D005EDFD9 /* WaitViewController.swift */,
+				A999D3301CFDF6410057F561 /* SecondaryWindow.swift */,
 			);
-			name = UI;
-			path = PeyeDF/UI;
+			name = "Main UI";
+			path = "PeyeDF/Main UI";
 			sourceTree = SOURCE_ROOT;
 		};
 		A9000C5C1B358B8E00E59C7B /* Utility */ = {
@@ -329,18 +349,52 @@
 			children = (
 				A9038F7A1B8F634200A7D183 /* Dictionariable.swift */,
 				A93C53DB1B8DCEFB00179C72 /* HistoryManager.swift */,
+				A95A29031CFD9BD900BB4741 /* DiMePusher.swift */,
 				A99C23021BE92536005EDFD9 /* DiMeFetcher.swift */,
 				A9677F911BA806F700DC48CC /* MidasManager.swift */,
 				A9F335721B3ABC090042BFB3 /* AppSingleton.swift */,
 				A91CB96C1B332FB700671868 /* PeyeDocument.swift */,
 				A91CB9491B332EDB00671868 /* AppDelegate.swift */,
 				A9CEAA7F1BE7793500E23964 /* Paragraphs.swift */,
-				A9B36CAF1BEA4A3A00A27861 /* MyPDFBase.swift */,
 				A91DA4771C7A395200257FF0 /* FocusAreas.swift */,
 			);
 			name = Model;
 			path = PeyeDF/Model;
 			sourceTree = SOURCE_ROOT;
+		};
+		A90C0AD41CEE0EAD000D4B75 /* Collaboration */ = {
+			isa = PBXGroup;
+			children = (
+				A9CDFD8A1CF7424C000C4282 /* Collaboration.storyboard */,
+				A954F8C81D1DA318003A23F1 /* PeerOverviewController.swift */,
+				A954F8C01D1DA1E5003A23F1 /* PDFPeerOverview.swift */,
+				A90C0AD51CEE0F22000D4B75 /* Multipeer.swift */,
+				A97D467B1CF4570900377BB2 /* AllPeersController.swift */,
+				A9D362A01CF86196003E5DAF /* PeerViewController.swift */,
+				A9CDFD921CF74717000C4282 /* SessionDelegate.swift */,
+				A97D46771CF453AE00377BB2 /* MPConstants.swift */,
+				A948C0EC1CF734D000625FF4 /* CollaborationMessage.swift */,
+			);
+			name = Collaboration;
+			path = PeyeDF/Collaboration;
+			sourceTree = SOURCE_ROOT;
+		};
+		A90C0AD71CEE169C000D4B75 /* Reading */ = {
+			isa = PBXGroup;
+			children = (
+				A95A8CED1B94407D0093119E /* DocumentWindowController.swift */,
+				A913A9241BA1B047008BA10D /* MainSplitController.swift */,
+				A918F80F1BC2D71500345448 /* eyeBox.swift */,
+				A95A8CEC1B94407D0093119E /* DocumentSplitController.swift */,
+				A9260F561BA4CD10005B1556 /* MyOverlay.swift */,
+				A974ADD71BD169E0008AB977 /* DocumentWindow.swift */,
+				A913A91F1BA1A93B008BA10D /* SearchPanelController.swift */,
+				A95A8CEE1B94407D0093119E /* PDFReader.swift */,
+				A95A8CEF1B94407D0093119E /* PDFSideController.swift */,
+				A95A8CF11B94407D0093119E /* ThumbSideController.swift */,
+			);
+			path = Reading;
+			sourceTree = "<group>";
 		};
 		A91CB93B1B332EDB00671868 = {
 			isa = PBXGroup;
@@ -353,8 +407,9 @@
 				A9000C5D1B358BBC00E59C7B /* Model */,
 				A9000C5C1B358B8E00E59C7B /* Utility */,
 				A9A23CCC1C771A3B008B61C4 /* Extensions */,
-				A9000C5B1B358B7F00E59C7B /* UI */,
+				A9000C5B1B358B7F00E59C7B /* Main UI */,
 				A957950F1BD69B650083525C /* Refinder */,
+				A90C0AD41CEE0EAD000D4B75 /* Collaboration */,
 				A91CB9461B332EDB00671868 /* PeyeDF */,
 				A91CB95B1B332EDB00671868 /* PeyeDFTests */,
 				A964E0FE1CD8F23D00EE72B5 /* PeyeDFUITests */,
@@ -410,13 +465,14 @@
 		A92322F51CB3DE750060AF1C /* Tags */ = {
 			isa = PBXGroup;
 			children = (
-				A92323041CB3E1A80060AF1C /* TagFieldDelegate.swift */,
-				A92323001CB3E1480060AF1C /* TagViewController.swift */,
 				A90BA3101CB681A400E7303D /* Tags.storyboard */,
 				A92322FE1CB3E13A0060AF1C /* TagView.xib */,
+				A92323041CB3E1A80060AF1C /* TagFieldDelegate.swift */,
+				A92323001CB3E1480060AF1C /* TagViewController.swift */,
+				A966DD7F1D0C16AB00FF93BE /* TagAnnotation.swift */,
 				A92323061CB3E1B70060AF1C /* TagRemoveButton.swift */,
-				A92323021CB3E1560060AF1C /* AnimatedStack.swift */,
-				A96731B91CCA69FD001A5C9F /* HistoryManager+tags.swift */,
+				A97D46751CF4527000377BB2 /* TagConstants.swift */,
+				A95A290B1CFD9EEA00BB4741 /* DiMePusher+tags.swift */,
 			);
 			path = Tags;
 			sourceTree = "<group>";
@@ -431,7 +487,6 @@
 				A957951A1BD6A35F0083525C /* HistoryTableCell.swift */,
 				A9B36CA21BEA0FE300A27861 /* RefinderProgressIndicator.swift */,
 				A9B36CA81BEA2E0800A27861 /* HistoryDetailController.swift */,
-				A9B36CAA1BEA30BF00A27861 /* MyPDFOverview.swift */,
 				A9F9D2751CBFB58600FFAE72 /* LittleClock.swift */,
 			);
 			name = Refinder;
@@ -467,6 +522,7 @@
 			children = (
 				A95DF5641BC511A400EA1157 /* PDFDocument+Extensions.swift */,
 				A972BC9A1C7CC0B40076BEF0 /* PDFSelection+Extensions.swift */,
+				A9794D8C1D0D9CE2003FBFD4 /* PDFPage+Extensions.swift */,
 				A9A23CD31C771A5D008B61C4 /* NSDate+Extensions.swift */,
 				A9A23CD51C771A82008B61C4 /* String+Extensions.swift */,
 				A9A23CD71C771AB4008B61C4 /* NSRect+Extensions.swift */,
@@ -680,6 +736,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9CDFD8B1CF7424C000C4282 /* Collaboration.storyboard in Resources */,
 				A9CC31551C79FF5600AE7556 /* peyedoc.icns in Resources */,
 				A92322FF1CB3E13A0060AF1C /* TagView.xib in Resources */,
 				A90BA3111CB681A400E7303D /* Tags.storyboard in Resources */,
@@ -713,19 +770,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				A99C23031BE92536005EDFD9 /* DiMeFetcher.swift in Sources */,
+				A9794D8D1D0D9CE2003FBFD4 /* PDFPage+Extensions.swift in Sources */,
 				A9260F571BA4CD10005B1556 /* MyOverlay.swift in Sources */,
 				A91DC4E11C22E43800BBB612 /* SummaryReadingEvent.swift in Sources */,
-				A9B36CAB1BEA30BF00A27861 /* MyPDFOverview.swift in Sources */,
+				A9B36CAB1BEA30BF00A27861 /* PDFOverview.swift in Sources */,
 				A935F0C61B8CC5FD00587C99 /* DesktopEvent.swift in Sources */,
 				A99C22FB1BE8EC9D005EDFD9 /* WaitViewController.swift in Sources */,
 				A974ADD81BD169E0008AB977 /* DocumentWindow.swift in Sources */,
 				A91CB96F1B332FB700671868 /* EyeFormulas.swift in Sources */,
 				A9D833AD1BA868520046B21F /* PageEyeData.swift in Sources */,
 				A912D8A41B8B5C3A006F0657 /* DocumentInformationElement.swift in Sources */,
+				A97D46781CF453AE00377BB2 /* MPConstants.swift in Sources */,
 				A9A23CDA1C771AF4008B61C4 /* NS+Extensions.swift in Sources */,
+				A90C0AD61CEE0F22000D4B75 /* Multipeer.swift in Sources */,
 				A91CB9721B332FB700671868 /* PeyeDocument.swift in Sources */,
-				A95A8CF51B94407D0093119E /* MyPDFReader.swift in Sources */,
+				A95A8CF51B94407D0093119E /* PDFReader.swift in Sources */,
 				A9FE38A81B98497400680F31 /* GeneralSettingsController.swift in Sources */,
+				A97D46761CF4527000377BB2 /* TagConstants.swift in Sources */,
 				A9B36CA91BEA2E0800A27861 /* HistoryDetailController.swift in Sources */,
 				A95795071BD668E40083525C /* Person.swift in Sources */,
 				A95A8CF71B94407D0093119E /* DiMePreferencesViewController.swift in Sources */,
@@ -733,10 +794,13 @@
 				A95795191BD6A31B0083525C /* AllHistoryController.swift in Sources */,
 				A92323071CB3E1B70060AF1C /* TagRemoveButton.swift in Sources */,
 				A95A8CF61B94407D0093119E /* PDFSideController.swift in Sources */,
+				A95A290C1CFD9EEA00BB4741 /* DiMePusher+tags.swift in Sources */,
 				A957951B1BD6A35F0083525C /* HistoryTableCell.swift in Sources */,
 				A9E771111B96091F0005A4B3 /* ReadingRect.swift in Sources */,
 				A93C53DC1B8DCEFB00179C72 /* HistoryManager.swift in Sources */,
+				A97D467D1CF4570900377BB2 /* AllPeersController.swift in Sources */,
 				A96731B21CCA64DA001A5C9F /* Tags.swift in Sources */,
+				A954F8C91D1DA318003A23F1 /* PeerOverviewController.swift in Sources */,
 				A91CB94A1B332EDB00671868 /* AppDelegate.swift in Sources */,
 				A95795171BD6A1CB0083525C /* RefinderWindowController.swift in Sources */,
 				A913A9251BA1B047008BA10D /* MainSplitController.swift in Sources */,
@@ -749,11 +813,11 @@
 				A92323051CB3E1A80060AF1C /* TagFieldDelegate.swift in Sources */,
 				A95A8CF41B94407D0093119E /* DocumentWindowController.swift in Sources */,
 				A9F335731B3ABC090042BFB3 /* AppSingleton.swift in Sources */,
-				A96731BA1CCA69FD001A5C9F /* HistoryManager+tags.swift in Sources */,
 				A918F8101BC2D71500345448 /* eyeBox.swift in Sources */,
 				A9677F921BA806F700DC48CC /* MidasManager.swift in Sources */,
 				A9038F7B1B8F634200A7D183 /* Dictionariable.swift in Sources */,
 				A972BC9B1C7CC0B40076BEF0 /* PDFSelection+Extensions.swift in Sources */,
+				A9D362A11CF86196003E5DAF /* PeerViewController.swift in Sources */,
 				A91AFB731C1DC9A60025D1F6 /* ThresholdEditor.swift in Sources */,
 				A957950D1BD66A600083525C /* ScientificDocument.swift in Sources */,
 				A9A23CD81C771AB4008B61C4 /* NSRect+Extensions.swift in Sources */,
@@ -764,19 +828,24 @@
 				A9D9A8BF1C1C883D0014C1EB /* EyeRectangle.swift in Sources */,
 				A9A23CD61C771A82008B61C4 /* String+Extensions.swift in Sources */,
 				A913A9201BA1A93B008BA10D /* SearchPanelController.swift in Sources */,
-				A95A8CF21B94407D0093119E /* DebugController.swift in Sources */,
 				A9A2DFCC1BC427D2006C07FD /* MetadataViewController.swift in Sources */,
 				A9A23CD41C771A5D008B61C4 /* NSDate+Extensions.swift in Sources */,
 				A9F9D2761CBFB58700FFAE72 /* LittleClock.swift in Sources */,
 				A9B36CA31BEA0FE300A27861 /* RefinderProgressIndicator.swift in Sources */,
 				A9C8F0251BC2B309007ABE1A /* Fixation.swift in Sources */,
 				A912D8A51B8B5C3A006F0657 /* ReadingEvent.swift in Sources */,
+				A9CDFD931CF74717000C4282 /* SessionDelegate.swift in Sources */,
+				A954F8C11D1DA1E5003A23F1 /* PDFPeerOverview.swift in Sources */,
 				A9DFF1721B7E3D1A008CFF0C /* XCGLogger.swift in Sources */,
-				A9B36CB01BEA4A3A00A27861 /* MyPDFBase.swift in Sources */,
+				A999D3311CFDF6410057F561 /* SecondaryWindow.swift in Sources */,
+				A9B36CB01BEA4A3A00A27861 /* PDFBase.swift in Sources */,
 				A981F69D1B42FC4C00E7E9BD /* Utils.swift in Sources */,
 				A95DF5651BC511A400EA1157 /* PDFDocument+Extensions.swift in Sources */,
+				A948C0ED1CF734D000625FF4 /* CollaborationMessage.swift in Sources */,
 				A9C8F0271BC2B31A007ABE1A /* Raw.swift in Sources */,
+				A95A29041CFD9BD900BB4741 /* DiMePusher.swift in Sources */,
 				A97230761B8B60C8005D29E0 /* DiMeData.swift in Sources */,
+				A966DD801D0C16AB00FF93BE /* TagAnnotation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

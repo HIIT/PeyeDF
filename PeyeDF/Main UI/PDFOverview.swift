@@ -29,49 +29,45 @@ import Foundation
 private let maskColour = NSColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 0.2)
 
 /// Extends the basic pdf support to allow an overview of a document
-class MyPDFOverview: MyPDFBase {
+class PDFOverview: PDFBase {
     
-    weak var pdfDetail: MyPDFBase?
+    /// The pdf view which is linked to this overview.
+    /// Setting this value causes a refresh (and resets zoom).
+    weak var pdfDetail: PDFBase? { didSet {
+        if let pdfb = pdfDetail, let pdfDoc = pdfb.document(), let pdfUrl = pdfDoc.documentURL() {
+            self.setDocument(PDFDocument(URL: pdfUrl))
+            self.setScaleFactor(0.2)
+            self.scrollToBeginningOfDocument(self)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(pdfDetailHasNewPage(_:)), name: PDFViewPageChangedNotification, object: pdfDetail)
+        } else {
+            self.setDocument(nil)
+        }
+        self.refreshAll()
+    } }
     
     /// The page at this index will be "highlighted" (whiter than the others).
     var highlightPage = 0 { didSet {
-        // Changing this value will cause a display refresh (if older than previous value).
+        // Changing this value will cause a display refresh (if old is different than new value).
         if oldValue != highlightPage {
-            guard let doc = self.document(), oldPage = doc.getPage(atIndex: oldValue),
-                newPage = doc.getPage(atIndex: highlightPage) else {
-                return
-            }
-            
-            let oldRect = oldPage.boundsForBox(kPDFDisplayBoxCropBox)
-            var refRect = self.convertRect(oldRect, fromPage: oldPage)
-            self.setNeedsDisplayInRect(refRect)
-            let newRect = newPage.boundsForBox(kPDFDisplayBoxCropBox)
-            refRect = self.convertRect(newRect, fromPage: newPage)
-            self.setNeedsDisplayInRect(refRect)
+            self.refreshPage(atIndex: oldValue)
+            self.refreshPage(atIndex: highlightPage)
         }
     } }
     
     /// Whether we want to draw rect which were simply gazed upon (useful for debugging)
     var drawGazedRects: Bool { get {
         return NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefRefinderDrawGazedUpon) as! Bool
-        } }
+    } }
     
-    // MARK: - Page drawing override
+    // MARK: - Page drawing
     
     /// Draw markings on page as bezier paths with their corresponding colour
     override func drawPage(page: PDFPage!) {
     	// Let PDFView do most of the hard work.
         super.drawPage(page)
         
-        // if origins of media and boxes are different, obtain difference
-        // to later apply it to each readingrect's origin
-        let mediaBoxo = page.boundsForBox(kPDFDisplayBoxMediaBox).origin
-        let cropBoxo = page.boundsForBox(kPDFDisplayBoxCropBox).origin
-        var pointDiff = NSPoint(x: 0, y: 0)
-        if mediaBoxo != cropBoxo {
-            pointDiff.x = mediaBoxo.x - cropBoxo.x
-            pointDiff.y = mediaBoxo.y - cropBoxo.y
-        }
+        // get difference between media and crop box
+        let pointDiff = offSetToCropBox(page)
         
         let pageIndex = self.document().indexForPage(page)
         
@@ -120,7 +116,7 @@ class MyPDFOverview: MyPDFBase {
         // If we don't want to display gazed rects - display "normal" annotations instead
         
             // cycle through annotation classes
-            let cycleClasses = [ReadingClass.Read, ReadingClass.Interesting, ReadingClass.Critical]
+            let cycleClasses = [ReadingClass.Low, ReadingClass.Medium, ReadingClass.High]
             
             let pageIndex = self.document().indexForPage(page)
             for rc in cycleClasses {
@@ -131,11 +127,15 @@ class MyPDFOverview: MyPDFBase {
             	
                     // Draw.
                     for rect in rectsToDraw {
-                        let rectCol = PeyeConstants.markAnnotationColours[rc]!.colorWithAlphaComponent(0.9)
-                        let adjRect = rect.rect.offset(byPoint: pointDiff)
-                        let rectPath: NSBezierPath = NSBezierPath(rect: adjRect)
-                        rectCol.setFill()
-                        rectPath.fill()
+                        if let colour = markAnnotationColours[rc] {
+                            let rectCol = colour.colorWithAlphaComponent(0.9)
+                            let adjRect = rect.rect.offset(byPoint: pointDiff)
+                            let rectPath: NSBezierPath = NSBezierPath(rect: adjRect)
+                            rectCol.setFill()
+                            rectPath.fill()
+                        } else {
+                            AppSingleton.log.error("Could not find an appropriate colour for reading class: \(rc.rawValue)")
+                        }
                     }
                     
                 	// Restore.
@@ -166,7 +166,6 @@ class MyPDFOverview: MyPDFBase {
 
     }
     
-    
     /// Single click to scroll pdfDetail to the desired point
     override func mouseDown(theEvent: NSEvent) {
         guard let doc = self.document() else {
@@ -185,12 +184,12 @@ class MyPDFOverview: MyPDFBase {
         // Get location in "page space".
         let pagePoint = self.convertPoint(mouseInView, toPage: activePage)
         
-        pdfDetail?.focusOn(FocusArea(forPoint: pagePoint, onPage: pageIndex))
+        pdfDetail?.focusOn(FocusArea(forPoint: pagePoint, onPage: pageIndex), delay: 0)
     }
     
-    /// Called when the pdfDetail (on right) lands on a new current page
+    /// Called when the pdfDetail associated to this overview lands on a new current page
     @objc func pdfDetailHasNewPage(notification: NSNotification) {
-        guard let mypdb = notification.object as? MyPDFBase, doc = mypdb.document() else {
+        guard let mypdb = notification.object as? PDFBase, doc = mypdb.document() else {
             return
         }
         let newCurrentPage = mypdb.currentPage()

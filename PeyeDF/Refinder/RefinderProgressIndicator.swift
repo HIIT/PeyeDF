@@ -74,11 +74,11 @@ class RefinderProgressIndicator: NSView {
         
         // set own colours depending on class
         var colour = NSColor.whiteColor()
-        if readingC == ReadingClass.Read {
+        if readingC == ReadingClass.Low {
             colour = PeyeConstants.annotationColourRead.colorWithAlphaComponent(1)
-        } else if readingC == ReadingClass.Interesting {
+        } else if readingC == ReadingClass.Medium {
             colour = PeyeConstants.annotationColourInteresting.colorWithAlphaComponent(1)
-        } else if readingC == ReadingClass.Critical {
+        } else if readingC == ReadingClass.High {
             colour = PeyeConstants.annotationColourCritical.colorWithAlphaComponent(1)
         }
         

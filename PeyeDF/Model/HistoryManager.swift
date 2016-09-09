@@ -28,7 +28,6 @@
 // See https://github.com/HIIT/PeyeDF/wiki/Data-Format for more information
 
 import Foundation
-import Alamofire
 
 /// The HistoryManager tracks all user activity, including fixations from eye tracking
 class HistoryManager: FixationDataDelegate {
@@ -49,9 +48,6 @@ class HistoryManager: FixationDataDelegate {
     /// between exit events and fixation receipt events
     private let eyeQueue = dispatch_queue_create("hiit.PeyeDF.HistoryManager.eyeQueue", DISPATCH_QUEUE_SERIAL)
     
-    /// Is true if there is a connection to DiMe, and can be used
-    private(set) var dimeAvailable: Bool = false
-
     // MARK: - History tracking fields
     
     /// The reading event that will be sent at an exit event
@@ -63,8 +59,8 @@ class HistoryManager: FixationDataDelegate {
     /// A unix timestamp indicating when the user started reading
     private(set) var readingUnixTime = 0
     
-    /// The current thing the user is probably looking at (MyPDFReader instance), which will be used to convert screen to page coordinates or retrieve eye tracking boxes.
-    private weak var currentEyeReceiver: MyPDFReader?
+    /// The current thing the user is probably looking at (PDFReader instance), which will be used to convert screen to page coordinates or retrieve eye tracking boxes.
+    private weak var currentEyeReceiver: PDFReader?
     
     /// A dictionary, one entry per page (indexed by page number) containing all page eye tracking data
     private var currentEyeData = [Int: PageEyeDataChunk]()
@@ -82,94 +78,6 @@ class HistoryManager: FixationDataDelegate {
     }
     
     // MARK: - External functions
-    
-    /// Send the given data to dime
-    /// - parameter callback: When done calls the callback where the first parameter is a boolean (true if successful) and
-    /// the second the id of the returned item (nil if couldn't be found, or operation failed)
-    func sendToDiMe(dimeData: DiMeBase, callback: ((Bool, Int?) -> Void)? = nil) {
-        guard dimeAvailable else {
-            callback?(false, nil)
-            return
-        }
-       
-        let endPoint: DiMeEndpoint
-        switch dimeData {
-        case is Event:
-            endPoint = .Event
-        case is DocumentInformationElement:
-            endPoint = .InformationElement
-        default:
-            return
-        }
-        
-        do {
-            // attempt to translate json
-            let options = NSJSONWritingOptions.PrettyPrinted
-            
-            try NSJSONSerialization.dataWithJSONObject(dimeData.getDict(), options: options)
-            /* MF: Data + debug
-            let outData = try NSJSONSerialization.dataWithJSONObject(dimeData.getDict(), options: options)
-            let outString = String(data: outData, encoding: NSUTF8StringEncoding)
-            if let outURL = outString?.dumpToTemp("toDime") {
-                AppSingleton.log.debug("\(outURL.path!) dumped")
-            } else {
-                AppSingleton.log.error("Failed to write dump")
-            }
-            **/
-            
-            // assume json conversion was a success, hence send to dime
-            let server_url = AppSingleton.dimeUrl
-            
-            AppSingleton.dimefire.request(Alamofire.Method.POST, server_url + "/data/\(endPoint.rawValue)", parameters: dimeData.getDict(), encoding: Alamofire.ParameterEncoding.JSON).responseJSON {
-                response in
-                if response.result.isFailure {
-                    AppSingleton.log.error("Error while reading json response from DiMe: \(response.result.error)")
-                    self.dimeConnectState(false)
-                    callback?(false, nil)
-                } else {
-                    let json = JSON(response.result.value!)
-                    if let error = json["error"].string {
-                        AppSingleton.log.error("DiMe reply to submission contains error:\n\(error)")
-                        if let message = json["message"].string {
-                            AppSingleton.log.error("DiMe's error message:\n\(message)")
-                        }
-                        callback?(false, nil)
-                    } else {
-                        // assume submission was a success, call callback (if any) with returned id
-                        callback?(true, json["id"].int)
-                    }
-                }
-            }
-        } catch {
-            AppSingleton.log.error("Error while serializing json - no data sent:\n\(error)")
-            callback?(false, nil)
-        }
-            
-    }
-    
-    /// Attempts to connect to dime. Sends a notification if we succeeded / failed.
-    /// Also calls the given callback with a boolean which is true if operation succeeded.
-    func dimeConnect(callback: ((Bool, Response<AnyObject, NSError>) -> ())? = nil) {
-        
-        let server_url = AppSingleton.dimeUrl
-        
-        let dictionaryObject = ["test": "test"]
-        
-        AppSingleton.dimefire.request(Alamofire.Method.POST, server_url + "/ping", parameters: dictionaryObject, encoding: Alamofire.ParameterEncoding.JSON).responseJSON {
-            response in
-            if response.result.isFailure {
-                // connection failed
-                AppSingleton.log.error("Error while connecting to (pinging) DiMe. Error message:\n\(response.result.error!)")
-                
-                self.dimeConnectState(false)
-                callback?(false, response)
-            } else {
-                // succesfully connected
-                self.dimeConnectState(true)
-                callback?(true, response)
-            }
-        }
-    }
     
     /// Tells the history manager that something new is happened. The history manager check if the sender is a window in front (main window) and if there is scidoc associated to it
     ///
@@ -228,6 +136,12 @@ class HistoryManager: FixationDataDelegate {
                             
                             // create rect for retrieved fixation
                             if let smiRect = eyeReceiver.getSMIRect(triple) {
+                                
+                                if let cHash = self.currentEyeReceiver?.sciDoc?.contentHash {
+                                    let area = FocusArea(forRect: smiRect.rect, onPage: smiRect.pageIndex as Int)
+                                    Multipeer.overviewControllers[cHash]?.pdfOverview?.addAreaForLocal(area)
+                                }
+                                
                                 self.currentSMIMarks?.addRect(smiRect)
                                 #if DEBUG
                                     if self.currentSMIMarks == nil {
@@ -243,18 +157,6 @@ class HistoryManager: FixationDataDelegate {
     }
     
     // MARK: - Internal functions
-    
-    /// Connection to dime successful / failed
-    private func dimeConnectState(success: Bool) {
-        if !success {
-            self.dimeAvailable = false
-            NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.diMeConnectionNotification, object: self, userInfo: ["available": false])
-        } else {
-            // succesfully connected
-            self.dimeAvailable = true
-            NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.diMeConnectionNotification, object: self, userInfo: ["available": true])
-        }
-    }
     
     /// Starts the "entry timer" and sets up references to the current window
     private func preparation(documentWindow: DocumentWindowController) {
@@ -280,6 +182,9 @@ class HistoryManager: FixationDataDelegate {
         
         // prepare to convert eye coordinates
         self.currentEyeReceiver = docWindow.pdfReader
+        
+        // Multipeer: tell peers that we started reading this document
+        CollaborationMessage(readingDocumentFromSciDoc: docWindow.pdfReader?.sciDoc)?.sendToAll()
         
         // prepare exit timer, which will fire when the user is inactive long enough (or will be canceled if there is another exit event).
         if let _ = self.currentReadingEvent, pdfReader = docWindow.pdfReader {
@@ -340,7 +245,7 @@ class HistoryManager: FixationDataDelegate {
                     eventToSend.extendRects(csmi.getAllReadingRects())
                 }
                 
-                self.sendToDiMe(eventToSend)
+                DiMePusher.sendToDiMe(eventToSend)
                 
             }
             

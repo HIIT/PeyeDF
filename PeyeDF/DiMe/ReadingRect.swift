@@ -38,7 +38,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable, NearlyEquatabl
     var screenDistance: NSNumber
     var attnVal: NSNumber?
     
-    init(pageIndex: Int, origin: NSPoint, size: NSSize, readingClass: ReadingClass, classSource: ClassSource, pdfBase: MyPDFBase?) {
+    init(pageIndex: Int, origin: NSPoint, size: NSSize, readingClass: ReadingClass, classSource: ClassSource, pdfBase: PDFBase?) {
         let newUnixt = NSDate().unixTime
         self.screenDistance = MidasManager.sharedInstance.lastValidDistance
         self.unixt = [NSNumber]()
@@ -58,7 +58,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable, NearlyEquatabl
         }
     }
     
-    init(pageIndex: Int, rect: NSRect, readingClass: ReadingClass, classSource: ClassSource, pdfBase: MyPDFBase?) {
+    init(pageIndex: Int, rect: NSRect, readingClass: ReadingClass, classSource: ClassSource, pdfBase: PDFBase?) {
         let newUnixt = NSDate().unixTime
         self.screenDistance = MidasManager.sharedInstance.lastValidDistance
         self.unixt = [NSNumber]()
@@ -78,7 +78,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable, NearlyEquatabl
         }
     }
     
-    init(pageIndex: Int, rect: NSRect, pdfBase: MyPDFBase?) {
+    init(pageIndex: Int, rect: NSRect, pdfBase: PDFBase?) {
         self.screenDistance = MidasManager.sharedInstance.lastValidDistance
         let newUnixt = NSDate().unixTime
         self.unixt = [NSNumber]()
@@ -129,9 +129,9 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable, NearlyEquatabl
     }
     
     /// Unites these two rectangles and appends the unxtimes of the second rectangle to this rectangle.
-    /// Uses a MyPDFBase instance to get the underlying plain text of united
+    /// Uses a PDFBase instance to get the underlying plain text of united
     /// rect (if passed, otherwise simply appends the two strings.
-    mutating func unite(otherRect: ReadingRect, pdfBase: MyPDFBase?) {
+    mutating func unite(otherRect: ReadingRect, pdfBase: PDFBase?) {
         var newRect = self
         newRect.floating = false
         
@@ -158,7 +158,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable, NearlyEquatabl
         } else {
             if newRect.plainTextContent != nil {
                 if otherRect.plainTextContent != nil {
-                    // if they both have text, unite them using MyPDFBase instance
+                    // if they both have text, unite them using PDFBase instance
                     // if no pdfBase is given, simply append the second string to this one
                     newRect.plainTextContent! += otherRect.plainTextContent!
                 }
@@ -173,7 +173,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable, NearlyEquatabl
     }
     
     /// Shrinks the underlying rectangle using another rectangle
-    func subtractRect(rhs: ReadingRect, pdfBase: MyPDFBase?) -> [ReadingRect] {
+    func subtractRect(rhs: ReadingRect, pdfBase: PDFBase?) -> [ReadingRect] {
         let result = self.rect.subtractRect(rhs.rect)
         var retVal = [ReadingRect]()
         for rect in result {
@@ -253,7 +253,6 @@ public func < (lhs: ReadingRect, rhs: ReadingRect) -> Bool {
         fatalError("Two rects of a different class are being compared")
     }
     
-    let constant: CGFloat = PeyeConstants.rectHorizontalTolerance
     let lrect = lhs.rect
     let rrect = rhs.rect
     
@@ -263,7 +262,7 @@ public func < (lhs: ReadingRect, rhs: ReadingRect) -> Bool {
     }
     
     // then compare position on page
-    if withinRange(lrect.origin.x, rhs: rrect.origin.x, range: constant) {
+    if lrect.horizontalOverlap(rrect) {
         return lrect.origin.y > rrect.origin.y
     } else {
         return lrect.origin.x < rrect.origin.x

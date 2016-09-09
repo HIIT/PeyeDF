@@ -30,7 +30,7 @@ import Quartz
 /// communicate which rects to display.
 protocol HistoryDetailDelegate: class {
     /// Returns a pdf base which can handle rect-to-text, for example
-    func getPdfBase() -> MyPDFBase?
+    func getPdfBase() -> PDFBase?
     
     /// Tells the delegate that a new item was selected. Resets setEyeRects
     func historyElementSelected(tuple: (ev: ReadingEvent, ie: ScientificDocument))
@@ -69,8 +69,8 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
     
     private var requiresThresholdComputation = true
 
-    @IBOutlet weak var pdfOverview: MyPDFOverview!
-    @IBOutlet weak var pdfDetail: MyPDFBase!
+    @IBOutlet weak var pdfOverview: PDFOverview!
+    @IBOutlet weak var pdfDetail: PDFBase!
     
     /// A reading event was selected, display the doc and its rectangles in the pdf views
     func historyElementSelected(tuple: (ev: ReadingEvent, ie: ScientificDocument)) {
@@ -79,17 +79,13 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
         if NSFileManager.defaultManager().fileExistsAtPath(tuple.ie.uri) {
             lastUrl = NSURL(fileURLWithPath: tuple.ie.uri)
             pageRects = tuple.ev.pageRects
-            let pdfDoc1 = PDFDocument(URL: lastUrl)
             let pdfDoc2 = PDFDocument(URL: lastUrl)
-            pdfOverview.setScaleFactor(0.2)
-            pdfOverview.setDocument(pdfDoc1)
-            pdfOverview.scrollToBeginningOfDocument(self)
+            self.pdfDetail.setDocument(pdfDoc2)
+            pdfOverview.pdfDetail = pdfDetail
             pdfOverview.markings.setAll(pageRects!)
-            pdfDetail.setDocument(pdfDoc2)
             pdfDetail.markings.setAll(pageRects!)
             pdfDetail.autoAnnotate()
-            pdfOverview.pdfDetail = pdfDetail
-            NSNotificationCenter.defaultCenter().addObserver(pdfOverview, selector: #selector(pdfOverview.pdfDetailHasNewPage(_:)), name: PDFViewPageChangedNotification, object: pdfDetail)
+            pdfDetail.refreshAll()
         } else {
             AppSingleton.alertUser("Can't find original file", infoText: tuple.ie.uri)
         }
@@ -110,13 +106,10 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
         self.eyeRects = eyeRects
         let rRects: [ReadingRect] = eyeRects.map({ReadingRect(fromEyeRect: $0, readingClass: .Paragraph)})
         pdfOverview.markings.setAll(rRects)
-        dispatch_async(dispatch_get_main_queue()) {
-            self.pdfOverview.layoutDocumentView()
-            self.pdfOverview.display()
-        }
+        pdfOverview.refreshAll()
     }
     
-    func getPdfBase() -> MyPDFBase? {
+    func getPdfBase() -> PDFBase? {
         return pdfDetail
     }
     
@@ -128,11 +121,11 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
                 // use normalized attnVal if present, otherwise force non-normalised attnVal
                 let av = (eyeRect.attnVal_n as? Double) ?? eyeRect.attnVal! as Double
                 if av > criticalThresh {
-                    newClass = .Critical
+                    newClass = .High
                 } else if av > interestingThresh {
-                    newClass = .Interesting
+                    newClass = .Medium
                 } else if av >= readThresh {
-                    newClass = .Read
+                    newClass = .Low
                 }
                 if let nc = newClass {
                     pageRects!.append(ReadingRect(fromEyeRect: eyeRect, readingClass: nc))
@@ -142,12 +135,8 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
             pdfOverview.markings.flattenRectangles_relevance()
             pdfDetail.markings.setAll(pageRects!)
             pdfDetail.autoAnnotate()
-            dispatch_async(dispatch_get_main_queue()) {
-                self.pdfOverview.layoutDocumentView()
-                self.pdfOverview.display()
-                self.pdfDetail.layoutDocumentView()
-                self.pdfDetail.display()
-            }
+            pdfOverview.refreshAll()
+            pdfDetail.refreshAll()
             requiresThresholdComputation = false
         } else {
             AppSingleton.alertUser("Nothing to set thresholds for (forgot to import json?).")

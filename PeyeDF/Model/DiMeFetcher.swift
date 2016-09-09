@@ -51,6 +51,8 @@ class DiMeFetcher {
         self.receiver = receiver
     }
     
+    // MARK: - Instance methods
+    
     /// Retrieves **all** summary information elements from dime and later sends outgoingSummaries to the receiver via fetchSummaryEvents.
     func getSummaries() {
         fetchPeyeDFEvents(getSummaries: true, sessionId: nil, callback: fetchSummaryEvents)
@@ -76,7 +78,7 @@ class DiMeFetcher {
     
     /// Attempt to retrieve a scientific document for a given **sessionId**.
     /// Useful to check to which document any event (NonSummary) was associated to.
-    /// **Asynchronously** calls the given callback with the obtained scidoc.
+    /// Asynchronously calls the given callback with the obtained scidoc.
     func retrieveScientificDocument(forSessionId sesId: String, callback: ScientificDocument? -> Void) {
         getNonSummaries(withSessionId: sesId) {
             events in
@@ -128,6 +130,7 @@ class DiMeFetcher {
                     dispatch_group_leave(dGroup)
                     return
                 }
+                // success
                 foundDoc = sciDoc
                 dispatch_group_leave(dGroup)
             }
@@ -144,9 +147,11 @@ class DiMeFetcher {
         return (ev: ev, ie: ie)
     }
     
-    /// **Asynchronously** attempt to retrieve a list of tags for a given information element (using appId).
+    // MARK: - Static methods
+    
+    /// Asynchronously attempt to retrieve a list of tags for a given information element (using appId).
     /// Calls the callback with a list of tags (empty if none) or nil if it failed.
-    static func retrieveTags(forAppId appId: String, callback: ([Tag]? -> Void)) {
+    static func retrieveTags(forAppId appId: String, callback: [Tag]? -> Void) {
         
         let server_url = AppSingleton.dimeUrl
         
@@ -165,6 +170,7 @@ class DiMeFetcher {
                 }
                 if let appId = json["appId"].string {
                     if appId == appId {
+                        // success
                         let newInfoElem = DocumentInformationElement(fromDime: json)
                         callback(newInfoElem.tags)
                     } else {
@@ -205,6 +211,7 @@ class DiMeFetcher {
                 }
                 if let contentHash = json["contentHash"].string {
                     if hash == contentHash {
+                        // success
                         foundDoc = ScientificDocument(fromDime: json)
                     } else {
                         AppSingleton.log.error("Retrieved contentHash does not match requested contentHash: \(response.result.value!)")
@@ -225,9 +232,9 @@ class DiMeFetcher {
     }
     
     /// Attempt to retrieve a single ScientificDocument from a given info element app id.
-    /// **Asynchronously** calls the given callback function once retrieval is complete.
+    /// Asynchronously calls the given callback function once retrieval is complete.
     /// Called-back function will contain nil if retrieval failed.
-    static func retrieveScientificDocument(appId: String, callback: (ScientificDocument?) -> Void) {
+    static func retrieveScientificDocument(appId: String, callback: ScientificDocument? -> Void) {
         
         let server_url = AppSingleton.dimeUrl
         
@@ -246,6 +253,7 @@ class DiMeFetcher {
                 }
                 if let appId = json["appId"].string {
                     if appId == appId {
+                        // success
                         let newScidoc = ScientificDocument(fromDime: json)
                         callback(newScidoc)
                     } else {
@@ -260,11 +268,34 @@ class DiMeFetcher {
         }
     }
     
+    /// Attempts to convert a contenthash to a URL pointing to a file on disk.
+    /// Returns nil if the contenthash was not on dime, or if the url points to an non-existing file.
+    /// Aysnchronously calls the specified callback with the (nullable) url.
+    static func retrieveUrl(forContentHash cHash: String, callback: NSURL? -> Void ) {
+        // run task on default concurrent queue
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) {
+            
+            guard let sciDoc = DiMeFetcher.getScientificDocument(contentHash: cHash) else {
+                callback(nil)
+                return
+            }
+            
+            if NSFileManager.defaultManager().fileExistsAtPath(sciDoc.uri) {
+                callback(NSURL(fileURLWithPath: sciDoc.uri))
+            } else {
+                callback(nil)
+            }
+            
+        }
+    }
+    
+    // MARK: - Private methods
+    
     /// Retrieves PeyeDF Reading events and calls the specified function once retrieval is complete.
     /// - parameter getSummaries: Set to true to get summary reading events, false for non-summary
     /// - parameter sessionId: If not-nil, retrieves only elements with the given sessionId
     ///                        using dime filtering. Set to nil to get all events.
-    private func fetchPeyeDFEvents(getSummaries getSummaries: Bool, sessionId: String?, callback: (JSON) -> Void) {
+    private func fetchPeyeDFEvents(getSummaries getSummaries: Bool, sessionId: String?, callback: JSON -> Void) {
         let server_url = AppSingleton.dimeUrl
         let headers = AppSingleton.dimeHeaders()
         

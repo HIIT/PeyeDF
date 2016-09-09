@@ -28,6 +28,16 @@ import Alamofire
 
 extension PDFDocument {
     
+    /// Returns true if the two readingrects are "far" from each other
+    func areFar(a: ReadingRect, _ b: ReadingRect) -> Bool {
+        if a.pageIndex == b.pageIndex {
+            if let page = getPage(atIndex: a.pageIndex as Int) {
+                return !page.rectsNearby(a.rect, b.rect)
+            }
+        }
+        return true
+    }
+    
     // MARK: - Getters
     
     /// Returns all keywords in an array, useful for DiMe.
@@ -283,25 +293,5 @@ extension PDFDocument {
         } else {
             return self.pageAtIndex(index)
         }
-    }
-}
-
-extension PDFSelection {
-    
-    /// Returns true if two selections are "practically the same".
-    /// Empty selections are always equal.
-    func equalsTo(rhs: PDFSelection) -> Bool {
-        if self.pages().count == 0 {
-            return true
-        } else if self.pages().count != rhs.pages().count {
-            return false
-        }
-        for p in self.pages() {
-            let pp = p as! PDFPage
-            if self.boundsForPage(pp) != rhs.boundsForPage(pp) {
-                return false
-            }
-        }
-        return true
     }
 }

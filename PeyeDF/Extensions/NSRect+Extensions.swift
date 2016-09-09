@@ -50,11 +50,12 @@ public func < (lhs: NSRect, rhs: NSRect) -> Bool {
 
 extension NSRect {
     
-    /// Creates a rect from a string specifying (x,y,w,h)
+    /// Creates a rect from a string specifying 'x,y,w,h'
     /// - returns: nil if conversion failed
     init?(string: String) {
         if let spl = string.split(",") where spl.count == 4 {
             let nf = NSNumberFormatter()
+            nf.localizesFormat = false  // to be locale-independent
             if let x = nf.numberFromString(spl[0]) as? CGFloat,
               y = nf.numberFromString(spl[1]) as? CGFloat,
               w = nf.numberFromString(spl[2]) as? CGFloat,
@@ -166,7 +167,7 @@ extension NSRect {
     /// Returns true if this rect is "near" the other rect.
     /// Uses values optimised for PDF (page space) coordinates.
     func isNear(toRect: NSRect) -> Bool {
-        // half the size of the narrower rect
+        // size of the narrower rect
         let maxXdiff = min(self.size.width, toRect.size.width)
         // minimum between distance of extremes (left / right alignment)
         let maxYdiff = min(self.size.height, toRect.size.height)
@@ -180,10 +181,42 @@ extension NSRect {
         let yDiff = min(yDiff1, yDiff2)
         return xDiff <= maxXdiff && yDiff <= maxYdiff
     }
+    
+    /// Returns true if this rect is "near" the other rect, vertically.
+    /// (Their vertical distance is less than the minimum vertical size between the two).
+    func isVerticallyNear(toRect: NSRect) -> Bool {
+        // minimum between distance of extremes (left / right alignment)
+        let maxYdiff = min(self.size.height, toRect.size.height) * 1.2
+        
+        let yDiff1 = abs(self.origin.y - (toRect.origin.y + toRect.size.height))
+        let yDiff2 = abs(self.origin.y + self.size.height - toRect.origin.y)
+        let yDiff = min(yDiff1, yDiff2)
+        return yDiff <= maxYdiff
+    }
+    
+    /// Returns true if the x coordinates of the two rects overlap.
+    /// Returns true if either X edge of this rect is within the other rect edges.
+    func horizontalOverlap(other: NSRect) -> Bool {
+        return (self.minX >= other.minX && self.minX <= other.maxX) ||
+               (self.maxX >= other.minX && self.maxX <= other.maxX) ||
+               (other.minX >= self.minX && other.minX <= self.maxX) ||
+               (other.maxX >= self.minX && other.maxX <= self.maxX)
+    }
+    
 }
 
 extension NSRect: Hashable {
     public var hashValue: Int { get {
         return size.hashValue ^ origin.hashValue
+    } }
+}
+
+extension NSRect: CustomStringConvertible {
+    
+    /**
+     Format: 'x,y,w,h'
+     */
+    public var description: String { get {
+        return "\(self.origin.x),\(self.origin.y),\(self.size.width),\(self.size.height)"
     } }
 }

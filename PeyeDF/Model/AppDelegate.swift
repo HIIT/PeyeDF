@@ -44,7 +44,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     /// PeyeDF closes itself to prevent potential leaks and allow opened PDFs to be deleted (after a given amount of time passed)
     func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {
-        return NSDate().timeIntervalSinceDate(launchDate) > PeyeConstants.closeAfterLaunch && !MidasManager.sharedInstance.midasAvailable
+        return NSDate().timeIntervalSinceDate(launchDate) > PeyeConstants.closeAfterLaunch && !MidasManager.sharedInstance.midasAvailable && Multipeer.session.connectedPeers.count < 1
     }
     
     /// Sets up custom url handler
@@ -57,17 +57,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         defaultPrefs[PeyeConstants.prefDiMeServerUserName] = "Test1"
         defaultPrefs[PeyeConstants.prefDiMeServerPassword] = "123456"
         defaultPrefs[PeyeConstants.prefUseMidas] = 0
-        defaultPrefs[PeyeConstants.prefEnableAnnotate] = 1
+        defaultPrefs[PeyeConstants.prefEnableAnnotate] = 0
         defaultPrefs[PeyeConstants.prefDownloadMetadata] = 1
         defaultPrefs[PeyeConstants.prefRefinderDrawGazedUpon] = 0
         defaultPrefs[PeyeConstants.prefDrawDebugCircle] = 0
         defaultPrefs[PeyeConstants.prefSendEventOnFocusSwitch] = 0
-        defaultPrefs[PeyeConstants.defaultsSavedTags] = []
+        defaultPrefs[TagConstants.defaultsSavedTags] = []
         NSUserDefaults.standardUserDefaults().registerDefaults(defaultPrefs)
         NSUserDefaults.standardUserDefaults().synchronize()
         
         // Attempt dime connection (required even if we don't use dime, because this sets up historymanager shared object)
-        HistoryManager.sharedManager.dimeConnect()  // will automatically detect if dime is down
+        DiMePusher.dimeConnect()  // will automatically detect if dime is down
         
         // Set up handler for custom url types (peyedf://)
         NSAppleEventManager.sharedAppleEventManager().setEventHandler(self, andSelector: #selector(handleURL(_:)), forEventClass: UInt32(kInternetEventClass), andEventID: UInt32(kAEGetURL))
@@ -84,8 +84,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         
         // Dime/Midas down/up observers
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(dimeConnectionChanged(_:)), name: PeyeConstants.diMeConnectionNotification, object: HistoryManager.sharedManager)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(dimeConnectionChanged(_:)), name: PeyeConstants.diMeConnectionNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(midasConnectionChanged(_:)), name: PeyeConstants.midasConnectionNotification, object: MidasManager.sharedInstance)
+        
+        // Start multipeer connectivity
+        Multipeer.advertiser.start()
     }
     
     // MARK: - Opening
@@ -98,13 +101,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// proceeding.
     func application(sender: NSApplication, openFiles filenames: [String]) {
         let searchString = NSAppleEventManager.sharedAppleEventManager().currentAppleEvent?.descriptorForKeyword(UInt32(keyAESearchText))?.stringValue
-        if HistoryManager.sharedManager.dimeAvailable {
+        if DiMePusher.dimeAvailable {
             for filename in filenames {
                 let fileUrl = NSURL(fileURLWithPath: filename)
                 openDocument(fileUrl, searchString: searchString)
             }
         } else {
-            HistoryManager.sharedManager.dimeConnect() {
+            DiMePusher.dimeConnect() {
                 _ in
                 for filename in filenames {
                     let fileUrl = NSURL(fileURLWithPath: filename)
@@ -119,14 +122,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// Convenience function to open a file using a given local url and optionally 
     /// a search string (to initiate a query) and focus area (to highlight a specific area).
     func openDocument(fileURL: NSURL, searchString: String?, focusArea: FocusArea? = nil) {
-        NSDocumentController.sharedDocumentController().openDocumentWithContentsOfURL(fileURL, display: true) {
-            document, _, _ in
-            if let searchS = searchString, doc = document where
-              searchS != "" && doc.windowControllers.count == 1 {
-                (doc.windowControllers[0] as! DocumentWindowController).doSearch(searchS, exact: false)
-            }
-            if let f = focusArea, doc = document as? PeyeDocument {
-                doc.focusOn(f)
+        dispatch_async(dispatch_get_main_queue()) {
+            NSDocumentController.sharedDocumentController().openDocumentWithContentsOfURL(fileURL, display: true) {
+                document, _, _ in
+                if let searchS = searchString, doc = document where
+                  searchS != "" && doc.windowControllers.count == 1 {
+                    (doc.windowControllers[0] as! DocumentWindowController).doSearch(searchS, exact: false)
+                }
+                if let f = focusArea, doc = document as? PeyeDocument {
+                    doc.focusOn(f)
+                }
             }
         }
     }
@@ -159,11 +164,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             refinderWindow = (AppSingleton.refinderStoryboard.instantiateControllerWithIdentifier("RefinderWindowController") as! RefinderWindowController)
         }
         refinderWindow!.showWindow(self)
+        Multipeer.advertiser.start()
+    }
+    
+    /// Called when clicking on the show network readers menu
+    @IBAction func showPeers(sender: AnyObject) {
+        Multipeer.peerWindow.showWindow(self)
+        Multipeer.browserWindow.makeKeyAndOrderFront(self)
     }
     
     /// Callback for click on connect to dime
     @IBAction func connectDime(sender: NSMenuItem) {
-        HistoryManager.sharedManager.dimeConnect() {
+        DiMePusher.dimeConnect() {
             success, response in
             
             if !success {
@@ -226,7 +238,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Insert code here to tear down your application
         MidasManager.sharedInstance.unsetFixationDelegate(HistoryManager.sharedManager)
         MidasManager.sharedInstance.stop()
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: PeyeConstants.diMeConnectionNotification, object: HistoryManager.sharedManager)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: PeyeConstants.diMeConnectionNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: PeyeConstants.midasConnectionNotification, object: MidasManager.sharedInstance)
     }
     

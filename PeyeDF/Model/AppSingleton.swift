@@ -36,6 +36,7 @@ class AppSingleton {
     static let mainStoryboard = NSStoryboard(name: "Main", bundle: nil)
     static let refinderStoryboard = NSStoryboard(name: "Refinder", bundle: nil)
     static let tagsStoryboard = NSStoryboard(name: "Tags", bundle: nil)
+    static let collaborationStoryboard = NSStoryboard(name: "Collaboration", bundle: nil)
     static let appDelegate = NSApplication.sharedApplication().delegate! as! AppDelegate
     
     /// Static holder for alamofire manager (to use this configuration)
@@ -93,13 +94,13 @@ class AppSingleton {
     /// Convenience function to set recently used tags
     static func updateRecentTags(newTag: String) {
         /// Recent tags is a list of strings in which the first string is the most recent
-        var recentTags: [String] = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.defaultsSavedTags) as! [String]
+        var recentTags: [String] = NSUserDefaults.standardUserDefaults().valueForKey(TagConstants.defaultsSavedTags) as! [String]
         if !recentTags.contains(newTag) {
             recentTags.insert(newTag, atIndex: 0)
-            if recentTags.count > PeyeConstants.nOfSavedTags {
-                recentTags.removeRange(PeyeConstants.nOfSavedTags..<recentTags.count)
+            if recentTags.count > TagConstants.nOfSavedTags {
+                recentTags.removeRange(TagConstants.nOfSavedTags..<recentTags.count)
             }
-            NSUserDefaults.standardUserDefaults().setValue(recentTags, forKey: PeyeConstants.defaultsSavedTags)
+            NSUserDefaults.standardUserDefaults().setValue(recentTags, forKey: TagConstants.defaultsSavedTags)
         }
     }
     
