@@ -79,8 +79,8 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
         if NSFileManager.defaultManager().fileExistsAtPath(tuple.ie.uri) {
             lastUrl = NSURL(fileURLWithPath: tuple.ie.uri)
             pageRects = tuple.ev.pageRects
-            let pdfDoc2 = PDFDocument(URL: lastUrl)
-            self.pdfDetail.setDocument(pdfDoc2)
+            let pdfDoc2 = PDFDocument(URL: lastUrl!)
+            self.pdfDetail.document = pdfDoc2
             pdfOverview.pdfDetail = pdfDetail
             pdfOverview.markings.setAll(pageRects!)
             pdfDetail.markings.setAll(pageRects!)
@@ -188,8 +188,8 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
     
     /// Focuses the PDFOverview on the page currently shown in the PDFDetail
     @IBAction func overviewCurrentPage(sender: AnyObject) {
-        guard let cp = pdfDetail.currentPage(),
-                  doc = pdfDetail.document() else {
+        guard let cp = pdfDetail.currentPage,
+                  doc = pdfDetail.document else {
             return
         }
         

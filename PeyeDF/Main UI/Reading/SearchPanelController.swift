@@ -130,25 +130,25 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
         // end recents menu --
         
         // table set
-        resultTable.setDataSource(self)
-        resultTable.setDelegate(self)
+        resultTable.dataSource = self
+        resultTable.delegate = self
     }
     
     override func viewDidAppear() {
         // set up PDFView search notification
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(foundPDFSearchItem(_:)), name: PDFDocumentDidFindMatchNotification, object: pdfReader!.document())
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(foundPDFSearchItem(_:)), name: PDFDocumentDidFindMatchNotification, object: pdfReader!.document)
         // set up PDFBase tag search notification
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(foundPDFSearchItem(_:)), name: TagConstants.tagStringFoundNotification, object: pdfReader!)
     }
     
     override func viewWillDisappear() {
         // unset search notifications
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: PDFDocumentDidFindMatchNotification, object: pdfReader!.document())
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: PDFDocumentDidFindMatchNotification, object: pdfReader!.document)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: TagConstants.tagStringFoundNotification, object: pdfReader!)
         
         // table unset
-        resultTable.setDataSource(nil)
-        resultTable.setDelegate(nil)
+        resultTable.dataSource = nil
+        resultTable.delegate = nil
         
     }
     
@@ -284,12 +284,12 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
             
             // normal search
             if exact {
-                pdfReader!.document().beginFindString(theString, withOptions: Int(NSStringCompareOptions.CaseInsensitiveSearch.rawValue))
+                pdfReader!.document!.beginFindString(theString, withOptions: Int(NSStringCompareOptions.CaseInsensitiveSearch.rawValue))
             } else {
                 guard let searchS = theString.split(" ") else {
                     return
                 }
-                pdfReader!.document().beginFindStrings(searchS, withOptions: Int(NSStringCompareOptions.CaseInsensitiveSearch.rawValue))
+                pdfReader!.document!.beginFindStrings(searchS, withOptions: Int(NSStringCompareOptions.CaseInsensitiveSearch.rawValue))
             }
         }
         
@@ -301,8 +301,8 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     
     /// Some text has been entered in the search field
     @IBAction func startSearch(sender: NSSearchField) {
-        if pdfReader!.document().isFinding() {
-            pdfReader!.document().cancelFindString()
+        if pdfReader!.document!.isFinding {
+            pdfReader!.document!.cancelFindString()
         }
         if pdfReader!.searching {
             pdfReader!.searching = false
@@ -346,17 +346,18 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     
     func tableView(tableView: NSTableView, objectValueForTableColumn tableColumn: NSTableColumn?, row: Int) -> AnyObject? {
         
+        let pages = foundSelections[row].pages
+        
         // check that foundSelections contains valid data first and unwrap values
-        guard foundSelections.count > row && foundSelections[row].pages().count > 0,
-              let pages = foundSelections[row].pages() where pages.count > 0,
-              let page = pages[0] as? PDFPage, document = page.document() else {
+        guard foundSelections.count > row && foundSelections[row].pages.count > 0 &&
+              pages.count > 0, let page = pages[0] as? PDFPage, document = page.document else {
             return nil
         }
         
         if tableColumn?.identifier == kColumnTitlePageLabel {
             
             // get found selection for this row
-            return page.label()
+            return page.label
             
         } else if tableColumn?.identifier == kColumnTitlePageNumber {
             
@@ -365,12 +366,12 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
         } else if tableColumn?.identifier == kColumnTitleLine {
             
             // extract line from found selection
-            let foundString = foundSelections[row].string()
+            let foundString = foundSelections[row].string
             let lineString: NSString = foundSelections[row].lineString()
             
             // make found result bold
             let attrString = NSMutableAttributedString(string: lineString as String)
-            let rangeOfQuery = lineString.rangeOfString(foundString, options: NSStringCompareOptions.CaseInsensitiveSearch)
+            let rangeOfQuery = lineString.rangeOfString(foundString!, options: NSStringCompareOptions.CaseInsensitiveSearch)
             let boldFont = NSFont.boldSystemFontOfSize(12.0)
             attrString.beginEditing()
             attrString.addAttribute(NSFontAttributeName, value: boldFont, range: rangeOfQuery)

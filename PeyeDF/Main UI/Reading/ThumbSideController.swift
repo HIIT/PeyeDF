@@ -37,9 +37,9 @@ class ThumbSideController: NSViewController {
     override func viewDidAppear() {
         super.viewDidAppear()
         let docSplit = self.parentViewController as! DocumentSplitController
-        self.myThumb.setPDFView(docSplit.myPDFSideController!.pdfReader)
+        self.myThumb.PDFView = docSplit.myPDFSideController!.pdfReader
         dispatch_async(dispatch_get_main_queue()) {
-            self.myThumb.setThumbnailSize(self.myThumb.thumbnailSize())
+            self.myThumb.thumbnailSize = self.myThumb.thumbnailSize
         }
     }
     

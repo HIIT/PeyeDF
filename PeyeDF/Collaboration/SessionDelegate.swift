@@ -189,15 +189,15 @@ import MultipeerConnectivity
         let baseUrl = localURL.URLByDeletingLastPathComponent!
         let newUrl = baseUrl.URLByAppendingPathComponent(newname)
         // if file does not exists already, rename received resource
-        if !NSFileManager.defaultManager().fileExistsAtPath(newUrl.path!) {
+        if !NSFileManager.defaultManager().fileExistsAtPath(newUrl!.path!) {
             do {
-                try NSFileManager.defaultManager().moveItemAtPath(localURL.path!, toPath: newUrl.path!)
+                try NSFileManager.defaultManager().moveItemAtPath(localURL.path!, toPath: newUrl!.path!)
             } catch {
                 AppSingleton.alertUser("Failed to rename received file.", infoText: "\(error)")
                 return
             }
         }
-        (NSApplication.sharedApplication().delegate! as! AppDelegate).openDocument(newUrl, searchString: nil)
+        (NSApplication.sharedApplication().delegate! as! AppDelegate).openDocument(newUrl!, searchString: nil)
     }
     
     /// Receives a stream. Not used.

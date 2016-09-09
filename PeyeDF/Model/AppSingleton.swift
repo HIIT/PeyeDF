@@ -121,7 +121,7 @@ class AppSingleton {
     /// - parameter infoText: If not nil (default), shows additional text
     static func alertUser(message: String, infoText: String? = nil) {
         let myAl = NSAlert()
-        myAl.alertStyle = .WarningAlertStyle
+        myAl.alertStyle = .Warning
         myAl.icon = NSImage(named: "NSCaution")
         myAl.messageText = message
         if let infoText = infoText {
@@ -142,12 +142,12 @@ class AppSingleton {
         var firstLine: String = "Log directory succesfully created / present"
         let tempURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).URLByAppendingPathComponent(NSBundle.mainBundle().bundleIdentifier!)
         do {
-            try NSFileManager.defaultManager().createDirectoryAtURL(tempURL, withIntermediateDirectories: true, attributes: nil)
+            try NSFileManager.defaultManager().createDirectoryAtURL(tempURL!, withIntermediateDirectories: true, attributes: nil)
         } catch {
             firstLine = "Error creating log directory: \(error)"
         }
-        AppSingleton.logsURL = tempURL
-        let logFilePathURL = tempURL.URLByAppendingPathComponent("XCGLog_\(appString).log")
+        AppSingleton.logsURL = tempURL!
+        let logFilePathURL = tempURL!.URLByAppendingPathComponent("XCGLog_\(appString).log")
         let newLog = XCGLogger.defaultInstance()
         newLog.setup(.Debug, showThreadName: true, showLogLevel: true, showFileNames: true, showLineNumbers: true, writeToFile: logFilePathURL, fileLogLevel: .Debug)
         newLog.debug(firstLine)

@@ -221,7 +221,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         var inum = 1
         for doc: PeyeDocument in doci as! [PeyeDocument] {
             outString += "-- Document \(inum) --\n" +
-            "Filename: \(doc.pdfDoc!.documentURL().lastPathComponent!)\n" +
+            "Filename: \(doc.pdfDoc!.documentURL!.lastPathComponent!)\n" +
             "Title: \(doc.pdfDoc!.getTitle())\nAuthor(s):\(doc.pdfDoc!.getAuthor())\n\n"
             inum += 1
         }

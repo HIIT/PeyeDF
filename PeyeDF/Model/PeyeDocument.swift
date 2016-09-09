@@ -112,7 +112,7 @@ class PeyeDocument: NSDocument {
     override func writeToURL(url: NSURL, ofType type: String) throws {
         if type == "PeyeDF" {
             let wincontroller = self.windowControllers[0] as! DocumentWindowController
-            wincontroller.pdfReader?.document().writeToURL(url)
+            wincontroller.pdfReader?.document!.writeToURL(url)
             return
         } else {
             // We don't know what Cocoa is attempting to save, throw some error

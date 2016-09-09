@@ -30,14 +30,14 @@ extension PDFSelection {
     /// Returns a string corresponding to all text found on the first line
     /// of this selection.
     func lineString() -> String {
-        let page = pages()[0] as! PDFPage
+        let page = pages[0] 
         let selRect = boundsForPage(page)
         // point for line is 0.5 points down in both directions from top left
         let x = selRect.origin.x + 0.5
         let y = selRect.origin.y + selRect.size.height + 0.5
         let selPoint = NSPoint(x: x, y: y)
         let lineSel = page.selectionForLineAtPoint(selPoint)
-        return lineSel.string().trimmed()
+        return lineSel!.string!.trimmed()
     }
     
     /// Returns the rect corresponding to an adjacent line (previous / next line).
@@ -59,8 +59,8 @@ extension PDFSelection {
         }
         
         var foundRect: NSRect? = nil
-        let page = pages()[0] as! PDFPage
-        let pageRect = page.boundsForBox(kPDFDisplayBoxCropBox)
+        let page = pages[0] 
+        let pageRect = page.boundsForBox(PDFDisplayBox.CropBox)
         let selRect = boundsForPage(page)
         let centreX = selRect.origin.x + selRect.size.width / 2.0
         let centreY = selRect.origin.y + selRect.size.height / 2.0
@@ -70,7 +70,7 @@ extension PDFSelection {
         // stop when overflowing page bounds
         while (foundRect == nil && NSPointInRect(currentPoint, pageRect)) {
             let otherSel = page.selectionForLineAtPoint(currentPoint)
-            let otherSelRect = otherSel.boundsForPage(page)
+            let otherSelRect = otherSel!.boundsForPage(page)
             if !selRect.intersects(otherSelRect) {
                 // return first line that does not interect with this one
                 foundRect = otherSelRect
@@ -86,8 +86,8 @@ extension PDFSelection {
     /// - Attention: PDF Selections comparisons are not so accurate (make sure they contain
     ///   some text before using them).
     func isAdjacent(toSelection otherSel: PDFSelection) -> Bool {
-        let otherPage = otherSel.pages()[0] as! PDFPage
-        if self.pages()[0] as! PDFPage != otherPage {
+        let otherPage = otherSel.pages[0] 
+        if self.pages[0] != otherPage {
             return false
         }
         let otherSelRect = otherSel.boundsForPage(otherPage)
@@ -124,13 +124,13 @@ extension PDFSelection {
     /// Returns true if two selections are "practically the same".
     /// Empty selections are always equal.
     func equalsTo(rhs: PDFSelection) -> Bool {
-        if self.pages().count == 0 {
+        if self.pages.count == 0 {
             return true
-        } else if self.pages().count != rhs.pages().count {
+        } else if self.pages.count != rhs.pages.count {
             return false
         }
-        for p in self.pages() {
-            let pp = p as! PDFPage
+        for p in self.pages {
+            let pp = p 
             if self.boundsForPage(pp) != rhs.boundsForPage(pp) {
                 return false
             }

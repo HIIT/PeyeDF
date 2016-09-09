@@ -86,10 +86,10 @@ extension String {
         
         
         var tempURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).URLByAppendingPathComponent(NSBundle.mainBundle().bundleIdentifier!)
-        tempURL = tempURL.URLByAppendingPathComponent(outFilename)
+        tempURL = tempURL!.URLByAppendingPathComponent(outFilename)
         
         do {
-            try self.writeToURL(tempURL, atomically: true, encoding: NSUTF8StringEncoding)
+            try self.writeToURL(tempURL!, atomically: true, encoding: NSUTF8StringEncoding)
             return tempURL
         } catch {
             return nil

@@ -113,10 +113,10 @@ class PDFReader: PDFBase {
                         if !showTags(mouseInView.origin) {
                             // MF: TODO: remove this once debugging is complete
                             let activePage = self.pageForPoint(mouseInView.origin, nearest: true)
-                            let pointOnPage = self.convertPoint(mouseInView.origin, toPage: activePage)
-                            if let rect = pointToParagraphRect(pointOnPage, forPage: activePage),
-                               let doc = self.document() {
-                                let area = FocusArea(forRect: rect, onPage: doc.indexForPage(activePage))
+                            let pointOnPage = self.convertPoint(mouseInView.origin, toPage: activePage!)
+                            if let rect = pointToParagraphRect(pointOnPage, forPage: activePage!),
+                               let doc = self.document {
+                                let area = FocusArea(forRect: rect, onPage: doc.indexForPage(activePage!))
                                 if let cHash = sciDoc?.contentHash {
                                     Multipeer.overviewControllers[cHash]?.pdfOverview.addAreaForLocal(area)
                                 }
@@ -147,12 +147,12 @@ class PDFReader: PDFBase {
             self.scrollSelectionToVisible(self)
             self.setCurrentSelection(selectedResult, animate: true)
         }
-        let foundString = selectedResult.string().lowercaseString
+        let foundString = selectedResult.string!.lowercaseString
         if foundStrings.indexOf(foundString) == nil {
             foundStrings.append(foundString)
         }
-        let foundOnPage = selectedResult.pages()[0] as! PDFPage
-        let pageIndex = document().indexForPage(foundOnPage)
+        let foundOnPage = selectedResult.pages[0] 
+        let pageIndex = document!.indexForPage(foundOnPage)
         let newRect = ReadingRect(pageIndex: pageIndex, rect: selectedResult.boundsForPage(foundOnPage), readingClass: .FoundString, classSource: .Search, pdfBase: self)
         markings.addRect(newRect)
         HistoryManager.sharedManager.addReadingRect(newRect)
@@ -161,7 +161,7 @@ class PDFReader: PDFBase {
     // MARK: - Page drawing override
     
     /// To draw extra stuff on page
-    override func drawPage(page: PDFPage!) {
+    override func drawPage(page: PDFPage) {
     	// Let PDFView do most of the hard work.
         super.drawPage(page)
        
@@ -208,7 +208,7 @@ class PDFReader: PDFBase {
             let annotRect = annotationRectForMark(lastRect.rect)
             
             dispatch_async(dispatch_get_main_queue()) {
-                self.setNeedsDisplayInRect(self.convertRect(annotRect, fromPage: self.document().pageAtIndex(lastRect.pageIndex.integerValue)))
+                self.setNeedsDisplayInRect(self.convertRect(annotRect, fromPage: self.document!.pageAtIndex(lastRect.pageIndex.integerValue)!))
             }
             
             // save last rect in state for redo
@@ -271,13 +271,13 @@ class PDFReader: PDFBase {
         let activePage = self.pageForPoint(locationInView, nearest: true)
         
         // Index for current page
-        let pageIndex = self.document().indexForPage(activePage)
+        let pageIndex = self.document!.indexForPage(activePage!)
         
         // Get location in "page space".
-        let pagePoint = self.convertPoint(locationInView, toPage: activePage)
+        let pagePoint = self.convertPoint(locationInView, toPage: activePage!)
         
         // Convert point to rect, if possible
-        guard let markRect = pointToParagraphRect(pagePoint, forPage: activePage) else {
+        guard let markRect = pointToParagraphRect(pagePoint, forPage: activePage!) else {
             return nil
         }
         
@@ -337,21 +337,21 @@ class PDFReader: PDFBase {
         if page == nil {
             return nil
         }
-        let pointOnPage = self.convertPoint(pointInView, toPage: page)
+        let pointOnPage = self.convertPoint(pointInView, toPage: page!)
         
         // start debug- circle
-        if drawDebugCirle {
-            for visiblePage in visiblePages() as! [PDFPage] {
+        if drawDebugCirle && visiblePages() != nil {
+            for visiblePage in visiblePages()! {
                 if let oldPosition = circlePosition {
                     let oldPageRect = NSRect(origin: oldPosition, size: circleSize)
                     let screenRect = convertRect(oldPageRect, fromPage: visiblePage)
-                    setNeedsDisplayInRect(screenRect.addTo(scaleFactor()))
+                    setNeedsDisplayInRect(screenRect.addTo(scaleFactor))
                 }
                 
                 circlePosition = pointOnPage
                 var screenRect = NSRect(origin: circlePosition!, size: circleSize)
                 screenRect = convertRect(screenRect, fromPage: visiblePage)
-                setNeedsDisplayInRect(screenRect.addTo(scaleFactor()))
+                setNeedsDisplayInRect(screenRect.addTo(scaleFactor))
             }
         }
         // End debug - circle
@@ -361,21 +361,21 @@ class PDFReader: PDFBase {
         // sent in the current (non-summary) reading event, as done by HistoryManager calling getSMIRect
         // (preferred method to fetch eye tracking data).
         if fromEye {
-            if let seenRect = pointToParagraphRect(pointOnPage, forPage: page) {
-                let newRect = ReadingRect(pageIndex: self.document().indexForPage(page), rect: seenRect, readingClass: .Paragraph, classSource: .SMI, pdfBase: self)
+            if let seenRect = pointToParagraphRect(pointOnPage, forPage: page!) {
+                let newRect = ReadingRect(pageIndex: self.document!.indexForPage(page!), rect: seenRect, readingClass: .Paragraph, classSource: .SMI, pdfBase: self)
                 markings.addRect(newRect)
             }
         }
         
-        let pageIndex = self.document().indexForPage(page)
+        let pageIndex = self.document!.indexForPage(page!)
         return (x: pointOnPage.x, y: pointOnPage.y, pageIndex: pageIndex)
     }
     
     /// Creates a SMI rect using the triple returned from screenToPage, corresponding to the paragraph contained within 3 degrees of visual angle of the given fixation. As of PeyeDF 0.4+, this is the preferred method to send SMI paragraphs to dime.
     func getSMIRect(triple: (x: CGFloat, y: CGFloat, pageIndex: Int)) -> ReadingRect? {
         let pointOnPage = NSPoint(x: triple.x, y: triple.y)
-        let pdfPage = document().pageAtIndex(triple.pageIndex)
-        if let sr = pointToParagraphRect(pointOnPage, forPage: pdfPage) {
+        let pdfPage = document!.pageAtIndex(triple.pageIndex)
+        if let sr = pointToParagraphRect(pointOnPage, forPage: pdfPage!) {
             return ReadingRect(pageIndex: triple.pageIndex, rect: sr, readingClass: .Paragraph, classSource: .SMI, pdfBase: self)
         } else {
             return nil
@@ -384,7 +384,7 @@ class PDFReader: PDFBase {
     
     /// Gets the current scaleFactor (zoom level)
     func getScaleFactor() -> CGFloat {
-        return scaleFactor()
+        return scaleFactor
     }
     
     /// Converts the current viewport to a reading event.
@@ -446,9 +446,9 @@ class PDFReader: PDFBase {
     
     /// Check if page labels and page numbers are the same for the current document
     func pageNumbersSameAsLabels() -> Bool {
-        for i in 0..<document().pageCount() {
-            let page = document().pageAtIndex(i)
-            if page.label() != "\(i+1)" {
+        for i in 0..<document!.pageCount {
+            let page = document!.pageAtIndex(i)
+            if page!.label != "\(i+1)" {
                 return false
             }
         }
@@ -459,10 +459,12 @@ class PDFReader: PDFBase {
     func getVisibleString() -> NSString? {
         // Only proceed if there is actually text to select
         if containsRawString {
-            let visiblePages = self.visiblePages()
-            let generatedSelection = PDFSelection(document: self.document())
+            guard let visiblePages = self.visiblePages() else {
+                return nil
+            }
+            let generatedSelection = PDFSelection(document: self.document!)
             
-            for visiblePage in visiblePages as! [PDFPage] {
+            for visiblePage in visiblePages {
                 
                 // Get page's rectangle coordinates
                 let pageRect = getPageRect(visiblePage)
@@ -474,10 +476,12 @@ class PDFReader: PDFBase {
                 visibleRect = self.convertRect(visibleRect, toPage: visiblePage)  // Convert rect to page coordinates
                 visibleRect.intersectInPlace(pageRect)  // Intersect to get seen portion
                 
-                generatedSelection.addSelection(visiblePage.selectionForRect(visibleRect))
+                if let sel = visiblePage.selectionForRect(visibleRect) {
+                    generatedSelection.addSelection(sel)
+                }
             }
             
-            return generatedSelection.string()
+            return generatedSelection.string
         }
         return nil
     }
@@ -488,10 +492,12 @@ class PDFReader: PDFBase {
     func selectVisibleText(sender: AnyObject?) {
         // Only proceed if there is actually text to select
         if containsRawString {
-            let visiblePages = self.visiblePages()
-            let generatedSelection = PDFSelection(document: self.document())
+            guard let visiblePages = self.visiblePages() else {
+                return
+            }
+            let generatedSelection = PDFSelection(document: self.document!)
             
-            for visiblePage in visiblePages as! [PDFPage] {
+            for visiblePage in visiblePages {
                 
                 // Get page's rectangle coordinates
                 let pageRect = getPageRect(visiblePage)
@@ -503,7 +509,9 @@ class PDFReader: PDFBase {
                 visibleRect = self.convertRect(visibleRect, toPage: visiblePage)  // Convert rect to page coordinates
                 visibleRect.intersectInPlace(pageRect)  // Intersect to get seen portion
                 
-                generatedSelection.addSelection(visiblePage.selectionForRect(visibleRect))
+                if let sel = visiblePage.selectionForRect(visibleRect) {
+                    generatedSelection.addSelection(sel)
+                }
             }
             
             self.setCurrentSelection(generatedSelection, animate: true)

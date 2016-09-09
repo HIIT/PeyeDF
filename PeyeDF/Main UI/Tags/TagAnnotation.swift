@@ -44,27 +44,27 @@ class TagAnnotation: Equatable {
     init(fromReadingTag tag: ReadingTag, pdfBase: PDFBase) {
         
         self.pageIndex = tag.rRects[0].pageIndex as Int
-        let pdfPage = pdfBase.document().pageAtIndex(self.pageIndex as Int)
+        let pdfPage = pdfBase.document!.pageAtIndex(self.pageIndex as Int)
         
         var annots = [PDFAnnotationMarkup]()
         for rRect in tag.rRects {
             let annotation = PDFAnnotationMarkup(bounds: rRect.rect)
             
-            annotation.setColor(TagConstants.annotationColourTagged)
+            annotation.color = TagConstants.annotationColourTagged
             
-            pdfPage.addAnnotation(annotation)
+            pdfPage!.addAnnotation(annotation)
             annots.append(annotation)
             
             // refresh view
             dispatch_async(dispatch_get_main_queue()) {
-                pdfBase.setNeedsDisplayInRect(pdfBase.convertRect(rRect.rect, fromPage: pdfPage))
+                pdfBase.setNeedsDisplayInRect(pdfBase.convertRect(rRect.rect, fromPage: pdfPage!))
             }
         }
         
         self.pdfBase = pdfBase
         self.tags.append(tag)
         self.markups = annots
-        let (label, labelBack) = TagAnnotation.makeLabelPair(tag, pdfPage: pdfPage, pdfBase: pdfBase)
+        let (label, labelBack) = TagAnnotation.makeLabelPair(tag, pdfPage: pdfPage!, pdfBase: pdfBase)
         labels.append(label)
         labelBacks.append(labelBack)
         
@@ -90,9 +90,9 @@ class TagAnnotation: Equatable {
         }
         tags.removeAtIndex(i)
         let lab = labels.removeAtIndex(i)
-        pdfBase.removeAnnotation(lab, onPage: lab.page())
+        pdfBase.removeAnnotation(lab, onPage: lab.page!)
         let labBack = labelBacks.removeAtIndex(i)
-        pdfBase.removeAnnotation(labBack, onPage: lab.page())
+        pdfBase.removeAnnotation(labBack, onPage: lab.page!)
         return tags.count
     }
     
@@ -111,17 +111,17 @@ class TagAnnotation: Equatable {
     func hitTest(point: NSPoint, page: PDFPage) -> Bool {
         return labelHitTest(point, page: page) || markups.indexOf() {
             markup in
-            return NSPointInRect(point, markup.bounds())
+            return NSPointInRect(point, markup.bounds)
         } != nil
     }
     
     /// Returns true if the given point is within a label's bounds.
     /// Also sets internal dragged label index.
     func labelHitTest(point: NSPoint, page:PDFPage) -> Bool {
-        guard pdfBase.document().indexForPage(page) == self.pageIndex else {
+        guard pdfBase.document!.indexForPage(page) == self.pageIndex else {
             return false
         }
-        lastLabelHit = labelBacks.indexOf({NSPointInRect(point, $0.bounds())})
+        lastLabelHit = labelBacks.indexOf({NSPointInRect(point, $0.bounds)})
         return lastLabelHit != nil
     }
     
@@ -137,8 +137,8 @@ class TagAnnotation: Equatable {
     /// Set the markups to the selected colour and refreshes view
     func setSelected() {
         markups.forEach() {
-            $0.setColor(TagConstants.annotationColourTaggedSelected)
-            let annRect = pdfBase.convertRect($0.bounds(), fromPage: $0.page())
+            $0.color = TagConstants.annotationColourTaggedSelected
+            let annRect = pdfBase.convertRect($0.bounds, fromPage: $0.page!)
             pdfBase.setNeedsDisplayInRect(annRect)
         }
     }
@@ -146,8 +146,8 @@ class TagAnnotation: Equatable {
     /// Set the markups to the unselected colour and refreshes view
     func setUnselected() {
         markups.forEach() {
-            $0.setColor(TagConstants.annotationColourTagged)
-            let annRect = pdfBase.convertRect($0.bounds(), fromPage: $0.page())
+            $0.color = TagConstants.annotationColourTagged
+            let annRect = pdfBase.convertRect($0.bounds, fromPage: $0.page!)
             pdfBase.setNeedsDisplayInRect(annRect)
         }
     }
@@ -171,13 +171,13 @@ class TagAnnotation: Equatable {
                 return
             }
             // selection for first rect
-            guard let doc = pdfBase.document(), page = doc.getPage(atIndex: wantedTag.rRects[0].pageIndex as Int), let pdfSel = page.selectionForRect(wantedTag.rRects[0].rect.outset(1.0)) else {
+            guard let doc = pdfBase.document, page = doc.getPage(atIndex: wantedTag.rRects[0].pageIndex as Int), let pdfSel = page.selectionForRect(wantedTag.rRects[0].rect.outset(1.0)) else {
                 AppSingleton.log.error("Selection is nil")
                 return
             }
             
             // subsequent rects
-            wantedTag.rRects[1..<wantedTag.rRects.count].forEach({pdfSel.addSelection(doc.pageAtIndex($0.pageIndex as Int).selectionForRect($0.rect.outset(1.0)))})
+            wantedTag.rRects[1..<wantedTag.rRects.count].forEach({pdfSel.addSelection(doc.pageAtIndex($0.pageIndex as Int)!.selectionForRect($0.rect.outset(1.0))!)})
 
             foundSel = pdfSel
         }
@@ -187,13 +187,13 @@ class TagAnnotation: Equatable {
     /// Removes all annotations from all pages and causes a display refresh.
     func removeAll() {
         markups.forEach() {
-            pdfBase.removeAnnotation($0, onPage: $0.page())
+            pdfBase.removeAnnotation($0, onPage: $0.page!)
         }
         labels.forEach() {
-            pdfBase.removeAnnotation($0, onPage: $0.page())
+            pdfBase.removeAnnotation($0, onPage: $0.page!)
         }
         labelBacks.forEach() {
-            pdfBase.removeAnnotation($0, onPage: $0.page())
+            pdfBase.removeAnnotation($0, onPage: $0.page!)
         }
     }
     
@@ -213,7 +213,7 @@ class TagAnnotation: Equatable {
         let rectSpan = tag.rRects.reduce(NSRect()) {NSUnionRect($0, $1.rect)}
         
         var origin = NSPoint(x: -1, y: rectSpan.origin.y + rectSpan.size.height / 2)
-        if (rectSpan.minX + rectSpan.size.width / 2) > pdfPage.boundsForBox(kPDFDisplayBoxCropBox).width / 2 {
+        if (rectSpan.minX + rectSpan.size.width / 2) > pdfPage.boundsForBox(PDFDisplayBox.CropBox).width / 2 {
             origin.x = rectSpan.maxX + offset
         } else {
             origin.x = rectSpan.minX - offset - size.width
@@ -221,14 +221,14 @@ class TagAnnotation: Equatable {
         
         let annBounds = NSRect(origin: origin, size: size)
         let textAnnotation = PDFAnnotationFreeText(bounds: annBounds)
-        textAnnotation.setColor(NSColor.clearColor())
+        textAnnotation.color = NSColor.clearColor()
         textAnnotation.setAlignment(.Center)
         textAnnotation.setFontColor(NSColor.blackColor())
         textAnnotation.setFont(font)
-        textAnnotation.setContents(tag.text)
+        textAnnotation.contents = tag.text
         let box = PDFAnnotationSquare(bounds: annBounds.addTo(1))
         box.setInteriorColor(TagConstants.annotationColourTagLabelBackground)
-        box.setColor(NSColor.clearColor())
+        box.color = NSColor.clearColor()
         
         pdfBase.addAnnotation(box, onPage: pdfPage)
         pdfBase.addAnnotation(textAnnotation, onPage: pdfPage)
@@ -241,9 +241,9 @@ class TagAnnotation: Equatable {
         
         /// Inner function to get a point which corresponds to half the size of the given annotation + padding, moved up (adding to y)
         func moveUp(annot: PDFAnnotation, padding: CGFloat) -> NSPoint {
-            var point = annot.bounds().origin
-            point.y += annot.bounds().height
-            point.x += annot.bounds().width / 2
+            var point = annot.bounds.origin
+            point.y += annot.bounds.height
+            point.x += annot.bounds.width / 2
             point.y += padding
             return point
         }
@@ -251,10 +251,10 @@ class TagAnnotation: Equatable {
         let padding = TagConstants.tagLabelPadding
         
         // create pair
-        let pdfPage = pdfBase.document().pageAtIndex(forTag.rRects[0].pageIndex as Int)
-        let (newText, newBack) = TagAnnotation.makeLabelPair(forTag, pdfPage: pdfPage, pdfBase: pdfBase)
+        let pdfPage = pdfBase.document!.pageAtIndex(forTag.rRects[0].pageIndex as Int)
+        let (newText, newBack) = TagAnnotation.makeLabelPair(forTag, pdfPage: pdfPage!, pdfBase: pdfBase)
         
-        let ourRect = newBack.bounds()
+        let ourRect = newBack.bounds
         let count: CGFloat = CGFloat(labels.count)
         
         // move all tags found in destination area up to make space for this one
@@ -265,8 +265,8 @@ class TagAnnotation: Equatable {
         destRect.size.height = destVertSpan
         
         // 2) get current pairs (which overlap to this tag final area) and move them up
-        let oLabels = labels.filter({NSIntersectsRect($0.bounds(), destRect)})
-        let oBacks = labelBacks.filter({NSIntersectsRect($0.bounds(), destRect)})
+        let oLabels = labels.filter({NSIntersectsRect($0.bounds, destRect)})
+        let oBacks = labelBacks.filter({NSIntersectsRect($0.bounds, destRect)})
         
         // 3) move found pairs up (each by half its size + padding)
         oLabels.forEach() {
@@ -280,7 +280,7 @@ class TagAnnotation: Equatable {
         
         // 4) move current pair to bottom (point - found pairs in step four * (size_of_each + padding)/2 )
         // size_of_each is average of their summation
-        let size = oBacks.map{$0.bounds().height}.reduce(0, combine: +) / CGFloat(oBacks.count)
+        let size = oBacks.map{$0.bounds.height}.reduce(0, combine: +) / CGFloat(oBacks.count)
         var finalPoint = NSPoint(x: ourRect.midX, y: ourRect.midY)
         finalPoint.y -= count * (size + padding) / 2
         

@@ -47,7 +47,7 @@ class MetadataWindowController: NSWindowController, NSWindowDelegate {
     }
     
     func setDoc(pdfDoc: PDFDocument, mainWC: DocumentWindowController) {
-        self.window!.title = "Metdata for \(pdfDoc.documentURL().lastPathComponent!)"
+        self.window!.title = "Metdata for \(pdfDoc.documentURL!.lastPathComponent!)"
         metadataView?.setDoc(pdfDoc, mainWC: mainWC)
     }
     

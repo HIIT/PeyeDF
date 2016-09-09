@@ -243,9 +243,9 @@ struct PDFMarkings {
         var readSurface = 0.0
         var interestingSurface = 0.0
         var criticalSurface = 0.0
-        for pageI in 0 ..< pdfBase.document().pageCount() {
-            let thePage = pdfBase.document().pageAtIndex(pageI)
-            let pageRect = pdfBase.getPageRect(thePage)
+        for pageI in 0 ..< pdfBase.document!.pageCount {
+            let thePage = pdfBase.document!.pageAtIndex(pageI)
+            let pageRect = pdfBase.getPageRect(thePage!)
             let pageSurface = Double(pageRect.size.height * pageRect.size.width)
             totalSurface += pageSurface
             for rect in get(ofClass: .Low, forPage: pageI) {
@@ -273,9 +273,9 @@ struct PDFMarkings {
         flattenRectangles_eye()
         var totalSurface = 0.0
         var gazedSurface = 0.0
-        for pageI in 0..<pdfBase.document().pageCount() {
-            let thePage = pdfBase.document().pageAtIndex(pageI)
-            let pageRect = pdfBase.getPageRect(thePage)
+        for pageI in 0..<pdfBase.document!.pageCount {
+            let thePage = pdfBase.document!.pageAtIndex(pageI)
+            let pageRect = pdfBase.getPageRect(thePage!)
             let pageSurface = Double(pageRect.size.height * pageRect.size.width)
             totalSurface += pageSurface
             for rect in get(onlyClass: .Paragraph) {

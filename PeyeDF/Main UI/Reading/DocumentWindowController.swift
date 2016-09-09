@@ -118,8 +118,8 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                     // use first tag to get rect encompassing the whole tagged paragraph
                     let tagRect = clickTags[0].rRects.reduce(NSRect(), combine: {
                         p, r in
-                        let page = self.pdfReader!.document().pageAtIndex(Int(r.pageIndex))
-                        let pageRect = self.pdfReader!.convertRect(r.rect, fromPage: page)
+                        let page = self.pdfReader!.document!.pageAtIndex(Int(r.pageIndex))
+                        let pageRect = self.pdfReader!.convertRect(r.rect, fromPage: page!)
                         return NSUnionRect(p, pageRect)
                     })
                     
@@ -137,7 +137,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                     
                     self.currentTagOperation = .PreviousReading(clickTags)
                     
-                } else if (self.pdfReader!.currentSelection()?.string().trimmed().isEmpty ?? true) {
+                } else if (self.pdfReader!.currentSelection?.string!.trimmed().isEmpty ?? true) {
                     
                     // document-level tagging
                     
@@ -158,9 +158,11 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                     let edge: NSRectEdge
                     
                     // selection's tag popover is shown on the right edge if selection's rect mid > pdf reader rect mid
-                    let sel = self.pdfReader!.currentSelection()
-                    var selBounds = sel.boundsForPage(sel.pages()[0] as! PDFPage)
-                    selBounds = self.pdfReader!.convertRect(selBounds, fromPage: sel.pages()[0] as! PDFPage)
+                    guard let sel = self.pdfReader!.currentSelection else {
+                        return
+                    }
+                    var selBounds = sel.boundsForPage(sel.pages[0] )
+                    selBounds = self.pdfReader!.convertRect(selBounds, fromPage: sel.pages[0] )
                     if (selBounds.minX + selBounds.size.width / 2) > self.pdfReader!.bounds.width / 2 {
                         edge = NSRectEdge.MaxX
                     } else {
@@ -170,7 +172,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                     
                     tvc.setStatus(false)
                     
-                    self.currentTagOperation = .ManualSelection(sel)
+                    self.currentTagOperation = TagOperation.ManualSelection(sel)
                     
                     // set tags in popup
                     let (selRects, selIdxs) = self.pdfReader!.getLineRects(sel)
@@ -312,7 +314,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     /// Perform search using default methods.
     @objc func performFindPanelAction(sender: AnyObject) {
-        switch UInt(sender.tag()) {
+        switch UInt(sender.tag) {
         case NSFindPanelAction.ShowFindPanel.rawValue:
             focusOnSearch()
         case NSFindPanelAction.Next.rawValue:
@@ -320,8 +322,8 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         case NSFindPanelAction.Previous.rawValue:
             mainSplitController?.searchProvider?.selectPreviousResult(nil)
         case NSFindPanelAction.SetFindString.rawValue:
-            if let currentSelection = pdfReader!.currentSelection() {
-                mainSplitController?.searchProvider?.doSearch(currentSelection.string(), exact: true)
+            if let currentSelection = pdfReader!.currentSelection {
+                mainSplitController?.searchProvider?.doSearch(currentSelection.string!, exact: true)
                 mainSplitController?.openSearchPanel()
             }
         default:
@@ -348,7 +350,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             
         // we allow use selection if something is selected in the pdf view
         case NSFindPanelAction.SetFindString.rawValue:
-            if let _ = pdfReader!.currentSelection() {
+            if let _ = pdfReader!.currentSelection {
                 return true
             }
             return false
@@ -489,7 +491,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         
         // show window controller for metadata and send data
         metadataWindowController?.showWindow(self)
-        metadataWindowController?.setDoc(pdfReader!.document(), mainWC: self)
+        metadataWindowController?.setDoc(pdfReader!.document!, mainWC: self)
     }
     
     
@@ -504,7 +506,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         panel.allowedFileTypes = ["pdf", "PDF"]
         panel.nameFieldStringValue = (document as? NSDocument)?.fileURL?.lastPathComponent ?? "Untitled"
         if panel.runModal() == NSFileHandlingPanelOKButton {
-            pdfReader?.document().writeToURL(panel.URL)
+            pdfReader?.document!.writeToURL(panel.URL!)
             let documentController = NSDocumentController.sharedDocumentController() 
             documentController.openDocumentWithContentsOfURL(panel.URL!, display: true) { _ in
                 // empty, nothing else to do (NSDocumentController will automacally link URL to NSDocument (pdf file)
@@ -543,7 +545,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         self.mainSplitController?.searchCollapseDelegate = self
         self.mainSplitController?.searchPanelController?.pdfReader = pdfReader
         
-        pdfReader?.setAutoScales(true)
+        pdfReader?.autoScales = true
         
         // Set annotate on or off depending on preference
         let enableAnnotate: Bool = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefEnableAnnotate) as! Bool
@@ -565,9 +567,9 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             // set NSDocument subclass fields
             let peyeDoc = self.document as! PeyeDocument
             
-            pdfDoc = PDFDocument(URL: url)
+            pdfDoc = PDFDocument(URL: url)!
             peyeDoc.pdfDoc = pdfDoc
-            pdfReader!.setDocument(pdfDoc)
+            pdfReader!.document = pdfDoc
             
             dispatch_async(dispatch_get_main_queue()) {
                 NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.documentChangeNotification, object: self.document)
@@ -613,7 +615,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         
         // Associate PDF view to info element
         let url = (self.document as! PeyeDocument).fileURL!
-        guard let pdfDoc = pdfr.document() else {
+        guard let pdfDoc = pdfr.document else {
             return
         }
         let sciDoc: ScientificDocument
@@ -642,15 +644,15 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             [weak self] in
             
             if (NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDownloadMetadata) as! Bool),
-              let json = self?.pdfReader?.document()?.autoCrossref() {
+              let json = self?.pdfReader?.document?.autoCrossref() {
                 // found crossref, use it
                 sciDoc.updateFields(fromCrossRef: json)
-            } else if let tit = self?.pdfReader?.document().getTitle() {
+            } else if let tit = self?.pdfReader?.document!.getTitle() {
                 // if not, attempt to get title from document
                 sciDoc.title = tit
-            } else if let tit = self?.pdfReader?.document().guessTitle() {
+            } else if let tit = self?.pdfReader?.document!.guessTitle() {
                 // as a last resort, guess it
-                self?.pdfReader?.document().setTitle(tit)
+                self?.pdfReader?.document!.setTitle(tit)
                 sciDoc.title = tit
             }
             self?.sendAndUpdateScidoc(sciDoc)
@@ -756,7 +758,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                     _ in
                     // signal when done
                     dispatch_async(dispatch_get_main_queue()) {
-                        self.pdfReader!.setDocument(nil)
+                        self.pdfReader!.document = nil
                         self.pdfReader!.markings = nil
                         self.window!.endSheet(ww)
                         callback?()
@@ -764,7 +766,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                 }
             } else {
                 dispatch_async(dispatch_get_main_queue()) {
-                    self.pdfReader!.setDocument(nil)
+                    self.pdfReader!.document = nil
                     self.pdfReader!.markings = nil
                     self.window!.endSheet(ww)
                     callback?()
@@ -772,7 +774,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             }
         } else {
             dispatch_async(dispatch_get_main_queue()) {
-                self.pdfReader!.setDocument(nil)
+                self.pdfReader!.document = nil
                 self.pdfReader!.markings = nil
                 callback?()
             }

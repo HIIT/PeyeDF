@@ -184,7 +184,7 @@ extension PDFBase {
     /// - Parameter offset: If true, when focusing on a point, slightly offset the
     ///    point so that there is some more page shown above the point.
     func focusOn(f: FocusArea, delay: Double = 0.5, offset: Bool = true) {
-        guard f.pageIndex < self.document().pageCount() else {
+        guard f.pageIndex < self.document!.pageCount else {
            AppSingleton.log.warning("Attempted to focus on a non-existing page")
             return
         }
@@ -193,7 +193,7 @@ extension PDFBase {
                                      Int64(delay * Double(NSEC_PER_SEC)))
         dispatch_after(showTime, dispatch_get_main_queue()) {
             
-            guard f.pageIndex < self.document().pageCount(), let pdfpage = self.document().getPage(atIndex: f.pageIndex) else {
+            guard f.pageIndex < self.document!.pageCount, let pdfpage = self.document!.getPage(atIndex: f.pageIndex) else {
                 return
             }
             

@@ -94,12 +94,12 @@ extension PDFDocument {
     /// Returns a trimmed plain text of the data contained in the document, nil not present
     /// - Warning: Takes time and memory for big documents, better to asynchronise this
     func getText() -> String? {
-        var trimmedText = string()
-        trimmedText = trimmedText.stringByReplacingOccurrencesOfString("\u{fffc}", withString: "")
-        trimmedText = trimmedText.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) // get trimmed version of all text
-        trimmedText = trimmedText.stringByTrimmingCharactersInSet(NSCharacterSet.newlineCharacterSet()) // trim newlines
-        trimmedText = trimmedText.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) // trim again
-        if trimmedText.characters.count > 5 {  // we assume the document does contain useful text if there are more than 5 characters remaining
+        var trimmedText = string
+        trimmedText = trimmedText!.stringByReplacingOccurrencesOfString("\u{fffc}", withString: "")
+        trimmedText = trimmedText!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) // get trimmed version of all text
+        trimmedText = trimmedText!.stringByTrimmingCharactersInSet(NSCharacterSet.newlineCharacterSet()) // trim newlines
+        trimmedText = trimmedText!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) // trim again
+        if trimmedText!.characters.count > 5 {  // we assume the document does contain useful text if there are more than 5 characters remaining
             return trimmedText
         } else {
             return nil
@@ -108,8 +108,8 @@ extension PDFDocument {
     
     /// Gets the title from the document metadata, returns nil if not present
     func getTitle() -> String? {
-        let docAttrib = documentAttributes()
-        if let title: String = docAttrib[PDFDocumentTitleAttribute] as? String where title.trimmed().characters.count > 0 {
+        let docAttrib = documentAttributes
+        if let title: String = docAttrib![PDFDocumentTitleAttribute] as? String where title.trimmed().characters.count > 0 {
             return title.trimmed()
         } else {
             return nil
@@ -118,8 +118,8 @@ extension PDFDocument {
     
     /// Gets the author(s) from the document metadata, returns nil if not present
     func getAuthor() -> String? {
-        let docAttrib = documentAttributes()
-        if let author: AnyObject = docAttrib[PDFDocumentAuthorAttribute] {
+        let docAttrib = documentAttributes
+        if let author: AnyObject = docAttrib![PDFDocumentAuthorAttribute] {
             return (author as! String)
         } else {
             return nil
@@ -128,8 +128,8 @@ extension PDFDocument {
     
     /// Gets the subject from the document metadata, returns nil if not present
     func getSubject() -> String? {
-        let docAttrib = documentAttributes()
-        if let subject: AnyObject = docAttrib[PDFDocumentSubjectAttribute] {
+        let docAttrib = documentAttributes
+        if let subject: AnyObject = docAttrib![PDFDocumentSubjectAttribute] {
             return (subject as! String)
         } else {
             return nil
@@ -138,8 +138,8 @@ extension PDFDocument {
     
     /// Gets the keywods from the document metadata, returns nil if not present
     func getKeywords() -> String? {
-        let docAttrib = documentAttributes()
-        if let keywords: AnyObject = docAttrib[PDFDocumentKeywordsAttribute] {
+        let docAttrib = documentAttributes
+        if let keywords: AnyObject = docAttrib![PDFDocumentKeywordsAttribute] {
             // some times keywords are in an array
             // other times keywords are all contained in the first element of the array as a string
             // other times they are a string
@@ -176,7 +176,7 @@ extension PDFDocument {
         // Try to find doi
         var _doi: String? = nil
         
-        guard let pageString = self.pageAtIndex(0).string() else {
+        guard let pageString = self.pageAtIndex(0)!.string else {
             return nil
         }
         
@@ -234,13 +234,13 @@ extension PDFDocument {
     /// Returns the string corresponding to the block with the largest font on the first page.
     /// Returns nil if no information could be found or if two or more blocks have the same largest size.
     func guessTitle() -> String? {
-        let astring = pageAtIndex(0).attributedString()
+        let astring = pageAtIndex(0)!.attributedString
         
-        let fullRange = NSMakeRange(0, astring.length)
+        let fullRange = NSMakeRange(0, astring!.length)
 
         var textInfo = [(size: CGFloat, range: NSRange)]()
 
-        astring.enumerateAttribute(NSFontAttributeName, inRange: fullRange, options: NSAttributedStringEnumerationOptions()) {
+        astring!.enumerateAttribute(NSFontAttributeName, inRange: fullRange, options: NSAttributedStringEnumerationOptions()) {
             obj, range, stop in
             if let font = obj as? NSFont {
                 textInfo.append(size: font.pointSize, range: range)
@@ -250,7 +250,7 @@ extension PDFDocument {
         textInfo.sortInPlace({$0.size > $1.size})
 
         if textInfo.count >= 2 && textInfo[0].size > textInfo[1].size {
-            return (astring.string as NSString).substringWithRange(textInfo[0].range)
+            return (astring!.string as NSString).substringWithRange(textInfo[0].range)
         } else {
             return nil
         }
@@ -259,27 +259,27 @@ extension PDFDocument {
     // MARK: - Setters
     
     func setTitle(newTitle: String) {
-        var docAttrib = documentAttributes()
-        docAttrib[PDFDocumentTitleAttribute] = newTitle
-        setDocumentAttributes(docAttrib)
+        var docAttrib = documentAttributes
+        docAttrib![PDFDocumentTitleAttribute] = newTitle
+        documentAttributes = docAttrib
     }
     
     func setSubject(newSubject: String) {
-        var docAttrib = documentAttributes()
-        docAttrib[PDFDocumentSubjectAttribute] = newSubject
-        setDocumentAttributes(docAttrib)
+        var docAttrib = documentAttributes
+        docAttrib![PDFDocumentSubjectAttribute] = newSubject
+        documentAttributes = docAttrib
     }
     
     func setAuthor(newAuthor: String) {
-        var docAttrib = documentAttributes()
-        docAttrib[PDFDocumentAuthorAttribute] = newAuthor
-        setDocumentAttributes(docAttrib)
+        var docAttrib = documentAttributes
+        docAttrib![PDFDocumentAuthorAttribute] = newAuthor
+        documentAttributes = docAttrib
     }
     
     func setKeywords(newKeywords: String) {
-        var docAttrib = documentAttributes()
-        docAttrib[PDFDocumentKeywordsAttribute] = newKeywords
-        setDocumentAttributes(docAttrib)
+        var docAttrib = documentAttributes
+        docAttrib![PDFDocumentKeywordsAttribute] = newKeywords
+        documentAttributes = docAttrib
     }
     
     /**
@@ -287,8 +287,8 @@ extension PDFDocument {
      if the index is out of bounds, but logs a warning).
      */
     public func getPage(atIndex index: Int) -> PDFPage? {
-        if index < 0 || index >= self.pageCount() {
-            AppSingleton.log.warning("Attempted to retrieve a page at index \(index), while the document has \(self.pageCount()) pages.")
+        if index < 0 || index >= self.pageCount {
+            AppSingleton.log.warning("Attempted to retrieve a page at index \(index), while the document has \(self.pageCount) pages.")
             return nil
         } else {
             return self.pageAtIndex(index)

@@ -52,7 +52,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable, NearlyEquatabl
         self.classSource = classSource
         if let pdfb = pdfBase {
             self.plainTextContent = pdfb.stringForRect(self.rect, onPage: pageIndex)
-            self.scaleFactor = pdfb.scaleFactor()
+            self.scaleFactor = pdfb.scaleFactor
         } else {
             self.scaleFactor = -1
         }
@@ -72,7 +72,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable, NearlyEquatabl
         self.classSource = classSource
         if let pdfb = pdfBase {
             self.plainTextContent = pdfb.stringForRect(self.rect, onPage: pageIndex)
-            self.scaleFactor = pdfb.scaleFactor()
+            self.scaleFactor = pdfb.scaleFactor
         } else {
             self.scaleFactor = -1
         }
@@ -90,7 +90,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable, NearlyEquatabl
         self.rect = rect
         if let pdfb = pdfBase {
             self.plainTextContent = pdfb.stringForRect(self.rect, onPage: pageIndex)
-            self.scaleFactor = pdfb.scaleFactor()
+            self.scaleFactor = pdfb.scaleFactor
         } else {
             self.scaleFactor = -1
         }

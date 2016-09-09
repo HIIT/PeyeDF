@@ -34,13 +34,13 @@ class PDFOverview: PDFBase {
     /// The pdf view which is linked to this overview.
     /// Setting this value causes a refresh (and resets zoom).
     weak var pdfDetail: PDFBase? { didSet {
-        if let pdfb = pdfDetail, let pdfDoc = pdfb.document(), let pdfUrl = pdfDoc.documentURL() {
-            self.setDocument(PDFDocument(URL: pdfUrl))
-            self.setScaleFactor(0.2)
+        if let pdfb = pdfDetail, let pdfDoc = pdfb.document, let pdfUrl = pdfDoc.documentURL {
+            self.document = PDFDocument(URL: pdfUrl)
+            self.scaleFactor = 0.2
             self.scrollToBeginningOfDocument(self)
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(pdfDetailHasNewPage(_:)), name: PDFViewPageChangedNotification, object: pdfDetail)
         } else {
-            self.setDocument(nil)
+            self.document = nil
         }
         self.refreshAll()
     } }
@@ -62,14 +62,14 @@ class PDFOverview: PDFBase {
     // MARK: - Page drawing
     
     /// Draw markings on page as bezier paths with their corresponding colour
-    override func drawPage(page: PDFPage!) {
+    override func drawPage(page: PDFPage) {
     	// Let PDFView do most of the hard work.
         super.drawPage(page)
         
         // get difference between media and crop box
         let pointDiff = offSetToCropBox(page)
         
-        let pageIndex = self.document().indexForPage(page)
+        let pageIndex = self.document!.indexForPage(page)
         
         // draw gray mask if this page is not the highlight page
         if pageIndex != highlightPage {
@@ -118,7 +118,7 @@ class PDFOverview: PDFBase {
             // cycle through annotation classes
             let cycleClasses = [ReadingClass.Low, ReadingClass.Medium, ReadingClass.High]
             
-            let pageIndex = self.document().indexForPage(page)
+            let pageIndex = self.document!.indexForPage(page)
             for rc in cycleClasses {
                 let rectsToDraw = markings.get(ofClass: rc, forPage: pageIndex)
                 if rectsToDraw.count > 0 {
@@ -168,7 +168,7 @@ class PDFOverview: PDFBase {
     
     /// Single click to scroll pdfDetail to the desired point
     override func mouseDown(theEvent: NSEvent) {
-        guard let doc = self.document() else {
+        guard let doc = self.document else {
             return
         }
         
@@ -179,21 +179,21 @@ class PDFOverview: PDFBase {
         let activePage = self.pageForPoint(mouseInView, nearest: true)
         
         // Index for current page
-        let pageIndex = doc.indexForPage(activePage)
+        let pageIndex = doc.indexForPage(activePage!)
 
         // Get location in "page space".
-        let pagePoint = self.convertPoint(mouseInView, toPage: activePage)
+        let pagePoint = self.convertPoint(mouseInView, toPage: activePage!)
         
         pdfDetail?.focusOn(FocusArea(forPoint: pagePoint, onPage: pageIndex), delay: 0)
     }
     
     /// Called when the pdfDetail associated to this overview lands on a new current page
     @objc func pdfDetailHasNewPage(notification: NSNotification) {
-        guard let mypdb = notification.object as? PDFBase, doc = mypdb.document() else {
+        guard let mypdb = notification.object as? PDFBase, doc = mypdb.document else {
             return
         }
-        let newCurrentPage = mypdb.currentPage()
-        let cpi = doc.indexForPage(newCurrentPage)
+        let newCurrentPage = mypdb.currentPage
+        let cpi = doc.indexForPage(newCurrentPage!)
         highlightPage = cpi
     }
     
