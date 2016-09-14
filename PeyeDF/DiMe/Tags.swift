@@ -24,10 +24,10 @@
 
 import Foundation
 
-public class Tag: Dictionariable, Equatable, CustomStringConvertible {
+open class Tag: Dictionariable, Equatable, CustomStringConvertible {
     
     /// The tag's description is the tag's text
-    public var description: String { get {
+    open var description: String { get {
         return self.text
     } }
     
@@ -46,7 +46,7 @@ public class Tag: Dictionariable, Equatable, CustomStringConvertible {
         }
     }
     
-    public var hashValue: Int { get {
+    open var hashValue: Int { get {
         return text.hashValue
     } }
     
@@ -58,13 +58,13 @@ public class Tag: Dictionariable, Equatable, CustomStringConvertible {
         self.text = json["text"].stringValue
     }
     
-    func getDict() -> [String : AnyObject] {
-        var theDictionary = [String: AnyObject]()
+    func getDict() -> [String : Any] {
+        var theDictionary = [String: Any]()
         
         theDictionary["text"] = text
         theDictionary["@type"] = "Tag"
     
-        if let hostname = NSHost.currentHost().name {
+        if let hostname = Host.current().name {
             theDictionary["origin"] = hostname
         }
         
@@ -72,10 +72,10 @@ public class Tag: Dictionariable, Equatable, CustomStringConvertible {
     }
 }
 
-public class ReadingTag: Tag {
+open class ReadingTag: Tag {
     
     /// All parts of the document referenced by this tag.
-    private(set) var rRects: [ReadingRect]
+    fileprivate(set) var rRects: [ReadingRect]
     
     /// The ReadingTag has a more complex description, which includes
     /// rects and pages associated to it.
@@ -83,9 +83,9 @@ public class ReadingTag: Tag {
     /// and each page has one rect associated to it.
     /// For example: `a tag:1;2::0,0,20,30;1,1,40,50`
     /// (rects are x,y,w,h).
-    override public var description: String { get {
-        let pages = self.rRects.map {String($0.pageIndex)} .joinWithSeparator(";")
-        let rects = self.rRects.map {$0.rect.description} .joinWithSeparator(";")
+    override open var description: String { get {
+        let pages = self.rRects.map {String(describing: $0.pageIndex)} .joined(separator: ";")
+        let rects = self.rRects.map {$0.rect.description} .joined(separator: ";")
         return self.text + ":" + pages + "::" + rects
     } }
     
@@ -93,8 +93,8 @@ public class ReadingTag: Tag {
     init(text: String, withRects: [NSRect], pages: [Int], pdfBase: PDFBase?) {
         var pageRects = [ReadingRect]()
         
-        for (n, r) in withRects.enumerate() {
-            var r = ReadingRect(pageIndex: pages[n], rect: r, readingClass: .Tag, classSource: .Click, pdfBase: pdfBase)
+        for (n, r) in withRects.enumerated() {
+            var r = ReadingRect(pageIndex: pages[n], rect: r, readingClass: .tag, classSource: .click, pdfBase: pdfBase)
             r.scaleFactor = -1
             pageRects.append(r)
         }
@@ -123,13 +123,13 @@ public class ReadingTag: Tag {
     
     /// Creates a new tag from a string (such as the one created by calling .description)
     convenience init?(fromString string: String, pdfBase: PDFBase?) {
-        guard let pr = string.rangeOfString(":") else {
+        guard let pr = string.range(of: ":") else {
             return nil
         }
         
-        let text = string.substringToIndex(pr.startIndex)
-        let suffix = string.substringFromIndex(pr.endIndex)
-        let components = suffix.componentsSeparatedByString("::")
+        let text = string.substring(to: pr.lowerBound)
+        let suffix = string.substring(from: pr.upperBound)
+        let components = suffix.components(separatedBy: "::")
         
         guard components.count == 2 else {
             AppSingleton.log.error("Unexpected number of components. Input was:\n\(string)")
@@ -139,8 +139,8 @@ public class ReadingTag: Tag {
         let pagesString = components[0]
         let rectsString = components[1]
         
-        let pages = pagesString.componentsSeparatedByString(";").flatMap {Int($0)}
-        let rects = rectsString.componentsSeparatedByString(";").flatMap {NSRect(string: $0)}
+        let pages = pagesString.components(separatedBy: ";").flatMap {Int($0)}
+        let rects = rectsString.components(separatedBy: ";").flatMap {NSRect(string: $0)}
         
         guard pages.count == rects.count else {
             AppSingleton.log.error("Pages and rect counts do not match. Input was:\n\(string)")
@@ -153,16 +153,16 @@ public class ReadingTag: Tag {
     /// Combines this tag with another, and returns the new tag.
     /// In other words, adds the parts of document referenced by the new tag with "these" parts of a document.
     /// Used to combine two tags with the same text but that refer to different parts of a document.
-    func combine(otherTag: ReadingTag) -> ReadingTag {
+    func combine(_ otherTag: ReadingTag) -> ReadingTag {
         let newTag = ReadingTag(fromTag: self)
         // only append rects which are not already in this tag
-        newTag.rRects.appendContentsOf(otherTag.rRects.filter({!newTag.rRects.containsSimilar($0)}))
+        newTag.rRects.append(contentsOf: otherTag.rRects.filter({!newTag.rRects.containsSimilar($0)}))
         return newTag
     }
     
     /// Removes the rects contained given tag from this one, and returns a new tag.
     /// The new tag will be a simple Tag (with just text) if no rects are left.
-    func subtract(otherTag: ReadingTag) -> Tag {
+    func subtract(_ otherTag: ReadingTag) -> Tag {
         let newTag = ReadingTag(fromTag: self)
         // get all rects which are not in othertag
         newTag.rRects = newTag.rRects.filter({!otherTag.rRects.containsSimilar($0)})
@@ -179,7 +179,7 @@ public class ReadingTag: Tag {
         super.init(fromDiMe: json)
     }
     
-    override func getDict() -> [String : AnyObject] {
+    override func getDict() -> [String : Any] {
         var theDictionary = super.getDict()
         theDictionary["rects"] = rRects.asDictArray()
         theDictionary["@type"] = "ReadingTag"
@@ -187,20 +187,20 @@ public class ReadingTag: Tag {
     }
     
     /// Returns true if the given NSRect is part of this tag's rects, on the given page
-    func containsNSRect(nsrect: NSRect, onPage: Int) -> Bool {
-        return self.rRects.reduce(false, combine: {$0 || ($1.rect.nearlyEqual(nsrect) && $1.pageIndex == onPage)})
+    func containsNSRect(_ nsrect: NSRect, onPage: Int) -> Bool {
+        return self.rRects.reduce(false, {$0 || ($1.rect.nearlyEqual(nsrect) && $1.pageIndex == onPage)})
     }
     
     /// Returns true if the given collection of NSRects corresponds to this tag's rects
-    func containsNSRects(nsrects: [NSRect], onPages: [Int]) -> Bool {
-        return nsrects.enumerate().reduce(true, combine: {$0 && containsNSRect($1.element, onPage: onPages[$1.index])})
+    func containsNSRects(_ nsrects: [NSRect], onPages: [Int]) -> Bool {
+        return nsrects.enumerated().reduce(true, {$0 && containsNSRect($1.element, onPage: onPages[$1.offset])})
     }
     
     /// Returns the difference in terms of ReadingRect between this and another ReadingTag.
     /// Returns a tuple with the ReadingRects which have been added in other (relative complement of this in other)
     /// and the ReadingRects which have been removed (relative complement of other in this).
     /// Generates a fatalError if the tags' texts are not the same.
-    func rectDifference(other: ReadingTag) -> (added: [ReadingRect], removed: [ReadingRect]) {
+    func rectDifference(_ other: ReadingTag) -> (added: [ReadingRect], removed: [ReadingRect]) {
         if self.text != other.text {
             fatalError("Taking difference of two tags with different text!")
         }
@@ -224,8 +224,8 @@ public class ReadingTag: Tag {
 /// Checks if two tags are equal (and if they are both reading tags, uses the reading tag
 /// specific comparison)
 public func == (lhs: Tag, rhs: Tag) -> Bool {
-    if lhs.dynamicType == rhs.dynamicType {
-        if let rrl = lhs as? ReadingTag, rrr = rhs as? ReadingTag {
+    if type(of: lhs) == type(of: rhs) {
+        if let rrl = lhs as? ReadingTag, let rrr = rhs as? ReadingTag {
             return rrl == rrr
         } else {
             return lhs.text == rhs.text
@@ -240,15 +240,15 @@ public func == (lhs: ReadingTag, rhs: ReadingTag) -> Bool {
     return lhs.text == rhs.text && lhs.rRects.nearlyEqual(rhs.rRects)
 }
 
-extension CollectionType where Generator.Element: Tag {
+extension Collection where Iterator.Element: Tag {
     
     /// Returns true if at least one tag in the collection has the given text.
     func containsTag(withText text: String) -> Bool {
-        return self.reduce(false, combine: {$0 || $1.text == text})
+        return self.reduce(false, {$0 || $1.text == text})
     }
     
     /// Returns the tag which has the given text (if any, nil otherwise)
-    func getTag(withText: String) -> Tag? {
+    func getTag(_ withText: String) -> Tag? {
         let retVal = self.filter({$0.text == withText})
         if retVal.count >= 1 {
             if retVal.count > 1 {
@@ -263,7 +263,7 @@ extension CollectionType where Generator.Element: Tag {
     /// Returns readingtags which refer to the given rects on the given pages.
     /// - Parameter forRects: Rectangles which cover the areas that should be tagged.
     /// - Parameter onPages: Page indices on which the rects appear (same order as forRects).
-    func getReadingTags(forRects: [NSRect], onPages: [Int]) -> [ReadingTag] {
+    func getReadingTags(_ forRects: [NSRect], onPages: [Int]) -> [ReadingTag] {
         let rTags = self.flatMap({$0 as? ReadingTag})
         return rTags.filter({$0.containsNSRects(forRects, onPages: onPages)})
     }

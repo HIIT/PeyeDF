@@ -13,19 +13,19 @@ class PDFPeerOverview: PDFOverview {
     
     /// Which colours are associated to which reading class (can be overridden in subclasses)
     override var markAnnotationColours: [ReadingClass: NSColor] { get {
-        return [.Low: NSColor.greenColor(),  // TODO: use a better colour
-                .Medium: PeyeConstants.annotationColourInteresting,
-                .High: PeyeConstants.annotationColourCritical]
+        return [.low: NSColor.green,  // TODO: use a better colour
+                .medium: PeyeConstants.annotationColourInteresting,
+                .high: PeyeConstants.annotationColourCritical]
     } }
     
     /// Marks an area as read by the local user
-    func addAreaForLocal(area: FocusArea) {
+    func addAreaForLocal(_ area: FocusArea) {
         switch area.type {
-        case .Rect(let rect):
-            dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
-                self.markings.addRect(rect, ofClass: .Medium, withSource: .LocalPeer, forPage: area.pageIndex)
+        case .rect(let rect):
+            DispatchQueue.global(qos: DispatchQoS.QoSClass.utility).async {
+                self.markings.addRect(rect, ofClass: .medium, withSource: .localPeer, forPage: area.pageIndex)
                 self.markings.flattenRectangles_intersectToHigh()
-                dispatch_async(dispatch_get_main_queue()) {
+                DispatchQueue.main.async {
                     self.refreshPage(atIndex: area.pageIndex, rect: rect)
                 }
             }
@@ -35,13 +35,13 @@ class PDFPeerOverview: PDFOverview {
     }
     
     /// Marks an area as read by a collaborator
-    func addAreaForPeer(area: FocusArea) {
+    func addAreaForPeer(_ area: FocusArea) {
         switch area.type {
-        case .Rect(let rect):
-            dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
-                self.markings.addRect(rect, ofClass: .Low, withSource: .NetworkPeer, forPage: area.pageIndex)
+        case .rect(let rect):
+            DispatchQueue.global(qos: DispatchQoS.QoSClass.utility).async {
+                self.markings.addRect(rect, ofClass: .low, withSource: .networkPeer, forPage: area.pageIndex)
                 self.markings.flattenRectangles_intersectToHigh()
-                dispatch_async(dispatch_get_main_queue()) {
+                DispatchQueue.main.async {
                     self.refreshPage(atIndex: area.pageIndex, rect: rect)
                 }
             }

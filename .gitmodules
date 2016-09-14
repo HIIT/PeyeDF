@@ -6,4 +6,4 @@
 	url = https://github.com/DaveWoodCom/XCGLogger.git
 [submodule "SwiftyJSON"]
 	path = SwiftyJSON
-	url = https://github.com/SwiftyJSON/SwiftyJSON.git
+	url = https://github.com/acegreen/SwiftyJSON.git

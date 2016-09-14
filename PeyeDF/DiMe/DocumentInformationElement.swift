@@ -32,7 +32,7 @@ class DocumentInformationElement: DiMeBase {
     let appId: String
     var id: Int?
     let contentHash: String?
-    private(set) var tags = [Tag]()
+    fileprivate(set) var tags = [Tag]()
     
     /// Creates this information element. The id is set to the hash of the plaintext, or hash of uri if no text was found.
     ///
@@ -58,7 +58,7 @@ class DocumentInformationElement: DiMeBase {
     
     /// Returns a dime-compatible dictionary for this information element
     /// Sublasses must call this before editing their dictionary.
-    override func getDict() -> [String : AnyObject] {
+    override func getDict() -> [String : Any] {
         theDictionary["uri"] = "file://" + uri
         theDictionary["appId"] = self.appId
         if let ptc = plainTextContent {
@@ -105,14 +105,14 @@ class DocumentInformationElement: DiMeBase {
     /// "upgraded" to a reading tag. If a reading tag with the same name was present adds the new blocks
     /// of text to it.
     /// - Attention: automatically tells DiMe to also perform this operation and uses its response to set own tags
-    func addTag(newTag: Tag) {
+    func addTag(_ newTag: Tag) {
         
         var tagToAdd: Tag
         
         // check if old tags with the same name exists and combine them if so
         // (tags with same name overwrite previous ones in DiMe)
         if let oldTag = tags.getTag(newTag.text) {
-            if oldTag.dynamicType == Tag.self {
+            if type(of: oldTag) == Tag.self {
                 tagToAdd = newTag
             } else {
                 // combine reading tags
@@ -130,7 +130,7 @@ class DocumentInformationElement: DiMeBase {
                     if self.tags != tags! {
                         self.tags = tags!
                         let uInfo = ["tags": tags!]
-                        NSNotificationCenter.defaultCenter().postNotificationName(TagConstants.tagsChangedNotification, object: self, userInfo: uInfo)
+                        NotificationCenter.default.post(name: Notification.Name(rawValue: TagConstants.tagsChangedNotification), object: self, userInfo: uInfo)
                     }
                 }
             }
@@ -142,7 +142,7 @@ class DocumentInformationElement: DiMeBase {
     /// Subtracts a reading tag from this documents' tags. If the resulting reading tag contains no rects,
     /// it will be "downgraded" to a simple tag.
     /// - Attention: automatically tells DiMe to also perform this operation and uses its response to set own tags
-    func subtractTag(newTag: ReadingTag) {
+    func subtractTag(_ newTag: ReadingTag) {
         
         guard let oldTag = tags.getTag(newTag.text) else {
             AppSingleton.log.error("Could not find a tag to subtract")
@@ -164,7 +164,7 @@ class DocumentInformationElement: DiMeBase {
                     if self.tags != tags! {
                         self.tags = tags!
                         let uInfo = ["tags": tags!]
-                        NSNotificationCenter.defaultCenter().postNotificationName(TagConstants.tagsChangedNotification, object: self, userInfo: uInfo)
+                        NotificationCenter.default.post(name: Notification.Name(rawValue: TagConstants.tagsChangedNotification), object: self, userInfo: uInfo)
                     }
                 }
             }
@@ -181,14 +181,14 @@ class DocumentInformationElement: DiMeBase {
                 if self.tags != tags! {
                     self.tags = tags!
                     let uInfo = ["tags": tags!]
-                    NSNotificationCenter.defaultCenter().postNotificationName(TagConstants.tagsChangedNotification, object: self, userInfo: uInfo)
+                    NotificationCenter.default.post(name: Notification.Name(rawValue: TagConstants.tagsChangedNotification), object: self, userInfo: uInfo)
                 }
             }
         }
     }
     
     /// Convenience function to add a tag using a String (creates a new Tag if it doesn't exists already).
-    func addTag(tagText: String) {
+    func addTag(_ tagText: String) {
         // if tag is already present, don't add anything (tags overwrite each other)
         if !tags.containsTag(withText: tagText) {
             addTag(Tag(withText: tagText))
@@ -197,7 +197,7 @@ class DocumentInformationElement: DiMeBase {
     
     /// Removes a tag using a String.
     /// Deletes the tag completely even if it's a reading tag with some associated text.
-    func removeTag(tagText: String) {
+    func removeTag(_ tagText: String) {
         let tag = Tag(withText: tagText)
         if tags.containsTag(withText: tagText) {
             if DiMePusher.dimeAvailable {
@@ -207,7 +207,7 @@ class DocumentInformationElement: DiMeBase {
                         if self.tags != tags! {
                             self.tags = tags!
                             let uInfo = ["tags": tags!]
-                            NSNotificationCenter.defaultCenter().postNotificationName(TagConstants.tagsChangedNotification, object: self, userInfo: uInfo)
+                            NotificationCenter.default.post(name: Notification.Name(rawValue: TagConstants.tagsChangedNotification), object: self, userInfo: uInfo)
                         }
                     }
                 }

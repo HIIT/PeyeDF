@@ -24,7 +24,7 @@
 
 import Foundation
 
-extension NSDate {
+extension Date {
     
     /// Number of ms since 1/1/1970. Read-only computed property.
     var unixTime: Int { get {
@@ -36,10 +36,10 @@ extension NSDate {
     /// Returns the current time in a short format, e.g. 16:30.45
     /// Use this to pass dates to DiMe
     static func shortTime() -> String {
-        let currentDate = NSDate()
-        let dsf = NSDateFormatter()
+        let currentDate = Date()
+        let dsf = DateFormatter()
         dsf.dateFormat = "HH:mm.ss"
-        return dsf.stringFromDate(currentDate)
+        return dsf.string(from: currentDate)
     }
 
 }

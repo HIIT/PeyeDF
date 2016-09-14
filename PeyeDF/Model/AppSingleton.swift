@@ -27,6 +27,26 @@ import Cocoa
 import Quartz
 import Alamofire
 import XCGLogger
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 /// Used to share states across the whole application, including posting history notifications to store. Contains:
 ///
@@ -38,20 +58,20 @@ class AppSingleton {
     static let refinderStoryboard = NSStoryboard(name: "Refinder", bundle: nil)
     static let tagsStoryboard = NSStoryboard(name: "Tags", bundle: nil)
     static let collaborationStoryboard = NSStoryboard(name: "Collaboration", bundle: nil)
-    static let appDelegate = NSApplication.sharedApplication().delegate! as! AppDelegate
+    static let appDelegate = NSApplication.shared().delegate! as! AppDelegate
     
     /// Static holder for alamofire manager (to use this configuration)
-    static let dimefire: Manager = {
-        var manager = Alamofire.Manager.sharedInstance
-        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-        configuration.HTTPAdditionalHeaders = AppSingleton.dimeHeaders()
+    static let dimefire: Alamofire.SessionManager = {
+        var manager = Alamofire.SessionManager.default
+        let configuration = URLSessionConfiguration.default
+        configuration.httpAdditionalHeaders = AppSingleton.dimeHeaders()
         configuration.timeoutIntervalForRequest = 4 // seconds
         configuration.timeoutIntervalForResource = 4
-        return Alamofire.Manager(configuration: configuration)
+        return Alamofire.SessionManager(configuration: configuration)
     }()
     
     static let log = AppSingleton.createLog()
-    static private(set) var logsURL = NSURL()
+    static fileprivate(set) var logsURL: URL?
     
     /// The dimensions of the screen the application is running within.
     /// It is assumed there is only one screen when using eye tracking.
@@ -62,12 +82,12 @@ class AppSingleton {
     
     /// Returns dime server url
     static var dimeUrl: String = {
-        return NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerURL) as! String
+        return UserDefaults.standard.value(forKey: PeyeConstants.prefDiMeServerURL) as! String
     }()
     
     /// Convenience function to get monitor DPI
     static func getMonitorDPI() -> Int {
-        return NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefMonitorDPI) as! Int
+        return UserDefaults.standard.value(forKey: PeyeConstants.prefMonitorDPI) as! Int
     }
     
     /// Gets DPI programmatically
@@ -76,7 +96,7 @@ class AppSingleton {
             AppSingleton.alertUser("Can't get dpi", infoText: "Using multiple monitors is not supported yet.")
             return nil
         } else {
-            let screen = NSScreen.mainScreen()
+            let screen = NSScreen.main()
             let id = CGMainDisplayID()
             let mmSize = CGDisplayScreenSize(id)
 
@@ -88,69 +108,80 @@ class AppSingleton {
     
     /// Convenience function to get preferred eye
     static func getDominantEye() -> Eye {
-        let eyeRaw = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDominantEye) as! Int
+        let eyeRaw = UserDefaults.standard.value(forKey: PeyeConstants.prefDominantEye) as! Int
         return Eye(rawValue: eyeRaw)!
     }
     
     /// Convenience function to set recently used tags
-    static func updateRecentTags(newTag: String) {
+    static func updateRecentTags(_ newTag: String) {
         /// Recent tags is a list of strings in which the first string is the most recent
-        var recentTags: [String] = NSUserDefaults.standardUserDefaults().valueForKey(TagConstants.defaultsSavedTags) as! [String]
+        var recentTags: [String] = UserDefaults.standard.value(forKey: TagConstants.defaultsSavedTags) as! [String]
         if !recentTags.contains(newTag) {
-            recentTags.insert(newTag, atIndex: 0)
+            recentTags.insert(newTag, at: 0)
             if recentTags.count > TagConstants.nOfSavedTags {
-                recentTags.removeRange(TagConstants.nOfSavedTags..<recentTags.count)
+                recentTags.removeSubrange(TagConstants.nOfSavedTags..<recentTags.count)
             }
-            NSUserDefaults.standardUserDefaults().setValue(recentTags, forKey: TagConstants.defaultsSavedTags)
+            UserDefaults.standard.setValue(recentTags, forKey: TagConstants.defaultsSavedTags)
         }
     }
     
     /// Returns HTTP headers used for DiMe connection
     static func dimeHeaders() -> [String: String] {
-        let user: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerUserName) as! String
-        let password: String = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerPassword) as! String
+        let user: String = UserDefaults.standard.value(forKey: PeyeConstants.prefDiMeServerUserName) as! String
+        let password: String = UserDefaults.standard.value(forKey: PeyeConstants.prefDiMeServerPassword) as! String
         
-        let credentialData = "\(user):\(password)".dataUsingEncoding(NSUTF8StringEncoding)!
-        let base64Credentials = credentialData.base64EncodedStringWithOptions([])
+        let credentialData = "\(user):\(password)".data(using: String.Encoding.utf8)!
+        let base64Credentials = credentialData.base64EncodedString(options: [])
         
         return ["Authorization": "Basic \(base64Credentials)"]
     }
     
-    /// Convenience function to show an alerting alert
+    /// Convenience function to show an alerting alert (with additional info)
     ///
     /// - parameter message: The message to show
-    /// - parameter infoText: If not nil (default), shows additional text
-    static func alertUser(message: String, infoText: String? = nil) {
+    /// - parameter infoText: shows additional text
+    static func alertUser(_ message: String, infoText: String) {
         let myAl = NSAlert()
-        myAl.alertStyle = .Warning
+        myAl.alertStyle = .warning
         myAl.icon = NSImage(named: "NSCaution")
         myAl.messageText = message
-        if let infoText = infoText {
-            myAl.informativeText = infoText
+        myAl.informativeText = infoText
+        DispatchQueue.main.async {
+            myAl.runModal()
         }
-        dispatch_async(dispatch_get_main_queue()) {
+    }
+    
+    /// Convenience function to show an alerting alert (without additional info)
+    ///
+    /// - parameter message: The message to show
+    static func alertUser(_ message: String) {
+        let myAl = NSAlert()
+        myAl.alertStyle = .warning
+        myAl.icon = NSImage(named: "NSCaution")
+        myAl.messageText = message
+        DispatchQueue.main.async {
             myAl.runModal()
         }
     }
     
     /// Set up console and file log
-    private static func createLog() -> XCGLogger {
+    fileprivate static func createLog() -> XCGLogger {
         let dateFormat = "Y'-'MM'-'d'T'HH':'mm':'ssZ"  // date format for string appended to log
-        let dateFormatter = NSDateFormatter()
+        let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = dateFormat
-        let appString = dateFormatter.stringFromDate(NSDate())
+        let appString = dateFormatter.string(from: Date())
         
         var firstLine: String = "Log directory succesfully created / present"
-        let tempURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).URLByAppendingPathComponent(NSBundle.mainBundle().bundleIdentifier!)
+        let tempURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(Bundle.main.bundleIdentifier!)
         do {
-            try NSFileManager.defaultManager().createDirectoryAtURL(tempURL!, withIntermediateDirectories: true, attributes: nil)
+            try FileManager.default.createDirectory(at: tempURL, withIntermediateDirectories: true, attributes: nil)
         } catch {
             firstLine = "Error creating log directory: \(error)"
         }
-        AppSingleton.logsURL = tempURL!
-        let logFilePathURL = tempURL!.URLByAppendingPathComponent("XCGLog_\(appString).log")
-        let newLog = XCGLogger.defaultInstance()
-        newLog.setup(.Debug, showThreadName: true, showLogLevel: true, showFileNames: true, showLineNumbers: true, writeToFile: logFilePathURL, fileLogLevel: .Debug)
+        AppSingleton.logsURL = tempURL
+        let logFilePathURL = tempURL.appendingPathComponent("XCGLog_\(appString).log")
+        let newLog = XCGLogger.default
+        newLog.setup(level: .debug, showThreadName: true, showLevel: true, showFileNames: true, showLineNumbers: true, writeToFile: logFilePathURL, fileLevel: .debug)
         newLog.debug(firstLine)
         
         return newLog

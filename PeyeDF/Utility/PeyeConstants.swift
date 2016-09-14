@@ -71,15 +71,15 @@ class PeyeConstants {
     
     /// Amount of seconds which is required to assume that the user did read a specific document
     /// during a single session
-    static let minTotalReadTime: NSTimeInterval = 60.0
+    static let minTotalReadTime: TimeInterval = 60.0
     
     /// Amount of seconds that are needed before we assume user is reading (after, we start recording the current readingevent).
-    static let minReadTime: NSTimeInterval = 2.0
+    static let minReadTime: TimeInterval = 2.0
     
     /// Amount of seconds after which we assume the user stopped reading.
     /// This always always close (sends to dime) a "live" reading event.
     /// (It is assumed the user went away from keyboard after this time passes).
-    static let maxReadTime: NSTimeInterval = 600
+    static let maxReadTime: TimeInterval = 600
     
     /// Date formatter shared in DiMe submissions (uses date format below)
     static let diMeDateFormatter = PeyeConstants.makeDateFormatter()
@@ -124,15 +124,15 @@ class PeyeConstants {
     static let colourParagraph: NSColor = NSColor(red: 0.40, green: 0.40, blue: 0.40, alpha: 0.75)
     
     /// Default color for paragraphs when showing raw attention value (assuming attVal between 0 and 1)
-    static func colourAttnVal(attnVal: NSNumber) -> NSColor {
-        return NSColor(red: 0.675, green: 0.25, blue: 0.675, alpha: attnVal as CGFloat)
+    static func colourAttnVal(_ attnVal: Double) -> NSColor {
+        return NSColor(red: 0.675, green: 0.25, blue: 0.675, alpha: CGFloat(attnVal))
     }
     
     /// Default color for searched, found and looked at string queries
     static let colourFoundStrings: NSColor = NSColor(red: 0.88, green: 0.89, blue: 0.0, alpha: 0.85)
     
     /// Dictionary of annotation colours for smi
-    static let smiColours: [ReadingClass: NSColor] = [.Paragraph: colourParagraph]
+    static let smiColours: [ReadingClass: NSColor] = [.paragraph: colourParagraph]
     
     /// Colour for highlighted rect (PDFBase.highlightRect)
     static let highlightRectColour = NSColor(red: 0.79, green: 0.99, blue: 0.82, alpha: 0.25)
@@ -155,10 +155,10 @@ class PeyeConstants {
     
     /// The application will auto close when the last window is closed
     /// and this amount of time passed
-    static let closeAfterLaunch: NSTimeInterval = 60 * 60  // one hour
+    static let closeAfterLaunch: TimeInterval = 60 * 60  // one hour
     
     /// Open windows regularly submit a summary event every time this amount of time passes
-    static let regularSummaryEventInterval: NSTimeInterval = 1 * 60
+    static let regularSummaryEventInterval: TimeInterval = 1 * 60
     
     /// Default window width. Make sure this is above min document window width in storyboard.
     static let docWindowWidth: CGFloat = 1100
@@ -225,21 +225,21 @@ class PeyeConstants {
     /// **UserInfo dictionary fields**:
     ///
     /// - "available": Boolean, true if dime went up, false if down
-    static let diMeConnectionNotification = "hiit.PeyeDF.diMeConnectionChange"
+    static let diMeConnectionNotification = Notification.Name("hiit.PeyeDF.diMeConnectionChange")
     
     /// String notifying that Midas' connection status changed
     ///
     /// **UserInfo dictionary fields**:
     ///
     /// - "available": Boolean, true if midas went up, false if down
-    static let midasConnectionNotification = "hiit.PeyeDF.midasConnectionChanged"
+    static let midasConnectionNotification = Notification.Name("hiit.PeyeDF.midasConnectionChanged")
     
     /// String notifying that eyes were lost/seen
     ///
     /// **UserInfo dictionary fields**:
     ///
     /// - "available": Boolean, true if eyes can be seen, false if they were lost
-    static let eyesAvailabilityNotification = "hiit.PeyeDF.eyesAvailabilityNotification"
+    static let eyesAvailabilityNotification = Notification.Name("hiit.PeyeDF.eyesAvailabilityNotification")
     
     /// String identifying the notification sent when a new raw sample (for eye position) is received from midas.
     /// The sample regarding the last (most recent) event is sent
@@ -248,27 +248,27 @@ class PeyeConstants {
     /// - "xpos": last seen position, x
     /// - "ypos": last seen position, y (in SMI coordinate system, which is different from OS X)
     /// - "zpos": last seen position, z (distance from camera)
-    static let midasEyePositionNotification = "hiit.PeyeDF.midasEyePosition"
+    static let midasEyePositionNotification = Notification.Name("hiit.PeyeDF.midasEyePosition")
     
     /// String idenfitying the notification sent when a user manually marks a paragraph
     ///
     /// **UserInfo dictionary fields**:
     /// - "unixtime": the unixtime associated to the marking event
-    static let manualParagraphMarkNotification = "hiit.PeyeDF.manualMarkEvent"
+    static let manualParagraphMarkNotification = Notification.Name("hiit.PeyeDF.manualMarkEvent")
     
     /// String identifying the notification sent when auto annotation is complete
-    static let autoAnnotationComplete = "hiit.PeyeDF.autoAnnotationComplete"
+    static let autoAnnotationComplete = Notification.Name("hiit.PeyeDF.autoAnnotationComplete")
     
     /// String identifying the notification sent when a new document is opened / switched to
-    static let occlusionChangeNotification = "hiit.PeyeDF.occlusionChangeNotification"
+    static let occlusionChangeNotification = Notification.Name("hiit.PeyeDF.occlusionChangeNotification")
     
     /// String identifying the notification sent when a new document is opened / switched to
-    static let documentChangeNotification = "hiit.PeyeDF.documentChangeNotification"
+    static let documentChangeNotification = Notification.Name("hiit.PeyeDF.documentChangeNotification")
     
     // MARK: - Static functions
     
-    private static func makeDateFormatter() -> NSDateFormatter {
-        let dateFormatter = NSDateFormatter()
+    fileprivate static func makeDateFormatter() -> DateFormatter {
+        let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = PeyeConstants.diMeDateFormat
         return dateFormatter
     }

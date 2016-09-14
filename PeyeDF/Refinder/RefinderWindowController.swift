@@ -40,17 +40,17 @@ class RefinderWindowController: NSWindowController, NSWindowDelegate {
         allHistoryController?.delegate = historyDetailController
     }
     
-    func windowDidBecomeMain(notification: NSNotification) {
+    func windowDidBecomeMain(_ notification: Notification) {
         if reloadDataNext {
             reloadData(self)
             reloadDataNext = false
         }
     }
     
-    @IBAction func reloadData(sender: AnyObject) {
+    @IBAction func reloadData(_ sender: AnyObject) {
         if DiMePusher.dimeAvailable {
             // retrieve data
-            dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) {
+            DispatchQueue.global(qos: DispatchQoS.QoSClass.userInitiated).async {
                 self.allHistoryController?.reloadData()
             }
         } else {
@@ -62,11 +62,11 @@ class RefinderWindowController: NSWindowController, NSWindowDelegate {
     
     /// Opens a document corresponding to the current document with the same annotations
     /// as those which are being shown.
-    @IBAction func reOpenDocument(sender: AnyObject?) {
+    @IBAction func reOpenDocument(_ sender: AnyObject?) {
         historyDetailController?.reOpenDocument(self)
     }
     
-    @objc override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
+    @objc override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
         if menuItem.title == "Re-Open" && historyDetailController != nil {
             return historyDetailController!.validateMenuItem(menuItem)
         } else if menuItem.title == "Reload Data" {

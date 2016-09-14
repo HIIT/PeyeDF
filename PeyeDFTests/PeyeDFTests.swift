@@ -55,10 +55,10 @@ class UtilsTest: XCTestCase {
         // testing using a random array
         var randVals = [CGFloat]()
         for _ in 1..<10000 {
-            randVals.append(CGFloat(random()) / 10000.00)
+            randVals.append(CGFloat(arc4random()) / 10000.00)
         }
-        let sortedVals = randVals.sort()
-        let theTarget = CGFloat(random()) / 10000.00
+        let sortedVals = randVals.sorted()
+        let theTarget = CGFloat(arc4random()) / 10000.00
         let foundI = binaryGreaterOnSortedArray(sortedVals, target: theTarget)
         if foundI == sortedVals.count {
             XCTAssert(sortedVals.last! <= theTarget, "Last item + 1 correctly found")
@@ -85,7 +85,7 @@ class UtilsTest: XCTestCase {
     
     func testPerformanceExample() {
         // This is an example of a performance test case.
-        self.measureBlock() {
+        self.measure() {
             // repeats the testBinarySearch() 1000 times
             for _ in 1..<100 {
                 self.testBinarySearch()

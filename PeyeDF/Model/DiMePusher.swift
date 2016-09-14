@@ -35,7 +35,7 @@ class DiMePusher {
     /// Send the given data to dime
     /// - parameter callback: When done calls the callback where the first parameter is a boolean (true if successful) and
     /// the second the id of the returned item (nil if couldn't be found, or operation failed)
-    static func sendToDiMe(dimeData: DiMeBase, callback: ((Bool, Int?) -> Void)? = nil) {
+    static func sendToDiMe(_ dimeData: DiMeBase, callback: ((Bool, Int?) -> Void)? = nil) {
         guard dimeAvailable else {
             callback?(false, nil)
             return
@@ -53,23 +53,13 @@ class DiMePusher {
         
         do {
             // attempt to translate json
-            let options = NSJSONWritingOptions.PrettyPrinted
+            let options = JSONSerialization.WritingOptions.prettyPrinted
             
-            try NSJSONSerialization.dataWithJSONObject(dimeData.getDict(), options: options)
-            /* MF: Data + debug
-            let outData = try NSJSONSerialization.dataWithJSONObject(dimeData.getDict(), options: options)
-            let outString = String(data: outData, encoding: NSUTF8StringEncoding)
-            if let outURL = outString?.dumpToTemp("toDime") {
-                AppSingleton.log.debug("\(outURL.path!) dumped")
-            } else {
-                AppSingleton.log.error("Failed to write dump")
-            }
-            **/
+            try JSONSerialization.data(withJSONObject: dimeData.getDict(), options: options)
             
             // assume json conversion was a success, hence send to dime
             let server_url = AppSingleton.dimeUrl
-            
-            AppSingleton.dimefire.request(Alamofire.Method.POST, server_url + "/data/\(endPoint.rawValue)", parameters: dimeData.getDict(), encoding: Alamofire.ParameterEncoding.JSON).responseJSON {
+            AppSingleton.dimefire.request(server_url + "/data/\(endPoint.rawValue)", parameters: dimeData.getDict(), encoding: JSONEncoding.default).responseJSON {
                 response in
                 if response.result.isFailure {
                     AppSingleton.log.error("Error while reading json response from DiMe: \(response.result.error)")
@@ -98,13 +88,13 @@ class DiMePusher {
     
     /// Attempts to connect to dime. Sends a notification if we succeeded / failed.
     /// Also calls the given callback with a boolean (which is true if operation succeeded) and a response.
-    static func dimeConnect(callback: ((Bool, Response<AnyObject, NSError>) -> ())? = nil) {
+    static func dimeConnect(_ callback: ((Bool, DataResponse<Any>) -> ())? = nil) {
         
         let server_url = AppSingleton.dimeUrl
         
         let dictionaryObject = ["test": "test"]
         
-        AppSingleton.dimefire.request(Alamofire.Method.POST, server_url + "/ping", parameters: dictionaryObject, encoding: Alamofire.ParameterEncoding.JSON).responseJSON {
+        AppSingleton.dimefire.request(server_url + "/ping", parameters: dictionaryObject, encoding: JSONEncoding.default).responseJSON {
             response in
             if response.result.isFailure {
                 // connection failed
@@ -121,14 +111,14 @@ class DiMePusher {
     }
     
     /// Report dime successful / failed
-    private static func updateDimeConnectState(success: Bool) {
+    fileprivate static func updateDimeConnectState(_ success: Bool) {
         if !success {
             dimeAvailable = false
-            NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.diMeConnectionNotification, object: self, userInfo: ["available": false])
+            NotificationCenter.default.post(name: PeyeConstants.diMeConnectionNotification, object: self, userInfo: ["available": false])
         } else {
             // succesfully connected
             dimeAvailable = true
-            NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.diMeConnectionNotification, object: self, userInfo: ["available": true])
+            NotificationCenter.default.post(name: PeyeConstants.diMeConnectionNotification, object: self, userInfo: ["available": true])
         }
     }
     

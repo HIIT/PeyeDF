@@ -28,7 +28,7 @@ import Alamofire
 /// The fixation data receiver specifies a class that can receive new fixation events
 protocol FixationDataDelegate: class {
     
-    func receiveNewFixationData(newData: [SMIFixationEvent])
+    func receiveNewFixationData(_ newData: [SMIFixationEvent])
 }
 
 /// MidasManager is a singleton. It is used to retrieve data from Midas at regular intervals. It keeps a buffer of all retrieved data.
@@ -47,71 +47,71 @@ class MidasManager {
     static let kMaxWarnings = 3
     
     /// How many times the user was warned
-    private(set) var warnings = 0
+    fileprivate(set) var warnings = 0
     
     /// Whether there is a midas connection available
-    private(set) var midasAvailable: Bool = false
+    fileprivate(set) var midasAvailable: Bool = false
     
     /// Last valid distance from screen in mm (defaults to 80 cm)
-    private(set) var lastValidDistance: CGFloat = 800.0
+    fileprivate(set) var lastValidDistance: CGFloat = 800.0
     
     /// Last time for last recorded fixation
-    private var lastFixationUnixtime: Int = 0
+    fileprivate var lastFixationUnixtime: Int = 0
     
     /// Length of buffer in seconds
-    private let kBufferLength: Int = 1
+    fileprivate let kBufferLength: Int = 1
     
     /// Earliest time that eyes were lost (if they were lost)
-    private var eyesLastSeen: NSDate?
+    fileprivate var eyesLastSeen: Date?
     
     /// If eyes are lost for this whole period (seconds) an eye lost notification is sent
-    let kEyesMaxLostDuration: NSTimeInterval = 7.0
+    let kEyesMaxLostDuration: TimeInterval = 7.0
     
     /// Whether eyes were lost for at least kEyesMaxLostDuration
-    private(set) var eyesLost: Bool = true
+    fileprivate(set) var eyesLost: Bool = true
     
     /// How often a request is made to midas (seconds)
-    private let kFetchInterval: NSTimeInterval = 0.500
+    fileprivate let kFetchInterval: TimeInterval = 0.500
     
     /// Testing url used by midas
-    private let kTestURL = "http://\(kMidasAddress):\(kMidasPort)/test"
+    fileprivate let kTestURL = "http://\(kMidasAddress):\(kMidasPort)/test"
     
     /// Fixation data delegate, to which fixation data will be sent
-    private var fixationDelegate: FixationDataDelegate?
+    fileprivate var fixationDelegate: FixationDataDelegate?
     
     /// SMI-type last timestamp of valid data received
-    private var lastValidSMITime: Int = -1
+    fileprivate var lastValidSMITime: Int = -1
     
     /// Dominant eye
-    lazy private var dominantEye: Eye = {
+    lazy fileprivate var dominantEye: Eye = {
         return AppSingleton.getDominantEye()
     }()
     
     /// Fetching of eye tracking events, TO / FROM Midas Manager, and timers related to this activity, are all run on this queue to prevent resource conflicts.
-    static let sharedQueue = dispatch_queue_create("hiit.MidasManager.sharedQueue", DISPATCH_QUEUE_CONCURRENT)
+    static let sharedQueue = DispatchQueue(label: "hiit.MidasManager.sharedQueue", attributes: DispatchQueue.Attributes.concurrent)
     
     /// Time to regularly fetch data from Midas
-    private var fetchTimer: NSTimer?
+    fileprivate var fetchTimer: Timer?
     
     /// What kind of data we want to get from midas
-    private enum MidasFetchKind {
+    fileprivate enum MidasFetchKind {
         /// Eye position X, Y and Z with respect to camera, to know how the user is standing in front of eye tracker
-        case EyePosition
+        case eyePosition
         /// Gets an array of all fixations since last fetch
-        case Fixations
+        case fixations
     }
     
     // MARK: - External functions
     
     /// Registers a new fixation delegate, able to receive fixation data. Overwrites the previous one.
-    func setFixationDelegate(newDelegate: FixationDataDelegate) {
+    func setFixationDelegate(_ newDelegate: FixationDataDelegate) {
         if fixationDelegate !== newDelegate {
             fixationDelegate = newDelegate
         }
     }
     
     /// Unregisters the current fixation delegate. The one that wants to unregister itself should call this function
-    func unsetFixationDelegate(oldDelegate: FixationDataDelegate) {
+    func unsetFixationDelegate(_ oldDelegate: FixationDataDelegate) {
         if fixationDelegate === oldDelegate {
             fixationDelegate = nil
         }
@@ -124,7 +124,7 @@ class MidasManager {
         
         if !midasAvailable {
             // Checks if midas is available, if not doesn't start
-            Alamofire.request(.GET, kTestURL).responseJSON {
+            Alamofire.request(kTestURL).responseJSON {
                 response in
                 
                 if response.result.isFailure {
@@ -132,11 +132,11 @@ class MidasManager {
                     AppSingleton.log.error("Midas is down: \(response.result.error!)")
                     AppSingleton.alertUser("Midas is down", infoText: "Initial connection to midas failed")
                 } else if self.fetchTimer == nil {
-                    NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.midasConnectionNotification, object: self, userInfo: ["available": true])
+                    NotificationCenter.default.post(name: PeyeConstants.midasConnectionNotification, object: self, userInfo: ["available": true])
                     self.midasAvailable = true
-                    dispatch_sync(MidasManager.sharedQueue) {
-                        self.fetchTimer = NSTimer(timeInterval: self.kFetchInterval, target: self, selector: #selector(self.fetchTimerHit(_:)), userInfo: nil, repeats: true)
-                        NSRunLoop.currentRunLoop().addTimer(self.fetchTimer!, forMode: NSRunLoopCommonModes)
+                    MidasManager.sharedQueue.async {
+                        self.fetchTimer = Timer(timeInterval: self.kFetchInterval, target: self, selector: #selector(self.fetchTimerHit(_:)), userInfo: nil, repeats: true)
+                        RunLoop.current.add(self.fetchTimer!, forMode: RunLoopMode.commonModes)
                     }
                 }
             }
@@ -150,42 +150,42 @@ class MidasManager {
         
         // stop timer
         if let timer = fetchTimer {
-            dispatch_sync(MidasManager.sharedQueue) {
+            MidasManager.sharedQueue.sync {
                     timer.invalidate()
                }
             fetchTimer = nil
         }
         
         // post notification
-        NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.midasConnectionNotification, object: self, userInfo: ["available": false])
+        NotificationCenter.default.post(name: PeyeConstants.midasConnectionNotification, object: self, userInfo: ["available": false])
     }
     
     /// Sets dominant eye
-    func setDominantEye(eye: Eye) {
+    func setDominantEye(_ eye: Eye) {
         dominantEye = eye
     }
     
     // MARK: - Internal functions
     
     /// Fetching timer regularly calls this
-    @objc private func fetchTimerHit(timer: NSTimer) {
-        dispatch_async(MidasManager.sharedQueue) {
-            self.fetchData(PeyeConstants.midasRawNodeName, channels: PeyeConstants.midasRawChannelNames, fetchKind: .EyePosition)
-            self.fetchData(PeyeConstants.midasEventNodeName, channels: PeyeConstants.midasEventChannelNames, fetchKind: .Fixations)
+    @objc fileprivate func fetchTimerHit(_ timer: Timer) {
+        MidasManager.sharedQueue.async {
+            self.fetchData(PeyeConstants.midasRawNodeName, channels: PeyeConstants.midasRawChannelNames, fetchKind: .eyePosition)
+            self.fetchData(PeyeConstants.midasEventNodeName, channels: PeyeConstants.midasEventChannelNames, fetchKind: .fixations)
         }
     }
     
     /// Gets data from the given node, for the given channels
-    private func fetchData(nodeName: String, channels: [String], fetchKind: MidasFetchKind) {
+    fileprivate func fetchData(_ nodeName: String, channels: [String], fetchKind: MidasFetchKind) {
         
         let chanString = midasChanString(channels)
         
         let fetchString = "http://\(MidasManager.kMidasAddress):\(MidasManager.kMidasPort)/\(nodeName)/data/{\(chanString), \"time_window\":[\(kBufferLength),\(kBufferLength)]}"
         
-        let manager = Alamofire.Manager.sharedInstance
-        let midasUrl = NSURL(string: fetchString.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!)
+        let manager = Alamofire.SessionManager.default
+        let midasUrl = URL(string: fetchString.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!)
         
-        let urlRequest = NSURLRequest(URL: midasUrl!)
+        let urlRequest = URLRequest(url: midasUrl!)
         let request = manager.request(urlRequest)
         
         request.responseJSON {
@@ -204,13 +204,13 @@ class MidasManager {
     }
  
     /// Called when new data arrives (in fetchdata, Alamofire, hence asynchronously)
-    private func gotData(ofKind fetchKind: MidasFetchKind, json: JSON) {
+    fileprivate func gotData(ofKind fetchKind: MidasFetchKind, json: JSON) {
         switch fetchKind {
-        case .EyePosition:
+        case .eyePosition:
             // send last eye position, if there is actually data
             if json[0]["return"]["timestamp"]["data"].arrayValue.count > 0 {
                 let lastPos = SMIEyePosition(fromLastInJSON: json, dominantEye: dominantEye)
-                NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.midasEyePositionNotification, object: self, userInfo: lastPos.asDict())
+                NotificationCenter.default.post(name: PeyeConstants.midasEyePositionNotification, object: self, userInfo: lastPos.asDict())
                 
                 // check if the entry buffer is all zeros (i.e. eye lost for 1 whole second, assuming a kBufferLength of 1)
                 newDataCheck(json)
@@ -220,7 +220,7 @@ class MidasManager {
                     self.lastValidDistance = CGFloat(lastPos.EyePositionZ)
                 }
             }
-        case .Fixations:
+        case .fixations:
             // fetch fixations which arrived after last recorded fixation and after the user started reading, whichever comes latest
             let minUnixTime = max(lastFixationUnixtime, HistoryManager.sharedManager.readingUnixTime)
             if let (newFixations, lut) = getTimedFixationsAfter(unixtime: minUnixTime, forEye: dominantEye, fromJSON: json) {
@@ -236,7 +236,7 @@ class MidasManager {
     /// Checks if eye buffer contains old timestamps, or if it is zeroed. If the eyes were lost, checks how long ago they were first lost. If they were lost for long enough, sends a notification.
     /// Sends a notification also if the eyes were previously lost, and are now found
     /// - parameter json: the json object from alamofire
-    private func newDataCheck(json: JSON) {
+    fileprivate func newDataCheck(_ json: JSON) {
         var eyeString: String
         switch dominantEye {
         case .left:
@@ -273,26 +273,26 @@ class MidasManager {
             self.eyesLastSeen = nil
             
             // send found notification
-            NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.eyesAvailabilityNotification, object: self, userInfo: ["available": true])
+            NotificationCenter.default.post(name: PeyeConstants.eyesAvailabilityNotification, object: self, userInfo: ["available": true])
         } else if !self.eyesLost && !eyesFound {
             // check when eyes were lost before (if so) if period exceeds constant, send notification
             if let prevLostDate = self.eyesLastSeen {
-                let shiftedDate = prevLostDate.dateByAddingTimeInterval(kEyesMaxLostDuration)
+                let shiftedDate = prevLostDate.addingTimeInterval(kEyesMaxLostDuration)
                 // if the current date comes after the shifted date, send notification
-                if NSDate().compare(shiftedDate) == NSComparisonResult.OrderedDescending {
+                if Date().compare(shiftedDate) == ComparisonResult.orderedDescending {
                     
                         self.eyesLost = true
-                    NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.eyesAvailabilityNotification, object: self, userInfo: ["available": false])
+                    NotificationCenter.default.post(name: PeyeConstants.eyesAvailabilityNotification, object: self, userInfo: ["available": false])
                 }
             } else {
-                self.eyesLastSeen = NSDate()
+                self.eyesLastSeen = Date()
             }
         }
     }
 }
 
 /// Given a list of channels, generates a string (which should be later concatenated in a url, hence needs to be converted using stringByAddingPercentEncoding) for the midas url request.
-func midasChanString(listOfChannels: [String]) -> String {
+func midasChanString(_ listOfChannels: [String]) -> String {
     // example of a request url:
     // http://127.0.0.1:8080/sample_eyestream/data/{"channels":["x", "y"],"time_window":[0.010, 0.010]}
     
@@ -300,7 +300,7 @@ func midasChanString(listOfChannels: [String]) -> String {
     let prefix = "\"channels\":["
     let suffix = "]"
     
-    let firstChan = fromChannels.removeAtIndex(0)
+    let firstChan = fromChannels.remove(at: 0)
     var outString = prefix + "\"" + firstChan + "\""
     
     for chan in fromChannels {

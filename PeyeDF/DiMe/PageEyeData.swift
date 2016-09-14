@@ -25,15 +25,15 @@
 import Foundation
 
 struct PageEyeDataChunk: Dictionariable {
-    var Xs: [NSNumber]
-    var Ys: [NSNumber]
+    var Xs: [Double]
+    var Ys: [Double]
     /// pupil sizes
-    var Ps: [NSNumber]?
-    var startTimes: [NSNumber]
-    var endTimes: [NSNumber]
-    var durations: [NSNumber]
+    var Ps: [Double]?
+    var startTimes: [Int]
+    var endTimes: [Int]
+    var durations: [Int]
     var pageIndex: Int?
-    let scaleFactor: NSNumber
+    let scaleFactor: Double
     let unixt: Int
     
     /// unixtimes are not sent to dime, but are used to filter fixations
@@ -41,7 +41,7 @@ struct PageEyeDataChunk: Dictionariable {
     var unixtimes: [Int]
     
 
-    init(Xs: [NSNumber], Ys: [NSNumber], startTimes: [NSNumber], endTimes: [NSNumber], durations: [NSNumber], unixtimes: [Int], pageIndex: Int, scaleFactor: NSNumber) {
+    init(Xs: [Double], Ys: [Double], startTimes: [Int], endTimes: [Int], durations: [Int], unixtimes: [Int], pageIndex: Int, scaleFactor: Double) {
         self.Xs = Xs
         self.Ys = Ys
         self.startTimes = startTimes
@@ -50,10 +50,10 @@ struct PageEyeDataChunk: Dictionariable {
         self.pageIndex = pageIndex
         self.unixtimes = unixtimes
         self.scaleFactor = scaleFactor
-        self.unixt = NSDate().unixTime
+        self.unixt = Date().unixTime
     }
     
-    init(Xs: [NSNumber], Ys: [NSNumber], Ps: [NSNumber], startTimes: [NSNumber], endTimes: [NSNumber], durations: [NSNumber], unixtimes: [Int], pageIndex: Int, scaleFactor: NSNumber) {
+    init(Xs: [Double], Ys: [Double], Ps: [Double], startTimes: [Int], endTimes: [Int], durations: [Int], unixtimes: [Int], pageIndex: Int, scaleFactor: Double) {
         self.Xs = Xs
         self.Ys = Ys
         self.Ps = Ps
@@ -63,26 +63,26 @@ struct PageEyeDataChunk: Dictionariable {
         self.pageIndex = pageIndex
         self.unixtimes = unixtimes
         self.scaleFactor = scaleFactor
-        self.unixt = NSDate().unixTime
+        self.unixt = Date().unixTime
     }
     
     /// Creates data supplied from a json in dime format
     init(fromDime json: JSON) {
-        self.Xs = json["Xs"].arrayObject! as! [NSNumber]
-        self.Ys = json["Ys"].arrayObject! as! [NSNumber]
-        if let Ps = json["Ps"].arrayObject as? [NSNumber] {
+        self.Xs = json["Xs"].arrayObject! as! [Double]
+        self.Ys = json["Ys"].arrayObject! as! [Double]
+        if let Ps = json["Ps"].arrayObject as? [Double] {
             self.Ps = Ps
         }
-        self.startTimes = json["startTimes"].arrayObject! as! [NSNumber]
-        self.endTimes = json["endTimes"].arrayObject! as! [NSNumber]
-        self.durations = json["durations"].arrayObject! as! [NSNumber]
+        self.startTimes = json["startTimes"].arrayObject! as! [Int]
+        self.endTimes = json["endTimes"].arrayObject! as! [Int]
+        self.durations = json["durations"].arrayObject! as! [Int]
         self.pageIndex = json["pageIndex"].intValue
         self.scaleFactor = json["scaleFactor"].doubleValue
         self.unixt = json["unixt"].intValue
         self.unixtimes = [Int]()
     }
     
-    mutating func appendEvent(x: NSNumber, y: NSNumber, startTime: NSNumber, endTime: NSNumber, duration: NSNumber, unixtime: Int) {
+    mutating func appendEvent(_ x: Double, y: Double, startTime: Int, endTime: Int, duration: Int, unixtime: Int) {
         self.Xs.append(x)
         self.Ys.append(y)
         self.startTimes.append(startTime)
@@ -91,7 +91,7 @@ struct PageEyeDataChunk: Dictionariable {
         self.unixtimes.append(unixtime)
     }
     
-    mutating func appendEvent(x: NSNumber, y: NSNumber, p: NSNumber, startTime: NSNumber, endTime: NSNumber, duration: NSNumber, unixtime: Int) {
+    mutating func appendEvent(_ x: Double, y: Double, p: Double, startTime: Int, endTime: Int, duration: Int, unixtime: Int) {
         self.Xs.append(x)
         self.Ys.append(y)
         self.Ps!.append(p)
@@ -101,35 +101,35 @@ struct PageEyeDataChunk: Dictionariable {
         self.unixtimes.append(unixtime)
     }
     
-    mutating func appendData(Xs: [NSNumber], Ys: [NSNumber], startTimes: [NSNumber], endTimes: [NSNumber], durations: [NSNumber], unixtimes: [Int]) {
-        self.Xs.appendContentsOf(Xs)
-        self.Ys.appendContentsOf(Ys)
-        self.startTimes.appendContentsOf(startTimes)
-        self.endTimes.appendContentsOf(endTimes)
-        self.durations.appendContentsOf(durations)
-        self.unixtimes.appendContentsOf(unixtimes)
+    mutating func appendData(_ Xs: [Double], Ys: [Double], startTimes: [Int], endTimes: [Int], durations: [Int], unixtimes: [Int]) {
+        self.Xs.append(contentsOf: Xs)
+        self.Ys.append(contentsOf: Ys)
+        self.startTimes.append(contentsOf: startTimes)
+        self.endTimes.append(contentsOf: endTimes)
+        self.durations.append(contentsOf: durations)
+        self.unixtimes.append(contentsOf: unixtimes)
     }
     
-    mutating func appendData(Xs: [NSNumber], Ys: [NSNumber], Ps: [NSNumber], startTimes: [NSNumber], endTimes: [NSNumber], durations: [NSNumber], unixtimes: [Int]) {
-        self.Xs.appendContentsOf(Xs)
-        self.Ys.appendContentsOf(Ys)
-        self.Ps!.appendContentsOf(Ps)
-        self.startTimes.appendContentsOf(startTimes)
-        self.endTimes.appendContentsOf(endTimes)
-        self.durations.appendContentsOf(durations)
-        self.unixtimes.appendContentsOf(unixtimes)
+    mutating func appendData(_ Xs: [Double], Ys: [Double], Ps: [Double], startTimes: [Int], endTimes: [Int], durations: [Int], unixtimes: [Int]) {
+        self.Xs.append(contentsOf: Xs)
+        self.Ys.append(contentsOf: Ys)
+        self.Ps!.append(contentsOf: Ps)
+        self.startTimes.append(contentsOf: startTimes)
+        self.endTimes.append(contentsOf: endTimes)
+        self.durations.append(contentsOf: durations)
+        self.unixtimes.append(contentsOf: unixtimes)
     }
     
     /// Check if xs, ys and timepoints are all the same length, traps if not.
     func autoCheck() {
         if let Ps = self.Ps {
             if !(Xs.count == Ys.count && Ys.count == startTimes.count && startTimes.count == Ps.count) {
-                let exception = NSException(name: "Incorrect count", reason: nil, userInfo: nil)
+                let exception = NSException(name: NSExceptionName(rawValue: "Incorrect count"), reason: nil, userInfo: nil)
                 exception.raise()
             }
         } else {
             if !(Xs.count == Ys.count && Ys.count == startTimes.count) {
-                let exception = NSException(name: "Incorrect count", reason: nil, userInfo: nil)
+                let exception = NSException(name: NSExceptionName(rawValue: "Incorrect count"), reason: nil, userInfo: nil)
                 exception.raise()
             }
         }
@@ -137,22 +137,22 @@ struct PageEyeDataChunk: Dictionariable {
     
     /// the passed unixtimes will cause eye data with a unixtime within a range of
     /// excludeEyeUnixTimeMs of the given paramter to be removed from the current eye data
-    mutating func filterData(excludeUnixtimes: [Int]) {
+    mutating func filterData(_ excludeUnixtimes: [Int]) {
         for i in 0 ..< excludeUnixtimes.count {
             var j = 0
             while j < unixtimes.count {
                 if unixtimes[j] > excludeUnixtimes[i] - PeyeConstants.excludeEyeUnixTimeMs &&
                     unixtimes[j] < excludeUnixtimes[i] + PeyeConstants.excludeEyeUnixTimeMs {
                         
-                    unixtimes.removeAtIndex(j)
-                    Xs.removeAtIndex(j)
-                    Ys.removeAtIndex(j)
+                    unixtimes.remove(at: j)
+                    Xs.remove(at: j)
+                    Ys.remove(at: j)
                     if let _ = Ps {
-                        Ps!.removeAtIndex(j)
+                        Ps!.remove(at: j)
                     }
-                    startTimes.removeAtIndex(j)
-                    endTimes.removeAtIndex(j)
-                    durations.removeAtIndex(j)
+                    startTimes.remove(at: j)
+                    endTimes.remove(at: j)
+                    durations.remove(at: j)
                         
                 } else {
                     j += 1
@@ -161,10 +161,10 @@ struct PageEyeDataChunk: Dictionariable {
         }
     }
     
-    func getDict() -> [String : AnyObject] {
+    func getDict() -> [String : Any] {
         
         // save numbers here to remove invalid ones
-        var arraysToCheck = [Xs, Ys, startTimes, endTimes, durations]
+        var arraysToCheck: [[Validable]] = [Xs, Ys, startTimes, endTimes, durations]
         if let _ = self.Ps {
             arraysToCheck.append(self.Ps!)
         }
@@ -176,7 +176,7 @@ struct PageEyeDataChunk: Dictionariable {
             for a in 0 ..< arraysToCheck.count {
                 if !arraysToCheck[a][i].isValid() {
                     for aa in 0 ..< arraysToCheck.count {
-                        arraysToCheck[aa].removeAtIndex(i)
+                        arraysToCheck[aa].remove(at: i)
                     }
                     foundInvalid = true
                     AppSingleton.log.error("Found invalid NSNumber")
@@ -188,7 +188,7 @@ struct PageEyeDataChunk: Dictionariable {
             }
         }
         
-        var retDict = [String: AnyObject]()
+        var retDict = [String: Any]()
         
         if let _ = self.Ps {
             retDict["Ps"] = arraysToCheck[5]

@@ -51,13 +51,13 @@ func verticalFocalPoints(fromPoint point: NSPoint, zoomLevel: CGFloat, pageRect:
 }
 
 /// Returns how many points should be covered by the participant's fovea at the current distance, given a zoom level (scale factor) and monitor DPI
-func pointSpan(zoomLevel zoomLevel: CGFloat, dpi: Int, distancemm: CGFloat) -> CGFloat {
+func pointSpan(zoomLevel: CGFloat, dpi: Int, distancemm: CGFloat) -> CGFloat {
     return inchSpan(distancemm) * CGFloat(dpi) / zoomLevel
 }
 
 /// Returns how many inches should be covered by the participant's fovea at the given distance in
 /// millimetres
-func inchSpan(distancemm: CGFloat) -> CGFloat {
+func inchSpan(_ distancemm: CGFloat) -> CGFloat {
     let inchFromScreen: CGFloat = mmToInch(distancemm)
     let defaultAngle: CGFloat = degToRad(3)  // fovea's covered angle
     return 2 * inchFromScreen * tan(defaultAngle/2)
@@ -75,6 +75,6 @@ func getSeenRect(fromPoint point: NSPoint, zoomLevel: CGFloat) -> NSRect {
 }
 
 /// Converts degrees to radians (xcode tan function is in radians)
-func degToRad(deg: CGFloat) -> CGFloat {
+func degToRad(_ deg: CGFloat) -> CGFloat {
     return deg * CGFloat(M_PI) / 180.0
 }

@@ -32,16 +32,16 @@ class ReadingEvent: Event, NSCopying {
     let sessionId: String
     
     // page eye data can only be modified by addEyeData(...), can't be initialized
-    private(set) var pageEyeData = [PageEyeDataChunk]()
+    fileprivate(set) var pageEyeData = [PageEyeDataChunk]()
     
-    let infoElemId: NSString
-    private(set) var pageRects: [ReadingRect]
+    let infoElemId: String
+    fileprivate(set) var pageRects: [ReadingRect]
     
-    private(set) var pageLabels: [String]?
-    private(set) var pageNumbers: [Int]?
+    fileprivate(set) var pageLabels: [String]?
+    fileprivate(set) var pageNumbers: [Int]?
     
-    private(set) var plainTextContent: NSString?
-    private(set) var dpi: Int?
+    fileprivate(set) var plainTextContent: String?
+    fileprivate(set) var dpi: Int?
     
     /**
         Creates this reading event.
@@ -54,7 +54,7 @@ class ReadingEvent: Event, NSCopying {
         - parameter scaleFactor: Sale factor of page on screen
         - parameter infoElemId: id referring to the info element referenced by this event (document id)
     */
-    init(sessionId: String, pageNumbers: [Int]?, pageLabels: [String]?, pageRects: [ReadingRect], plainTextContent: NSString?, infoElemId: NSString) {
+    init(sessionId: String, pageNumbers: [Int]?, pageLabels: [String]?, pageRects: [ReadingRect], plainTextContent: String?, infoElemId: String) {
         self.infoElemId = infoElemId
         self.sessionId = sessionId
         self.pageLabels = pageLabels
@@ -89,7 +89,7 @@ class ReadingEvent: Event, NSCopying {
             }
         }
         
-        let dateCreated: NSDate = NSDate(timeIntervalSince1970: NSTimeInterval(json["start"].intValue / 1000))
+        let dateCreated: Date = Date(timeIntervalSince1970: TimeInterval(json["start"].intValue / 1000))
         self.pageRects = [ReadingRect]()
         for pageRect in json["pageRects"].arrayValue {
             self.pageRects.append(ReadingRect(fromJson: pageRect))
@@ -103,29 +103,29 @@ class ReadingEvent: Event, NSCopying {
     }
     
     /// Adds eye tracking data to this reading event
-    func addEyeData(newData: PageEyeDataChunk) {
+    func addEyeData(_ newData: PageEyeDataChunk) {
         pageEyeData.append(newData)
     }
     
     /// Adds a reading rect to the current rectangle list
-    func addRect(newRect: ReadingRect) {
+    func addRect(_ newRect: ReadingRect) {
         self.pageRects.append(newRect)
     }
     
     /// Appends a list of reading rects to the current rectangle list
-    func extendRects(newRects: [ReadingRect]) {
-        self.pageRects.appendContentsOf(newRects)
+    func extendRects(_ newRects: [ReadingRect]) {
+        self.pageRects.append(contentsOf: newRects)
     }
     
     /// Sets current rects with a new set of rects.
     /// - Warning: This can break associations between page numbers and eye data chunks, make
     /// sure this is not done across events coming from different sources.
-    func setRects(newRects: [ReadingRect]) {
+    func setRects(_ newRects: [ReadingRect]) {
         pageRects = newRects
     }
     
     /// Returns dictionary for this reading event. Overridden to allow custom values
-    override func getDict() -> [String : AnyObject] {
+    override func getDict() -> [String : Any] {
         var retDict = theDictionary
         
         retDict["sessionId"] = sessionId
@@ -147,7 +147,7 @@ class ReadingEvent: Event, NSCopying {
         }
         retDict["pageRects"] = pageRects.asDictArray()
         
-        var infoElemDict = [String: AnyObject]()
+        var infoElemDict = [String: Any]()
         infoElemDict["@type"] = "ScientificDocument"
         infoElemDict["type"] = "http://www.hiit.fi/ontologies/dime/#ScientificDocument"
         infoElemDict["appId"] = infoElemId
@@ -164,7 +164,7 @@ class ReadingEvent: Event, NSCopying {
     /// Makes a deep copy of itself
     ///
     /// - parameter zone: this parameter is ignored
-    func copyWithZone(zone: NSZone) -> AnyObject {
+    func copy(with zone: NSZone?) -> Any {
         let newEvent = ReadingEvent(sessionId: self.sessionId, pageNumbers: self.pageNumbers!, pageLabels: self.pageLabels!, pageRects: self.pageRects, plainTextContent: plainTextContent, infoElemId: self.infoElemId)
         newEvent.dpi = self.dpi
         return newEvent

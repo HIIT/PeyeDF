@@ -27,7 +27,7 @@ import Cocoa
 
 /// A protocol that allows a delegate to notify that the search panel was collapsed/uncollapsed.
 @objc protocol SearchPanelCollapseDelegate: class {
-    func searchCollapseAction(wasCollapsed: Bool)
+    func searchCollapseAction(_ wasCollapsed: Bool)
 }
 
 /// The main split controller contains the search panel (top) and two other split views (bottom)
@@ -52,7 +52,7 @@ class MainSplitController: NSSplitViewController {
         let tw: NSSplitView = self.splitView as NSSplitView
         let collState = checkCollapseStatus(tw)
         if collState {
-            tw.setPosition(PeyeConstants.defaultSearchPanelViewHeight, ofDividerAtIndex: 0)
+            tw.setPosition(PeyeConstants.defaultSearchPanelViewHeight, ofDividerAt: 0)
         }
         // let the delegate know what happened
         searchCollapseDelegate?.searchCollapseAction(collState)
@@ -65,22 +65,22 @@ class MainSplitController: NSSplitViewController {
         // let the delegate know what happened
         searchCollapseDelegate?.searchCollapseAction(collState)
         if collState {
-            tw.setPosition(PeyeConstants.defaultSearchPanelViewHeight, ofDividerAtIndex: 0)
+            tw.setPosition(PeyeConstants.defaultSearchPanelViewHeight, ofDividerAt: 0)
             searchPanelController?.makeSearchFieldFirstResponderWithDelay()
         } else {
-            tw.setPosition(0, ofDividerAtIndex: 0)
+            tw.setPosition(0, ofDividerAt: 0)
         }
     }
     
     
     /// Overriding this method to include delegate communication
-    override func splitView(splitView: NSSplitView, shouldCollapseSubview subview: NSView, forDoubleClickOnDividerAtIndex dividerIndex: Int) -> Bool {
+    override func splitView(_ splitView: NSSplitView, shouldCollapseSubview subview: NSView, forDoubleClickOnDividerAt dividerIndex: Int) -> Bool {
         searchCollapseDelegate?.searchCollapseAction(true)
-        return super.splitView(splitView, shouldCollapseSubview: subview, forDoubleClickOnDividerAtIndex: dividerIndex)
+        return super.splitView(splitView, shouldCollapseSubview: subview, forDoubleClickOnDividerAt: dividerIndex)
     }
     
     /// Overriding this method to include delegate communication
-    override func splitViewDidResizeSubviews(notification: NSNotification) {
+    override func splitViewDidResizeSubviews(_ notification: Notification) {
         let tw = notification.object as! NSSplitView
         let collState = checkCollapseStatus(tw)
         searchCollapseDelegate?.searchCollapseAction(collState)
@@ -90,7 +90,7 @@ class MainSplitController: NSSplitViewController {
     ///
     /// - parameter splitView: The splitview containing the search (index 0) and doc split (index 1)
     /// - returns: false if not collapsed (or couldn't be found) true if collapsed
-    func checkCollapseStatus(splitView: NSSplitView) -> Bool {
+    func checkCollapseStatus(_ splitView: NSSplitView) -> Bool {
         let subw = splitView.subviews[0]
         if splitView.isSubviewCollapsed(subw) || subw.visibleRect.height < PeyeConstants.minSearchPanelViewHeight {
             return true

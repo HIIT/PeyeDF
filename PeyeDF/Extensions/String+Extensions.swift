@@ -29,10 +29,11 @@ extension String {
     /// Returns an array of the words that compose the string (skipping space and other punctuation). Returns nil if no words were found.
     func words() -> [String]? {
         
-        let range = self.startIndex ..< self.endIndex
         var words = [String]()
         
-        self.enumerateSubstringsInRange(range, options: NSStringEnumerationOptions.ByWords) { substring, _, _, _ in
+        self.enumerateSubstrings(in: self.startIndex ..< self.endIndex,
+                                 options: NSString.EnumerationOptions.byWords)
+        { substring, _, _, _ in
             if let s = substring {
                 words.append(s)
             }
@@ -63,33 +64,33 @@ extension String {
     }
     
     /// Removes the character(s) from this string
-    mutating func removeChars(theChars: [Character]) {
+    mutating func removeChars(_ theChars: [Character]) {
         self = String(characters.filter({!theChars.contains($0)}))
     }
     
     /// Removes the character(s) and returns a new string
-    @warn_unused_result(mutable_variant="withoutChars")
-    func withoutChars(theChars: [Character]) -> String {
+    
+    func withoutChars(_ theChars: [Character]) -> String {
         return String(self.characters.filter({!theChars.contains($0)}))
     }
     
     /// Dumps a string to a file in the temporary directory.
     /// The title will be prefixed to the name of the output file (before the date/time).
     /// Returns url of the written-to file (if successful, otherwise nil).
-    func dumpToTemp(title: String) -> NSURL? {
+    func dumpToTemp(_ title: String) -> URL? {
         // Date formatter similar to XCGLogger
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.locale = NSLocale.currentLocale()
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale.current
         dateFormatter.dateFormat = "_yyyy-MM-dd_HH:mm:ss.SSS"
-        let dateString = dateFormatter.stringFromDate(NSDate())
+        let dateString = dateFormatter.string(from: Date())
         let outFilename = title + dateString + ".txt"
         
         
-        var tempURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).URLByAppendingPathComponent(NSBundle.mainBundle().bundleIdentifier!)
-        tempURL = tempURL!.URLByAppendingPathComponent(outFilename)
+        var tempURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(Bundle.main.bundleIdentifier!)
+        tempURL = tempURL.appendingPathComponent(outFilename)
         
         do {
-            try self.writeToURL(tempURL!, atomically: true, encoding: NSUTF8StringEncoding)
+            try self.write(to: tempURL, atomically: true, encoding: String.Encoding.utf8)
             return tempURL
         } catch {
             return nil
@@ -98,21 +99,21 @@ extension String {
     
     /// Returns SHA1 digest for this string
     func sha1() -> String {
-        let data = self.dataUsingEncoding(NSUTF8StringEncoding)!
-        var digest = [UInt8](count:Int(CC_SHA1_DIGEST_LENGTH), repeatedValue: 0)
-        CC_SHA1(data.bytes, CC_LONG(data.length), &digest)
+        let data = self.data(using: String.Encoding.utf8)!
+        var digest = [UInt8](repeating: 0, count: Int(CC_SHA1_DIGEST_LENGTH))
+        CC_SHA1((data as NSData).bytes, CC_LONG(data.count), &digest)
         let hexBytes = digest.map { String(format: "%02hhx", $0) }
-        return hexBytes.joinWithSeparator("")
+        return hexBytes.joined(separator: "")
     }
     
     /// Trims whitespace and newlines using foundation
     func trimmed() -> String {
-        let nss: NSString = self
-        return nss.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        let nss: NSString = self as NSString
+        return nss.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
     }
     
     /// Checks if this string contains the given character
-    func containsChar(theChar: Character) -> Bool {
+    func containsChar(_ theChar: Character) -> Bool {
         for c in self.characters {
             if c == theChar {
                 return true
@@ -122,7 +123,7 @@ extension String {
     }
     
     /// Counts occurrences of char within this string
-    func countOfChar(theChar: Character) -> Int {
+    func countOfChar(_ theChar: Character) -> Int {
         var count = 0
         for c in self.characters {
             if c == theChar {
@@ -133,15 +134,15 @@ extension String {
     }
     
     /// Splits the string, trimming whitespaces, between the given characters (note: slow for very long strings)
-    func split(theChar: Character) -> [String]? {
+    func split(_ theChar: Character) -> [String]? {
         var outVal = [String]()
         var remainingString = self
         while remainingString.containsChar(theChar) {
             var outString = ""
-            var nextChar = remainingString.removeAtIndex(remainingString.startIndex)
+            var nextChar = remainingString.remove(at: remainingString.startIndex)
             while nextChar != theChar {
                 outString.append(nextChar)
-                nextChar = remainingString.removeAtIndex(remainingString.startIndex)
+                nextChar = remainingString.remove(at: remainingString.startIndex)
             }
             if !outString.trimmed().isEmpty {
                 outVal.append(outString.trimmed())
@@ -158,8 +159,8 @@ extension String {
     }
     
     /// Skips the first x characters
-    func skipPrefix(nOfChars: Int) -> String {
-        return self.substringFromIndex(self.startIndex.advancedBy(nOfChars))
+    func skipPrefix(_ nOfChars: Int) -> String {
+        return self.substring(from: self.characters.index(self.startIndex, offsetBy: nOfChars))
     }
     
 }

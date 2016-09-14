@@ -30,22 +30,22 @@ extension DiMePusher {
     /// Add / remove a tag associated to a scientific document (which is an information element. Only information
     /// elements tag operations are supported.
     /// Calls the given callback with the updated list of tags from dime, nil if the operation failed.
-    static func editTag(action: TagAction, tag: Tag, forId: Int, callback: ([Tag]? -> Void)? = nil) {
+    static func editTag(_ action: TagAction, tag: Tag, forId: Int, callback: (([Tag]?) -> Void)? = nil) {
         guard dimeAvailable else {
             return
         }
         
         do {
             // attempt to translate json
-            let options = NSJSONWritingOptions.PrettyPrinted
+            let options = JSONSerialization.WritingOptions.prettyPrinted
             
-            try NSJSONSerialization.dataWithJSONObject(tag.getDict(), options: options)
+            try JSONSerialization.data(withJSONObject: tag.getDict(), options: options)
             let endpoint = DiMeEndpoint.InformationElement
             
             // assume json conversion was a success, hence send to dime
             let server_url = AppSingleton.dimeUrl
             
-            AppSingleton.dimefire.request(Alamofire.Method.POST, server_url + "/data/\(endpoint.rawValue)/\(forId)/\(action.rawValue)", parameters: tag.getDict(), encoding: Alamofire.ParameterEncoding.JSON).responseJSON {
+            AppSingleton.dimefire.request(server_url + "/data/\(endpoint.rawValue)/\(forId)/\(action.rawValue)", method: .post, parameters: tag.getDict(), encoding: JSONEncoding.default).responseJSON {
                 response in
                 if response.result.isFailure {
                     AppSingleton.log.error("Error while reading json response from DiMe: \(response.result.error)")

@@ -40,16 +40,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var refinderWindow: RefinderWindowController?
     
     /// When the application launched
-    let launchDate = NSDate()
+    let launchDate = Date()
     
     /// PeyeDF closes itself to prevent potential leaks and allow opened PDFs to be deleted (after a given amount of time passed)
-    func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {
-        return NSDate().timeIntervalSinceDate(launchDate) > PeyeConstants.closeAfterLaunch && !MidasManager.sharedInstance.midasAvailable && Multipeer.session.connectedPeers.count < 1
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        return Date().timeIntervalSince(launchDate) > PeyeConstants.closeAfterLaunch && !MidasManager.sharedInstance.midasAvailable && Multipeer.session.connectedPeers.count < 1
     }
     
     /// Sets up custom url handler
-    func applicationWillFinishLaunching(notification: NSNotification) {
-        var defaultPrefs = [String: AnyObject]()
+    func applicationWillFinishLaunching(_ notification: Notification) {
+        var defaultPrefs = [String : Any]()
         defaultPrefs[PeyeConstants.prefDominantEye] = Eye.right.rawValue
         defaultPrefs[PeyeConstants.prefMonitorDPI] = 110  // defaulting monitor DPI to 110 as this is developing PC's DPI
         defaultPrefs[PeyeConstants.prefAnnotationLineThickness] = 1.0
@@ -63,29 +63,29 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         defaultPrefs[PeyeConstants.prefDrawDebugCircle] = 0
         defaultPrefs[PeyeConstants.prefSendEventOnFocusSwitch] = 0
         defaultPrefs[TagConstants.defaultsSavedTags] = []
-        NSUserDefaults.standardUserDefaults().registerDefaults(defaultPrefs)
-        NSUserDefaults.standardUserDefaults().synchronize()
+        UserDefaults.standard.register(defaults: defaultPrefs)
+        UserDefaults.standard.synchronize()
         
         // Attempt dime connection (required even if we don't use dime, because this sets up historymanager shared object)
         DiMePusher.dimeConnect()  // will automatically detect if dime is down
         
         // Set up handler for custom url types (peyedf://)
-        NSAppleEventManager.sharedAppleEventManager().setEventHandler(self, andSelector: #selector(handleURL(_:)), forEventClass: UInt32(kInternetEventClass), andEventID: UInt32(kAEGetURL))
+        NSAppleEventManager.shared().setEventHandler(self, andSelector: #selector(handleURL(_:)), forEventClass: UInt32(kInternetEventClass), andEventID: UInt32(kAEGetURL))
     }
     
     /// Creates default preferences and sets up dime
-    func applicationDidFinishLaunching(aNotification: NSNotification) {
+    func applicationDidFinishLaunching(_ aNotification: Notification) {
         
         // If we want to use midas, start the manager
-        let useMidas = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefUseMidas) as! Bool
+        let useMidas = UserDefaults.standard.value(forKey: PeyeConstants.prefUseMidas) as! Bool
         if useMidas {
             MidasManager.sharedInstance.start()
             MidasManager.sharedInstance.setFixationDelegate(HistoryManager.sharedManager)
         }
         
         // Dime/Midas down/up observers
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(dimeConnectionChanged(_:)), name: PeyeConstants.diMeConnectionNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(midasConnectionChanged(_:)), name: PeyeConstants.midasConnectionNotification, object: MidasManager.sharedInstance)
+        NotificationCenter.default.addObserver(self, selector: #selector(dimeConnectionChanged(_:)), name: PeyeConstants.diMeConnectionNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(midasConnectionChanged(_:)), name:PeyeConstants.midasConnectionNotification, object: MidasManager.sharedInstance)
         
         // Start multipeer connectivity
         Multipeer.advertiser.start()
@@ -93,24 +93,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     // MARK: - Opening
     
-    func applicationShouldOpenUntitledFile(sender: NSApplication) -> Bool {
+    func applicationShouldOpenUntitledFile(_ sender: NSApplication) -> Bool {
         return false
     }
     
     /// Overridden to allow searching from outside (spotlight). Checks for dime before
     /// proceeding.
-    func application(sender: NSApplication, openFiles filenames: [String]) {
-        let searchString = NSAppleEventManager.sharedAppleEventManager().currentAppleEvent?.descriptorForKeyword(UInt32(keyAESearchText))?.stringValue
+    func application(_ sender: NSApplication, openFiles filenames: [String]) {
+        let searchString = NSAppleEventManager.shared().currentAppleEvent?.forKeyword(UInt32(keyAESearchText))?.stringValue
         if DiMePusher.dimeAvailable {
             for filename in filenames {
-                let fileUrl = NSURL(fileURLWithPath: filename)
+                let fileUrl = URL(fileURLWithPath: filename)
                 openDocument(fileUrl, searchString: searchString)
             }
         } else {
             DiMePusher.dimeConnect() {
                 _ in
                 for filename in filenames {
-                    let fileUrl = NSURL(fileURLWithPath: filename)
+                    let fileUrl = URL(fileURLWithPath: filename)
                     self.openDocument(fileUrl, searchString: searchString)
                 }
             }
@@ -121,15 +121,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     /// Convenience function to open a file using a given local url and optionally 
     /// a search string (to initiate a query) and focus area (to highlight a specific area).
-    func openDocument(fileURL: NSURL, searchString: String?, focusArea: FocusArea? = nil) {
-        dispatch_async(dispatch_get_main_queue()) {
-            NSDocumentController.sharedDocumentController().openDocumentWithContentsOfURL(fileURL, display: true) {
+    func openDocument(_ fileURL: URL, searchString: String?, focusArea: FocusArea? = nil) {
+        DispatchQueue.main.async {
+            NSDocumentController.shared().openDocument(withContentsOf: fileURL, display: true) {
                 document, _, _ in
-                if let searchS = searchString, doc = document where
+                if let searchS = searchString, let doc = document ,
                   searchS != "" && doc.windowControllers.count == 1 {
                     (doc.windowControllers[0] as! DocumentWindowController).doSearch(searchS, exact: false)
                 }
-                if let f = focusArea, doc = document as? PeyeDocument {
+                if let f = focusArea, let doc = document as? PeyeDocument {
                     doc.focusOn(f)
                 }
             }
@@ -137,18 +137,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     /// A url sent for opening (using host "reader") is sent here.
-    func openComponents(comps: NSURLComponents) {
+    func openComponents(_ comps: URLComponents) {
         let query: String? = comps.parameterDictionary?["search"]
-        if let path = comps.path where path != "" {
-            openDocument(NSURL(fileURLWithPath: path), searchString: query, focusArea: FocusArea(fromURLComponents: comps))
+        if comps.path != "" {
+            openDocument(URL(fileURLWithPath: comps.path), searchString: query, focusArea: FocusArea(fromURLComponents: comps))
         }
     }
     
     /// Uses the given url components to open refinder and find the given sessionId.
-    func refindComponents(comps: NSURLComponents) {
+    func refindComponents(_ comps: URLComponents) {
         showRefinderWindow(nil)
-        if let _sesId = comps.path where _sesId != "" && _sesId.skipPrefix(1) != "" {
-            let sesId = _sesId.skipPrefix(1)
+        if comps.path != "" && comps.path.skipPrefix(1) != "" {
+            let sesId = comps.path.skipPrefix(1)
             if let focusArea = FocusArea(fromURLComponents: comps) {
                 refinderWindow?.allHistoryController?.focusOn(focusArea, forSessionId: sesId)
             }
@@ -159,33 +159,38 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: - Actions
     
     /// Show refinder window (creating it, if needed)
-    @IBAction func showRefinderWindow(sender: AnyObject?) {
+    @IBAction func showRefinderWindow(_ sender: AnyObject?) {
         if refinderWindow == nil {
-            refinderWindow = (AppSingleton.refinderStoryboard.instantiateControllerWithIdentifier("RefinderWindowController") as! RefinderWindowController)
+            refinderWindow = (AppSingleton.refinderStoryboard.instantiateController(withIdentifier: "RefinderWindowController") as! RefinderWindowController)
         }
         refinderWindow!.showWindow(self)
         Multipeer.advertiser.start()
     }
     
     /// Called when clicking on the show network readers menu
-    @IBAction func showPeers(sender: AnyObject) {
+    @IBAction func showPeers(_ sender: AnyObject) {
         Multipeer.peerWindow.showWindow(self)
         Multipeer.browserWindow.makeKeyAndOrderFront(self)
     }
     
     /// Callback for click on connect to dime
-    @IBAction func connectDime(sender: NSMenuItem) {
+    @IBAction func connectDime(_ sender: NSMenuItem) {
         DiMePusher.dimeConnect() {
             success, response in
             
             if !success {
-                AppSingleton.alertUser("Error while communcating with DiMe. Dime has now been disconnected", infoText: "Message from dime:\n\(response.result.error!)")
+                let infoText: String = "<none>"
+                // TODO: put me back
+//                if let error = response.result.error {
+//                    infoText = error.localizedDescription
+//                }
+                AppSingleton.alertUser("Error while communcating with DiMe. Dime has now been disconnected", infoText: "Message from dime:\n\(infoText)")
             }
         }
     }
     
     /// Callback for connect to midas menu action
-    @IBAction func connectMidas(sender: NSMenuItem) {
+    @IBAction func connectMidas(_ sender: NSMenuItem) {
         if connectMidas.state == NSOffState {
             MidasManager.sharedInstance.start()
             MidasManager.sharedInstance.setFixationDelegate(HistoryManager.sharedManager)
@@ -196,8 +201,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     /// Find menu item is linked to this global function
-    @IBAction func manualSearch(sender: AnyObject) {
-        if let keyWin = NSApplication.sharedApplication().keyWindow {
+    @IBAction func manualSearch(_ sender: AnyObject) {
+        if let keyWin = NSApplication.shared().keyWindow {
             if let docWinController = keyWin.windowController as? DocumentWindowController {
                 docWinController.focusOnSearch()
             }
@@ -205,49 +210,49 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     /// Shows logs menu
-    @IBAction func showLogsPath(sender: AnyObject) {
-        if let logsPath = AppSingleton.logsURL.path {
-            NSPasteboard.generalPasteboard().declareTypes([NSStringPboardType], owner: self)
-            NSPasteboard.generalPasteboard().setString(logsPath, forType: NSStringPboardType)
+    @IBAction func showLogsPath(_ sender: AnyObject) {
+        if let logsPath = AppSingleton.logsURL?.path {
+            NSPasteboard.general().declareTypes([NSStringPboardType], owner: self)
+            NSPasteboard.general().setString(logsPath, forType: NSStringPboardType)
             AppSingleton.alertUser("Logs file path copied to clipboard.", infoText: logsPath)
         } else {
             AppSingleton.alertUser("Nothing logged so far.")
         }
     }
 
-    @IBAction func allDocMetadata(sender: AnyObject) {
-        let doci = NSDocumentController.sharedDocumentController().documents
+    @IBAction func allDocMetadata(_ sender: AnyObject) {
+        let doci = NSDocumentController.shared().documents
         var outString = ""
         var inum = 1
         for doc: PeyeDocument in doci as! [PeyeDocument] {
             outString += "-- Document \(inum) --\n" +
-            "Filename: \(doc.pdfDoc!.documentURL!.lastPathComponent!)\n" +
+            "Filename: \(doc.pdfDoc!.documentURL!.lastPathComponent)\n" +
             "Title: \(doc.pdfDoc!.getTitle())\nAuthor(s):\(doc.pdfDoc!.getAuthor())\n\n"
             inum += 1
         }
-        if let mainWin = NSApplication.sharedApplication().mainWindow {
+        if let mainWin = NSApplication.shared().mainWindow {
             let myAl = NSAlert()
             myAl.messageText = outString
-            myAl.beginSheetModalForWindow(mainWin, completionHandler: nil)
+            myAl.beginSheetModal(for: mainWin, completionHandler: nil)
         }
     }
     
     // MARK: - Closing
     
-    func applicationWillTerminate(aNotification: NSNotification) {
+    func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
         MidasManager.sharedInstance.unsetFixationDelegate(HistoryManager.sharedManager)
         MidasManager.sharedInstance.stop()
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: PeyeConstants.diMeConnectionNotification, object: nil)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: PeyeConstants.midasConnectionNotification, object: MidasManager.sharedInstance)
+        NotificationCenter.default.removeObserver(self, name: PeyeConstants.diMeConnectionNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: PeyeConstants.midasConnectionNotification, object: MidasManager.sharedInstance)
     }
     
     // MARK: - Callbacks
     
     /// Handles PeyeDF's url type (with protocol peyedf://)
-    @objc func handleURL(event: NSAppleEventDescriptor) {
-        if let pDesc = event.paramDescriptorForKeyword(UInt32(keyDirectObject)), stringVal = pDesc.stringValue {
-            if let comps = NSURLComponents(string: stringVal), host = comps.host {
+    @objc func handleURL(_ event: NSAppleEventDescriptor) {
+        if let pDesc = event.paramDescriptor(forKeyword: UInt32(keyDirectObject)), let stringVal = pDesc.stringValue {
+            if let comps = URLComponents(string: stringVal), let host = comps.host {
                 switch host {
                 case "reader":
                     comps.onDiMeAvail(openComponents, mustConnect: false)
@@ -264,23 +269,23 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    @objc func dimeConnectionChanged(notification: NSNotification) {
-        let userInfo = notification.userInfo as! [String: Bool]
+    @objc func dimeConnectionChanged(_ notification: Notification) {
+        let userInfo = (notification as NSNotification).userInfo as! [String: Bool]
         let dimeAvailable = userInfo["available"]!
         
         if dimeAvailable {
             connectDime.state = NSOnState
-            connectDime.enabled = false
+            connectDime.isEnabled = false
             connectDime.title = "Connected to DiMe"
         } else {
             connectDime.state = NSOffState
-            connectDime.enabled = true
+            connectDime.isEnabled = true
             connectDime.title = "Connect to DiMe"
         }
     }
     
-    @objc func midasConnectionChanged(notification: NSNotification) {
-        let userInfo = notification.userInfo as! [String: Bool]
+    @objc func midasConnectionChanged(_ notification: Notification) {
+        let userInfo = (notification as NSNotification).userInfo as! [String: Bool]
         let midasAvailable = userInfo["available"]!
         
         if midasAvailable {

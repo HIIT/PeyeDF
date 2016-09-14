@@ -50,54 +50,54 @@ enum MessagePrefix: String {
 enum CollaborationMessage {
     
     /// This message tells that a given peer is idle (closed open window / doing nothing)
-    case ReportIdle
+    case reportIdle
     
     /// This message, when received, causes us to send our status (ReadingDocument) to the sender
-    case RequestStatus
+    case requestStatus
     
     /// We tell other peers that we started tracking them or they tell us they started tracking us
-    case TrackingChange(newState: Bool)
+    case trackingChange(newState: Bool)
     
     /// This message, when received, causes to send the file we are currently reading to the sender
-    case RequestFile(contentHash: String)
+    case requestFile(contentHash: String)
     
     /// This message notifies that we are reading a specific document, and identifies that file
-    case ReadingDocument(filename: String, contentHash: String, paperTitle: String?)
+    case readingDocument(filename: String, contentHash: String, paperTitle: String?)
     
     /// Notifies peers that we scrolled to some area
-    case ScrollTo(area: FocusArea)
+    case scrollTo(area: FocusArea)
     
     /// Notifies peers that we created a reading tag
-    case AddReadingTag(ReadingTag)
+    case addReadingTag(ReadingTag)
     
     /// Notifies peers that we removed a tag
-    case RemoveReadingTag(ReadingTag)
+    case removeReadingTag(ReadingTag)
     
     /// Notifies peers that we read a number of areas
-    case ReadAreas([FocusArea])
+    case readAreas([FocusArea])
     
     /// Creates a started reading message using the current scidoc.
     /// - Attention: No message will be created if the scidoc is nil or does not have an associated contenthash.
     init?(readingDocumentFromSciDoc sciDoc: ScientificDocument?) {
-        guard let sciDoc = sciDoc, cHash = sciDoc.contentHash else {
+        guard let sciDoc = sciDoc, let cHash = sciDoc.contentHash else {
             return nil
         }
-        let fnameUrl = NSURL(fileURLWithPath: sciDoc.uri)
-        let fname = fnameUrl.lastPathComponent!
-        self = CollaborationMessage.ReadingDocument(filename: fname, contentHash: cHash, paperTitle: sciDoc.title)
+        let fnameUrl = URL(fileURLWithPath: sciDoc.uri)
+        let fname = fnameUrl.lastPathComponent
+        self = CollaborationMessage.readingDocument(filename: fname, contentHash: cHash, paperTitle: sciDoc.title)
     }
     
     /// Creates a collaboration message from raw data (for example data that is received from network peers).
-    init?(fromData: NSData) {
+    init?(fromData: Data) {
         // convert data to string and make sure there is at least one ':'
-        guard let string = String(data: fromData, encoding: NSUTF8StringEncoding),
-              r = string.rangeOfString(":") else {
+        guard let string = String(data: fromData, encoding: String.Encoding.utf8),
+              let r = string.range(of: ":") else {
             return nil
         }
         
         // split using :
-        let prefix = string.substringToIndex(r.startIndex)
-        let suffix = string.substringFromIndex(r.endIndex)
+        let prefix = string.substring(to: r.lowerBound)
+        let suffix = string.substring(from: r.upperBound)
         
         guard let parsedPrefix = MessagePrefix(rawValue: prefix) else {
             AppSingleton.log.error("Failed to parse prefix: \(prefix)")
@@ -107,17 +107,17 @@ enum CollaborationMessage {
         switch parsedPrefix {
             
         case .reportIdle:
-            self = ReportIdle
+            self = .reportIdle
             
         case .requestStatus:
-            self = RequestStatus
+            self = .requestStatus
             
         case .trackingChange:
-            self = TrackingChange(newState: (suffix as NSString).boolValue)
+            self = .trackingChange(newState: (suffix as NSString).boolValue)
             
         case .readingDocument:
             // split filename, contenthash and title components
-            let components = suffix.componentsSeparatedByString("::")
+            let components = suffix.components(separatedBy: "::")
             guard components.count == 3 else {
                 return nil
             }
@@ -127,10 +127,10 @@ enum CollaborationMessage {
             if !components[2].isEmpty {
                 title = components[2]
             }
-            self = ReadingDocument(filename: fileName, contentHash: contentHash, paperTitle: title)
+            self = .readingDocument(filename: fileName, contentHash: contentHash, paperTitle: title)
             
         case .requestFile:
-            self = RequestFile(contentHash: suffix)
+            self = .requestFile(contentHash: suffix)
             
         case .scrollTo:
             
@@ -139,7 +139,7 @@ enum CollaborationMessage {
                 return nil
             }
             
-            self = ScrollTo(area: area)
+            self = .scrollTo(area: area)
             
         case .addReadingTag:
             
@@ -148,7 +148,7 @@ enum CollaborationMessage {
                 return nil
             }
             
-            self = AddReadingTag(tag)
+            self = .addReadingTag(tag)
             
         case .removeReadingTag:
             
@@ -157,17 +157,17 @@ enum CollaborationMessage {
                 return nil
             }
             
-            self = RemoveReadingTag(tag)
+            self = .removeReadingTag(tag)
             
         case .readAreas:
             
-            let inputAreas = suffix.componentsSeparatedByString(";")
+            let inputAreas = suffix.components(separatedBy: ";")
             let parsedAreas = inputAreas.flatMap({FocusArea(fromString: $0)})
             guard parsedAreas.count > 0 else {
                 AppSingleton.log.error("Failed to find any areas in input")
                 return nil
             }
-            self = ReadAreas(parsedAreas)
+            self = .readAreas(parsedAreas)
             
         }
     }
@@ -175,23 +175,23 @@ enum CollaborationMessage {
     /// Gets the string that identifies a message, for this collaboration message (does not include `:`).
     func prefix() -> String {
         switch self {
-        case .ReportIdle:
+        case .reportIdle:
             return MessagePrefix.reportIdle.rawValue
-        case .RequestStatus:
+        case .requestStatus:
             return MessagePrefix.requestStatus.rawValue
-        case .TrackingChange:
+        case .trackingChange:
             return MessagePrefix.trackingChange.rawValue
-        case .ReadingDocument:
+        case .readingDocument:
             return MessagePrefix.readingDocument.rawValue
-        case .RequestFile:
+        case .requestFile:
             return MessagePrefix.requestFile.rawValue
-        case .ScrollTo:
+        case .scrollTo:
             return MessagePrefix.scrollTo.rawValue
-        case .AddReadingTag:
+        case .addReadingTag:
             return MessagePrefix.addReadingTag.rawValue
-        case .RemoveReadingTag:
+        case .removeReadingTag:
             return MessagePrefix.removeReadingTag.rawValue
-        case .ReadAreas:
+        case .readAreas:
             return MessagePrefix.readAreas.rawValue
         }
     }
@@ -199,40 +199,40 @@ enum CollaborationMessage {
     /// Generates a string from this collaboration message (so that it can be sent to peers).
     func buildMessage() -> String {
         switch self {
-        case .ReportIdle:
+        case .reportIdle:
             return self.prefix() + ":"
-        case .RequestStatus:
+        case .requestStatus:
             return self.prefix() + ":"
-        case .TrackingChange(let newState):
+        case .trackingChange(let newState):
             return self.prefix() + ":" + newState.description
-        case .ReadingDocument(let filename, let contentHash, let paperTitle):
+        case .readingDocument(let filename, let contentHash, let paperTitle):
             return self.prefix() + ":" + filename + "::" + contentHash + "::" + (paperTitle ?? "")
-        case .RequestFile(let contentHash):
+        case .requestFile(let contentHash):
             return self.prefix() + ":" + contentHash
-        case .ScrollTo(let area):
+        case .scrollTo(let area):
             return self.prefix() + ":" + area.description
-        case .AddReadingTag(let tag):
+        case .addReadingTag(let tag):
             return self.prefix() + ":" + tag.description
-        case .RemoveReadingTag(let tag):
+        case .removeReadingTag(let tag):
             return self.prefix() + ":" + tag.description
-        case .ReadAreas(let areas):
-            return self.prefix() + ":" + areas.map({$0.description}).joinWithSeparator(";")
+        case .readAreas(let areas):
+            return self.prefix() + ":" + areas.map({$0.description}).joined(separator: ";")
         }
     }
     
     /// Sends itself to the given list of peers.
     /// Can set mode to unreliable if wanted (defaults to reliable).
-    func sendTo(peers: [MCPeerID], _ mode: MCSessionSendDataMode = .Reliable) {
-        let data = buildMessage().dataUsingEncoding(NSUTF8StringEncoding)!
+    func sendTo(_ peers: [MCPeerID], _ mode: MCSessionSendDataMode = .reliable) {
+        let data = buildMessage().data(using: String.Encoding.utf8)!
         do {
-            try Multipeer.session.sendData(data, toPeers: peers, withMode: mode)
+            try Multipeer.session.send(data, toPeers: peers, with: mode)
         } catch {
-            AppSingleton.log.error("Failed to send message '\(buildMessage())' to peers: \(error)")
+            AppSingleton.log.error("Failed to send message '\(self.buildMessage())' to peers: \(error)")
         }
     }
     
     /// Sends itself to all connected peers.
-    func sendToAll(mode: MCSessionSendDataMode = .Reliable) {
+    func sendToAll(_ mode: MCSessionSendDataMode = .reliable) {
         let peers = Multipeer.session.connectedPeers
         guard peers.count > 0 else {
             return

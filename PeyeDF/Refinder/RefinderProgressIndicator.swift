@@ -48,7 +48,7 @@ class RefinderProgressIndicator: NSView {
         self.wantsLayer = true
         self.layer?.addSublayer(frontLayer)
         self.layer?.addSublayer(backLayer)
-        self.layerContentsRedrawPolicy = NSViewLayerContentsRedrawPolicy.DuringViewResize
+        self.layerContentsRedrawPolicy = NSViewLayerContentsRedrawPolicy.duringViewResize
     }
     
     /// Drawn "outside" to show borders
@@ -66,24 +66,24 @@ class RefinderProgressIndicator: NSView {
     var progress = 0.0
     
     /// Class represented by this bar
-    var readingC = ReadingClass.Unset
+    var readingC = ReadingClass.unset
 
-    func setProgress(newProgress: Double, forClass: ReadingClass) {
+    func setProgress(_ newProgress: Double, forClass: ReadingClass) {
         self.progress = newProgress
         self.readingC = forClass
         
         // set own colours depending on class
-        var colour = NSColor.whiteColor()
-        if readingC == ReadingClass.Low {
-            colour = PeyeConstants.annotationColourRead.colorWithAlphaComponent(1)
-        } else if readingC == ReadingClass.Medium {
-            colour = PeyeConstants.annotationColourInteresting.colorWithAlphaComponent(1)
-        } else if readingC == ReadingClass.High {
-            colour = PeyeConstants.annotationColourCritical.colorWithAlphaComponent(1)
+        var colour = NSColor.white
+        if readingC == ReadingClass.low {
+            colour = PeyeConstants.annotationColourRead.withAlphaComponent(1)
+        } else if readingC == ReadingClass.medium {
+            colour = PeyeConstants.annotationColourInteresting.withAlphaComponent(1)
+        } else if readingC == ReadingClass.high {
+            colour = PeyeConstants.annotationColourCritical.withAlphaComponent(1)
         }
         
-        backLayer.strokeColor = colour.CGColor
-        frontLayer.fillColor = colour.CGColor
+        backLayer.strokeColor = colour.cgColor
+        frontLayer.fillColor = colour.cgColor
     }
     
     /// Overriden to readjust its own size
@@ -93,17 +93,17 @@ class RefinderProgressIndicator: NSView {
         // use rounded rect and subtract a little to fit corners in view
         var rect = self.bounds.addTo(-1.5)
         
-        let backPath = CGPathCreateWithRoundedRect(rect, kCr, kCr, nil)
+        let backPath = CGPath(roundedRect: rect, cornerWidth: kCr, cornerHeight: kCr, transform: nil)
         backLayer.path = backPath
         
         // hide front layer if width is less than twice the corner (otherwise would crash)
         rect.size.width *= CGFloat(progress)
         if rect.size.width > kCr * 2 {
-            let frontPath = CGPathCreateWithRoundedRect(rect, kCr, kCr, nil)
+            let frontPath = CGPath(roundedRect: rect, cornerWidth: kCr, cornerHeight: kCr, transform: nil)
             frontLayer.path = frontPath
-            frontLayer.hidden = false
+            frontLayer.isHidden = false
         } else {
-            frontLayer.hidden = true
+            frontLayer.isHidden = true
         }
         
     }

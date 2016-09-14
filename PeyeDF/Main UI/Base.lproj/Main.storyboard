@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16A319" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
-        <plugIn identifier="com.apple.pdfkit.ibplugin" version="10117"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11201"/>
+        <plugIn identifier="com.apple.pdfkit.ibplugin" version="11201"/>
         <capability name="box content view" minToolsVersion="7.0"/>
     </dependencies>
     <scenes>
@@ -56,7 +57,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="wEK-ud-1k4">
-                                <rect key="frame" x="18" y="266" width="288" height="18"/>
+                                <rect key="frame" x="18" y="268" width="288" height="18"/>
                                 <buttonCell key="cell" type="check" title="Annotate function enabled for new windows" bezelStyle="regularSquare" imagePosition="left" inset="2" id="seh-ry-ahZ">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -89,14 +90,14 @@
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
-                            <box title="Annotation line thickness" borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="UC7-V4-Wrp">
+                            <box borderType="line" title="Annotation line thickness" translatesAutoresizingMaskIntoConstraints="NO" id="UC7-V4-Wrp">
                                 <rect key="frame" x="17" y="16" width="428" height="68"/>
                                 <view key="contentView" id="cbh-La-9jU">
                                     <rect key="frame" x="1" y="1" width="426" height="49"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="E15-lK-fvD">
-                                            <rect key="frame" x="16" y="11" width="340" height="26"/>
+                                            <rect key="frame" x="16" y="12" width="340" height="24"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="336" id="dtF-MU-gHK"/>
                                             </constraints>
@@ -128,8 +129,6 @@
                                     <constraint firstItem="uRt-4J-vlE" firstAttribute="centerY" secondItem="E15-lK-fvD" secondAttribute="centerY" id="h2v-jE-CsO"/>
                                     <constraint firstAttribute="height" constant="64" id="yrF-Ac-hSa"/>
                                 </constraints>
-                                <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                                <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <font key="titleFont" metaFont="system"/>
                             </box>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="kwa-ow-smM">
@@ -151,7 +150,7 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <box title="Dominant Eye" borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="afp-6T-41F">
+                            <box borderType="line" title="Dominant Eye" translatesAutoresizingMaskIntoConstraints="NO" id="afp-6T-41F">
                                 <rect key="frame" x="17" y="116" width="234" height="66"/>
                                 <view key="contentView" id="59u-gM-x6L">
                                     <rect key="frame" x="1" y="1" width="232" height="47"/>
@@ -189,8 +188,6 @@
                                     <constraint firstAttribute="width" constant="228" id="G7Y-0g-sV0"/>
                                     <constraint firstItem="I21-cq-meB" firstAttribute="top" secondItem="afp-6T-41F" secondAttribute="top" constant="34" id="LKD-gp-5Ac"/>
                                 </constraints>
-                                <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                                <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <font key="titleFont" metaFont="system"/>
                             </box>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="S1W-xx-0w2">
@@ -1312,15 +1309,13 @@
                                     <nil key="toolTip"/>
                                     <size key="minSize" width="40" height="40"/>
                                     <size key="maxSize" width="40" height="114"/>
-                                    <box key="view" title="Box" borderType="line" titlePosition="noTitle" id="Uhw-gD-I1T" customClass="eyeBox" customModule="PeyeDF" customModuleProvider="target">
+                                    <box key="view" borderType="line" title="Box" titlePosition="noTitle" id="Uhw-gD-I1T" customClass="eyeBox" customModule="PeyeDF" customModuleProvider="target">
                                         <rect key="frame" x="20" y="14" width="40" height="40"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <view key="contentView" id="OGf-B2-FoQ">
                                             <rect key="frame" x="1" y="1" width="38" height="38"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         </view>
-                                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     </box>
                                 </toolbarItem>
                                 <toolbarItem implicitItemIdentifier="821AC73D-FAA2-481C-A38D-F0B6FB4147A7" label="Refinder" paletteLabel="Refinder" tag="-1" image="Refinder" id="YKD-Fb-cHD">
@@ -1487,7 +1482,6 @@
                                             </tableColumns>
                                         </tableView>
                                     </subviews>
-                                    <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </clipView>
                                 <constraints>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="60" id="Vzr-WU-4oi"/>
@@ -1544,7 +1538,7 @@
                                     <action selector="selectNextResult:" target="DPg-yb-Bd5" id="qho-QO-JGe"/>
                                 </connections>
                             </button>
-                            <box horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" title="Options" borderType="line" translatesAutoresizingMaskIntoConstraints="NO" id="Nho-mY-mQZ">
+                            <box horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" borderType="line" title="Options" translatesAutoresizingMaskIntoConstraints="NO" id="Nho-mY-mQZ">
                                 <rect key="frame" x="19" y="10" width="328" height="78"/>
                                 <view key="contentView" id="Hy4-DO-V9Y">
                                     <rect key="frame" x="1" y="1" width="326" height="62"/>
@@ -1579,8 +1573,6 @@
                                         <constraint firstItem="V5c-zb-GX0" firstAttribute="top" secondItem="vCT-OT-qdj" secondAttribute="bottom" constant="10" id="t49-pa-fUa"/>
                                     </constraints>
                                 </view>
-                                <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                                <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </box>
                         </subviews>
                         <constraints>

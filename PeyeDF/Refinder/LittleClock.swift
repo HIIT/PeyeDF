@@ -40,16 +40,16 @@ class LittleClock: NSView {
         super.init(frame: frameRect)
     }
     
-    override func drawRect(dirtyRect: NSRect) {
-        super.drawRect(dirtyRect)
+    override func draw(_ dirtyRect: NSRect) {
+        super.draw(dirtyRect)
         if showClock && hours != nil && minutes != nil {
             drawLittleClock()
         }
     }
     
-    func drawLittleClock(frame: NSRect = NSMakeRect(3, 4, 23, 23)) {
+    func drawLittleClock(_ frame: NSRect = NSMakeRect(3, 4, 23, 23)) {
         //// General Declarations
-        let context = NSGraphicsContext.currentContext()!.CGContext
+        let context = NSGraphicsContext.current()!.cgContext
         
         //// Color Declarations
         let color3 = NSColor(calibratedRed: 0.552, green: 0.552, blue: 0.552, alpha: 1)
@@ -59,20 +59,20 @@ class LittleClock: NSView {
         let minutes_rotation: CGFloat = -(minutes / 60.0 * 360)
         
         //// Oval Drawing
-        let ovalPath = NSBezierPath(ovalInRect: NSMakeRect(frame.minX + floor(frame.width * 0.21739 + 0.5), frame.minY + floor(frame.height * 0.21739 + 0.5), floor(frame.width * 0.78261 + 0.5) - floor(frame.width * 0.21739 + 0.5), floor(frame.height * 0.78261 + 0.5) - floor(frame.height * 0.21739 + 0.5)))
-        NSColor.blackColor().setStroke()
+        let ovalPath = NSBezierPath(ovalIn: NSMakeRect(frame.minX + floor(frame.width * 0.21739 + 0.5), frame.minY + floor(frame.height * 0.21739 + 0.5), floor(frame.width * 0.78261 + 0.5) - floor(frame.width * 0.21739 + 0.5), floor(frame.height * 0.78261 + 0.5) - floor(frame.height * 0.21739 + 0.5)))
+        NSColor.black.setStroke()
         ovalPath.lineWidth = 1.5
         ovalPath.stroke()
         
         
         //// Bezier 2 Drawing
         NSGraphicsContext.saveGraphicsState()
-        CGContextTranslateCTM(context, frame.minX + 0.50000 * frame.width, frame.minY + 0.50000 * frame.height)
-        CGContextRotateCTM(context, (minutes_rotation - 740.311523438) * CGFloat(M_PI) / 180)
+        context.translateBy(x: frame.minX + 0.50000 * frame.width, y: frame.minY + 0.50000 * frame.height)
+        context.rotate(by: (minutes_rotation - 740.311523438) * CGFloat(M_PI) / 180)
         
         let bezier2Path = NSBezierPath()
-        bezier2Path.moveToPoint(NSMakePoint(0, 0))
-        bezier2Path.curveToPoint(NSMakePoint(0, 6), controlPoint1: NSMakePoint(0, 5.14), controlPoint2: NSMakePoint(0, 6))
+        bezier2Path.move(to: NSMakePoint(0, 0))
+        bezier2Path.curve(to: NSMakePoint(0, 6), controlPoint1: NSMakePoint(0, 5.14), controlPoint2: NSMakePoint(0, 6))
         color3.setStroke()
         bezier2Path.lineWidth = 2
         bezier2Path.stroke()
@@ -82,13 +82,13 @@ class LittleClock: NSView {
         
         //// Bezier Drawing
         NSGraphicsContext.saveGraphicsState()
-        CGContextTranslateCTM(context, frame.minX + 0.50000 * frame.width, frame.minY + 0.50000 * frame.height)
-        CGContextRotateCTM(context, hours_rotation * CGFloat(M_PI) / 180)
+        context.translateBy(x: frame.minX + 0.50000 * frame.width, y: frame.minY + 0.50000 * frame.height)
+        context.rotate(by: hours_rotation * CGFloat(M_PI) / 180)
         
         let bezierPath = NSBezierPath()
-        bezierPath.moveToPoint(NSMakePoint(0, 0))
-        bezierPath.curveToPoint(NSMakePoint(0, 4), controlPoint1: NSMakePoint(0, 3.43), controlPoint2: NSMakePoint(0, 4))
-        NSColor.blackColor().setStroke()
+        bezierPath.move(to: NSMakePoint(0, 0))
+        bezierPath.curve(to: NSMakePoint(0, 4), controlPoint1: NSMakePoint(0, 3.43), controlPoint2: NSMakePoint(0, 4))
+        NSColor.black.setStroke()
         bezierPath.lineWidth = 1.5
         bezierPath.stroke()
         

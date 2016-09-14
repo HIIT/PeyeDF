@@ -36,21 +36,15 @@ class ThumbSideController: NSViewController {
     
     override func viewDidAppear() {
         super.viewDidAppear()
-        let docSplit = self.parentViewController as! DocumentSplitController
-        self.myThumb.PDFView = docSplit.myPDFSideController!.pdfReader
-        dispatch_async(dispatch_get_main_queue()) {
+        let docSplit = self.parent as! DocumentSplitController
+        self.myThumb.pdfView = docSplit.myPDFSideController!.pdfReader
+        DispatchQueue.main.async {
             self.myThumb.thumbnailSize = self.myThumb.thumbnailSize
         }
     }
     
     override func awakeFromNib() {
         //constr.constant = CGFloat(0)
-    }
-
-    override var representedObject: AnyObject? {
-        didSet {
-        // Update the view, if already loaded.
-        }
     }
 
 }

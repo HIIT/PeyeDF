@@ -29,22 +29,22 @@ class TagViewButton: NSButton {
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        let trackingArea = NSTrackingArea(rect: self.bounds, options: [NSTrackingAreaOptions.MouseEnteredAndExited, NSTrackingAreaOptions.ActiveAlways], owner: self, userInfo: nil)
+        let trackingArea = NSTrackingArea(rect: self.bounds, options: [NSTrackingAreaOptions.mouseEnteredAndExited, NSTrackingAreaOptions.activeAlways], owner: self, userInfo: nil)
         self.addTrackingArea(trackingArea)
     }
 
-    override func mouseExited(theEvent: NSEvent) {
+    override func mouseExited(with theEvent: NSEvent) {
         for obj in self.superview!.subviews {
             if let txt = obj as? NSTextField {
-                txt.font = NSFont.systemFontOfSize(txt.font!.pointSize)
+                txt.font = NSFont.systemFont(ofSize: txt.font!.pointSize)
             }
         }
     }
     
-    override func mouseEntered(theEvent: NSEvent) {
+    override func mouseEntered(with theEvent: NSEvent) {
         for obj in self.superview!.subviews {
             if let txt = obj as? NSTextField {
-                txt.font = NSFont.boldSystemFontOfSize(txt.font!.pointSize)
+                txt.font = NSFont.boldSystemFont(ofSize: txt.font!.pointSize)
             }
         }
     }

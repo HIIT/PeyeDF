@@ -27,21 +27,21 @@ import Foundation
 /// Represents a rect for DiMe usage ("replaces" NSRect in "external" communications)
 public struct ReadingRect: Comparable, Equatable, Dictionariable, NearlyEquatable {
     
-    var pageIndex: NSNumber
+    var pageIndex: Int
     var rect: NSRect
-    var readingClass: ReadingClass = ReadingClass.Unset
-    var classSource: ClassSource = ClassSource.Unset
+    var readingClass: ReadingClass = ReadingClass.unset
+    var classSource: ClassSource = ClassSource.unset
     var plainTextContent: String?
-    var unixt: [NSNumber]
+    var unixt: [Int]
     var floating: Bool
-    var scaleFactor: NSNumber
-    var screenDistance: NSNumber
-    var attnVal: NSNumber?
+    var scaleFactor: Double
+    var screenDistance: Double
+    var attnVal: Double?
     
     init(pageIndex: Int, origin: NSPoint, size: NSSize, readingClass: ReadingClass, classSource: ClassSource, pdfBase: PDFBase?) {
-        let newUnixt = NSDate().unixTime
-        self.screenDistance = MidasManager.sharedInstance.lastValidDistance
-        self.unixt = [NSNumber]()
+        let newUnixt = Date().unixTime
+        self.screenDistance = Double(MidasManager.sharedInstance.lastValidDistance)
+        self.unixt = [Int]()
         self.unixt.append(newUnixt)
         
         self.floating = true
@@ -52,16 +52,16 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable, NearlyEquatabl
         self.classSource = classSource
         if let pdfb = pdfBase {
             self.plainTextContent = pdfb.stringForRect(self.rect, onPage: pageIndex)
-            self.scaleFactor = pdfb.scaleFactor
+            self.scaleFactor = Double(pdfb.scaleFactor)
         } else {
             self.scaleFactor = -1
         }
     }
     
     init(pageIndex: Int, rect: NSRect, readingClass: ReadingClass, classSource: ClassSource, pdfBase: PDFBase?) {
-        let newUnixt = NSDate().unixTime
-        self.screenDistance = MidasManager.sharedInstance.lastValidDistance
-        self.unixt = [NSNumber]()
+        let newUnixt = Date().unixTime
+        self.screenDistance = Double(MidasManager.sharedInstance.lastValidDistance)
+        self.unixt = [Int]()
         self.unixt.append(newUnixt)
         
         self.floating = true
@@ -72,16 +72,16 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable, NearlyEquatabl
         self.classSource = classSource
         if let pdfb = pdfBase {
             self.plainTextContent = pdfb.stringForRect(self.rect, onPage: pageIndex)
-            self.scaleFactor = pdfb.scaleFactor
+            self.scaleFactor = Double(pdfb.scaleFactor)
         } else {
             self.scaleFactor = -1
         }
     }
     
     init(pageIndex: Int, rect: NSRect, pdfBase: PDFBase?) {
-        self.screenDistance = MidasManager.sharedInstance.lastValidDistance
-        let newUnixt = NSDate().unixTime
-        self.unixt = [NSNumber]()
+        self.screenDistance = Double(MidasManager.sharedInstance.lastValidDistance)
+        let newUnixt = Date().unixTime
+        self.unixt = [Int]()
         self.unixt.append(newUnixt)
         
         self.floating = true
@@ -90,19 +90,19 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable, NearlyEquatabl
         self.rect = rect
         if let pdfb = pdfBase {
             self.plainTextContent = pdfb.stringForRect(self.rect, onPage: pageIndex)
-            self.scaleFactor = pdfb.scaleFactor
+            self.scaleFactor = Double(pdfb.scaleFactor)
         } else {
             self.scaleFactor = -1
         }
     }
     
     init(fromEyeRect eyeRect: EyeRectangle, readingClass: ReadingClass) {
-        self.unixt = [eyeRect.unixt as NSNumber]
+        self.unixt = [eyeRect.unixt]
         self.rect = NSRect(origin: eyeRect.origin, size: eyeRect.size)
         self.floating = false
         self.plainTextContent = eyeRect.plainTextContent
         self.readingClass = readingClass
-        self.classSource = ClassSource.ML
+        self.classSource = ClassSource.ml
         self.pageIndex = eyeRect.pageIndex
         self.scaleFactor = eyeRect.scaleFactor
         self.screenDistance = eyeRect.screenDistance
@@ -111,7 +111,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable, NearlyEquatabl
     
     /// Creates a rect from a (dime-used) json object
     init(fromJson json: JSON) {
-        self.unixt = json["unixt"].arrayObject! as! [NSNumber]
+        self.unixt = json["unixt"].arrayObject! as! [Int]
         self.floating = json["floating"].bool!
         
         let origin = NSPoint(x: json["origin"]["x"].doubleValue, y: json["origin"]["y"].doubleValue)
@@ -131,7 +131,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable, NearlyEquatabl
     /// Unites these two rectangles and appends the unxtimes of the second rectangle to this rectangle.
     /// Uses a PDFBase instance to get the underlying plain text of united
     /// rect (if passed, otherwise simply appends the two strings.
-    mutating func unite(otherRect: ReadingRect, pdfBase: PDFBase?) {
+    mutating func unite(_ otherRect: ReadingRect, pdfBase: PDFBase?) {
         var newRect = self
         newRect.floating = false
         
@@ -173,18 +173,18 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable, NearlyEquatabl
     }
     
     /// Shrinks the underlying rectangle using another rectangle
-    func subtractRect(rhs: ReadingRect, pdfBase: PDFBase?) -> [ReadingRect] {
+    func subtractRect(_ rhs: ReadingRect, pdfBase: PDFBase?) -> [ReadingRect] {
         let result = self.rect.subtractRect(rhs.rect)
         var retVal = [ReadingRect]()
         for rect in result {
-            retVal.append(ReadingRect(pageIndex: pageIndex.integerValue, rect: rect, readingClass: readingClass, classSource: classSource, pdfBase: pdfBase))
+            retVal.append(ReadingRect(pageIndex: pageIndex, rect: rect, readingClass: readingClass, classSource: classSource, pdfBase: pdfBase))
         }
         return retVal
     }
     
     /// Returns true if these two rectangles intersect and are on the same page.
     /// Traps with fatalError if they are not the same class.
-    func intersects(otherRect: ReadingRect) -> Bool {
+    func intersects(_ otherRect: ReadingRect) -> Bool {
         if self.pageIndex != otherRect.pageIndex {
             return false
         }
@@ -194,21 +194,21 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable, NearlyEquatabl
         return NSIntersectsRect(self.rect, otherRect.rect)
     }
     
-    mutating func addUnixt(newUnixt: NSNumber) {
+    mutating func addUnixt(_ newUnixt: Int) {
         self.unixt.append(newUnixt)
     }
     
-    mutating func setClass(newClass: ReadingClass) {
+    mutating func setClass(_ newClass: ReadingClass) {
         self.readingClass = newClass
     }
     
-    mutating func setClassSource(newClassSource: ClassSource) {
+    mutating func setClassSource(_ newClassSource: ClassSource) {
         self.classSource = newClassSource
     }
     
     /// Returns itself in a dict of strings, matching DiMe's Rect class
-    func getDict() -> [String : AnyObject] {
-        var retDict = [String: AnyObject]()
+    func getDict() -> [String : Any] {
+        var retDict = [String: Any]()
         retDict["pageIndex"] = self.pageIndex
         retDict["unixt"] = self.unixt
         retDict["floating"] = self.floating
@@ -227,7 +227,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable, NearlyEquatabl
         return retDict
     }
     
-    func nearlyEqual(other: ReadingRect) -> Bool {
+    func nearlyEqual(_ other: ReadingRect) -> Bool {
         return self.pageIndex == other.pageIndex &&
                self.rect.nearlyEqual(other.rect) &&
                self.readingClass == other.readingClass &&

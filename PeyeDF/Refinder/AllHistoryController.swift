@@ -32,7 +32,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     
     /// Whether there is loading ongoing.
     var loading = true { didSet {
-        if let sesId = mustSelectSessionId where loading == false {
+        if let sesId = mustSelectSessionId , loading == false {
             mustSelectSessionId = nil
             if lastTriedSessionId != sesId {
                 selectSessionId(sesId)
@@ -42,9 +42,9 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
                 diMeFetcher?.retrieveScientificDocument(forSessionId: sesId) {
                     sciDoc in
                     if let doc = sciDoc {
-                        let fileUrl = NSURL(fileURLWithPath: doc.uri)
+                        let fileUrl = URL(fileURLWithPath: doc.uri)
                         AppSingleton.appDelegate.openDocument(fileUrl, searchString: nil, focusArea: self.mustFocusOn[sesId])
-                        self.mustFocusOn.removeValueForKey(sesId)
+                        self.mustFocusOn.removeValue(forKey: sesId)
                     }
                 }
             }
@@ -57,7 +57,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     
     /// Contains an area to focus on next time that the row corresponding to this
     /// sessionId is selected.
-    private var mustFocusOn = [String: FocusArea]()
+    fileprivate var mustFocusOn = [String: FocusArea]()
     
     /// Last sessionId that was asked to be retrieved after loading (used to prevent
     /// loops, yet signal that this id does not exist)
@@ -83,10 +83,10 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     override func viewDidLoad() {
         // creates dime fetcher with self as receiver and prepares to receive table selection notifications
         diMeFetcher = DiMeFetcher(receiver: self)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(newHistoryTableSelection(_:)), name: NSTableViewSelectionDidChangeNotification, object: historyTable)
+        NotificationCenter.default.addObserver(self, selector: #selector(newHistoryTableSelection(_:)), name: NSNotification.Name.NSTableViewSelectionDidChange, object: historyTable)
     }
     
-    @objc private func newHistoryTableSelection(notification: NSNotification) {
+    @objc fileprivate func newHistoryTableSelection(_ notification: Notification) {
         let selectedRow = historyTable.selectedRow
         guard selectedRow >= 0 else {
             return
@@ -95,15 +95,15 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
         if  selectedSesId != lastSelectedSessionId {
             delegate?.historyElementSelected((ev: allHistoryTuples[selectedRow].ev, ie: allHistoryTuples[selectedRow].ie!))
             if let f = mustFocusOn[allHistoryTuples[selectedRow].ev.sessionId] {
-                mustFocusOn.removeValueForKey(allHistoryTuples[selectedRow].ev.sessionId)
+                mustFocusOn.removeValue(forKey: allHistoryTuples[selectedRow].ev.sessionId)
                 delegate?.focusOn(f)
             }
             lastSelectedSessionId = selectedSesId
         }
     }
     
-    override func prepareForSegue(segue: NSStoryboardSegue, sender: AnyObject?) {
-        if let segueId = segue.identifier where segueId == "showThresholdEditor" {
+    override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
+        if let segueId = segue.identifier , segueId == "showThresholdEditor" {
             let thresholdCont = segue.destinationController as! ThresholdEditor
             thresholdCont.detailDelegate = self.delegate
         }
@@ -116,7 +116,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     /// Extracted json contains:
     /// - sessionId: String
     /// - rectangles: Array: one entry for each EyeRectangle
-    @IBAction func extractJson(sender: NSMenuItem) {
+    @IBAction func extractJson(_ sender: NSMenuItem) {
         
         let row = historyTable.clickedRow
         delegate?.historyElementSelected((ev: allHistoryTuples[row].ev, ie: allHistoryTuples[row].ie!))
@@ -130,7 +130,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
         panel.nameFieldStringValue = "\(sessionId).json"
         if panel.runModal() == NSFileHandlingPanelOKButton {
                 
-            let outURL = panel.URL!
+            let outURL = panel.url!
             loadingStarted()
             
             diMeFetcher?.getNonSummaries(withSessionId: sessionId) {
@@ -139,40 +139,40 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
                 var outEyeRects = [EyeRectangle]()
                 
                 // check that info in dime matches selected file
-                if let pdfb = self.delegate?.getPdfBase(), currentHash = pdfb.getDocText()?.sha1() where currentHash != contentHash {
+                if let pdfb = self.delegate?.getPdfBase(), let currentHash = pdfb.getDocText()?.sha1() , currentHash != contentHash {
                     AppSingleton.alertUser("Content of selected file does not match content stored in dime.", infoText: "Was the file moved / edited?")
                 }
                 
                 // generate eye rectangles
                 for event in foundEvents {
-                    outEyeRects.appendContentsOf(EyeRectangle.allEyeRectangles(fromReadingEvent: event, forReadingClass: .Paragraph, andSource: .SMI, withPdfBase: self.delegate?.getPdfBase()))
+                    outEyeRects.append(contentsOf: EyeRectangle.allEyeRectangles(fromReadingEvent: event, forReadingClass: .paragraph, andSource: .smi, withPdfBase: self.delegate?.getPdfBase()))
                 }
                 
                 if outEyeRects.count > 0 {
                     
                     // create object for json
-                    var outArray = [AnyObject]()
+                    var outArray = [Any]()
                     for eyer in outEyeRects {
                         outArray.append(eyer.getDict())
                     }
                     
                     do {
                         // create data
-                        var outDict = [String: AnyObject]()
+                        var outDict = [String: Any]()
                         outDict["sessionId"] = sessionId
                         outDict["rectangles"] = outArray
-                        let options = NSJSONWritingOptions.PrettyPrinted
-                        let outData = try NSJSONSerialization.dataWithJSONObject(outDict, options: options)
+                        let options = JSONSerialization.WritingOptions.prettyPrinted
+                        let outData = try JSONSerialization.data(withJSONObject: outDict, options: options)
                         
                         
                             // create output file if it doesn't exist
-                            if !NSFileManager.defaultManager().fileExistsAtPath(outURL.path!) {
-                                NSFileManager.defaultManager().createFileAtPath(outURL.path!, contents: nil, attributes: nil)
+                            if !FileManager.default.fileExists(atPath: outURL.path) {
+                                FileManager.default.createFile(atPath: outURL.path, contents: nil, attributes: nil)
                             } else {
                             // if file exists, delete it and create id
                                 do {
-                                    try NSFileManager.defaultManager().removeItemAtURL(outURL)
-                                    NSFileManager.defaultManager().createFileAtPath(outURL.path!, contents: nil, attributes: nil)
+                                    try FileManager.default.removeItem(at: outURL)
+                                    FileManager.default.createFile(atPath: outURL.path, contents: nil, attributes: nil)
                                 } catch {
                                     AppSingleton.log.error("Could not delete file at \(outURL): \(error)")
                                 }
@@ -180,8 +180,8 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
                             
                             // write data to existing file
                             do {
-                                let file = try NSFileHandle(forWritingToURL: outURL)
-                                file.writeData(outData)
+                                let file = try FileHandle(forWritingTo: outURL)
+                                file.write(outData)
                             } catch {
                                 AppSingleton.alertUser("Error while creating output file", infoText: "\(error)")
                             }
@@ -199,7 +199,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     }
     
     /// Imports a json with computed eye data (contains attnVal for each rect)
-    @IBAction func importJson(sender: NSMenuItem) {
+    @IBAction func importJson(_ sender: NSMenuItem) {
         
         let row = historyTable.clickedRow
         if row >= 0 {
@@ -207,11 +207,11 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
         
             let panel = NSOpenPanel()
             panel.allowedFileTypes = ["json", "JSON"]
-            panel.beginSheetModalForWindow(self.view.window!, completionHandler: {
+            panel.beginSheetModal(for: self.view.window!, completionHandler: {
                 result in
                 if result == NSFileHandlingPanelOKButton {
-                    let inURL = panel.URL!
-                    let data = NSData(contentsOfURL: inURL)
+                    let inURL = panel.url!
+                    let data = try? Data(contentsOf: inURL)
                     let json = JSON(data: data!)
                     
                     // check that loaded session id matches selection
@@ -232,7 +232,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
                         // normalize imported rects so attnVal_n ranges between 0 and 1
                         outRects = outRects.normalize()
                         
-                        self.performSegueWithIdentifier("showThresholdEditor", sender: self)
+                        self.performSegue(withIdentifier: "showThresholdEditor", sender: self)
                         self.delegate?.setEyeRects(outRects)
                         
                         self.lastImportedIndex = row
@@ -251,7 +251,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     }
     
     /// Send the computed rectangles back to dime
-    @IBAction func sendToDiMe(sender: NSMenuItem) {
+    @IBAction func sendToDiMe(_ sender: NSMenuItem) {
         let row = historyTable.clickedRow
         if row >= 0 {
             let sessionId = allHistoryTuples[row].ev.sessionId
@@ -288,7 +288,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     }
     
     /// Receive summaries from dime fetcher, as per protocol
-    func receiveAllSummaries(tuples: [(ev: SummaryReadingEvent, ie: ScientificDocument?)]?) {
+    func receiveAllSummaries(_ tuples: [(ev: SummaryReadingEvent, ie: ScientificDocument?)]?) {
         if let t = tuples {
             allHistoryTuples = t
             historyTable.reloadData()
@@ -299,19 +299,19 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     }
     
     /// Update progress bar
-    func updateProgress(received: Int, total: Int) {
+    func updateProgress(_ received: Int, total: Int) {
         self.progressBar.doubleValue = Double(received) / Double(total)
     }
     
     // MARK: - Table delegate & data source
     
-    func numberOfRowsInTableView(tableView: NSTableView) -> Int {
+    func numberOfRows(in tableView: NSTableView) -> Int {
         return allHistoryTuples.count
     }
     
-    func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         if tableColumn?.identifier == "HistoryList" {
-            let listItem = tableView.makeViewWithIdentifier("HistoryListItem", owner: self) as! HistoryTableCell
+            let listItem = tableView.make(withIdentifier: "HistoryListItem", owner: self) as! HistoryTableCell
             listItem.setValues(fromReadingEvent: allHistoryTuples[row].ev, sciDoc: allHistoryTuples[row].ie!)
             return listItem
         }
@@ -324,7 +324,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     
     /// Focus on the given area, for the given sessionId. If another sessionId is selected,
     /// will focus on the next refresh.
-    func focusOn(area: FocusArea, forSessionId: String) {
+    func focusOn(_ area: FocusArea, forSessionId: String) {
         if forSessionId == lastSelectedSessionId {
             delegate?.focusOn(area)
         } else {
@@ -335,7 +335,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     /// Selects a given sessionId in the table. If the given sessionId is not in the
     /// list of tuples (or loading is ongoing), orders a refresh (will try to fetch this sessionId once loading
     /// completes).
-    func selectSessionId(sessionId: String) {
+    func selectSessionId(_ sessionId: String) {
         guard loading == false else {
             mustSelectSessionId = sessionId
             return
@@ -346,32 +346,32 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
             reloadData()
             return
         }
-        guard let i = allHistoryTuples.indexOf({$0.ev.sessionId == sessionId}) else {
+        guard let i = allHistoryTuples.index(where: {$0.ev.sessionId == sessionId}) else {
             return  // this should never happen
         }
-        historyTable.selectRowIndexes(NSIndexSet(index: i), byExtendingSelection: false)
+        historyTable.selectRowIndexes(IndexSet(integer: i), byExtendingSelection: false)
     }
     
     func loadingStarted() {
         loading = true
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             self.progressBar.doubleValue = 0
-            self.historyTable.enabled = false
+            self.historyTable.isEnabled = false
             self.historyTable.alphaValue = 0.4
-            self.progressBar.hidden = false
-            self.loadingLabel.hidden = false
-            self.reloadButton.enabled = false
+            self.progressBar.isHidden = false
+            self.loadingLabel.isHidden = false
+            self.reloadButton.isEnabled = false
         }
     }
     
     func loadingComplete() {
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             self.progressBar.doubleValue = 1
-            self.historyTable.enabled = true
+            self.historyTable.isEnabled = true
             self.historyTable.alphaValue = 1
-            self.progressBar.hidden = true
-            self.loadingLabel.hidden = true
-            self.reloadButton.enabled = true
+            self.progressBar.isHidden = true
+            self.loadingLabel.isHidden = true
+            self.reloadButton.isEnabled = true
             self.loading = false
         }
     }

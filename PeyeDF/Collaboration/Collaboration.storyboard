@@ -1,8 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16A319" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
-        <plugIn identifier="com.apple.pdfkit.ibplugin" version="10117"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11201"/>
+        <plugIn identifier="com.apple.pdfkit.ibplugin" version="11201"/>
+        <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
     <scenes>
         <!--Window Controller-->
@@ -31,7 +33,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="450" height="160"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <stackView orientation="vertical" alignment="leading" hasEqualSpacing="YES" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="0vz-7a-CU8" customClass="AnimatedStack" customModule="PeyeDF" customModuleProvider="target">
+                            <stackView distribution="equalSpacing" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="0vz-7a-CU8" customClass="AnimatedStack" customModule="PeyeDF" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="40" width="450" height="120"/>
                                 <constraints>
                                     <constraint firstAttribute="height" priority="750" constant="120" id="P0P-ZE-2SP"/>
@@ -143,7 +145,7 @@
                                         </connections>
                                     </button>
                                     <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="V5o-Mx-FL5">
-                                        <rect key="frame" x="47" y="82" width="38" height="17"/>
+                                        <rect key="frame" x="47" y="82" width="42" height="17"/>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="👁👁" id="Ay7-Xa-i9l">
                                             <font key="font" metaFont="system"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>

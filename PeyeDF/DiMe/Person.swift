@@ -27,9 +27,9 @@ import Foundation
 /// A person is represented by this struct (not a class)
 class Person: DiMeBase {
     
-    private(set) var firstName: String = "N/A"
-    private(set) var lastName: String = "N/A"
-    private(set) var middleNames: [String] = [String]()
+    fileprivate(set) var firstName: String = "N/A"
+    fileprivate(set) var lastName: String = "N/A"
+    fileprivate(set) var middleNames: [String] = [String]()
     
     /// Returns the name in a string separated by spaces, such as "FistName MiddleName1 MiddleName2 LastName"
     override var description: String { get {
@@ -59,7 +59,7 @@ class Person: DiMeBase {
                 // check if there are middle names in the following part
                 if spl[1].containsChar(" ") {
                     var resplitted = spl[1].split(" ")
-                    self.firstName = resplitted!.removeAtIndex(0)
+                    self.firstName = resplitted!.remove(at: 0)
                     if resplitted!.count > 0 {
                         for remName in resplitted! {
                             middleNames.append(remName)
@@ -97,13 +97,13 @@ class Person: DiMeBase {
     /// "family" values can contain middle names separated by " "
     init?(fromCrossRef json: JSON) {
         super.init()
-        guard let fnamesS = json["given"].string, lname = json["family"].string,
+        guard let fnamesS = json["given"].string, let lname = json["family"].string,
               var fnames = fnamesS.split(" ")
-              where fnames.count >= 1 else {
+              , fnames.count >= 1 else {
                 AppSingleton.log.warning("Couldn't parse author with dictionary: \(json)")
                 return nil
         }
-        self.firstName = fnames.removeAtIndex(0)
+        self.firstName = fnames.remove(at: 0)
         self.lastName = lname
         self.middleNames = fnames
     }
@@ -119,7 +119,7 @@ class Person: DiMeBase {
         }
     }
     
-    override func getDict() -> [String : AnyObject] {
+    override func getDict() -> [String : Any] {
         theDictionary["firstName"] = firstName
         theDictionary["lastName"] = lastName
         if middleNames.count > 0 {

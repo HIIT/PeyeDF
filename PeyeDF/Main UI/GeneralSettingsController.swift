@@ -43,7 +43,7 @@ class GeneralSettingsController: NSViewController {
         super.viewDidLoad()
         
         // set dominant eye button pressed accordingly to current preference
-        let rawEyePreference = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDominantEye) as! Int
+        let rawEyePreference = UserDefaults.standard.value(forKey: PeyeConstants.prefDominantEye) as! Int
         
         let eyePreference = Eye(rawValue: rawEyePreference)
         
@@ -53,44 +53,44 @@ class GeneralSettingsController: NSViewController {
             rightDomEyeButton.state = NSOnState
         }
         
-        let floatFormatter = NSNumberFormatter()
-        floatFormatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
+        let floatFormatter = NumberFormatter()
+        floatFormatter.numberStyle = NumberFormatter.Style.decimal
         floatFormatter.allowsFloats = true
         thicknessField.formatter = floatFormatter
         
-        let intFormatter = NSNumberFormatter()
-        intFormatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
+        let intFormatter = NumberFormatter()
+        intFormatter.numberStyle = NumberFormatter.Style.decimal
         intFormatter.allowsFloats = false
         dpiField.formatter = intFormatter
         
-        let options: [String: AnyObject] = ["NSContinuouslyUpdatesValue": true]
+        let options: [String: AnyObject] = ["NSContinuouslyUpdatesValue": true as AnyObject]
         
-        dpiField.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefMonitorDPI, options: options)
+        dpiField.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefMonitorDPI, options: options)
         
-        thicknessSlider.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefAnnotationLineThickness, options: options)
-        thicknessField.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefAnnotationLineThickness, options: options)
+        thicknessSlider.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefAnnotationLineThickness, options: options)
+        thicknessField.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefAnnotationLineThickness, options: options)
         
         
-        annotateDefaultOnCell.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefEnableAnnotate, options: options)
-        downloadMetadataCell.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefDownloadMetadata, options: options)
-        midasCheckCell.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefUseMidas, options: options)
-        refinderDrawGazedCheckCell.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefRefinderDrawGazedUpon, options: options)
-        drawDebugCircleCheckCell.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefDrawDebugCircle, options: options)
+        annotateDefaultOnCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefEnableAnnotate, options: options)
+        downloadMetadataCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefDownloadMetadata, options: options)
+        midasCheckCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefUseMidas, options: options)
+        refinderDrawGazedCheckCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefRefinderDrawGazedUpon, options: options)
+        drawDebugCircleCheckCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefDrawDebugCircle, options: options)
     }
     
-    @IBAction func dominantButtonPress(sender: NSButton) {
+    @IBAction func dominantButtonPress(_ sender: NSButton) {
         if sender.identifier! == "leftDomEyeButton" {
-            NSUserDefaults.standardUserDefaults().setValue(Eye.left.rawValue, forKey: PeyeConstants.prefDominantEye)
+            UserDefaults.standard.setValue(Eye.left.rawValue, forKey: PeyeConstants.prefDominantEye)
             MidasManager.sharedInstance.setDominantEye(.left)
         } else if sender.identifier! == "rightDomEyeButton" {
-            NSUserDefaults.standardUserDefaults().setValue(Eye.right.rawValue, forKey: PeyeConstants.prefDominantEye)
+            UserDefaults.standard.setValue(Eye.right.rawValue, forKey: PeyeConstants.prefDominantEye)
             MidasManager.sharedInstance.setDominantEye(.right)
         } else {
             fatalError("Some unrecognized button was pressed!?")
         }
     }
     
-    @IBAction func thicknessSlided(sender: NSSlider) {
+    @IBAction func thicknessSlided(_ sender: NSSlider) {
         thicknessField.floatValue = sender.floatValue
     }
 }

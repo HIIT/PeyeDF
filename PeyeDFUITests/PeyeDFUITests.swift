@@ -43,38 +43,38 @@ class PeyeDFUITests: XCTestCase {
         calvoEtAl2009PdfWindow.groups["PDF Content"].click()
         
         let clickVector = CGVector(dx: 0.2, dy: 0.5)
-        calvoEtAl2009PdfWindow.groups["PDF Content"].staticTexts["PDF Static Text"].coordinateWithNormalizedOffset(clickVector).doubleClick()
+        calvoEtAl2009PdfWindow.groups["PDF Content"].staticTexts["PDF Static Text"].coordinate(withNormalizedOffset: clickVector).doubleClick()
         
         toolbarsQuery.buttons["Tag"].click()
         
         putInPasteboard("test")
         let windowPopovers = calvodmelloPdfWindow.popovers
-        let textField = windowPopovers.childrenMatchingType(.TextField).element
-        textField.typeKey("v", modifierFlags:.Command)  // gets stuck here because of auto completion
+        let textField = windowPopovers.children(matching: .textField).element
+        textField.typeKey("v", modifierFlags:.command)  // gets stuck here because of auto completion
         windowPopovers.staticTexts["tagging text"].click()
-        windowPopovers.childrenMatchingType(.CheckBox).matchingIdentifier("Add Tag Button").element.click()
+        windowPopovers.children(matching: .checkBox).matching(identifier: "Add Tag Button").element.click()
     }
     
     /// Opens a pdf file found in the test bundle (Calvo and Dmello)
     func openTestFile() {
         // Open a test file (CalvoDMello.pdf)
-        let testPDFURL = NSBundle(forClass: self.dynamicType).URLForResource("CalvoDMello", withExtension: "pdf")
+        let testPDFURL = Bundle(for: type(of: self)).url(forResource: "CalvoDMello", withExtension: "pdf")
         
         // put path of file in pasteboard
-        let textToEnter = testPDFURL!.relativePath!
+        let textToEnter = testPDFURL!.relativePath
         putInPasteboard(textToEnter)
         
         let app = XCUIApplication()
-        app.typeKey("o", modifierFlags:.Command)
+        app.typeKey("o", modifierFlags:.command)
         
-        let xsidebarheaderCell = app.outlines["sidebar"].childrenMatchingType(.OutlineRow).elementBoundByIndex(0).cells.containingType(.StaticText, identifier:"xSidebarHeader").element
-        xsidebarheaderCell.typeKey("g", modifierFlags:[.Command, .Shift])
+        let xsidebarheaderCell = app.outlines["sidebar"].children(matching: .outlineRow).element(boundBy: 0).cells.containing(.staticText, identifier:"xSidebarHeader").element
+        xsidebarheaderCell.typeKey("g", modifierFlags:[.command, .shift])
         let sheetsQuery = app.sheets
-        let textField = sheetsQuery.childrenMatchingType(.TextField).element
+        let textField = sheetsQuery.children(matching: .textField).element
         textField.click()
         
-        xsidebarheaderCell.typeKey("a", modifierFlags:.Command)
-        xsidebarheaderCell.typeKey("v", modifierFlags:.Command)
+        xsidebarheaderCell.typeKey("a", modifierFlags:.command)
+        xsidebarheaderCell.typeKey("v", modifierFlags:.command)
         
         app.sheets.buttons["Go"].click()
         app.buttons["Open"].click()
@@ -82,9 +82,9 @@ class PeyeDFUITests: XCTestCase {
     }
     
     /// Places an arbitrary string in the global pasteboard
-    func putInPasteboard(string: String) {
-        NSPasteboard.generalPasteboard().declareTypes([NSStringPboardType], owner: self)
-        NSPasteboard.generalPasteboard().setString(string, forType: NSStringPboardType)
+    func putInPasteboard(_ string: String) {
+        NSPasteboard.general().declareTypes([NSStringPboardType], owner: self)
+        NSPasteboard.general().setString(string, forType: NSStringPboardType)
     }
     
 }

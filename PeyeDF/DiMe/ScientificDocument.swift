@@ -35,7 +35,7 @@ class ScientificDocument: DocumentInformationElement {
     var volume: Int?
     
     var authors: [Person]?
-    private(set) var keywords: [String]?
+    fileprivate(set) var keywords: [String]?
     
     /// Creates this scientific document
     ///
@@ -73,7 +73,7 @@ class ScientificDocument: DocumentInformationElement {
     
     /// Update document's fields from crossref's json.
     func updateFields(fromCrossRef json: JSON) {
-        if let status = json["status"].string where status == "ok" {
+        if let status = json["status"].string , status == "ok" {
             if let title = json["message"]["title"][0].string {
                 self.title = title
             }
@@ -89,7 +89,7 @@ class ScientificDocument: DocumentInformationElement {
             if let year = json["message"]["issued"]["date-parts"][0][0].int {
                 self.year = year
             }
-            if let ps = json["message"]["page"].string, words = ps.words() {
+            if let ps = json["message"]["page"].string, let words = ps.words() {
                 self.firstPage = Int(words[0])
                 if words.count > 1 {
                     self.lastPage = Int(words[1])
@@ -105,7 +105,7 @@ class ScientificDocument: DocumentInformationElement {
     }
     
     /// Get dict for scientific document is overridden to allow for just-in-time creation of sub-dicts
-    override func getDict() -> [String : AnyObject] {
+    override func getDict() -> [String : Any] {
         theDictionary = super.getDict()
         
         // dime-required

@@ -32,7 +32,7 @@ class DiMeBase: NSObject, Dictionariable {
     /// **Important**: endpoint classes (Event, InformationElement as subclasses) must set these two keys, in order to be decoded by dime:
     /// - @type
     /// - type
-    var theDictionary = [String: AnyObject]()
+    var theDictionary = [String : Any]()
     
     override init() {
         super.init()
@@ -40,7 +40,7 @@ class DiMeBase: NSObject, Dictionariable {
     
     /// Simply returns the dictionary. Can be overridden by subclasses that want
     /// to edit the dictionary before sending it.
-    func getDict() -> [String : AnyObject] {
+    func getDict() -> [String : Any] {
         return theDictionary
     }
 }
@@ -51,8 +51,8 @@ struct DiMeRange: Dictionariable, Equatable {
     var max: NSNumber
     
     /// Returns min and max in a dict
-    func getDict() -> [String : AnyObject] {
-        var retDict = [String: AnyObject]()
+    func getDict() -> [String : Any] {
+        var retDict = [String : Any]()
         retDict["min"] = min
         retDict["max"] = max
         return retDict

@@ -28,10 +28,10 @@ import Cocoa
 /// Class used to auto complete recently inputted tags
 class TagFieldDelegate: NSObject, NSTextFieldDelegate {
     
-    func control(control: NSControl, textView: NSTextView, completions words: [String], forPartialWordRange charRange: NSRange, indexOfSelectedItem index: UnsafeMutablePointer<Int>) -> [String] {
-        index.memory = -1
-        let recentTags = NSUserDefaults.standardUserDefaults().valueForKey(TagConstants.defaultsSavedTags) as! [String]
-        return recentTags.sort().filter({$0.hasPrefix(textView.string ?? "")})
+    func control(_ control: NSControl, textView: NSTextView, completions words: [String], forPartialWordRange charRange: NSRange, indexOfSelectedItem index: UnsafeMutablePointer<Int>) -> [String] {
+        index.pointee = -1
+        let recentTags = UserDefaults.standard.value(forKey: TagConstants.defaultsSavedTags) as! [String]
+        return recentTags.sorted().filter({$0.hasPrefix(textView.string ?? "")})
     }
     
 }

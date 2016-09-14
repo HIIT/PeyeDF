@@ -33,18 +33,18 @@ protocol HistoryDetailDelegate: class {
     func getPdfBase() -> PDFBase?
     
     /// Tells the delegate that a new item was selected. Resets setEyeRects
-    func historyElementSelected(tuple: (ev: ReadingEvent, ie: ScientificDocument))
+    func historyElementSelected(_ tuple: (ev: ReadingEvent, ie: ScientificDocument))
     
     /// Tells the delegate that a new set of eye rectangles should be shown next time
-    func setEyeRects(eyeRects: [EyeRectangle])
+    func setEyeRects(_ eyeRects: [EyeRectangle])
     
     /// Tells the delegate to focus on an area (does it after a delay)
-    func focusOn(area: FocusArea)
+    func focusOn(_ area: FocusArea)
     
     /// Tells the delegate to display the current (communicated via setEyeRects) set of eye rectangles by converting them to
     /// a set of markings (reading rect) using the specified threshold.
     /// - Requires: call setEyeRects before this because historyElementSelected invalidates eyeRects
-    func setEyeThresholds(readThresh: Double, interestingThresh: Double, criticalThresh: Double)
+    func setEyeThresholds(_ readThresh: Double, interestingThresh: Double, criticalThresh: Double)
     
     /// Returns all information (reading rectangles, proportion) from a document
     /// - Requires: Threshold computation after import
@@ -59,27 +59,27 @@ protocol HistoryDetailDelegate: class {
 class HistoryDetailController: NSViewController, HistoryDetailDelegate {
     
     /// SMI Rectangles fetched from event
-    private var eyeRects: [EyeRectangle]?
+    fileprivate var eyeRects: [EyeRectangle]?
     
     /// Marked rectangles
-    private var pageRects: [ReadingRect]?
+    fileprivate var pageRects: [ReadingRect]?
     
     /// Last opened url
-    private var lastUrl: NSURL?
+    fileprivate var lastUrl: URL?
     
-    private var requiresThresholdComputation = true
+    fileprivate var requiresThresholdComputation = true
 
     @IBOutlet weak var pdfOverview: PDFOverview!
     @IBOutlet weak var pdfDetail: PDFBase!
     
     /// A reading event was selected, display the doc and its rectangles in the pdf views
-    func historyElementSelected(tuple: (ev: ReadingEvent, ie: ScientificDocument)) {
+    func historyElementSelected(_ tuple: (ev: ReadingEvent, ie: ScientificDocument)) {
         eyeRects = nil
         // check if file exists first (if not, display and error)
-        if NSFileManager.defaultManager().fileExistsAtPath(tuple.ie.uri) {
-            lastUrl = NSURL(fileURLWithPath: tuple.ie.uri)
+        if FileManager.default.fileExists(atPath: tuple.ie.uri) {
+            lastUrl = URL(fileURLWithPath: tuple.ie.uri)
             pageRects = tuple.ev.pageRects
-            let pdfDoc2 = PDFDocument(URL: lastUrl!)
+            let pdfDoc2 = PDFDocument(url: lastUrl!)
             self.pdfDetail.document = pdfDoc2
             pdfOverview.pdfDetail = pdfDetail
             pdfOverview.markings.setAll(pageRects!)
@@ -92,7 +92,7 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
         requiresThresholdComputation = true
     }
     
-    func focusOn(area: FocusArea) {
+    func focusOn(_ area: FocusArea) {
         self.pdfDetail.focusOn(area)
         self.pdfOverview.focusOn(area)
     }
@@ -102,9 +102,9 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
         // Do view setup here.
     }
     
-    func setEyeRects(eyeRects: [EyeRectangle]) {
+    func setEyeRects(_ eyeRects: [EyeRectangle]) {
         self.eyeRects = eyeRects
-        let rRects: [ReadingRect] = eyeRects.map({ReadingRect(fromEyeRect: $0, readingClass: .Paragraph)})
+        let rRects: [ReadingRect] = eyeRects.map({ReadingRect(fromEyeRect: $0, readingClass: .paragraph)})
         pdfOverview.markings.setAll(rRects)
         pdfOverview.refreshAll()
     }
@@ -113,19 +113,19 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
         return pdfDetail
     }
     
-    func setEyeThresholds(readThresh: Double, interestingThresh: Double, criticalThresh: Double) {
+    func setEyeThresholds(_ readThresh: Double, interestingThresh: Double, criticalThresh: Double) {
         if let eyeRects = self.eyeRects {
             pageRects = [ReadingRect]()
             for eyeRect in eyeRects {
                 var newClass: ReadingClass?
                 // use normalized attnVal if present, otherwise force non-normalised attnVal
-                let av = (eyeRect.attnVal_n as? Double) ?? eyeRect.attnVal! as Double
+                let av = eyeRect.attnVal_n ?? eyeRect.attnVal!
                 if av > criticalThresh {
-                    newClass = .High
+                    newClass = .high
                 } else if av > interestingThresh {
-                    newClass = .Medium
+                    newClass = .medium
                 } else if av >= readThresh {
-                    newClass = .Low
+                    newClass = .low
                 }
                 if let nc = newClass {
                     pageRects!.append(ReadingRect(fromEyeRect: eyeRect, readingClass: nc))
@@ -162,23 +162,23 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
     
     /// Opens a document corresponding to the current document with the same annotations
     /// as those which are being shown.
-    @IBAction func reOpenDocument(sender: AnyObject?) {
-        guard let url = lastUrl, rects = pageRects else {
+    @IBAction func reOpenDocument(_ sender: AnyObject?) {
+        guard let url = lastUrl, let rects = pageRects else {
             return
         }
         
         // open document and set computed (ML) marks to manual (click) marks
-        NSDocumentController.sharedDocumentController().openDocumentWithContentsOfURL(url, display: true) {
+        NSDocumentController.shared().openDocument(withContentsOf: url, display: true) {
             document, _, _ in
             if let doc = document as? PeyeDocument {
-                var newRects = rects.filter({$0.classSource == .ML})
-                newRects = newRects.map() {(rect) in var rect = rect; rect.classSource = .Click ; return rect}
+                var newRects = rects.filter({$0.classSource == .ml})
+                newRects = newRects.map() {(rect) in var rect = rect; rect.classSource = .click ; return rect}
                 doc.setMarkings(newRects)
             }
         }
     }
     
-    @objc override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
+    @objc override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
         if menuItem.title == "Re-Open" {
             return lastUrl != nil && pageRects != nil
         } else {
@@ -187,13 +187,13 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
     }
     
     /// Focuses the PDFOverview on the page currently shown in the PDFDetail
-    @IBAction func overviewCurrentPage(sender: AnyObject) {
+    @IBAction func overviewCurrentPage(_ sender: AnyObject) {
         guard let cp = pdfDetail.currentPage,
-                  doc = pdfDetail.document else {
+                  let doc = pdfDetail.document else {
             return
         }
         
-        let cpi = doc.indexForPage(cp)
+        let cpi = doc.index(for: cp)
         pdfOverview.focusOn(FocusArea(forPage: cpi), delay: 0.0)
     }
 }

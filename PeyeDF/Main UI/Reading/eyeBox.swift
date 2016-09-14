@@ -43,8 +43,8 @@ class eyeBox: NSBox {
     var xdelta: CGFloat = 0
     var ydelta: CGFloat = 0
     
-    override func viewWillMoveToWindow(newWindow: NSWindow?) {
-        super.viewWillMoveToWindow(newWindow)
+    override func viewWillMove(toWindow newWindow: NSWindow?) {
+        super.viewWillMove(toWindow: newWindow)
         registerNotification()
     }
     
@@ -53,16 +53,16 @@ class eyeBox: NSBox {
     }
     
     func registerNotification() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(newDataReceived(_:)), name: PeyeConstants.midasEyePositionNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(newDataReceived(_:)), name: PeyeConstants.midasEyePositionNotification, object: nil)
     }
     
     func unregisterNotification() {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: PeyeConstants.midasEyePositionNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: PeyeConstants.midasEyePositionNotification, object: nil)
     }
     
     /// Notification callback
-    func newDataReceived(notification: NSNotification) {
-        let userInfo = notification.userInfo!
+    func newDataReceived(_ notification: Notification) {
+        let userInfo = (notification as NSNotification).userInfo!
         dist = userInfo["zpos"] as! CGFloat
         xdelta = userInfo["xpos"] as! CGFloat
         ydelta = (userInfo["ypos"] as! CGFloat)
@@ -70,17 +70,17 @@ class eyeBox: NSBox {
     }
 
     /// Draws itself depending on last received position
-    override func drawRect(dirtyRect: NSRect) {
+    override func draw(_ dirtyRect: NSRect) {
         
         // circle max size when dist == maxdist has the radius of half the side size of inner box
         
-        super.drawRect(dirtyRect)
+        super.draw(dirtyRect)
 
         let innerPathSize: CGFloat = frame.width - boxMargin * 2
         let innerPath = NSBezierPath(rect: NSRect(origin: NSPoint(x: boxMargin, y: boxMargin), size: NSSize(width: innerPathSize, height: innerPathSize)))
         
         innerPath.lineWidth = 1
-        innerPath.lineJoinStyle = .RoundLineJoinStyle
+        innerPath.lineJoinStyle = .roundLineJoinStyle
         
         // 1 is mapped to circleMinSize
         // maxProp is mapped to innerpathsize
@@ -94,7 +94,7 @@ class eyeBox: NSBox {
             let centerPoint: CGFloat = frame.width / 2 // center point in the box x and y are the same
             let circleOrigin = NSPoint(x: centerPoint + circX, y: centerPoint + circY)
             let origin = NSPoint(x: circleOrigin.x - circleSize / 2, y: circleOrigin.y - circleSize / 2)
-            let circlePath = NSBezierPath(ovalInRect: NSRect(origin: origin, size: NSSize(width: circleSize, height: circleSize)))
+            let circlePath = NSBezierPath(ovalIn: NSRect(origin: origin, size: NSSize(width: circleSize, height: circleSize)))
             circlePath.stroke()
         }
         
@@ -103,7 +103,7 @@ class eyeBox: NSBox {
     }
     
     /// Translates a raw position (x and/or y) into box position
-    private func getDDelta(pos: CGFloat, maxDelta: CGFloat, maxPos: CGFloat) -> CGFloat {
+    fileprivate func getDDelta(_ pos: CGFloat, maxDelta: CGFloat, maxPos: CGFloat) -> CGFloat {
         let isnegative = pos < 0
         let pos = abs(pos)
         let retVal = translate(pos, leftMin: 0, leftMax: maxDelta, rightMin: 0, rightMax: maxPos)
@@ -113,7 +113,7 @@ class eyeBox: NSBox {
 }
 
 /// Given a value and an input range, return a value in the output range
-private func translate(value: CGFloat, leftMin: CGFloat, leftMax: CGFloat, rightMin: CGFloat, rightMax: CGFloat) -> CGFloat {
+private func translate(_ value: CGFloat, leftMin: CGFloat, leftMax: CGFloat, rightMin: CGFloat, rightMax: CGFloat) -> CGFloat {
     // Figure out how 'wide' each range is
     let leftSpan = leftMax - leftMin
     let rightSpan = rightMax - rightMin

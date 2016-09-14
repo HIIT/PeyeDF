@@ -13,14 +13,14 @@ extension PDFPage {
     
     /// Returns true if two rects are adjacent to each other (e.g. one appears on the
     /// next previous line of the other).
-    func rectsNearby(a: NSRect, _ b: NSRect) -> Bool {
+    func rectsNearby(_ a: NSRect, _ b: NSRect) -> Bool {
         let horizontalMax: CGFloat = 2  // points of horizontal tolerance
         
         // true if they are vertically close and at both have at least one border matching
         // with widest lines's border
         if a.isVerticallyNear(b) {
             // union of both lines
-            guard let linea = selectionForLineAtPoint(NSPoint(x: a.midX, y: a.midY))?.boundsForPage(self), let lineb = selectionForLineAtPoint(NSPoint(x: b.midX, y: b.midY))?.boundsForPage(self) else {
+            guard let linea = selectionForLine(at: NSPoint(x: a.midX, y: a.midY))?.bounds(for: self), let lineb = selectionForLine(at: NSPoint(x: b.midX, y: b.midY))?.bounds(for: self) else {
                 return false
             }
             let widestLine = NSUnionRect(linea, lineb)

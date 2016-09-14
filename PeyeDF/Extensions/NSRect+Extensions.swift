@@ -53,13 +53,13 @@ extension NSRect {
     /// Creates a rect from a string specifying 'x,y,w,h'
     /// - returns: nil if conversion failed
     init?(string: String) {
-        if let spl = string.split(",") where spl.count == 4 {
-            let nf = NSNumberFormatter()
+        if let spl = string.split(",") , spl.count == 4 {
+            let nf = NumberFormatter()
             nf.localizesFormat = false  // to be locale-independent
-            if let x = nf.numberFromString(spl[0]) as? CGFloat,
-              y = nf.numberFromString(spl[1]) as? CGFloat,
-              w = nf.numberFromString(spl[2]) as? CGFloat,
-              h = nf.numberFromString(spl[3]) as? CGFloat {
+            if let x = nf.number(from: spl[0]) as? CGFloat,
+              let y = nf.number(from: spl[1]) as? CGFloat,
+              let w = nf.number(from: spl[2]) as? CGFloat,
+              let h = nf.number(from: spl[3]) as? CGFloat {
                 self.origin = NSPoint(x: x, y: y)
                 self.size = NSSize(width: w, height: h)
             } else {
@@ -79,7 +79,7 @@ extension NSRect {
     ///
     /// - parameter rhs: The rectangle that will be subtracted **from** this rectangle (subtrahend)
     /// - returns: An array of rectangles, the result of the operation
-    func subtractRect(rhs: NSRect) -> [NSRect] {
+    func subtractRect(_ rhs: NSRect) -> [NSRect] {
         let constant: CGFloat = PeyeConstants.rectHorizontalTolerance
         var ary = [NSRect]()
         // if the other rectangle encloses this (taking into account some tolerance)
@@ -95,7 +95,7 @@ extension NSRect {
                     // this rectangle extends below the other
                     // slce the bottom from below
                     let sliceFromBottom = rhs.minY - self.minY
-                    NSDivideRect(self, &slice, &remainder, sliceFromBottom, NSRectEdge.MinY)
+                    NSDivideRect(self, &slice, &remainder, sliceFromBottom, NSRectEdge.minY)
                     if slice.size.height > PeyeConstants.minRectHeight {
                         ary.append(slice)
                     }
@@ -104,7 +104,7 @@ extension NSRect {
                     // this rectangle extends above the other
                     // slice the top from above
                     let sliceFromTop = self.maxY - rhs.maxY
-                    NSDivideRect(self, &slice, &remainder, sliceFromTop, NSRectEdge.MaxY)
+                    NSDivideRect(self, &slice, &remainder, sliceFromTop, NSRectEdge.maxY)
                     if slice.size.height > PeyeConstants.minRectHeight {
                         ary.append(slice)
                     }
@@ -117,7 +117,7 @@ extension NSRect {
     }
     
     /// Scale this rect by a given factor (by multiplication) and return a new rect.
-    func scale(scale: CGFloat) -> NSRect {
+    func scale(_ scale: CGFloat) -> NSRect {
         let newWidth = self.size.width * scale
         let newHeight = self.size.height * scale
         let widthDiff = newWidth - self.size.width
@@ -131,7 +131,7 @@ extension NSRect {
     
     /// Scale this rect by a given factor (by addition) and return a new rect.
     /// Returns rounded values (used for "pixel-perfect" display).
-    func addTo(scale: CGFloat) -> NSRect {
+    func addTo(_ scale: CGFloat) -> NSRect {
         var newOrigin = NSPoint()
     
         let maxX = CGFloat(ceilf(Float(self.origin.x + self.size.width))) + scale
@@ -144,7 +144,7 @@ extension NSRect {
     
     /// Scale this rect by a given factor (by addition) and return a new rect.
     /// Returns an unrounded rect (used for documents).
-    func outset(scale: CGFloat) -> NSRect {
+    func outset(_ scale: CGFloat) -> NSRect {
         var newOrigin = NSPoint()
     
         let maxX = self.origin.x + self.size.width + scale / 2.0
@@ -166,7 +166,7 @@ extension NSRect {
     
     /// Returns true if this rect is "near" the other rect.
     /// Uses values optimised for PDF (page space) coordinates.
-    func isNear(toRect: NSRect) -> Bool {
+    func isNear(_ toRect: NSRect) -> Bool {
         // size of the narrower rect
         let maxXdiff = min(self.size.width, toRect.size.width)
         // minimum between distance of extremes (left / right alignment)
@@ -184,7 +184,7 @@ extension NSRect {
     
     /// Returns true if this rect is "near" the other rect, vertically.
     /// (Their vertical distance is less than the minimum vertical size between the two).
-    func isVerticallyNear(toRect: NSRect) -> Bool {
+    func isVerticallyNear(_ toRect: NSRect) -> Bool {
         // minimum between distance of extremes (left / right alignment)
         let maxYdiff = min(self.size.height, toRect.size.height) * 1.2
         
@@ -196,7 +196,7 @@ extension NSRect {
     
     /// Returns true if the x coordinates of the two rects overlap.
     /// Returns true if either X edge of this rect is within the other rect edges.
-    func horizontalOverlap(other: NSRect) -> Bool {
+    func horizontalOverlap(_ other: NSRect) -> Bool {
         return (self.minX >= other.minX && self.minX <= other.maxX) ||
                (self.maxX >= other.minX && self.maxX <= other.maxX) ||
                (other.minX >= self.minX && other.minX <= self.maxX) ||

@@ -29,7 +29,7 @@ import Alamofire
 extension PDFDocument {
     
     /// Returns true if the two readingrects are "far" from each other
-    func areFar(a: ReadingRect, _ b: ReadingRect) -> Bool {
+    func areFar(_ a: ReadingRect, _ b: ReadingRect) -> Bool {
         if a.pageIndex == b.pageIndex {
             if let page = getPage(atIndex: a.pageIndex as Int) {
                 return !page.rectsNearby(a.rect, b.rect)
@@ -95,10 +95,10 @@ extension PDFDocument {
     /// - Warning: Takes time and memory for big documents, better to asynchronise this
     func getText() -> String? {
         var trimmedText = string
-        trimmedText = trimmedText!.stringByReplacingOccurrencesOfString("\u{fffc}", withString: "")
-        trimmedText = trimmedText!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) // get trimmed version of all text
-        trimmedText = trimmedText!.stringByTrimmingCharactersInSet(NSCharacterSet.newlineCharacterSet()) // trim newlines
-        trimmedText = trimmedText!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()) // trim again
+        trimmedText = trimmedText!.replacingOccurrences(of: "\u{fffc}", with: "")
+        trimmedText = trimmedText!.trimmingCharacters(in: CharacterSet.whitespaces) // get trimmed version of all text
+        trimmedText = trimmedText!.trimmingCharacters(in: CharacterSet.newlines) // trim newlines
+        trimmedText = trimmedText!.trimmingCharacters(in: CharacterSet.whitespaces) // trim again
         if trimmedText!.characters.count > 5 {  // we assume the document does contain useful text if there are more than 5 characters remaining
             return trimmedText
         } else {
@@ -109,7 +109,7 @@ extension PDFDocument {
     /// Gets the title from the document metadata, returns nil if not present
     func getTitle() -> String? {
         let docAttrib = documentAttributes
-        if let title: String = docAttrib![PDFDocumentTitleAttribute] as? String where title.trimmed().characters.count > 0 {
+        if let title: String = docAttrib![PDFDocumentTitleAttribute] as? String , title.trimmed().characters.count > 0 {
             return title.trimmed()
         } else {
             return nil
@@ -119,7 +119,7 @@ extension PDFDocument {
     /// Gets the author(s) from the document metadata, returns nil if not present
     func getAuthor() -> String? {
         let docAttrib = documentAttributes
-        if let author: AnyObject = docAttrib![PDFDocumentAuthorAttribute] {
+        if let author: Any = docAttrib![PDFDocumentAuthorAttribute] {
             return (author as! String)
         } else {
             return nil
@@ -129,7 +129,7 @@ extension PDFDocument {
     /// Gets the subject from the document metadata, returns nil if not present
     func getSubject() -> String? {
         let docAttrib = documentAttributes
-        if let subject: AnyObject = docAttrib![PDFDocumentSubjectAttribute] {
+        if let subject: Any = docAttrib![PDFDocumentSubjectAttribute] {
             return (subject as! String)
         } else {
             return nil
@@ -139,7 +139,7 @@ extension PDFDocument {
     /// Gets the keywods from the document metadata, returns nil if not present
     func getKeywords() -> String? {
         let docAttrib = documentAttributes
-        if let keywords: AnyObject = docAttrib![PDFDocumentKeywordsAttribute] {
+        if let keywords: Any = docAttrib![PDFDocumentKeywordsAttribute] {
             // some times keywords are in an array
             // other times keywords are all contained in the first element of the array as a string
             // other times they are a string
@@ -176,17 +176,17 @@ extension PDFDocument {
         // Try to find doi
         var _doi: String? = nil
         
-        guard let pageString = self.pageAtIndex(0)!.string else {
+        guard let pageString = self.page(at: 0)!.string else {
             return nil
         }
         
         let doiSearches = ["doi ", "doi:"]
         for doiS in doiSearches {
-            let _range = pageString.rangeOfString(doiS, options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil, locale: nil)
+            let range = pageString.range(of: doiS, options: NSString.CompareOptions.caseInsensitive, range: nil, locale: nil)
             
-            if let r = _range, last = r.last {
-                let s = pageString.substringFromIndex(last.advancedBy(1)).trimmed()
-                if let doiChunk = s.firstChunk() where doiChunk.characters.count >= 5 {
+            if let upperBound = range?.upperBound {
+                let s = pageString.substring(from: upperBound).trimmed()
+                if let doiChunk = s.firstChunk() , doiChunk.characters.count >= 5 {
                     _doi = doiChunk
                     break
                 }
@@ -199,13 +199,13 @@ extension PDFDocument {
         }
         
         var foundJson: JSON?
-        let sema = dispatch_semaphore_create(0)
+        let sema = DispatchSemaphore(value: 0)
         
-        Alamofire.request(.GET, "http://api.crossref.org/works/\(doi)").responseJSON() {
+        Alamofire.request("http://api.crossref.org/works/\(doi)").responseJSON() {
             response in
-            if let resp = response.result.value where response.result.isSuccess {
+            if let resp = response.result.value , response.result.isSuccess {
                 let _json = JSON(resp)
-                if let status = _json["status"].string where status == "ok" {
+                if let status = _json["status"].string , status == "ok" {
                     if let title = _json["message"]["title"][0].string {
                         self.setTitle(title)
                     }
@@ -213,18 +213,18 @@ extension PDFDocument {
                         self.setSubject(subj)
                     }
                     if let auths = _json["message"]["author"].array {
-                        let authString = auths.map({$0["given"].stringValue + " " + $0["family"].stringValue}).joinWithSeparator("; ")
+                        let authString = auths.map({$0["given"].stringValue + " " + $0["family"].stringValue}).joined(separator: "; ")
                         self.setAuthor(authString)
                     }
                     foundJson = _json
                 }
             }
-            dispatch_semaphore_signal(sema)
+            sema.signal()
         }
         
         // wait five seconds
-        let waitTime = dispatch_time(DISPATCH_TIME_NOW, Int64(5.0 * Float(NSEC_PER_SEC)))
-        if dispatch_semaphore_wait(sema, waitTime) != 0 {
+        let waitTime = DispatchTime.now() + 5.0
+        if sema.wait(timeout: waitTime) == .timedOut {
             AppSingleton.log.warning("Crossref request timed out")
         }
         
@@ -234,23 +234,23 @@ extension PDFDocument {
     /// Returns the string corresponding to the block with the largest font on the first page.
     /// Returns nil if no information could be found or if two or more blocks have the same largest size.
     func guessTitle() -> String? {
-        let astring = pageAtIndex(0)!.attributedString
+        let astring = page(at: 0)!.attributedString
         
         let fullRange = NSMakeRange(0, astring!.length)
 
         var textInfo = [(size: CGFloat, range: NSRange)]()
 
-        astring!.enumerateAttribute(NSFontAttributeName, inRange: fullRange, options: NSAttributedStringEnumerationOptions()) {
+        astring!.enumerateAttribute(NSFontAttributeName, in: fullRange, options: NSAttributedString.EnumerationOptions()) {
             obj, range, stop in
             if let font = obj as? NSFont {
                 textInfo.append(size: font.pointSize, range: range)
             }
         }
 
-        textInfo.sortInPlace({$0.size > $1.size})
+        textInfo.sort(by: {$0.size > $1.size})
 
         if textInfo.count >= 2 && textInfo[0].size > textInfo[1].size {
-            return (astring!.string as NSString).substringWithRange(textInfo[0].range)
+            return (astring!.string as NSString).substring(with: textInfo[0].range)
         } else {
             return nil
         }
@@ -258,25 +258,25 @@ extension PDFDocument {
     
     // MARK: - Setters
     
-    func setTitle(newTitle: String) {
+    func setTitle(_ newTitle: String) {
         var docAttrib = documentAttributes
         docAttrib![PDFDocumentTitleAttribute] = newTitle
         documentAttributes = docAttrib
     }
     
-    func setSubject(newSubject: String) {
+    func setSubject(_ newSubject: String) {
         var docAttrib = documentAttributes
         docAttrib![PDFDocumentSubjectAttribute] = newSubject
         documentAttributes = docAttrib
     }
     
-    func setAuthor(newAuthor: String) {
+    func setAuthor(_ newAuthor: String) {
         var docAttrib = documentAttributes
         docAttrib![PDFDocumentAuthorAttribute] = newAuthor
         documentAttributes = docAttrib
     }
     
-    func setKeywords(newKeywords: String) {
+    func setKeywords(_ newKeywords: String) {
         var docAttrib = documentAttributes
         docAttrib![PDFDocumentKeywordsAttribute] = newKeywords
         documentAttributes = docAttrib
@@ -291,7 +291,7 @@ extension PDFDocument {
             AppSingleton.log.warning("Attempted to retrieve a page at index \(index), while the document has \(self.pageCount) pages.")
             return nil
         } else {
-            return self.pageAtIndex(index)
+            return self.page(at: index)
         }
     }
 }

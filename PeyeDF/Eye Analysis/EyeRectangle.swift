@@ -31,36 +31,36 @@ struct EyeRectangle: Dictionariable {
     let unixt: Int
     
     /// Distance from screen when this eyerect was created
-    private(set) var screenDistance: NSNumber = 600.0
+    fileprivate(set) var screenDistance: Double = 600.0
     
     /// Origin of this rect in page space
-    private(set) var origin: NSPoint
+    fileprivate(set) var origin: NSPoint
     
     /// Size of this rect in page space
-    private(set) var size: NSSize
+    fileprivate(set) var size: NSSize
     
     /// X coordinates in rectangle's space
-    private(set) var Xs: [NSNumber]
+    fileprivate(set) var Xs: [Double]
     
     /// Y coordinates in rectangle's space
-    private(set) var Ys: [NSNumber]
+    fileprivate(set) var Ys: [Double]
     
     /// Fixation durations
-    private(set) var durations: [NSNumber]
+    fileprivate(set) var durations: [Int]
     
     /// Index (from 0) of page in which this rect appeared
     let pageIndex: Int
     
     /// Attention Value (if set)
-    private(set) var attnVal: NSNumber?
+    fileprivate(set) var attnVal: Double?
     
     /// Normalized attention value
-    private(set) var attnVal_n: NSNumber?
+    fileprivate(set) var attnVal_n: Double?
     
     let readingClass: ReadingClass
     let classSource: ClassSource
-    let scaleFactor: NSNumber
-    private(set) var plainTextContent: String?
+    let scaleFactor: Double
+    fileprivate(set) var plainTextContent: String?
     
     /// Given a page rect some a chunk of data (assumed to be on the same page, throws
     /// fatal error if not) returns an EyeRectangle corresponding to the "intersection"
@@ -75,16 +75,16 @@ struct EyeRectangle: Dictionariable {
             fatalError("Given reading rect has scale factor: \(readingRect.scaleFactor), while data has \(pageData.scaleFactor)")
         }
         
-        var Xs = [NSNumber]()
-        var Ys = [NSNumber]()
-        var durations = [NSNumber]()
+        var Xs = [Double]()
+        var Ys = [Double]()
+        var durations = [Int]()
         
         for i in 0..<pageData.Xs.count {
             let fixPoint = NSPoint(x: pageData.Xs[i] as Double, y: pageData.Ys[i] as Double)
             if NSPointInRect(fixPoint, readingRect.rect) {
                 let newPoint = fixPoint.pointInRectCoords(readingRect.rect)
-                Xs.append(newPoint.x)
-                Ys.append(newPoint.y)
+                Xs.append(Double(newPoint.x))
+                Ys.append(Double(newPoint.y))
                 durations.append(pageData.durations[i])
             }
         }
@@ -115,9 +115,9 @@ struct EyeRectangle: Dictionariable {
         if let sd = json["screenDistance"].double {
             self.screenDistance = sd
         }
-        self.Xs = json["Xs"].arrayObject! as! [NSNumber]
-        self.Ys = json["Ys"].arrayObject! as! [NSNumber]
-        self.durations = json["durations"].arrayObject! as! [NSNumber]
+        self.Xs = json["Xs"].arrayObject! as! [Double]
+        self.Ys = json["Ys"].arrayObject! as! [Double]
+        self.durations = json["durations"].arrayObject! as! [Int]
         
         self.pageIndex = json["pageIndex"].intValue
         
@@ -135,8 +135,8 @@ struct EyeRectangle: Dictionariable {
         self.plainTextContent = json["plainTextContent"].string
     }
     
-    func getDict() -> [String: AnyObject] {
-        var retVal = [String: AnyObject]()
+    func getDict() -> [String: Any] {
+        var retVal = [String: Any]()
         
         retVal["unixt"] = unixt
         retVal["origin"] = origin.getDict()
@@ -166,7 +166,7 @@ struct EyeRectangle: Dictionariable {
     /// one so that the height of each new rectangle corresponds to the given value
     /// - parameter maxHeight: the maximum height of the returned rectangles. Current rectangle will be divided into many rectangles of equal height (which will be less than this value)
     /// - parameter pdfBase: If set, will use given class to extract plainTextContent from PDF (plainTextContent will be nil otherwise)
-    func splitAndCrop(dpi: Int, _ pdfBase: PDFBase?) -> [EyeRectangle] {
+    func splitAndCrop(_ dpi: Int, _ pdfBase: PDFBase?) -> [EyeRectangle] {
         // calculate max height by multiplying standard box size (3 visual angle calc) * 1.5
         let maxHeight = pointSpan(zoomLevel: CGFloat(self.scaleFactor), dpi: dpi, distancemm: CGFloat(self.screenDistance)) * 1.5
         
@@ -181,7 +181,7 @@ struct EyeRectangle: Dictionariable {
             // new rects are built bottom-to-top, so that towards the bottom
             // of the page we have rect 0
 
-            var newRects = [EyeRectangle](count: newNum, repeatedValue: self)
+            var newRects = [EyeRectangle](repeating: self, count: newNum)
             for i in 0..<newNum {
                 // set new origin and height
                 newRects[i].origin.y += chunkl * CGFloat(i)
@@ -198,7 +198,7 @@ struct EyeRectangle: Dictionariable {
             for i in 0..<self.Ys.count {
                 let nr = Int(floor(CGFloat(Ys[i]) / chunkl))
                 let newY = CGFloat(Ys[i]) - chunkl * CGFloat(nr)
-                newRects[nr].Ys.append(newY)
+                newRects[nr].Ys.append(Double(newY))
                 newRects[nr].Xs.append(self.Xs[i])
                 newRects[nr].durations.append(self.durations[i])
                 if let pdfb = pdfBase {
@@ -228,7 +228,7 @@ struct EyeRectangle: Dictionariable {
                             // split and crop obtained rectangle before adding it to return value
                             // use 90 as default DPI (SMI's monitor DPI)
                             let splitRects = newEyeRect.splitAndCrop(readingEvent.dpi ?? 90, withPdfBase)
-                            retVal.appendContentsOf(splitRects)
+                            retVal.append(contentsOf: splitRects)
                         }
                     }
                 }
@@ -240,13 +240,13 @@ struct EyeRectangle: Dictionariable {
     
 }
 
-extension SequenceType where Generator.Element == EyeRectangle {
+extension Sequence where Iterator.Element == EyeRectangle {
     
     /// Create (or modify) attVal_n of all eye rectangles so that they range between 0 and 1
     func normalize() -> [EyeRectangle] {
         let attnVals: [Double] = self.map({$0.attnVal! as Double})
-        let minVal = attnVals.minElement()!
-        let maxVal = attnVals.maxElement()!
+        let minVal = attnVals.min()!
+        let maxVal = attnVals.max()!
         return self.map() {
             var retVal = $0
             retVal.attnVal_n = ($0.attnVal! as Double - minVal) / (maxVal - minVal)

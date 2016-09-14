@@ -30,7 +30,7 @@ import Foundation
 struct PDFMarkings {
     
     /// All rectangles (markings) for the given document.
-    private var allRects = [ReadingRect]()
+    fileprivate var allRects = [ReadingRect]()
     
     /// Reference to PDFBase is used to get text within reading rects and scaleFactors
     unowned let pdfBase: PDFBase
@@ -69,14 +69,14 @@ struct PDFMarkings {
     
     /// Returns all rectangles for a given class, on a given page
     func get(ofClass theClass: ReadingClass, forPage: Int) -> [ReadingRect] {
-        return allRects.filter({$0.readingClass == theClass && $0.pageIndex.integerValue == forPage})
+        return allRects.filter({$0.readingClass == theClass && $0.pageIndex == forPage})
     }
     
     // MARK: - Mutators
     
     /// Add a rect of the given class to the given page. Does not add
     /// duplicates.
-    mutating func addRect(rect: NSRect, ofClass: ReadingClass, withSource: ClassSource, forPage: Int) {
+    mutating func addRect(_ rect: NSRect, ofClass: ReadingClass, withSource: ClassSource, forPage: Int) {
         let newRect = ReadingRect(pageIndex: forPage, rect: rect, readingClass: ofClass, classSource: withSource, pdfBase: pdfBase)
         if !(allRects.contains(newRect)) {
             allRects.append(newRect)
@@ -85,14 +85,14 @@ struct PDFMarkings {
     
     /// Add a reading rect to the array. Does not add duplicates. Traps if added rect's source does not match
     /// this instance's source
-    mutating func addRect(readingRect: ReadingRect) {
+    mutating func addRect(_ readingRect: ReadingRect) {
         if !(allRects.contains(readingRect)) {
             allRects.append(readingRect)
         }
     }
     
     /// Sets rects of a given class to the given dictionary.
-    mutating func set(theClass: ReadingClass, _ rects: [ReadingRect]) {
+    mutating func set(_ theClass: ReadingClass, _ rects: [ReadingRect]) {
         // remove all rects of the given class
         allRects = allRects.filter({$0.readingClass != theClass})
         for newRect in rects {
@@ -118,7 +118,7 @@ struct PDFMarkings {
     }
     
     /// Set all underlying rects to the given array
-    mutating func setAll(newRects: [ReadingRect]) {
+    mutating func setAll(_ newRects: [ReadingRect]) {
         self.allRects = newRects
     }
     
@@ -131,18 +131,18 @@ struct PDFMarkings {
     ///   This is because critical rectangles are assumed to be both interesting and read.
     mutating func flattenRectangles_relevance() {
         // "relevance" classes in order of importance: Critical, Interesting, Read
-        uniteRectangles(.High)
-        uniteRectangles(.Medium)
-        uniteRectangles(.Low)
+        uniteRectangles(.high)
+        uniteRectangles(.medium)
+        uniteRectangles(.low)
         // Subtract critical (high) rects from interesting (medium) and read (low) rects
-        subtractRectsOfClass(minuend: .Medium, subtrahend: .High)
-        subtractRectsOfClass(minuend: .Low, subtrahend: .High)
+        subtractRectsOfClass(minuend: .medium, subtrahend: .high)
+        subtractRectsOfClass(minuend: .low, subtrahend: .high)
         
-        uniteRectangles(.Medium)
+        uniteRectangles(.medium)
         // Subtract (remaining) interesting rects from read rects
-        subtractRectsOfClass(minuend: .Low, subtrahend: .Medium)
+        subtractRectsOfClass(minuend: .low, subtrahend: .medium)
         
-        uniteRectangles(.Low)
+        uniteRectangles(.low)
     }
     
     /// "Flatten" all "relevant" rectangles so that:
@@ -155,55 +155,55 @@ struct PDFMarkings {
     ///   This is because critical rectangles are assumed to be both interesting and read.
     mutating func flattenRectangles_intersectToHigh() {
         // "relevance" classes in order of importance: Critical, Interesting, Read
-        uniteRectangles(.High)
-        uniteRectangles(.Medium)
-        uniteRectangles(.Low)
+        uniteRectangles(.high)
+        uniteRectangles(.medium)
+        uniteRectangles(.low)
         
         // - start intersection (low and medium class interesecting sections will result in high class rect)
-        let mediumRects = allRects.filter({$0.readingClass == .Medium})
+        let mediumRects = allRects.filter({$0.readingClass == .medium})
         for mRect in mediumRects {
-            let lowRects = allRects.filter({$0.readingClass == .Low && $0.pageIndex == mRect.pageIndex})
+            let lowRects = allRects.filter({$0.readingClass == .low && $0.pageIndex == mRect.pageIndex})
             for lRect in lowRects {
                 let intersection = NSIntersectionRect(mRect.rect, lRect.rect)
                 if !NSIsEmptyRect(intersection) {
-                    allRects.append(ReadingRect(pageIndex: mRect.pageIndex as Int, rect: intersection, readingClass: .High, classSource: mRect.classSource, pdfBase: pdfBase))
+                    allRects.append(ReadingRect(pageIndex: mRect.pageIndex as Int, rect: intersection, readingClass: .high, classSource: mRect.classSource, pdfBase: pdfBase))
                 }
             }
         }
         
-        uniteRectangles(.High)
+        uniteRectangles(.high)
         // - end intersection
         
         // Subtract critical (high) rects from interesting (medium) and read (low) rects
-        subtractRectsOfClass(minuend: .Medium, subtrahend: .High)
-        subtractRectsOfClass(minuend: .Low, subtrahend: .High)
+        subtractRectsOfClass(minuend: .medium, subtrahend: .high)
+        subtractRectsOfClass(minuend: .low, subtrahend: .high)
         
-        uniteRectangles(.Medium)
+        uniteRectangles(.medium)
         // Subtract (remaining) interesting rects from read rects
-        subtractRectsOfClass(minuend: .Low, subtrahend: .Medium)
+        subtractRectsOfClass(minuend: .low, subtrahend: .medium)
         
-        uniteRectangles(.Low)
+        uniteRectangles(.low)
     }
     
     /// Unite all floating eye rectangles into bigger rectangles that enclose them
     mutating func flattenRectangles_eye() {
-        uniteRectangles(.Paragraph)
+        uniteRectangles(.paragraph)
     }
     
     /// Unite all rectangles of the given class
-    mutating func uniteRectangles(ofClass: ReadingClass) {
+    mutating func uniteRectangles(_ ofClass: ReadingClass) {
         // create set of all possible page indices
         var pis = Set<Int>()
         for rrect in allRects {
             if rrect.readingClass == ofClass {
-                pis.insert(rrect.pageIndex.integerValue)
+                pis.insert(rrect.pageIndex)
             }
         }
         for page in pis {
             let rectsToUnite = allRects.filter({$0.readingClass == ofClass && $0.pageIndex == page})
             allRects = allRects.filter({!($0.readingClass == ofClass && $0.pageIndex == page)})
             let unitedRects = uniteCollidingRects(forPage: page, inputArray: rectsToUnite)
-            allRects.appendContentsOf(unitedRects)
+            allRects.append(contentsOf: unitedRects)
         }
     }
     
@@ -216,7 +216,7 @@ struct PDFMarkings {
         var pis = Set<Int>()
         for rrect in allRects {
             if rrect.readingClass == lhs || rrect.readingClass == rhs {
-                pis.insert(rrect.pageIndex.integerValue)
+                pis.insert(rrect.pageIndex)
             }
         }
         for page in pis {
@@ -228,7 +228,7 @@ struct PDFMarkings {
                 allRects = allRects.filter({!($0.readingClass == lhs && $0.pageIndex == page)})
                 let subtractedRects = subtractRectangles(forPage: page, minuends: minuends, subtrahends: subtrahends)
                 // add result of subtraction back to allRects
-                allRects.appendContentsOf(subtractedRects)
+                allRects.append(contentsOf: subtractedRects)
             }
         }
     }
@@ -244,17 +244,17 @@ struct PDFMarkings {
         var interestingSurface = 0.0
         var criticalSurface = 0.0
         for pageI in 0 ..< pdfBase.document!.pageCount {
-            let thePage = pdfBase.document!.pageAtIndex(pageI)
+            let thePage = pdfBase.document!.page(at: pageI)
             let pageRect = pdfBase.getPageRect(thePage!)
             let pageSurface = Double(pageRect.size.height * pageRect.size.width)
             totalSurface += pageSurface
-            for rect in get(ofClass: .Low, forPage: pageI) {
+            for rect in get(ofClass: .low, forPage: pageI) {
                 readSurface += Double(rect.rect.size.height * rect.rect.size.width)
             }
-            for rect in get(ofClass: .Medium, forPage: pageI) {
+            for rect in get(ofClass: .medium, forPage: pageI) {
                 interestingSurface += Double(rect.rect.size.height * rect.rect.size.width)
             }
-            for rect in get(ofClass: .High, forPage: pageI) {
+            for rect in get(ofClass: .high, forPage: pageI) {
                 criticalSurface += Double(rect.rect.size.height * rect.rect.size.width)
             }
         }
@@ -274,11 +274,11 @@ struct PDFMarkings {
         var totalSurface = 0.0
         var gazedSurface = 0.0
         for pageI in 0..<pdfBase.document!.pageCount {
-            let thePage = pdfBase.document!.pageAtIndex(pageI)
+            let thePage = pdfBase.document!.page(at: pageI)
             let pageRect = pdfBase.getPageRect(thePage!)
             let pageSurface = Double(pageRect.size.height * pageRect.size.width)
             totalSurface += pageSurface
-            for rect in get(onlyClass: .Paragraph) {
+            for rect in get(onlyClass: .paragraph) {
                 gazedSurface += Double(rect.rect.size.height * rect.rect.size.width)
             }
         }
@@ -291,9 +291,9 @@ struct PDFMarkings {
     /// Given an array of reading rectangles, return a sorted version of the array
     /// (sorted so that elements coming first should have been read first in western order)
     /// with the colliding rectangles united (two rects collide when their intersection is not zero).
-    func uniteCollidingRects(forPage forPage: Int, inputArray: [ReadingRect]) -> [ReadingRect] {
+    func uniteCollidingRects(forPage: Int, inputArray: [ReadingRect]) -> [ReadingRect] {
         var ary = inputArray
-        ary.sortInPlace()
+        ary.sort()
         var i = 0
         while i + 1 < ary.count {
             if ary[i].pageIndex != forPage {
@@ -301,7 +301,7 @@ struct PDFMarkings {
             }
             if NSIntersectsRect(ary[i].rect, ary[i+1].rect) {
                 ary[i].unite(ary[i+1], pdfBase: pdfBase)
-                ary.removeAtIndex(i+1)
+                ary.remove(at: i+1)
             } else {
                 i += 1
             }
@@ -316,7 +316,7 @@ struct PDFMarkings {
     /// - parameter minuends: The array of rectangles from which the other will be subtracted (lhs)
     /// - parameter subtrahends: The array of rectangles that will be subtracted from minuends (rhs)
     /// - returns: An array of rectangles which is the result of minuends - subtrahends
-    func subtractRectangles(forPage forPage: Int, minuends: [ReadingRect], subtrahends: [ReadingRect]) -> [ReadingRect] {
+    func subtractRectangles(forPage: Int, minuends: [ReadingRect], subtrahends: [ReadingRect]) -> [ReadingRect] {
         var minuends = minuends
         var collidingRects: [(lhsRect: ReadingRect, rhsRect: ReadingRect)] // tuples with minuend rect and subtrahend rects which intersect (must be on the same page)
         
@@ -341,7 +341,7 @@ struct PDFMarkings {
                 for subtrahendRect in subtrahends {
                     if NSIntersectsRect(minuendRect.rect, subtrahendRect.rect) {
                         collidingRects.append((lhsRect: minuendRect, rhsRect: subtrahendRect))
-                        result.removeAtIndex(i)
+                        result.remove(at: i)
                         break
                     }
                 }
@@ -351,7 +351,7 @@ struct PDFMarkings {
             collisions = !collidingRects.isEmpty
             
             for (minuendRect, subtrahendRect) in collidingRects {
-                result.appendContentsOf(minuendRect.subtractRect(subtrahendRect, pdfBase: pdfBase))
+                result.append(contentsOf: minuendRect.subtractRect(subtrahendRect, pdfBase: pdfBase))
             }
             
             minuends = result
@@ -374,14 +374,14 @@ class PDFMarkingsState: NSObject {
     /// The rectangle on which the last modification was made.
     /// If nil, assumes that this is change encompasses all rectangles
     /// (this means that the whole screen, instead of a section, has to be refreshed)
-    private var lastRect: ReadingRect?
+    fileprivate var lastRect: ReadingRect?
     
     init(oldState: [ReadingRect]) {
         self.rectState = oldState
     }
     
     /// Sets the last rectangle (and on which page) that was added / removed
-    func setLastRect(lastRect: ReadingRect) {
+    func setLastRect(_ lastRect: ReadingRect) {
         self.lastRect = lastRect
     }
     
@@ -396,24 +396,24 @@ class PDFMarkingsState: NSObject {
 
 /// How important is a paragraph
 public enum ReadingClass: Int {
-    case Unset = 0
-    case Tag = 1  // note: this is treated separately ("tags" are not "marks")
-    case Viewport = 10
-    case Paragraph = 15
-    case Low = 20  // known as "read" in dime
-    case FoundString = 25
-    case Medium = 30  // known as "critical" in dime
-    case High = 40  // known as "high" in dime
+    case unset = 0
+    case tag = 1  // note: this is treated separately ("tags" are not "marks")
+    case viewport = 10
+    case paragraph = 15
+    case low = 20  // known as "read" in dime
+    case foundString = 25
+    case medium = 30  // known as "critical" in dime
+    case high = 40  // known as "high" in dime
 }
 
 /// What decided that a paragraph is important
 public enum ClassSource: Int {
-    case Unset = 0
-    case Viewport = 1
-    case Click = 2
-    case SMI = 3
-    case ML = 4
-    case Search = 5
-    case LocalPeer = 6  // TODO: `Peer`s are not currently considered in DiMe
-    case NetworkPeer = 7
+    case unset = 0
+    case viewport = 1
+    case click = 2
+    case smi = 3
+    case ml = 4
+    case search = 5
+    case localPeer = 6  // TODO: `Peer`s are not currently considered in DiMe
+    case networkPeer = 7
 }

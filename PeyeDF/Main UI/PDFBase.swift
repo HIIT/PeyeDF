@@ -34,16 +34,16 @@ class PDFBase: PDFView {
     var searching = false
     
     /// Whether the mouse is currently being dragged
-    private(set) var mouseDragging = false
+    fileprivate(set) var mouseDragging = false
     
     /// The TagAnnotation currently being dragged
-    private(set) var draggedTagAnnotation: Int?
+    fileprivate(set) var draggedTagAnnotation: Int?
     
     /// The index of last tuple selected is set to this value when nothing is selected
-    private static let TAGI_NONE: Int = 99999
+    fileprivate static let TAGI_NONE: Int = 99999
     
     /// Ignore TAG selection colour
-    private static let TAGI_SKIP: Int = 99998
+    fileprivate static let TAGI_SKIP: Int = 99998
     
     let extraLineAmount = 2 // 1/this number is the amount of extra lines that we want to discard
     // if we are at beginning or end of paragraph
@@ -53,9 +53,9 @@ class PDFBase: PDFView {
     
     /// Which colours are associated to which reading class (can be overridden in subclasses)
     var markAnnotationColours: [ReadingClass: NSColor] { get {
-        return [.Low: PeyeConstants.annotationColourRead,
-                .Medium: PeyeConstants.annotationColourInteresting,
-                .High: PeyeConstants.annotationColourCritical]
+        return [.low: PeyeConstants.annotationColourRead,
+                .medium: PeyeConstants.annotationColourInteresting,
+                .high: PeyeConstants.annotationColourCritical]
     } }
     
     /// This rect (in page coordinates) on this page index will be "highlighted"
@@ -87,7 +87,7 @@ class PDFBase: PDFView {
         willSet {
             let oldTagStrings = Set(readingTags.map({$0.text}))
             let newTagStrings = Set(newValue.map({$0.text}))
-            let changedTagStrings = oldTagStrings.intersect(newTagStrings)
+            let changedTagStrings = oldTagStrings.intersection(newTagStrings)
             
             // put old and new changed tags in a tuple (if different)
             let changedTags: [(ReadingTag, ReadingTag)] = changedTagStrings.flatMap({
@@ -132,7 +132,7 @@ class PDFBase: PDFView {
     }
     
     /// Whether this document contains plain text
-    private(set) var containsPlainText = false
+    fileprivate(set) var containsPlainText = false
     
     /// Here we store tags and annotations that refer to a single block of
     /// text (block being defined as text in contiguous lines in the PDF).
@@ -140,12 +140,12 @@ class PDFBase: PDFView {
     /// multiple lines can have the same tag repeated (unlike in DiMe, were there can only be
     /// one tag with a given name). For example, we can have two instances of tag with name "useful",
     /// one on page two and another on page three.
-    private var tagAnnotations = [TagAnnotation]()
+    fileprivate var tagAnnotations = [TagAnnotation]()
     
     /// Keeps track of index of the last tuple of tags that was selected
     /// Setting this value automatically sets tag colour and refreshes view
     /// TAGI_NONE means nothng is selected
-    private var lastTagAnnotationIndex: Int = PDFBase.TAGI_NONE { didSet {
+    fileprivate var lastTagAnnotationIndex: Int = PDFBase.TAGI_NONE { didSet {
         
         // if skiped, assume we selected none next time and abort
         guard lastTagAnnotationIndex != PDFBase.TAGI_SKIP else {
@@ -154,7 +154,7 @@ class PDFBase: PDFView {
         }
         
         // set colours
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             // new selection colour
             if self.lastTagAnnotationIndex != PDFBase.TAGI_NONE {
                 self.tagAnnotations[self.lastTagAnnotationIndex].setSelected()
@@ -185,18 +185,18 @@ class PDFBase: PDFView {
     - Parameter rect: The rect to refresh (in page coordinates). If nil (default), refreshes the whole page (crop box).
     */
     func refreshPage(atIndex index: Int, rect: NSRect? = nil) {
-        guard let doc = document, page = doc.getPage(atIndex: index) else {
+        guard let doc = document, let page = doc.getPage(atIndex: index) else {
             return
         }
         var refRect: NSRect
         if rect == nil {
-            refRect = page.boundsForBox(PDFDisplayBox.CropBox)
+            refRect = page.bounds(for: PDFDisplayBox.cropBox)
         } else {
             refRect = rect!
         }
-        refRect = self.convertRect(refRect, fromPage: page)
-        dispatch_async(dispatch_get_main_queue()) {
-            self.setNeedsDisplayInRect(refRect)
+        refRect = self.convert(refRect, from: page)
+        DispatchQueue.main.async {
+            self.setNeedsDisplay(refRect)
         }
     }
     
@@ -205,11 +205,11 @@ class PDFBase: PDFView {
     Normally, we use the media box to store rect coordinates. In case there is a difference with the
      crop box (for display reasons), this function returns that difference.
     */
-    func offSetToCropBox(page: PDFPage!) -> NSPoint {
+    func offSetToCropBox(_ page: PDFPage!) -> NSPoint {
         // if origins of media and boxes are different, obtain difference
         // to later apply it to each readingrect's origin
-        let mediaBoxo = page.boundsForBox(PDFDisplayBox.MediaBox).origin
-        let cropBoxo = page.boundsForBox(PDFDisplayBox.CropBox).origin
+        let mediaBoxo = page.bounds(for: PDFDisplayBox.mediaBox).origin
+        let cropBoxo = page.bounds(for: PDFDisplayBox.cropBox).origin
         var pointDiff = NSPoint(x: 0, y: 0)
         if mediaBoxo != cropBoxo {
             pointDiff.x = mediaBoxo.x - cropBoxo.x
@@ -218,14 +218,14 @@ class PDFBase: PDFView {
         return pointDiff
     }
 
-    override func drawPage(page: PDFPage) {
-        super.drawPage(page)
+    override func draw(_ page: PDFPage) {
+        super.draw(page)
         
         // get difference between media and crop box
         let pointDiff = offSetToCropBox(page)
         
         // if the highlight rect is present on the current page, draw it
-        if let (pageIndex, rect) = highlightRect where document!.indexForPage(page) == pageIndex {
+        if let (pageIndex, rect) = highlightRect , document!.index(for: page) == pageIndex {
             
             // Save.
             NSGraphicsContext.saveGraphicsState()
@@ -244,42 +244,42 @@ class PDFBase: PDFView {
     // MARK: - Input overrides
     
     /// Mouse down captures (does not send to super) when there is a tag label underneath
-    override func mouseDown(theEvent: NSEvent) {
+    override func mouseDown(with theEvent: NSEvent) {
         let mouseInWindow = theEvent.locationInWindow
-        let mouseInView = self.convertPoint(mouseInWindow, fromView: self.window!.contentViewController!.view)
-        guard let activePage = self.pageForPoint(mouseInView, nearest: false) else {
-            super.mouseDown(theEvent)
+        let mouseInView = self.convert(mouseInWindow, from: self.window!.contentViewController!.view)
+        guard let activePage = self.page(for: mouseInView, nearest: false) else {
+            super.mouseDown(with: theEvent)
             return
         }
-        let pointOnPage = self.convertPoint(mouseInView, toPage: activePage)
-        if let i = tagAnnotations.indexOf({$0.labelHitTest(pointOnPage, page: activePage)}) {
+        let pointOnPage = self.convert(mouseInView, to: activePage)
+        if let i = tagAnnotations.index(where: {$0.labelHitTest(pointOnPage, page: activePage)}) {
             draggedTagAnnotation = i
         } else {
-            super.mouseDown(theEvent)
+            super.mouseDown(with: theEvent)
             draggedTagAnnotation = nil
         }
     }
     
     /// Dragging is overriden to allow us to drag labels
-    override func mouseDragged(theEvent: NSEvent) {
+    override func mouseDragged(with theEvent: NSEvent) {
         self.mouseDragging = true
         // if we are dragging a tag label, override so we move label, otherwise not
         let mouseInWindow = theEvent.locationInWindow
-        let mouseInView = self.convertPoint(mouseInWindow, fromView: self.window!.contentViewController!.view)
-        guard let activePage = self.pageForPoint(mouseInView, nearest: false), draggedTagI = self.draggedTagAnnotation else {
-            super.mouseDragged(theEvent)
+        let mouseInView = self.convert(mouseInWindow, from: self.window!.contentViewController!.view)
+        guard let activePage = self.page(for: mouseInView, nearest: false), let draggedTagI = self.draggedTagAnnotation else {
+            super.mouseDragged(with: theEvent)
             self.draggedTagAnnotation = nil
             return
         }
-        let mouseOnPage = self.convertPoint(mouseInView, toPage: activePage)
+        let mouseOnPage = self.convert(mouseInView, to: activePage)
         tagAnnotations[draggedTagI].moveLabel(mouseOnPage)
     }
     
     /// Mouse up is overridden to allow "dropping" the dragged tag label
-    override func mouseUp(theEvent: NSEvent) {
+    override func mouseUp(with theEvent: NSEvent) {
         self.mouseDragging = false
         self.draggedTagAnnotation = nil
-        super.mouseUp(theEvent)
+        super.mouseUp(with: theEvent)
     }
     
     // MARK: - Tagging (internal)
@@ -300,23 +300,23 @@ class PDFBase: PDFView {
     }
     
     /// Returns a list of tags associated to a given selection
-    func tagsForSelection(sel: PDFSelection) -> [ReadingTag] {
+    func tagsForSelection(_ sel: PDFSelection) -> [ReadingTag] {
         let (rects, idxs) = getLineRects(sel)
         return readingTags.filter({$0.containsNSRects(rects, onPages: idxs)})
     }
     
     /// Show tag popup for readingtags at this point.
     /// Returns true if some tags where indeed present (false if the point is a "miss").
-    func showTags(forPoint: NSPoint) -> Bool {
+    func showTags(_ forPoint: NSPoint) -> Bool {
         
         // Page we're on.
-        let activePage = self.pageForPoint(forPoint, nearest: true)
+        let activePage = self.page(for: forPoint, nearest: true)
         
         // Point in page space
-        let pagePoint = convertPoint(forPoint, toPage: activePage!)
+        let pagePoint = convert(forPoint, to: activePage!)
         
         // Find tuples for which this point falls in an annotation
-        let tupleI = tagAnnotations.indexOf({$0.hitTest(pagePoint, page: activePage!)})
+        let tupleI = tagAnnotations.index(where: {$0.hitTest(pagePoint, page: activePage!)})
         
         if let i = tupleI {
             
@@ -334,11 +334,11 @@ class PDFBase: PDFView {
     
     /// Performs an asynchronous tag (readingtag) search on the utility queue.
     /// For every instance of a tag found, sends a tagStringFoundNotification back on the main queue.
-    func beginTagStringSearch(tagString: String) {
+    func beginTagStringSearch(_ tagString: String) {
         
         self.searching = true
         
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.utility).async {
             // loop on tag annotations, since those are split by "closeness" (unlike the readingTags array, which contains whole tags)
             self.tagAnnotations.forEach() {
                 
@@ -351,8 +351,8 @@ class PDFBase: PDFView {
                     // create and send notification
                     var uInfo = [String: AnyObject]()
                     uInfo["MyPDFTagFoundSelection"] = foundSel
-                    dispatch_async(dispatch_get_main_queue()) {
-                        NSNotificationCenter.defaultCenter().postNotificationName(TagConstants.tagStringFoundNotification, object: self, userInfo: uInfo)
+                    DispatchQueue.main.async {
+                        NotificationCenter.default.post(name: Notification.Name(rawValue: TagConstants.tagStringFoundNotification), object: self, userInfo: uInfo)
                     }
                 }
             }
@@ -363,10 +363,10 @@ class PDFBase: PDFView {
     
     /// Creates annotation(s) for the given tag or add it to already present annotations.
     /// Splits them as necessary.
-    private func appendTagAnnotation(forTag tag: ReadingTag) {
+    fileprivate func appendTagAnnotation(forTag tag: ReadingTag) {
         
         // Make sure tag was not already added
-        guard tagAnnotations.reduce(false, combine: {$0 || $1.tags.contains(tag) }) == false else {
+        guard tagAnnotations.reduce(false, {$0 || $1.tags.contains(tag) }) == false else {
             AppSingleton.log.error("A tag exactly the same as this was already present")
             return
         }
@@ -398,12 +398,12 @@ class PDFBase: PDFView {
     }
     
     /// Removes annotation(s) for the given tag (removing both)
-    private func removeTagAnnotation(forTag tag: ReadingTag) {
+    fileprivate func removeTagAnnotation(forTag tag: ReadingTag) {
         
         // make sure tag exists and get index
         // remove tag and if remaining 0 remove from collection
         
-        let _found = tagAnnotations.indexOf({$0.sameAnnotationsAs(tag)})
+        let _found = tagAnnotations.index(where: {$0.sameAnnotationsAs(tag)})
         
         guard let foundI = _found else {
             AppSingleton.log.error("Tag not found in already existing tags")
@@ -412,24 +412,24 @@ class PDFBase: PDFView {
         
         // before annotation removal, set selection to none
         
-        self.lastTagAnnotationIndex = self.dynamicType.TAGI_SKIP
+        self.lastTagAnnotationIndex = type(of: self).TAGI_SKIP
         
         if tagAnnotations[foundI].removeTag(tag) < 1 {
             tagAnnotations[foundI].removeAll()
-            tagAnnotations.removeAtIndex(foundI)
+            tagAnnotations.remove(at: foundI)
         }
     }
     
     // MARK: - External functions
     
     /// Returns all rects and page indices covered by this selection, line by line
-    func getLineRects(sel: PDFSelection) -> ([NSRect], [Int]) {
+    func getLineRects(_ sel: PDFSelection) -> ([NSRect], [Int]) {
         var rects = [NSRect]()
         var idxs = [Int]()
         for subSel in (sel.selectionsByLine() ) {
             for p in subSel.pages {
-                let pageIndex = self.document!.indexForPage(p)
-                let rect = subSel.boundsForPage(p)
+                let pageIndex = self.document!.index(for: p)
+                let rect = subSel.bounds(for: p)
                 rects.append(rect)
                 idxs.append(pageIndex)
             }
@@ -440,15 +440,15 @@ class PDFBase: PDFView {
     /// Get media box for page, representing coordinates which take into account if
     /// page has been cropped (in Preview, for example). By default returns
     /// media box instead if crop box is not present, which is what we want
-    func getPageRect(page: PDFPage) -> NSRect {
-        return page.boundsForBox(PDFDisplayBox.CropBox)
+    func getPageRect(_ page: PDFPage) -> NSRect {
+        return page.bounds(for: PDFDisplayBox.cropBox)
     }
     
     /// Get the number of visible page numbers (starting from 0)
     func getVisiblePageNums() -> [Int] {
         var visibleArray = [Int]()
         for visiblePage in self.visiblePages()! where self.visiblePages() != nil {
-            visibleArray.append(document!.indexForPage(visiblePage))
+            visibleArray.append(document!.index(for: visiblePage))
         }
         return visibleArray
     }
@@ -474,11 +474,11 @@ class PDFBase: PDFView {
             
             // Get viewport rect and apply margin
             var visibleRect = NSRect(origin: CGPoint(x: 0, y: 0), size: self.frame.size)
-            visibleRect.insetInPlace(dx: PeyeConstants.extraMargin, dy: PeyeConstants.extraMargin)
+            visibleRect = visibleRect.insetBy(dx: PeyeConstants.extraMargin, dy: PeyeConstants.extraMargin)
             
-            visibleRect = self.convertRect(visibleRect, toPage: visiblePage)  // Convert rect to page coordinates
+            visibleRect = self.convert(visibleRect, to: visiblePage)  // Convert rect to page coordinates
             
-            visibleRect.intersectInPlace(pageRect)  // Intersect to get seen portion
+            visibleRect = visibleRect.intersection(pageRect)  // Intersect to get seen portion
             
             // make sure rect size is >0, <page size and origin > 0 < page size 
             if visibleRect.origin.x >= 0 && visibleRect.origin.y >= 0 &&
@@ -506,9 +506,9 @@ class PDFBase: PDFView {
     
     /// Asynchronously gets text within document (if any) and
     /// calls callback with the result.
-    func checkPlainText(callback: (String? -> Void)?) {
+    func checkPlainText(_ callback: ((String?) -> Void)?) {
         if let doc = self.document {
-            dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
+            DispatchQueue.global(qos: DispatchQoS.QoSClass.utility).async {
                 [weak self] in
                 if let txt = doc.getText() {
                     self?.containsPlainText = true
@@ -527,10 +527,10 @@ class PDFBase: PDFView {
     /// - parameter rect: The rect for which we want the string for
     /// - parameter onPage: Index starting from 0 on which the rect is
     /// - returns: A string if it was possible to generate it, nil if not
-    func stringForRect(rect: NSRect, onPage: Int) -> String? {
+    func stringForRect(_ rect: NSRect, onPage: Int) -> String? {
         if containsPlainText {
-            let page = document!.pageAtIndex(onPage)
-            let selection = page!.selectionForRect(rect)
+            let page = document!.page(at: onPage)
+            let selection = page!.selection(for: rect)
             return selection!.string
         } else {
             return nil
@@ -538,12 +538,12 @@ class PDFBase: PDFView {
     }
     
     /// Convenience function to get a string from a readingrect
-    func stringForRect(theRect: ReadingRect) -> String? {
-        return stringForRect(theRect.rect, onPage: theRect.pageIndex.integerValue)
+    func stringForRect(_ theRect: ReadingRect) -> String? {
+        return stringForRect(theRect.rect, onPage: theRect.pageIndex)
     }
     
     /// Convenience function to get a string from a eyerect
-    func stringForRect(theRect: EyeRectangle) -> String? {
+    func stringForRect(_ theRect: EyeRectangle) -> String? {
         return stringForRect(NSRect(origin: theRect.origin, size: theRect.size), onPage: theRect.pageIndex)
     }
     
@@ -551,8 +551,8 @@ class PDFBase: PDFView {
     ///
     /// - parameter markRect: The rectangle corresponding to the mark
     /// - returns: A rectangle representing the annotation
-    func annotationRectForMark(markRect: NSRect) -> NSRect {
-        let lineThickness = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefAnnotationLineThickness) as! CGFloat
+    func annotationRectForMark(_ markRect: NSRect) -> NSRect {
+        let lineThickness = UserDefaults.standard.value(forKey: PeyeConstants.prefAnnotationLineThickness) as! CGFloat
         let newRect_x = markRect.origin.x - PeyeConstants.annotationLineDistance
         let newRect_y = markRect.origin.y
         let newRect_height = markRect.height
@@ -565,8 +565,8 @@ class PDFBase: PDFView {
     ///
     /// - parameter forClass: The class of annotations to output
     /// - parameter colour: The color to use, generally defined in PeyeConstants
-    func outputAnnotations(forClass: ReadingClass, colour: NSColor) {
-        let lineThickness: CGFloat = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefAnnotationLineThickness) as! CGFloat
+    func outputAnnotations(_ forClass: ReadingClass, colour: NSColor) {
+        let lineThickness: CGFloat = UserDefaults.standard.value(forKey: PeyeConstants.prefAnnotationLineThickness) as! CGFloat
         let myBord = PDFBorder()
         myBord.lineWidth = lineThickness
         
@@ -576,7 +576,7 @@ class PDFBase: PDFView {
             annotation.color = colour
             annotation.border = myBord
             
-            let pdfPage = self.document!.pageAtIndex(rect.pageIndex.integerValue)
+            let pdfPage = self.document!.page(at: rect.pageIndex)
             
             addAnnotation(annotation, onPage: pdfPage!)
             
@@ -587,7 +587,7 @@ class PDFBase: PDFView {
     /// (corresponding to low/medium/high marks) defined in PeyeConstants
     func removeAllParagraphAnnotations() {
         for i in 0..<document!.pageCount {
-            let page = document!.pageAtIndex(i)
+            let page = document!.page(at: i)
             for annColour in markAnnotationColours.values {
                 for annotation in page!.annotations {
                     if let annotation = annotation as? PDFAnnotationSquare {
@@ -605,38 +605,38 @@ class PDFBase: PDFView {
     func autoAnnotate() {
         removeAllParagraphAnnotations()
         markings.flattenRectangles_relevance()
-        outputAnnotations(.High, colour: PeyeConstants.annotationColourCritical)
-        outputAnnotations(.Medium, colour: PeyeConstants.annotationColourInteresting)
-        outputAnnotations(.Low, colour: PeyeConstants.annotationColourRead)
+        outputAnnotations(.high, colour: PeyeConstants.annotationColourCritical)
+        outputAnnotations(.medium, colour: PeyeConstants.annotationColourInteresting)
+        outputAnnotations(.low, colour: PeyeConstants.annotationColourRead)
     }
     
     // MARK: - Convenience functions
     
     /// Adds the given annotation on the given page and refreshes display
-    internal func addAnnotation(annotation: PDFAnnotation, onPage: PDFPage) {
+    internal func addAnnotation(_ annotation: PDFAnnotation, onPage: PDFPage) {
         onPage.addAnnotation(annotation)
-        dispatch_async(dispatch_get_main_queue()) {
-            self.setNeedsDisplayInRect(self.convertRect(annotation.bounds, fromPage: onPage))
+        DispatchQueue.main.async {
+            self.setNeedsDisplay(self.convert(annotation.bounds, from: onPage))
         }
     }
     
     /// Removes the given annotation from the given page and refreshes display
-    internal func removeAnnotation(annotation: PDFAnnotation, onPage: PDFPage) {
+    internal func removeAnnotation(_ annotation: PDFAnnotation, onPage: PDFPage) {
         onPage.removeAnnotation(annotation)
-        dispatch_async(dispatch_get_main_queue()) {
-            self.setNeedsDisplayInRect(self.convertRect(annotation.bounds, fromPage: onPage))
+        DispatchQueue.main.async {
+            self.setNeedsDisplay(self.convert(annotation.bounds, from: onPage))
         }
     }
     
     /// Moves the given annotation so that is centred on a given point (in page coordinates).
-    internal func moveAnnotation(annotation: PDFAnnotation, toPoint: NSPoint) {
+    internal func moveAnnotation(_ annotation: PDFAnnotation, toPoint: NSPoint) {
         let oldBounds = annotation.bounds
         let newOrigin = NSPoint(x: toPoint.x - annotation.bounds.size.width / 2, y: toPoint.y - annotation.bounds.size.height / 2)
         let newBounds = NSRect(origin: newOrigin, size: oldBounds.size)
         annotation.bounds = newBounds
-        dispatch_async(dispatch_get_main_queue()) {
-            self.setNeedsDisplayInRect(self.convertRect(oldBounds, fromPage: annotation.page!))
-            self.setNeedsDisplayInRect(self.convertRect(newBounds, fromPage: annotation.page!))
+        DispatchQueue.main.async {
+            self.setNeedsDisplay(self.convert(oldBounds, from: annotation.page!))
+            self.setNeedsDisplay(self.convert(newBounds, from: annotation.page!))
         }
     }
     
@@ -645,7 +645,7 @@ class PDFBase: PDFView {
     /// - parameter pagePoint: the point of interest
     /// - parameter forPage: the page of interest
     /// - returns: A rectangle corresponding to the point, nil if there is no paragraph
-    internal func pointToParagraphRect(pagePoint: NSPoint, forPage activePage: PDFPage) -> NSRect? {
+    internal func pointToParagraphRect(_ pagePoint: NSPoint, forPage activePage: PDFPage) -> NSRect? {
         
         let pageRect = getPageRect(activePage)
         let maxH = pageRect.size.width - 5.0  // maximum horizontal size for line
@@ -661,8 +661,8 @@ class PDFBase: PDFView {
         // everything which is lineAutoSelectionTolerance bigger than that
         var selections = [PDFSelection]()
         for point in pointArray {
-            let sel = activePage.selectionForLineAtPoint(point)
-            let selRect = sel!.boundsForPage(activePage)
+            let sel = activePage.selectionForLine(at: point)
+            let selRect = sel!.bounds(for: activePage)
             let seenRect = getSeenRect(fromPoint: pagePoint, zoomLevel: self.scaleFactor)
             // only add selection if its rect intersect estimated seen rect
             // and if selection rect is less than maximum h and v size but more than minimum
@@ -693,11 +693,11 @@ class PDFBase: PDFView {
         
         // sort selections by height (disabled, using middle point instead)
         // selections.sort({$0.boundsForPage(activePage).height > $1.boundsForPage(activePage).height})
-        let medianHeight = selections[medI].boundsForPage(activePage).height
+        let medianHeight = selections[medI].bounds(for: activePage).height
         
         // sort selections by width (disabled, using median point)
         // selections.sort({$0.boundsForPage(activePage).width > $1.boundsForPage(activePage).width})
-        let medianWidth = selections[medI].boundsForPage(activePage).width
+        let medianWidth = selections[medI].bounds(for: activePage).width
         
         let isHorizontalLine = medianHeight < medianWidth
         
@@ -709,11 +709,11 @@ class PDFBase: PDFView {
         let medianSize = NSSize(width: medianWidth, height: medianHeight)
         
         // reject selections which are too big
-        let filteredSelections = selections.filter({$0.boundsForPage(activePage).size.withinMaxTolerance(medianSize, tolerance: PeyeConstants.lineAutoSelectionTolerance)})
+        let filteredSelections = selections.filter({$0.bounds(for: activePage).size.withinMaxTolerance(medianSize, tolerance: PeyeConstants.lineAutoSelectionTolerance)})
         
         var pdfSel = PDFSelection(document: self.document!)
         for selection in filteredSelections {
-            pdfSel.addSelection(selection)
+            pdfSel.add(selection)
         }
         
         // if top / bottom third of the lines comprise a part of another paragraph, leave them out
@@ -733,7 +733,7 @@ class PDFBase: PDFView {
                 // if so skip them
                 for i in 0..<nOfExtraLines {
                     let currentLineSel = selLines[i]
-                    if let cLString = currentLineSel.string, let _ = activePage.string?.rangeOfString(cLString + "\r") {
+                    if let cLString = currentLineSel.string, let _ = activePage.string?.range(of: cLString + "\r") {
                         lineStartIndex = i+1
                         break
                     }
@@ -741,9 +741,9 @@ class PDFBase: PDFView {
                 
                 // do the same for the ending part
                 var lineEndIndex = selLines.count-1
-                for i in Array((selLines.count-1-nOfExtraLines..<selLines.count).reverse()) {
+                for i in Array((selLines.count-1-nOfExtraLines..<selLines.count).reversed()) {
                     let currentLineSel = selLines[i]
-                    if let cLString = currentLineSel.string, let _ = activePage.string?.rangeOfString(cLString + "\r") {
+                    if let cLString = currentLineSel.string, let _ = activePage.string?.range(of: cLString + "\r") {
                         lineEndIndex = i
                         break
                     }
@@ -756,7 +756,7 @@ class PDFBase: PDFView {
                 // generate new selection not taking into account excluded parts
                 pdfSel = PDFSelection(document: self.document!)
                 for i in lineStartIndex...lineEndIndex {
-                    pdfSel.addSelection(selLines[i])
+                    pdfSel.add(selLines[i])
                 }
                 
             } // end of check for split, if no need just return selection as-was //
@@ -765,12 +765,12 @@ class PDFBase: PDFView {
         }
         
         // The new rectangle for this point
-        return pdfSel.boundsForPage(activePage)
+        return pdfSel.bounds(for: activePage)
     }
     
     /// Re-loads the view on the main queue.
     func refreshAll() {
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             self.layoutDocumentView()
             self.display()
         }

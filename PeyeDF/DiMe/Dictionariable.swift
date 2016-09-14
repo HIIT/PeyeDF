@@ -29,23 +29,23 @@ import Foundation
 protocol Dictionariable {
     
     /// Returns itself in a dict
-    func getDict() -> [String: AnyObject]
+    func getDict() -> [String : Any]
 }
 
 /// Allows collections of dictionariable types to return themselves as array of dicts
-extension SequenceType where Generator.Element: Dictionariable {
+extension Sequence where Iterator.Element: Dictionariable {
     
     /// Returns itself as an array of dicts
-    func asDictArray() -> [[String: AnyObject]] {
-        return self.reduce([[String: AnyObject]](), combine: {$0 + [$1.getDict()]})
+    func asDictArray() -> [[String : Any]] {
+        return self.reduce([[String : Any]](), {$0 + [$1.getDict()]})
     }
 }
 
 extension NSSize: Dictionariable {
     /// Returns width and height in a dictionary with their values as
     /// numbers (both as JSONableItem enums).
-    func getDict() -> [String : AnyObject] {
-        var retDict = [String: AnyObject]()
+    func getDict() -> [String : Any] {
+        var retDict = [String : Any]()
         retDict["height"] = self.height
         retDict["width"] = self.width
         return retDict
@@ -55,8 +55,8 @@ extension NSSize: Dictionariable {
 extension NSPoint: Dictionariable {
     /// Returns x and y in a dictionary with their values as
     /// numbers (both as JSONableItem enums).
-    func getDict() -> [String : AnyObject] {
-        var retDict = [String: AnyObject]()
+    func getDict() -> [String : Any] {
+        var retDict = [String : Any]()
         retDict["x"] = self.x
         retDict["y"] = self.y
         return retDict

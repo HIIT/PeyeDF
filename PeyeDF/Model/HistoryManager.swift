@@ -36,45 +36,45 @@ class HistoryManager: FixationDataDelegate {
     static let sharedManager = HistoryManager()
     
     /// The timer that fires when we assume that the user starts reading. Pass the DocumentWindowController as the userInfo object.
-    private var entryTimer: NSTimer?
+    fileprivate var entryTimer: Timer?
     
     /// The timer that fires after a certain amount of time passed, and generates an "exit event"
-    private var exitTimer: NSTimer?
+    fileprivate var exitTimer: Timer?
     
     /// The GCD queue in which all timers are created / destroyed (to prevent potential memory leaks, they all run here)
-    private let timerQueue = dispatch_queue_create("hiit.PeyeDF.HistoryManager.timerQueue", DISPATCH_QUEUE_SERIAL)
+    fileprivate let timerQueue = DispatchQueue(label: "hiit.PeyeDF.HistoryManager.timerQueue", attributes: [])
     
     /// Eye tracking events are converted / sent to dime on this queue, to avoid conflicts
     /// between exit events and fixation receipt events
-    private let eyeQueue = dispatch_queue_create("hiit.PeyeDF.HistoryManager.eyeQueue", DISPATCH_QUEUE_SERIAL)
+    fileprivate let eyeQueue = DispatchQueue(label: "hiit.PeyeDF.HistoryManager.eyeQueue", attributes: [])
     
     // MARK: - History tracking fields
     
     /// The reading event that will be sent at an exit event
-    private var currentReadingEvent: ReadingEvent?
+    fileprivate var currentReadingEvent: ReadingEvent?
     
     /// A boolean indicating that the user is (probably) reading. Essentially, it means we are after entry timer but before exit timer (or exit event).
-    private(set) var userIsReading = false
+    fileprivate(set) var userIsReading = false
     
     /// A unix timestamp indicating when the user started reading
-    private(set) var readingUnixTime = 0
+    fileprivate(set) var readingUnixTime = 0
     
     /// The current thing the user is probably looking at (PDFReader instance), which will be used to convert screen to page coordinates or retrieve eye tracking boxes.
-    private weak var currentEyeReceiver: PDFReader?
+    fileprivate weak var currentEyeReceiver: PDFReader?
     
     /// A dictionary, one entry per page (indexed by page number) containing all page eye tracking data
-    private var currentEyeData = [Int: PageEyeDataChunk]()
+    fileprivate var currentEyeData = [Int: PageEyeDataChunk]()
     
     /// Markings for SMI rectangles created by incoming eye data.
-    private var currentSMIMarks: PDFMarkings?
+    fileprivate var currentSMIMarks: PDFMarkings?
     
     /// A dictionary indicating when the user marked a paragraph in unix time
-    private var manualMarkUnixtimes: [Int]
+    fileprivate var manualMarkUnixtimes: [Int]
     
     /// Creates the history manager and listens for manual marks notifications
     init() {
         manualMarkUnixtimes = [Int]()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(manualParagraphMark(_:)), name: PeyeConstants.manualParagraphMarkNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(manualParagraphMark(_:)), name: PeyeConstants.manualParagraphMarkNotification, object: nil)
     }
     
     // MARK: - External functions
@@ -82,9 +82,9 @@ class HistoryManager: FixationDataDelegate {
     /// Tells the history manager that something new is happened. The history manager check if the sender is a window in front (main window) and if there is scidoc associated to it
     ///
     /// - parameter documentWindow: The window controller that is sending the message
-    func entry(documentWindow: DocumentWindowController) {
-        if let window = documentWindow.window, _ = documentWindow.pdfReader?.sciDoc {
-            if window.mainWindow {
+    func entry(_ documentWindow: DocumentWindowController) {
+        if let window = documentWindow.window, let _ = documentWindow.pdfReader?.sciDoc {
+            if window.isMainWindow {
                 // if we are tracking eyes (using midas), make sure eyes are available before starting
                 if MidasManager.sharedInstance.midasAvailable {
                     if !MidasManager.sharedInstance.eyesLost {
@@ -98,12 +98,12 @@ class HistoryManager: FixationDataDelegate {
     }
     
     /// Tells the history manager to close the current event (we switched focus, or something similar)
-    func exit(documentWindow: DocumentWindowController) {
+    func exit(_ documentWindow: DocumentWindowController) {
         exitEvent(nil)
     }
     
     /// Adds a reading rect to the current outgoing readingevent (to add manual markings)
-    func addReadingRect(theRect: ReadingRect) {
+    func addReadingRect(_ theRect: ReadingRect) {
         if let cre = self.currentReadingEvent {
             cre.addRect(theRect)
         }
@@ -111,14 +111,14 @@ class HistoryManager: FixationDataDelegate {
     
     // MARK: - Protocol implementation
     
-    func receiveNewFixationData(newData: [SMIFixationEvent]) {
+    func receiveNewFixationData(_ newData: [SMIFixationEvent]) {
         if let eyeReceiver = currentEyeReceiver {
             // translate all fixations to page points, and insert to corresponding data in the main dictionary
             for fixEv in newData {
                 
                 // run only on eye serial queue, and check if user is reading
                 
-                dispatch_sync(eyeQueue) {
+                eyeQueue.sync {
 
                     if self.userIsReading {
                     
@@ -131,7 +131,7 @@ class HistoryManager: FixationDataDelegate {
                             if self.currentEyeData[triple.pageIndex] != nil {
                                 self.currentEyeData[triple.pageIndex]!.appendEvent(triple.x, y: triple.y, startTime: fixEv.startTime, endTime: fixEv.endTime, duration: fixEv.duration, unixtime: fixEv.unixtime)
                             } else {
-                                self.currentEyeData[triple.pageIndex] = PageEyeDataChunk(Xs: [triple.x], Ys: [triple.y], startTimes: [fixEv.startTime], endTimes: [fixEv.endTime], durations: [fixEv.duration], unixtimes: [fixEv.unixtime], pageIndex: triple.pageIndex, scaleFactor: eyeReceiver.getScaleFactor())
+                                self.currentEyeData[triple.pageIndex] = PageEyeDataChunk(Xs: [triple.x], Ys: [triple.y], startTimes: [fixEv.startTime], endTimes: [fixEv.endTime], durations: [fixEv.duration], unixtimes: [fixEv.unixtime], pageIndex: triple.pageIndex, scaleFactor: Double(eyeReceiver.getScaleFactor()))
                             }
                             
                             // create rect for retrieved fixation
@@ -159,19 +159,19 @@ class HistoryManager: FixationDataDelegate {
     // MARK: - Internal functions
     
     /// Starts the "entry timer" and sets up references to the current window
-    private func preparation(documentWindow: DocumentWindowController) {
+    fileprivate func preparation(_ documentWindow: DocumentWindowController) {
         exitEvent(nil)
-        dispatch_sync(timerQueue) {
-            self.entryTimer = NSTimer(timeInterval: PeyeConstants.minReadTime, target: self, selector: #selector(self.entryTimerFire(_:)), userInfo: documentWindow, repeats: false)
-            NSRunLoop.currentRunLoop().addTimer(self.entryTimer!, forMode: NSRunLoopCommonModes)
+        timerQueue.sync {
+            self.entryTimer = Timer(timeInterval: PeyeConstants.minReadTime, target: self, selector: #selector(self.entryTimerFire(_:)), userInfo: documentWindow, repeats: false)
+            RunLoop.current.add(self.entryTimer!, forMode: RunLoopMode.commonModes)
         }
     }
     
     // MARK: - Callbacks
     
     /// The document has been "seen" long enough, request information and prepare second (exit) timer
-    @objc private func entryTimerFire(entryTimer: NSTimer) {
-        readingUnixTime = NSDate().unixTime
+    @objc fileprivate func entryTimerFire(_ entryTimer: Timer) {
+        readingUnixTime = Date().unixTime
         userIsReading = true
         
         let docWindow = entryTimer.userInfo as! DocumentWindowController
@@ -187,40 +187,40 @@ class HistoryManager: FixationDataDelegate {
         CollaborationMessage(readingDocumentFromSciDoc: docWindow.pdfReader?.sciDoc)?.sendToAll()
         
         // prepare exit timer, which will fire when the user is inactive long enough (or will be canceled if there is another exit event).
-        if let _ = self.currentReadingEvent, pdfReader = docWindow.pdfReader {
-            dispatch_sync(timerQueue) {
+        if let _ = self.currentReadingEvent, let pdfReader = docWindow.pdfReader {
+            timerQueue.sync {
                 
                 // prepare smi rectangles
                 self.currentSMIMarks = PDFMarkings(pdfBase: pdfReader)
         
-                self.exitTimer = NSTimer(timeInterval: PeyeConstants.maxReadTime, target: self, selector: #selector(self.exitEvent(_:)), userInfo: nil, repeats: false)
-                NSRunLoop.currentRunLoop().addTimer(self.exitTimer!, forMode: NSRunLoopCommonModes)
+                self.exitTimer = Timer(timeInterval: PeyeConstants.maxReadTime, target: self, selector: #selector(self.exitEvent(_:)), userInfo: nil, repeats: false)
+                RunLoop.current.add(self.exitTimer!, forMode: RunLoopMode.commonModes)
             }
         }
     }
     
     /// The user has moved away, send current status (if any) and invalidate timer
-    @objc private func exitEvent(exitTimer: NSTimer?) {
+    @objc fileprivate func exitEvent(_ exitTimer: Timer?) {
         userIsReading = false
         self.currentEyeReceiver = nil
         
         // cancel previous entry timer, if any
         if let timer = self.entryTimer {
-            dispatch_sync(timerQueue) {
+            timerQueue.sync {
                     timer.invalidate()
                }
             self.entryTimer = nil
         }
         // cancel previous exit timer, if any
         if let timer = self.exitTimer {
-            dispatch_sync(timerQueue) {
+            timerQueue.sync {
                     timer.invalidate()
                }
             self.exitTimer = nil
         }
         // if there's something to send, send it
         if let cre = self.currentReadingEvent {
-            cre.setEnd(NSDate())
+            cre.setEnd(Date())
             let eventToSend = cre
             self.currentReadingEvent = nil
             
@@ -229,7 +229,7 @@ class HistoryManager: FixationDataDelegate {
             var eyeDataToSend = self.currentEyeData
             
             // run on eye serial queue
-            dispatch_async(eyeQueue) {
+            eyeQueue.async {
             
                 // check if there is page eye data, and append data if so
                 for k in eyeDataToSend.keys {
@@ -240,7 +240,7 @@ class HistoryManager: FixationDataDelegate {
                 }
                 
                 // if there are smi rectangles to send, unite them and send
-                if var csmi = SMIMarksToSend where csmi.getCount() > 0 {
+                if var csmi = SMIMarksToSend , csmi.getCount() > 0 {
                     csmi.flattenRectangles_eye()
                     eventToSend.extendRects(csmi.getAllReadingRects())
                 }
@@ -257,8 +257,8 @@ class HistoryManager: FixationDataDelegate {
     }
     
     /// Records that the user marked a pagraph at the given unix time
-    @objc private func manualParagraphMark(notification: NSNotification) {
-        let unixtime = notification.userInfo!["unixtime"]! as! Int
+    @objc fileprivate func manualParagraphMark(_ notification: Notification) {
+        let unixtime = (notification as NSNotification).userInfo!["unixtime"]! as! Int
         manualMarkUnixtimes.append(unixtime)
     }
     

@@ -28,7 +28,7 @@ import Cocoa
 protocol ClickRecognizerDelegate: class {
     
     /// Set the enabled state of the recognizer to the given value
-    func setRecognizersTo(enabled: Bool)
+    func setRecognizersTo(_ enabled: Bool)
     
     /// Check if recognizers are enabled
     func getRecognizersState() -> Bool
@@ -50,30 +50,30 @@ class PDFSideController: NSViewController, ClickRecognizerDelegate, NSGestureRec
     }
     
     /// Target for the gesture recognizer used to detect double clicks
-    @IBAction func doubleClick(sender: NSClickGestureRecognizer) {
-        pdfReader.markAndAnnotate(sender.locationInView(pdfReader), importance: ReadingClass.Medium)
+    @IBAction func doubleClick(_ sender: NSClickGestureRecognizer) {
+        pdfReader.markAndAnnotate(sender.location(in: pdfReader), importance: ReadingClass.medium)
     }
     
     /// Target for the gesture recognizer used to detect double clicks
-    @IBAction func tripleClick(sender: NSClickGestureRecognizer) {
-        pdfReader.markAndAnnotate(sender.locationInView(pdfReader), importance: ReadingClass.High)
+    @IBAction func tripleClick(_ sender: NSClickGestureRecognizer) {
+        pdfReader.markAndAnnotate(sender.location(in: pdfReader), importance: ReadingClass.high)
     }
     
     /// Set the enabled state of the recognizer to the given value
-    func setRecognizersTo(enabled: Bool) {
-        doubleClickRecognizer.enabled = enabled
-        tripleClickRecognizer.enabled = enabled
+    func setRecognizersTo(_ enabled: Bool) {
+        doubleClickRecognizer.isEnabled = enabled
+        tripleClickRecognizer.isEnabled = enabled
     }
     
     /// Check if recognizers are enabled
     func getRecognizersState() -> Bool {
-        return doubleClickRecognizer.enabled && tripleClickRecognizer.enabled
+        return doubleClickRecognizer.isEnabled && tripleClickRecognizer.isEnabled
     }
     
     // MARK: Delegation
     
     /// Overriding this method to prevent double clicks from registering immediately
-    func gestureRecognizer(gestureRecognizer: NSGestureRecognizer, shouldRequireFailureOfGestureRecognizer otherGestureRecognizer: NSGestureRecognizer) -> Bool {
+    func gestureRecognizer(_ gestureRecognizer: NSGestureRecognizer, shouldRequireFailureOf otherGestureRecognizer: NSGestureRecognizer) -> Bool {
         if otherGestureRecognizer === tripleClickRecognizer {
             return true
         } else {

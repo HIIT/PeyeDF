@@ -30,7 +30,7 @@ let FLT_NEARLYEQUAL_DPOINTS = 3  // floats are nearly equal as long as they are 
 protocol NearlyEquatable {
     /// Should return true if two floating-point numbers are separated by less than
     /// FLT_NEARLYEQUAL_DPOINTS decimal points.
-    func nearlyEqual(other: Self) -> Bool
+    func nearlyEqual(_ other: Self) -> Bool
 }
 
 extension NearlyEquatable {
@@ -41,69 +41,67 @@ extension NearlyEquatable {
     } }
 }
 
-extension CollectionType where Generator.Element: NearlyEquatable {
+extension Collection where Iterator.Element: NearlyEquatable {
     /// Returns true if the collection contains an element which is
     /// nearly similar to "other"
-    func containsSimilar(other: Generator.Element) -> Bool {
+    func containsSimilar(_ other: Iterator.Element) -> Bool {
         return elementsSimilarTo(other).count > 0
     }
     
     /// Returns all elements which are similar to "other"
-    func elementsSimilarTo(other: Generator.Element) -> [Generator.Element] {
+    func elementsSimilarTo(_ other: Iterator.Element) -> [Iterator.Element] {
         return self.filter({$0.nearlyEqual(other)})
     }
     
     /// Returns all elements which are not similar to "other"
-    func elementsDifferentTo(other: Generator.Element) -> [Generator.Element] {
+    func elementsDifferentTo(_ other: Iterator.Element) -> [Iterator.Element] {
         return self.filter({!$0.nearlyEqual(other)})
     }
     
     /// Returns true if all elements in this collection are similar
     /// to at least one element in the other collection (other can contain more elements than this collection).
-    func allSimilarTo(other: Self) -> Bool {
-        return self.reduce(true, combine: {$0 && other.containsSimilar($1)})
+    func allSimilarTo(_ other: Self) -> Bool {
+        return self.reduce(true, {$0 && other.containsSimilar($1)})
     }
     
     /// Returns true if this collection and the other one contain all
     /// elements which are similar to each other (and contain the same number of elements).
-    func nearlyEqual(other: Self) -> Bool {
+    func nearlyEqual(_ other: Self) -> Bool {
         return other.count == self.count && allSimilarTo(other) && other.allSimilarTo(self)
     }
 }
 extension Float: NearlyEquatable {
-    func nearlyEqual(other: Float) -> Bool {
-        return Int(round(self * Float(tenToPow))) == Int(round(other * Float(tenToPow)))
+    func nearlyEqual(_ other: Float) -> Bool {
+        return Int((self * Float(tenToPow)).rounded()) == Int((other * Float(tenToPow)).rounded())
     }
 }
 
 extension Double: NearlyEquatable {
-    func nearlyEqual(other: Double) -> Bool {
-        return Int(round(self * Double(tenToPow))) == Int(round(other * Double(tenToPow)))
+    func nearlyEqual(_ other: Double) -> Bool {
+        return Int((self * Double(tenToPow)).rounded()) == Int((other * Double(tenToPow)).rounded())
     }
 }
 
 extension CGFloat: NearlyEquatable {
-    func nearlyEqual(other: CGFloat) -> Bool {
-        return Int(round(self * CGFloat(tenToPow))) == Int(round(other * CGFloat(tenToPow)))
+    func nearlyEqual(_ other: CGFloat) -> Bool {
+        return Int((self * CGFloat(tenToPow)).rounded()) == Int((other * CGFloat(tenToPow)).rounded())
     }
 }
 
 extension NSSize: NearlyEquatable {
-    func nearlyEqual(other: CGSize) -> Bool {
-        return CGFloat(round(self.width * CGFloat(tenToPow))) == CGFloat(round(other.width * CGFloat(tenToPow))) &&
-               CGFloat(round(self.height * CGFloat(tenToPow))) == CGFloat(round(other.height * CGFloat(tenToPow)))
+    func nearlyEqual(_ other: CGSize) -> Bool {
+        return self.width.nearlyEqual(other.width) && self.height.nearlyEqual(other.height)
     }
 }
 
 extension NSPoint: NearlyEquatable {
-    func nearlyEqual(other: CGPoint) -> Bool {
-        return CGFloat(round(self.x * CGFloat(tenToPow))) == CGFloat(round(other.x * CGFloat(tenToPow))) &&
-               CGFloat(round(self.y * CGFloat(tenToPow))) == CGFloat(round(other.y * CGFloat(tenToPow)))
+    func nearlyEqual(_ other: CGPoint) -> Bool {
+        return self.x.nearlyEqual(other.x) && self.y.nearlyEqual(other.y)
     }
 }
 
 extension NSRect: NearlyEquatable {
-    func nearlyEqual(other: CGRect) -> Bool {
+    func nearlyEqual(_ other: CGRect) -> Bool {
         return self.origin.nearlyEqual(other.origin) && self.size.nearlyEqual(other.size)
     }
 }

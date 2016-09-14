@@ -10,11 +10,11 @@ import Foundation
 import Cocoa
 
 class SecondaryWindow: NSWindow {
-    override var canBecomeMainWindow: Bool { get {
+    override var canBecomeMain: Bool { get {
         return false
     } }
     
-    override var canBecomeKeyWindow: Bool { get {
+    override var canBecomeKey: Bool { get {
         return false
     } }
 }

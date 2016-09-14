@@ -54,17 +54,17 @@ class DocumentWindow: NSWindow {
     }
     
     /// If MIDAS is being used, contrains the window to cover
-    override func constrainFrameRect(frameRect: NSRect, toScreen screen: NSScreen?) -> NSRect {
+    override func constrainFrameRect(_ frameRect: NSRect, to screen: NSScreen?) -> NSRect {
         if let screen = screen {
             if MidasManager.sharedInstance.midasAvailable {
                 let shrankScreenRect = DocumentWindow.getConstrainingRect(forScreen: screen)
                 // intersect the computed shrank screen with the desired new rect, and return that
-                return frameRect.intersect(shrankScreenRect)
+                return frameRect.intersection(shrankScreenRect)
             } else {
-                return super.constrainFrameRect(frameRect, toScreen: screen)
+                return super.constrainFrameRect(frameRect, to: screen)
             }
         } else {
-            return super.constrainFrameRect(frameRect, toScreen: screen)
+            return super.constrainFrameRect(frameRect, to: screen)
         }
     }
     

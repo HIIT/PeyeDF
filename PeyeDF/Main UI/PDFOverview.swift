@@ -35,10 +35,10 @@ class PDFOverview: PDFBase {
     /// Setting this value causes a refresh (and resets zoom).
     weak var pdfDetail: PDFBase? { didSet {
         if let pdfb = pdfDetail, let pdfDoc = pdfb.document, let pdfUrl = pdfDoc.documentURL {
-            self.document = PDFDocument(URL: pdfUrl)
+            self.document = PDFDocument(url: pdfUrl)
             self.scaleFactor = 0.2
             self.scrollToBeginningOfDocument(self)
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(pdfDetailHasNewPage(_:)), name: PDFViewPageChangedNotification, object: pdfDetail)
+            NotificationCenter.default.addObserver(self, selector: #selector(pdfDetailHasNewPage(_:)), name: NSNotification.Name.PDFViewPageChanged, object: pdfDetail)
         } else {
             self.document = nil
         }
@@ -56,20 +56,20 @@ class PDFOverview: PDFBase {
     
     /// Whether we want to draw rect which were simply gazed upon (useful for debugging)
     var drawGazedRects: Bool { get {
-        return NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefRefinderDrawGazedUpon) as! Bool
+        return UserDefaults.standard.value(forKey: PeyeConstants.prefRefinderDrawGazedUpon) as! Bool
     } }
     
     // MARK: - Page drawing
     
     /// Draw markings on page as bezier paths with their corresponding colour
-    override func drawPage(page: PDFPage) {
+    override func draw(_ page: PDFPage) {
     	// Let PDFView do most of the hard work.
-        super.drawPage(page)
+        super.draw(page)
         
         // get difference between media and crop box
         let pointDiff = offSetToCropBox(page)
         
-        let pageIndex = self.document!.indexForPage(page)
+        let pageIndex = self.document!.index(for: page)
         
         // draw gray mask if this page is not the highlight page
         if pageIndex != highlightPage {
@@ -88,7 +88,7 @@ class PDFOverview: PDFBase {
         
         // draw gazed upon rects if desired
         if drawGazedRects {
-            let rectsToDraw = markings.get(ofClass: .Paragraph, forPage: pageIndex)
+            let rectsToDraw = markings.get(ofClass: .paragraph, forPage: pageIndex)
             if rectsToDraw.count > 0 {
                 // Save.
                 NSGraphicsContext.saveGraphicsState()
@@ -100,7 +100,7 @@ class PDFOverview: PDFBase {
                     if let av = rect.attnVal {
                         rectCol = PeyeConstants.colourAttnVal(av)
                     } else {
-                        rectCol = PeyeConstants.smiColours[.Paragraph]!.colorWithAlphaComponent(0.9)
+                        rectCol = PeyeConstants.smiColours[.paragraph]!.withAlphaComponent(0.9)
                     }
                     let adjRect = rect.rect.offset(byPoint: pointDiff)
                     let rectPath: NSBezierPath = NSBezierPath(rect: adjRect)
@@ -116,9 +116,9 @@ class PDFOverview: PDFBase {
         // If we don't want to display gazed rects - display "normal" annotations instead
         
             // cycle through annotation classes
-            let cycleClasses = [ReadingClass.Low, ReadingClass.Medium, ReadingClass.High]
+            let cycleClasses = [ReadingClass.low, ReadingClass.medium, ReadingClass.high]
             
-            let pageIndex = self.document!.indexForPage(page)
+            let pageIndex = self.document!.index(for: page)
             for rc in cycleClasses {
                 let rectsToDraw = markings.get(ofClass: rc, forPage: pageIndex)
                 if rectsToDraw.count > 0 {
@@ -128,7 +128,7 @@ class PDFOverview: PDFBase {
                     // Draw.
                     for rect in rectsToDraw {
                         if let colour = markAnnotationColours[rc] {
-                            let rectCol = colour.colorWithAlphaComponent(0.9)
+                            let rectCol = colour.withAlphaComponent(0.9)
                             let adjRect = rect.rect.offset(byPoint: pointDiff)
                             let rectPath: NSBezierPath = NSBezierPath(rect: adjRect)
                             rectCol.setFill()
@@ -144,7 +144,7 @@ class PDFOverview: PDFBase {
             }
             
             // draw found search queries
-            let rectsToDraw = markings.get(ofClass: .FoundString, forPage: pageIndex)
+            let rectsToDraw = markings.get(ofClass: .foundString, forPage: pageIndex)
             if rectsToDraw.count > 0{
             	// Save.
                 NSGraphicsContext.saveGraphicsState()
@@ -167,33 +167,33 @@ class PDFOverview: PDFBase {
     }
     
     /// Single click to scroll pdfDetail to the desired point
-    override func mouseDown(theEvent: NSEvent) {
+    override func mouseDown(with theEvent: NSEvent) {
         guard let doc = self.document else {
             return
         }
         
         let piw = theEvent.locationInWindow
-        let mouseInView = self.convertPoint(piw, fromView: nil)
+        let mouseInView = self.convert(piw, from: nil)
         
         // Page we're on.
-        let activePage = self.pageForPoint(mouseInView, nearest: true)
+        let activePage = self.page(for: mouseInView, nearest: true)
         
         // Index for current page
-        let pageIndex = doc.indexForPage(activePage!)
+        let pageIndex = doc.index(for: activePage!)
 
         // Get location in "page space".
-        let pagePoint = self.convertPoint(mouseInView, toPage: activePage!)
+        let pagePoint = self.convert(mouseInView, to: activePage!)
         
         pdfDetail?.focusOn(FocusArea(forPoint: pagePoint, onPage: pageIndex), delay: 0)
     }
     
     /// Called when the pdfDetail associated to this overview lands on a new current page
-    @objc func pdfDetailHasNewPage(notification: NSNotification) {
-        guard let mypdb = notification.object as? PDFBase, doc = mypdb.document else {
+    @objc func pdfDetailHasNewPage(_ notification: Notification) {
+        guard let mypdb = notification.object as? PDFBase, let doc = mypdb.document else {
             return
         }
         let newCurrentPage = mypdb.currentPage
-        let cpi = doc.indexForPage(newCurrentPage!)
+        let cpi = doc.index(for: newCurrentPage!)
         highlightPage = cpi
     }
     

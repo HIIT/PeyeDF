@@ -36,18 +36,18 @@ class DiMePreferencesViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let options: [String: AnyObject] = ["NSContinuouslyUpdatesValue": true]
+        let options: [String: AnyObject] = ["NSContinuouslyUpdatesValue": true as AnyObject]
         
-        urlField.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefDiMeServerURL, options: options)
+        urlField.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefDiMeServerURL, options: options)
         
-        usernameField.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefDiMeServerUserName, options: options)
+        usernameField.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefDiMeServerUserName, options: options)
         
-        passwordField.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefDiMeServerPassword, options: options)
+        passwordField.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefDiMeServerPassword, options: options)
         
         // the following will set
         // (PeyeConstants.prefSendEventOnFocusSwitch)
         // to optional int 0 when off and nonzero (1) when on
-        documentEventSwitchCell.bind("value", toObject: NSUserDefaultsController.sharedUserDefaultsController(), withKeyPath: "values." + PeyeConstants.prefSendEventOnFocusSwitch, options: options)
+        documentEventSwitchCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefSendEventOnFocusSwitch, options: options)
         
     }
 }

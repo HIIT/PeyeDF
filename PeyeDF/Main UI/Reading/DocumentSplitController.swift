@@ -27,7 +27,7 @@ import Cocoa
 
 /// A protocol that allows a delegate to notify that the side view was collapsed/uncollapsed.
 @objc protocol SideCollapseToggleDelegate: class {
-    func sideCollapseAction(wasCollapsed: Bool)
+    func sideCollapseAction(_ wasCollapsed: Bool)
 }
 
 /// The Document split controller contains a PDF preview (left side, index 0) and the PDFView (right side, index 1)
@@ -53,24 +53,24 @@ class DocumentSplitController: NSSplitViewController {
         // let the delegate know what happened
         sideCollapseDelegate?.sideCollapseAction(collState)
         if collState {
-            dispatch_async(dispatch_get_main_queue()) {
-                tw.setPosition(PeyeConstants.defaultThumbSideViewWidth, ofDividerAtIndex: 0)
+            DispatchQueue.main.async {
+                tw.setPosition(PeyeConstants.defaultThumbSideViewWidth, ofDividerAt: 0)
             }
         } else {
-            dispatch_async(dispatch_get_main_queue()) {
-                tw.setPosition(0, ofDividerAtIndex: 0)
+            DispatchQueue.main.async {
+                tw.setPosition(0, ofDividerAt: 0)
             }
         }
     }
     
     /// Overriding this method to include delegate communication
-    override func splitView(splitView: NSSplitView, shouldCollapseSubview subview: NSView, forDoubleClickOnDividerAtIndex dividerIndex: Int) -> Bool {
+    override func splitView(_ splitView: NSSplitView, shouldCollapseSubview subview: NSView, forDoubleClickOnDividerAt dividerIndex: Int) -> Bool {
         sideCollapseDelegate?.sideCollapseAction(true)
-        return super.splitView(splitView, shouldCollapseSubview: subview, forDoubleClickOnDividerAtIndex: dividerIndex)
+        return super.splitView(splitView, shouldCollapseSubview: subview, forDoubleClickOnDividerAt: dividerIndex)
     }
     
     /// Overriding this method to include delegate communication
-    override func splitViewDidResizeSubviews(notification: NSNotification) {
+    override func splitViewDidResizeSubviews(_ notification: Notification) {
         let tw = notification.object as! NSSplitView
         let collState = checkCollapseStatus(tw)
         sideCollapseDelegate?.sideCollapseAction(collState)
@@ -80,7 +80,7 @@ class DocumentSplitController: NSSplitViewController {
     ///
     /// - parameter splitView: The splitview containing the thumbs (index 0) and document (index 1)
     /// - returns: false if not collapsed (or couldn't be found) true if collapsed
-    func checkCollapseStatus(splitView: NSSplitView) -> Bool {
+    func checkCollapseStatus(_ splitView: NSSplitView) -> Bool {
         let subw = splitView.subviews[0]
         if splitView.isSubviewCollapsed(subw) || subw.visibleRect.width < PeyeConstants.minThumbSideViewWidth {
             return true

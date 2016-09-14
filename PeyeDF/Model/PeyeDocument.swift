@@ -36,7 +36,7 @@ class PeyeDocument: NSDocument {
     
     /// Sets all annotations to a given set of reading rects.
     /// - Note: Only rects with classSource .Click will be added
-    func setMarkings(newRects: [ReadingRect]) {
+    func setMarkings(_ newRects: [ReadingRect]) {
         guard windowControllers.count == 1 else {
             return
         }
@@ -48,15 +48,15 @@ class PeyeDocument: NSDocument {
     }
     
     /// Open this PDF in preview
-    @IBAction func openInPreview(sender: AnyObject?) {
-        NSWorkspace.sharedWorkspace().openURLs([self.fileURL!], withAppBundleIdentifier: "com.apple.Preview", options: NSWorkspaceLaunchOptions(), additionalEventParamDescriptor: nil, launchIdentifiers: nil)
+    @IBAction func openInPreview(_ sender: AnyObject?) {
+        NSWorkspace.shared().open([self.fileURL!], withAppBundleIdentifier: "com.apple.Preview", options: NSWorkspaceLaunchOptions(), additionalEventParamDescriptor: nil, launchIdentifiers: nil)
         if self.windowControllers.count == 1, let wc = self.windowControllers[0] as? DocumentWindowController {
             wc.window!.performClose(self)
         }
     }
     
     /// Convenience function to call the focusOn method of this document's pdfReader.
-    func focusOn(f: FocusArea) {
+    func focusOn(_ f: FocusArea) {
         guard windowControllers.count == 1 else {
             return
         }
@@ -73,7 +73,7 @@ class PeyeDocument: NSDocument {
         super.init()
     }
 
-    override func windowControllerDidLoadNib(aController: NSWindowController) {
+    override func windowControllerDidLoadNib(_ aController: NSWindowController) {
         super.windowControllerDidLoadNib(aController)
         // Add any code here that needs to be executed once the windowController has loaded the document's window.
     }
@@ -85,17 +85,17 @@ class PeyeDocument: NSDocument {
     /// Creates window controllers and automatically calls loadDocument()
     override func makeWindowControllers() {
         let storyboard = AppSingleton.mainStoryboard
-        let windowController = storyboard.instantiateControllerWithIdentifier("Document Window Controller") as! DocumentWindowController
+        let windowController = storyboard.instantiateController(withIdentifier: "Document Window Controller") as! DocumentWindowController
         
         // if midas is not active, cascade window, otherwise constrain to center of screen
         if !MidasManager.sharedInstance.midasAvailable {
             // cascade window
-            AppSingleton.nextDocWindowPos = windowController.window!.cascadeTopLeftFromPoint(AppSingleton.nextDocWindowPos)
+            AppSingleton.nextDocWindowPos = windowController.window!.cascadeTopLeft(from: AppSingleton.nextDocWindowPos)
         } else {
             // constrain window
-            if let window = windowController.window, screen = window.screen {
+            if let window = windowController.window, let screen = window.screen {
                 let shrankRect = DocumentWindow.getConstrainingRect(forScreen: screen)
-                let intersectedRect = shrankRect.intersect(window.frame)
+                let intersectedRect = shrankRect.intersection(window.frame)
                 if intersectedRect != window.frame {
                     window.setFrame(intersectedRect, display: true)
                 }
@@ -109,10 +109,10 @@ class PeyeDocument: NSDocument {
     }
     
     /// Saving document to a given url
-    override func writeToURL(url: NSURL, ofType type: String) throws {
+    override func write(to url: URL, ofType type: String) throws {
         if type == "PeyeDF" {
             let wincontroller = self.windowControllers[0] as! DocumentWindowController
-            wincontroller.pdfReader?.document!.writeToURL(url)
+            wincontroller.pdfReader?.document!.write(to: url)
             return
         } else {
             // We don't know what Cocoa is attempting to save, throw some error
@@ -121,7 +121,7 @@ class PeyeDocument: NSDocument {
     }
     
     /// Does nothing, assumes we can only open allowed documents (PDFs) in the first place
-    override func readFromURL(url: NSURL, ofType typeName: String) throws {
+    override func read(from url: URL, ofType typeName: String) throws {
         // AppSingleton.log.debug("Opening  \(url.description)")
     }
     

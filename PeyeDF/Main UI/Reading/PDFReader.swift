@@ -31,24 +31,24 @@ import Quartz
 class PDFReader: PDFBase {
     
     /// Whether we want to annotate by clicking
-    private var clickAnnotationEnabled = true
+    fileprivate var clickAnnotationEnabled = true
     
     /// Whether we want to draw debug circle
     lazy var drawDebugCirle: Bool = {
-        return NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDrawDebugCircle) as! Bool
+        return UserDefaults.standard.value(forKey: PeyeConstants.prefDrawDebugCircle) as! Bool
     }()
     
     var containsRawString = false  // this stores whether the document actually contains scanned text
     
     /// Id for this reading session, all events sent by this instance should have the same value
-    let sessionId: String = { return NSUUID().UUIDString.sha1() }()
+    let sessionId: String = { return UUID().uuidString.sha1() }()
     
     /// Id for the outgoing summary event. If set, forces dime to replace the event with this id
     /// (useful to regularly update the outgoing summary event)
-    private(set) var summaryId: Int?
+    fileprivate(set) var summaryId: Int?
     
     /// Stores all strings searched for and found by user
-    private lazy var foundStrings = { return [String]() }()
+    fileprivate lazy var foundStrings = { return [String]() }()
     
     /// Stores the information element for the current document.
     /// Set by DocumentWindowController.loadDocument()
@@ -56,7 +56,7 @@ class PDFReader: PDFBase {
         
         if let sd = sciDoc {
             // pdf reader gets notification from info elem tag changes
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(tagsChanged(_:)), name: TagConstants.tagsChangedNotification, object: sd)
+            NotificationCenter.default.addObserver(self, selector: #selector(tagsChanged(_:)), name: NSNotification.Name(rawValue: TagConstants.tagsChangedNotification), object: sd)
             
             readingTags = sd.tags.flatMap({$0 as? ReadingTag})
         }
@@ -69,13 +69,13 @@ class PDFReader: PDFBase {
     // MARK: - Tagging
     
     /// Overridden menu to allow extra actions such as tagging
-    override func menuForEvent(event: NSEvent) -> NSMenu? {
-        let menu = super.menuForEvent(event)
+    override func menu(for event: NSEvent) -> NSMenu? {
+        let menu = super.menu(for: event)
         let docwin = self.window!.windowController! as! DocumentWindowController
         let menuitem = NSMenuItem(title: "Tag", action: #selector(docwin.tagShow(_:)), keyEquivalent: "t")
         menuitem.tag = Int(TagConstants.tagMenuTag)
-        menu?.insertItem(NSMenuItem.separatorItem(), atIndex: 0)
-        menu?.insertItem(menuitem, atIndex: 0)
+        menu?.insertItem(NSMenuItem.separator(), at: 0)
+        menu?.insertItem(menuitem, at: 0)
         
         return menu
     }
@@ -91,7 +91,7 @@ class PDFReader: PDFBase {
     // MARK: - Event callbacks
     
     /// To receive single click actions (select tag corresponding to text)
-    override func mouseUp(theEvent: NSEvent) {
+    override func mouseUp(with theEvent: NSEvent) {
         
         if theEvent.clickCount == 1 && !mouseDragging {
             // Only proceed if there is actually text to select
@@ -106,21 +106,21 @@ class PDFReader: PDFBase {
                         //let rawLocation = screen.convertRectToBacking(mouseRect)
                         
                         // use raw location to map back into view coordinates
-                        let mouseInWindow = self.window!.convertRectFromScreen(mouseRect)
-                        let mouseInView = self.convertRect(mouseInWindow, fromView: self.window!.contentViewController!.view)
+                        let mouseInWindow = self.window!.convertFromScreen(mouseRect)
+                        let mouseInView = self.convert(mouseInWindow, from: self.window!.contentViewController!.view)
                         
                         // if there are no tags here, propagate event
                         if !showTags(mouseInView.origin) {
                             // MF: TODO: remove this once debugging is complete
-                            let activePage = self.pageForPoint(mouseInView.origin, nearest: true)
-                            let pointOnPage = self.convertPoint(mouseInView.origin, toPage: activePage!)
+                            let activePage = self.page(for: mouseInView.origin, nearest: true)
+                            let pointOnPage = self.convert(mouseInView.origin, to: activePage!)
                             if let rect = pointToParagraphRect(pointOnPage, forPage: activePage!),
                                let doc = self.document {
-                                let area = FocusArea(forRect: rect, onPage: doc.indexForPage(activePage!))
+                                let area = FocusArea(forRect: rect, onPage: doc.index(for: activePage!))
                                 if let cHash = sciDoc?.contentHash {
                                     Multipeer.overviewControllers[cHash]?.pdfOverview.addAreaForLocal(area)
                                 }
-                                CollaborationMessage.ReadAreas([area]).sendToAll()
+                                CollaborationMessage.readAreas([area]).sendToAll()
                             }
                         }
                     }
@@ -128,12 +128,12 @@ class PDFReader: PDFBase {
             }
         }
         
-        super.mouseUp(theEvent)
+        super.mouseUp(with: theEvent)
     }
     
     /// SciDoc tags changed
-    func tagsChanged(notification: NSNotification) {
-        if let uInfo = notification.userInfo, newTags = uInfo["tags"] as? [Tag] {
+    func tagsChanged(_ notification: Notification) {
+        if let uInfo = (notification as NSNotification).userInfo, let newTags = uInfo["tags"] as? [Tag] {
             readingTags = newTags.flatMap({$0 as? ReadingTag})
         }
     }
@@ -141,19 +141,19 @@ class PDFReader: PDFBase {
     // MARK: - Received actions
     
     /// Looks up a found selection, used when a user selects a search result
-    func foundResult(selectedResult: PDFSelection) {
-        dispatch_async(dispatch_get_main_queue()) {
+    func foundResult(_ selectedResult: PDFSelection) {
+        DispatchQueue.main.async {
             self.setCurrentSelection(selectedResult, animate: false)
             self.scrollSelectionToVisible(self)
             self.setCurrentSelection(selectedResult, animate: true)
         }
-        let foundString = selectedResult.string!.lowercaseString
-        if foundStrings.indexOf(foundString) == nil {
+        let foundString = selectedResult.string!.lowercased()
+        if foundStrings.index(of: foundString) == nil {
             foundStrings.append(foundString)
         }
         let foundOnPage = selectedResult.pages[0] 
-        let pageIndex = document!.indexForPage(foundOnPage)
-        let newRect = ReadingRect(pageIndex: pageIndex, rect: selectedResult.boundsForPage(foundOnPage), readingClass: .FoundString, classSource: .Search, pdfBase: self)
+        let pageIndex = document!.index(for: foundOnPage)
+        let newRect = ReadingRect(pageIndex: pageIndex, rect: selectedResult.bounds(for: foundOnPage), readingClass: .foundString, classSource: .search, pdfBase: self)
         markings.addRect(newRect)
         HistoryManager.sharedManager.addReadingRect(newRect)
     }
@@ -161,9 +161,9 @@ class PDFReader: PDFBase {
     // MARK: - Page drawing override
     
     /// To draw extra stuff on page
-    override func drawPage(page: PDFPage) {
+    override func draw(_ page: PDFPage) {
     	// Let PDFView do most of the hard work.
-        super.drawPage(page)
+        super.draw(page)
        
         if drawDebugCirle {
         	// Save.
@@ -177,7 +177,7 @@ class PDFReader: PDFBase {
                 let borderColor = NSColor(red: 0.9, green: 0.0, blue: 0.0, alpha: 0.8)
                 borderColor.set()
                 
-                let circlePath: NSBezierPath = NSBezierPath(ovalInRect: circleRect)
+                let circlePath: NSBezierPath = NSBezierPath(ovalIn: circleRect)
                 circlePath.lineWidth = 3.0
                 circlePath.stroke()
             }
@@ -193,13 +193,13 @@ class PDFReader: PDFBase {
     /// This method is called (so far) only by the undo manager.
     /// It sets the state of markings to the specified object (markingState) and
     /// refreshes the view (so that the change can be seen appearing / disappearing immediately).
-    @objc func undoMarkAndAnnotate(previousState: PDFMarkingsState) {
+    @objc func undoMarkAndAnnotate(_ previousState: PDFMarkingsState) {
         
         // store previous state before making any modification
-        let evenPreviousState = PDFMarkingsState(oldState: markings.getAll(forSource: .Click))
+        let evenPreviousState = PDFMarkingsState(oldState: markings.getAll(forSource: .click))
         
         // apply previous state and perform annotations
-        markings.setAll(forSource: .Click, newRects: previousState.rectState)
+        markings.setAll(forSource: .click, newRects: previousState.rectState)
         autoAnnotate()
     
         // if we have a last rect, refresh the view only for the area covered by it.
@@ -207,22 +207,22 @@ class PDFReader: PDFBase {
         if let lastRect = previousState.getLastRect() {
             let annotRect = annotationRectForMark(lastRect.rect)
             
-            dispatch_async(dispatch_get_main_queue()) {
-                self.setNeedsDisplayInRect(self.convertRect(annotRect, fromPage: self.document!.pageAtIndex(lastRect.pageIndex.integerValue)!))
+            DispatchQueue.main.async {
+                self.setNeedsDisplay(self.convert(annotRect, from: self.document!.page(at: lastRect.pageIndex)!))
             }
             
             // save last rect in state for redo
             let lastR = previousState.getLastRect()!
             evenPreviousState.setLastRect(lastR)
         } else {
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 self.layoutDocumentView()
                 self.display()
             }
         }
         
         // create an undo operation for this operation
-        undoManager?.registerUndoWithTarget(self, selector: #selector(undoMarkAndAnnotate(_:)), object: evenPreviousState)
+        undoManager?.registerUndo(withTarget: self, selector: #selector(undoMarkAndAnnotate(_:)), object: evenPreviousState)
         undoManager?.setActionName(NSLocalizedString("actions.annotate", value: "Mark Text", comment: "Some text was marked via clicking / undoing"))
     }
     
@@ -231,33 +231,33 @@ class PDFReader: PDFBase {
     ///
     /// - parameter location: The point for which a rect will be created (in view coordinates)
     /// - parameter importance: The importance of the rect that will be created
-    func markAndAnnotate(location: NSPoint, importance: ReadingClass) {
+    func markAndAnnotate(_ location: NSPoint, importance: ReadingClass) {
         if containsRawString {
             // prepare a marking state to store this operation
-            let previousState = PDFMarkingsState(oldState: self.markings.getAll(forSource: .Click))
+            let previousState = PDFMarkingsState(oldState: self.markings.getAll(forSource: .click))
             let newMaybeMark = mark(location, importance: importance)
             // if noting was done (i.e. no paragraph at point) do nothing, otherwise store state and annotate
             if let newMark = newMaybeMark {
                 previousState.setLastRect(newMark)
-                undoManager?.registerUndoWithTarget(self, selector: #selector(undoMarkAndAnnotate(_:)), object: previousState)
+                undoManager?.registerUndo(withTarget: self, selector: #selector(undoMarkAndAnnotate(_:)), object: previousState)
                 undoManager?.setActionName(NSLocalizedString("actions.annotate", value: "Mark Text", comment: "Some text was marked via clicking / undoing"))
                 autoAnnotate()
             }
         }
-        let unixtimeDict = ["unixtime": NSDate().unixTime]
-        NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.manualParagraphMarkNotification, object: self, userInfo: unixtimeDict)
+        let unixtimeDict = ["unixtime": Date().unixTime]
+        NotificationCenter.default.post(name: PeyeConstants.manualParagraphMarkNotification, object: self, userInfo: unixtimeDict)
     }
     
     /// Given a set of markings, apply them all at once as click markings and create
     /// and undo operation so that the previous state can be restored.
     /// For now forces and converts all given rects' source to manual (i.e. click markings).
     /// - Note: Only rects with classSource .Click will be added
-    func markAndAnnotateBulk(newMarks: [ReadingRect]) {
-        let previousState = PDFMarkingsState(oldState: self.markings.getAll(forSource: .Click))
-        undoManager?.registerUndoWithTarget(self, selector: #selector(undoMarkAndAnnotate(_:)), object: previousState)
+    func markAndAnnotateBulk(_ newMarks: [ReadingRect]) {
+        let previousState = PDFMarkingsState(oldState: self.markings.getAll(forSource: .click))
+        undoManager?.registerUndo(withTarget: self, selector: #selector(undoMarkAndAnnotate(_:)), object: previousState)
         undoManager?.setActionName(NSLocalizedString("actions.annotate", value: "Bulk Annotate", comment: "Many annotations were changed in bulk"))
         
-        self.markings.setAll(forSource: .Click, newRects: newMarks)
+        self.markings.setAll(forSource: .click, newRects: newMarks)
         autoAnnotate()
     }
     
@@ -265,29 +265,29 @@ class PDFReader: PDFBase {
     /// should be marked as somehow important
     ///
     /// - returns: A triplet containing the rectangle that was created, on which page it was created and what importance
-    func mark(locationInView: NSPoint, importance: ReadingClass) -> ReadingRect? {
+    func mark(_ locationInView: NSPoint, importance: ReadingClass) -> ReadingRect? {
         
         // Page we're on.
-        let activePage = self.pageForPoint(locationInView, nearest: true)
+        let activePage = self.page(for: locationInView, nearest: true)
         
         // Index for current page
-        let pageIndex = self.document!.indexForPage(activePage!)
+        let pageIndex = self.document!.index(for: activePage!)
         
         // Get location in "page space".
-        let pagePoint = self.convertPoint(locationInView, toPage: activePage!)
+        let pagePoint = self.convert(locationInView, to: activePage!)
         
         // Convert point to rect, if possible
         guard let markRect = pointToParagraphRect(pagePoint, forPage: activePage!) else {
             return nil
         }
         
-        if importance != ReadingClass.Low && importance != ReadingClass.Medium && importance != ReadingClass.High {
-            let exception = NSException(name: "Not implemented", reason: "Unsupported reading class for annotation", userInfo: nil)
+        if importance != ReadingClass.low && importance != ReadingClass.medium && importance != ReadingClass.high {
+            let exception = NSException(name: NSExceptionName(rawValue: "Not implemented"), reason: "Unsupported reading class for annotation", userInfo: nil)
             exception.raise()
         }
         
         // Create new reading rect using given parameters and put in history for dime submission
-        let newRect = ReadingRect(pageIndex: pageIndex, rect: markRect, readingClass: importance, classSource: .Click, pdfBase: self)
+        let newRect = ReadingRect(pageIndex: pageIndex, rect: markRect, readingClass: importance, classSource: .click, pdfBase: self)
         markings.addRect(newRect)
         HistoryManager.sharedManager.addReadingRect(newRect)
         
@@ -300,7 +300,7 @@ class PDFReader: PDFBase {
     }
     
     /// Enabled / disables auto annotation by click
-    func setClickAnnotationTo(enabled: Bool) {
+    func setClickAnnotationTo(_ enabled: Bool) {
         self.clickAnnotationEnabled = enabled
         self.clickDelegate?.setRecognizersTo(enabled)
     }
@@ -309,7 +309,7 @@ class PDFReader: PDFBase {
     
     /// Sets the outgoing summary event id to the given value (to update previously sent summary event).
     /// If nil, this won't be used (a new summary event will be sent next time).
-    func setSummaryId(newId: Int?) {
+    func setSummaryId(_ newId: Int?) {
         summaryId = newId
     }
     
@@ -320,12 +320,12 @@ class PDFReader: PDFBase {
     /// - parameter pointOnScreen: point to convert (in OS X coordinate system)
     /// - parameter fromEye: if this is being done because of eye tracking (so gaze points are stored)
     /// - returns: A triple containing x, y in page coordinates, and the index of the page in which gaze fell
-    func screenToPage(pointOnScreen: NSPoint, fromEye: Bool) -> (x: CGFloat, y: CGFloat, pageIndex: Int)? {
+    func screenToPage(_ pointOnScreen: NSPoint, fromEye: Bool) -> (x: Double, y: Double, pageIndex: Int)? {
         let tinySize = NSSize(width: 1, height: 1)
         let tinyRect = NSRect(origin: pointOnScreen, size: tinySize)
         
-        let rectInWindow = self.window!.convertRectFromScreen(tinyRect)
-        let rectInView = self.convertRect(rectInWindow, fromView: self.window!.contentViewController!.view)
+        let rectInWindow = self.window!.convertFromScreen(tinyRect)
+        let rectInView = self.convert(rectInWindow, from: self.window!.contentViewController!.view)
         let pointInView = rectInView.origin
         
         //  return nil if the point is outside this view
@@ -333,25 +333,25 @@ class PDFReader: PDFBase {
             return nil
         }
         // otherwise calculate point on page, but return nil if point is out of page
-        let page = pageForPoint(pointInView, nearest:false)
+        let page = self.page(for: pointInView, nearest:false)
         if page == nil {
             return nil
         }
-        let pointOnPage = self.convertPoint(pointInView, toPage: page!)
+        let pointOnPage = self.convert(pointInView, to: page!)
         
         // start debug- circle
         if drawDebugCirle && visiblePages() != nil {
             for visiblePage in visiblePages()! {
                 if let oldPosition = circlePosition {
                     let oldPageRect = NSRect(origin: oldPosition, size: circleSize)
-                    let screenRect = convertRect(oldPageRect, fromPage: visiblePage)
-                    setNeedsDisplayInRect(screenRect.addTo(scaleFactor))
+                    let screenRect = convert(oldPageRect, from: visiblePage)
+                    setNeedsDisplay(screenRect.addTo(scaleFactor))
                 }
                 
                 circlePosition = pointOnPage
                 var screenRect = NSRect(origin: circlePosition!, size: circleSize)
-                screenRect = convertRect(screenRect, fromPage: visiblePage)
-                setNeedsDisplayInRect(screenRect.addTo(scaleFactor))
+                screenRect = convert(screenRect, from: visiblePage)
+                setNeedsDisplay(screenRect.addTo(scaleFactor))
             }
         }
         // End debug - circle
@@ -362,21 +362,21 @@ class PDFReader: PDFBase {
         // (preferred method to fetch eye tracking data).
         if fromEye {
             if let seenRect = pointToParagraphRect(pointOnPage, forPage: page!) {
-                let newRect = ReadingRect(pageIndex: self.document!.indexForPage(page!), rect: seenRect, readingClass: .Paragraph, classSource: .SMI, pdfBase: self)
+                let newRect = ReadingRect(pageIndex: self.document!.index(for: page!), rect: seenRect, readingClass: .paragraph, classSource: .smi, pdfBase: self)
                 markings.addRect(newRect)
             }
         }
         
-        let pageIndex = self.document!.indexForPage(page!)
-        return (x: pointOnPage.x, y: pointOnPage.y, pageIndex: pageIndex)
+        let pageIndex = self.document!.index(for: page!)
+        return (x: Double(pointOnPage.x), y: Double(pointOnPage.y), pageIndex: pageIndex)
     }
     
     /// Creates a SMI rect using the triple returned from screenToPage, corresponding to the paragraph contained within 3 degrees of visual angle of the given fixation. As of PeyeDF 0.4+, this is the preferred method to send SMI paragraphs to dime.
-    func getSMIRect(triple: (x: CGFloat, y: CGFloat, pageIndex: Int)) -> ReadingRect? {
+    func getSMIRect(_ triple: (x: Double, y: Double, pageIndex: Int)) -> ReadingRect? {
         let pointOnPage = NSPoint(x: triple.x, y: triple.y)
-        let pdfPage = document!.pageAtIndex(triple.pageIndex)
+        let pdfPage = document!.page(at: triple.pageIndex)
         if let sr = pointToParagraphRect(pointOnPage, forPage: pdfPage!) {
-            return ReadingRect(pageIndex: triple.pageIndex, rect: sr, readingClass: .Paragraph, classSource: .SMI, pdfBase: self)
+            return ReadingRect(pageIndex: triple.pageIndex, rect: sr, readingClass: .paragraph, classSource: .smi, pdfBase: self)
         } else {
             return nil
         }
@@ -395,7 +395,7 @@ class PDFReader: PDFBase {
             let visiblePageLabels: [String] = getVisiblePageLabels()
             let visiblePageNums: [Int] = getVisiblePageNums()
             let pageRects: [NSRect] = getVisibleRects()
-            var plainTextContent: NSString = ""
+            var plainTextContent = ""
             
             if let textContent = getVisibleString() {
                 plainTextContent = textContent
@@ -405,7 +405,7 @@ class PDFReader: PDFBase {
             var vpi = 0
             for rect in pageRects {
                 let visiblePageNum = visiblePageNums[vpi]
-                let newRect = ReadingRect(pageIndex: visiblePageNum, rect: rect, readingClass: ReadingClass.Viewport, classSource: ClassSource.Viewport, pdfBase: self)
+                let newRect = ReadingRect(pageIndex: visiblePageNum, rect: rect, readingClass: ReadingClass.viewport, classSource: ClassSource.viewport, pdfBase: self)
                 readingRects.append(newRect)
                 vpi += 1
             }
@@ -438,16 +438,16 @@ class PDFReader: PDFBase {
     /// Get the rectangle of the pdf view, in screen coordinates
     func getRectOfViewOnScreen() -> NSRect {
         // get a rectangle representing the pdfview frame, relative to its superview and convert to the window's view
-        let r1:NSRect = self.superview!.convertRect(self.frame, toView: self.window!.contentView!)
+        let r1:NSRect = self.superview!.convert(self.frame, to: self.window!.contentView!)
         // get screen coordinates corresponding to the rectangle got in the previous line
-        let r2 = self.window!.convertRectToScreen(r1)
+        let r2 = self.window!.convertToScreen(r1)
         return r2
     }
     
     /// Check if page labels and page numbers are the same for the current document
     func pageNumbersSameAsLabels() -> Bool {
         for i in 0..<document!.pageCount {
-            let page = document!.pageAtIndex(i)
+            let page = document!.page(at: i)
             if page!.label != "\(i+1)" {
                 return false
             }
@@ -456,7 +456,7 @@ class PDFReader: PDFBase {
     }
     
     /// Returns the visible text as a string, or nil if no text can be fetched.
-    func getVisibleString() -> NSString? {
+    func getVisibleString() -> String? {
         // Only proceed if there is actually text to select
         if containsRawString {
             guard let visiblePages = self.visiblePages() else {
@@ -471,13 +471,13 @@ class PDFReader: PDFBase {
                 
                 // Get viewport rect and apply margin
                 var visibleRect = NSRect(origin: CGPoint(x: 0, y: 0), size: self.frame.size)
-                visibleRect.insetInPlace(dx: PeyeConstants.extraMargin, dy: PeyeConstants.extraMargin)
+                visibleRect = visibleRect.insetBy(dx: PeyeConstants.extraMargin, dy: PeyeConstants.extraMargin)
                 
-                visibleRect = self.convertRect(visibleRect, toPage: visiblePage)  // Convert rect to page coordinates
-                visibleRect.intersectInPlace(pageRect)  // Intersect to get seen portion
+                visibleRect = self.convert(visibleRect, to: visiblePage)  // Convert rect to page coordinates
+                visibleRect = visibleRect.intersection(pageRect)  // Intersect to get seen portion
                 
-                if let sel = visiblePage.selectionForRect(visibleRect) {
-                    generatedSelection.addSelection(sel)
+                if let sel = visiblePage.selection(for: visibleRect) {
+                    generatedSelection.add(sel)
                 }
             }
             
@@ -489,7 +489,7 @@ class PDFReader: PDFBase {
     // MARK: - Debug functions
     
     /// Debug function to test "seen text"
-    func selectVisibleText(sender: AnyObject?) {
+    func selectVisibleText(_ sender: AnyObject?) {
         // Only proceed if there is actually text to select
         if containsRawString {
             guard let visiblePages = self.visiblePages() else {
@@ -504,13 +504,13 @@ class PDFReader: PDFBase {
                 
                 // Get viewport rect and apply margin
                 var visibleRect = NSRect(origin: CGPoint(x: 0, y: 0), size: self.frame.size)
-                visibleRect.insetInPlace(dx: PeyeConstants.extraMargin, dy: PeyeConstants.extraMargin)
+                visibleRect = visibleRect.insetBy(dx: PeyeConstants.extraMargin, dy: PeyeConstants.extraMargin)
                 
-                visibleRect = self.convertRect(visibleRect, toPage: visiblePage)  // Convert rect to page coordinates
-                visibleRect.intersectInPlace(pageRect)  // Intersect to get seen portion
+                visibleRect = self.convert(visibleRect, to: visiblePage)  // Convert rect to page coordinates
+                visibleRect = visibleRect.intersection(pageRect)  // Intersect to get seen portion
                 
-                if let sel = visiblePage.selectionForRect(visibleRect) {
-                    generatedSelection.addSelection(sel)
+                if let sel = visiblePage.selection(for: visibleRect) {
+                    generatedSelection.add(sel)
                 }
             }
             

@@ -34,7 +34,7 @@ import Cocoa
 /// - parameter precedingFunc: The function that tests all preceding items (e.g. <)
 /// - parameter followingFunc: The function that tests all following items (e.g. >)
 /// - returns: True if both functions tests true on all values covered by stride.
-func strideArrayTest<T: Comparable>(ary ary: [T], index: Int, strideLength: Int = 5, precedingFunc: (T, T) -> Bool, followingFunc: (T, T) -> Bool) -> Bool {
+func strideArrayTest<T: Comparable>(ary: [T], index: Int, strideLength: Int = 5, precedingFunc: (T, T) -> Bool, followingFunc: (T, T) -> Bool) -> Bool {
     var leftI = index - 1
     var rightI = index + 1
     
@@ -56,7 +56,7 @@ func strideArrayTest<T: Comparable>(ary ary: [T], index: Int, strideLength: Int 
 
 /// Rounds a number to the amount of decimal places specified.
 /// Might not be actually be represented as such because computers.
-func roundToX(number: CGFloat, places: CGFloat) -> CGFloat {
+func roundToX(_ number: CGFloat, places: CGFloat) -> CGFloat {
     return round(number * (pow(10,places))) / pow(10,places)
 }
 
@@ -66,22 +66,22 @@ func roundToX(number: CGFloat, places: CGFloat) -> CGFloat {
 /// - parameter rhs: The second value
 /// - parameter range: The allowance
 /// - returns: True if lhs is within ± abs(range) of rhs
-public func withinRange(lhs: CGFloat, rhs: CGFloat, range: CGFloat) -> Bool {
+public func withinRange(_ lhs: CGFloat, rhs: CGFloat, range: CGFloat) -> Bool {
     return (lhs + abs(range)) >= rhs && (lhs - abs(range)) <= rhs
 }
  
 /// converts centimetres to inches
-public func cmToInch(cmvalue: CGFloat) -> CGFloat {
+public func cmToInch(_ cmvalue: CGFloat) -> CGFloat {
     return cmvalue * 0.393701
 }
 
 /// converts millimetres to inches
-public func mmToInch(mmvalue: CGFloat) -> CGFloat {
+public func mmToInch(_ mmvalue: CGFloat) -> CGFloat {
     return mmvalue * 0.0393701
 }
 
 /// Converts inches to centimetre
-public func inchToCm(inchValue: CGFloat) -> CGFloat {
+public func inchToCm(_ inchValue: CGFloat) -> CGFloat {
     return inchValue / 0.393701
 }
 
@@ -93,7 +93,7 @@ public func inchToCm(inchValue: CGFloat) -> CGFloat {
 /// - parameter ary: The sorted array to search
 /// - parameter target: The item to search for
 /// - returns: The index which corresponds to the item coming immediately after target (or the count of the array if last item <= target), 0 if the beginning of the array > target.
-func binaryGreaterOnSortedArray<T: Comparable>(ary: [T], target: T) -> Int {
+func binaryGreaterOnSortedArray<T: Comparable>(_ ary: [T], target: T) -> Int {
     var left: Int = 1
     var right: Int = ary.count - 1
     
@@ -138,7 +138,7 @@ func binaryGreaterOnSortedArray<T: Comparable>(ary: [T], target: T) -> Int {
 /// - parameter ary: The sorted array to search
 /// - parameter target: The item to search for
 /// - returns: The index which corresponds to the first match, the count of the array if firstOperator(last item > target), 0 if first item < target).
-func binaryGreaterOrEqOnSortedArray<T: Comparable>(ary: [T], target: T) -> Int {
+func binaryGreaterOrEqOnSortedArray<T: Comparable>(_ ary: [T], target: T) -> Int {
     var left: Int = 1
     var right: Int = ary.count - 1
     
@@ -183,7 +183,7 @@ func binaryGreaterOrEqOnSortedArray<T: Comparable>(ary: [T], target: T) -> Int {
 
 /// Returns the size needed to fit the given string, with the given font (of size at
 /// most width, after which will be broken on multiple lines)
-public func sizeForText(str: String, font: NSFont) -> CGSize {
+public func sizeForText(_ str: String, font: NSFont) -> CGSize {
     
     var dd = [String: AnyObject]()
     
@@ -191,5 +191,5 @@ public func sizeForText(str: String, font: NSFont) -> CGSize {
     
     let AS = NSAttributedString(string: str, attributes: dd)
     
-    return AS.boundingRectWithSize(CGSize(width: 200, height: 400), options: NSStringDrawingOptions.UsesDeviceMetrics).addTo(2.5).size
+    return AS.boundingRect(with: CGSize(width: 200, height: 400), options: NSStringDrawingOptions.usesDeviceMetrics).addTo(2.5).size
 }

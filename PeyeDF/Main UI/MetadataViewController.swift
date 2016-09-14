@@ -27,8 +27,8 @@ import Quartz
 
 class MetadataViewController: NSViewController {
     
-    private weak var pdfDoc: PDFDocument?
-    private weak var mainCont: DocumentWindowController?
+    fileprivate weak var pdfDoc: PDFDocument?
+    fileprivate weak var mainCont: DocumentWindowController?
 
     @IBOutlet weak var keywordArrayController: NSArrayController!
     
@@ -44,7 +44,7 @@ class MetadataViewController: NSViewController {
     @IBOutlet weak var authorField: NSTextField!
     @IBOutlet weak var keywordsField: NSTextField!
     
-    func setDoc(pdfDoc: PDFDocument, mainWC: DocumentWindowController) {
+    func setDoc(_ pdfDoc: PDFDocument, mainWC: DocumentWindowController) {
         self.pdfDoc = pdfDoc
         self.mainCont = mainWC
         
@@ -70,50 +70,50 @@ class MetadataViewController: NSViewController {
     func saveData() {
         var dirty = false
         if initialTitle != titleField.stringValue {
-            if titleField.stringValue.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()).characters.count > 0 {
-                let trimVal = titleField.stringValue.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+            if titleField.stringValue.trimmingCharacters(in: CharacterSet.whitespaces).characters.count > 0 {
+                let trimVal = titleField.stringValue.trimmingCharacters(in: CharacterSet.whitespaces)
                 pdfDoc!.setTitle(trimVal)
                 dirty = true
             }
         }
         if initialAuthor != authorField.stringValue {
-            if authorField.stringValue.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()).characters.count > 0 {
-                let trimVal = authorField.stringValue.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+            if authorField.stringValue.trimmingCharacters(in: CharacterSet.whitespaces).characters.count > 0 {
+                let trimVal = authorField.stringValue.trimmingCharacters(in: CharacterSet.whitespaces)
                 pdfDoc!.setAuthor(trimVal)
                 dirty = true
             }
             
         }
         if initialSubject != subjectField.stringValue {
-            if subjectField.stringValue.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()).characters.count > 0 {
-                let trimVal = subjectField.stringValue.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+            if subjectField.stringValue.trimmingCharacters(in: CharacterSet.whitespaces).characters.count > 0 {
+                let trimVal = subjectField.stringValue.trimmingCharacters(in: CharacterSet.whitespaces)
                 pdfDoc!.setSubject(trimVal)
                 dirty = true
             }
             
         }
         if initialKeywords != keywordsField.stringValue {
-            if keywordsField.stringValue.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()).characters.count > 0 {
-                let trimVal = keywordsField.stringValue.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+            if keywordsField.stringValue.trimmingCharacters(in: CharacterSet.whitespaces).characters.count > 0 {
+                let trimVal = keywordsField.stringValue.trimmingCharacters(in: CharacterSet.whitespaces)
                 pdfDoc!.setKeywords(trimVal)
                 dirty = true
             }
         }
         if dirty {
             mainCont!.setDocumentEdited(true)
-            (mainCont!.document as! NSDocument).updateChangeCount(NSDocumentChangeType.ChangeDone)
+            (mainCont!.document as! NSDocument).updateChangeCount(NSDocumentChangeType.changeDone)
         }
     }
     
     /// To be called after editing values, to make sure window closing should ask for saving
-    @IBAction private func checkForChanges(sender: AnyObject?) {
+    @IBAction fileprivate func checkForChanges(_ sender: AnyObject?) {
         if initialTitle == titleField.stringValue &&
            initialAuthor == authorField.stringValue &&
            initialSubject == subjectField.stringValue &&
            initialKeywords == keywordsField.stringValue {
-            self.view.window!.documentEdited = false
+            self.view.window!.isDocumentEdited = false
         } else {
-            self.view.window!.documentEdited = true
+            self.view.window!.isDocumentEdited = true
         }
     }
     

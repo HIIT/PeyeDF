@@ -30,21 +30,21 @@ import Quartz
 class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollapseToggleDelegate, SearchPanelCollapseDelegate, TagDelegate, NSPopoverDelegate {
     
     /// The "global" GCD queue in which all timers are created / destroyed (to prevent potential memory leaks, they all run here)
-    static let timerQueue = dispatch_queue_create("hiit.PeyeDF.DocumentWindowController.timerQueue", DISPATCH_QUEUE_SERIAL)
+    static let timerQueue = DispatchQueue(label: "hiit.PeyeDF.DocumentWindowController.timerQueue", attributes: [])
     
     /// Regular timer for this window
-    var regularTimer: NSTimer?
+    var regularTimer: Timer?
     
     /// When the user started reading (stoppedReading date - this date = reading time).
     /// Should be set to nil when the user stops reading, or on startup.
     /// Setting this value to a new value automatically increases the totalReadingTime
     /// (takes into consideration minimum reading values constants)
-    var lastStartedReading: NSDate? {
+    var lastStartedReading: Date? {
         didSet {
             // increase total reading time constant if reading time was below minimum.
             // if reading time was above maximum, increase by maximum
             if let rdate = oldValue {
-                let rTime = NSDate().timeIntervalSinceDate(rdate)
+                let rTime = Date().timeIntervalSince(rdate)
                 if rTime > PeyeConstants.minReadTime {
                     if rTime < PeyeConstants.maxReadTime {
                         totalReadingTime += rTime
@@ -57,7 +57,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     }
     
     /// Total reading time spent on this window.
-    var totalReadingTime: NSTimeInterval = 0
+    var totalReadingTime: TimeInterval = 0
     
     /// To make sure only one summary event is sent to dime
     var closeToken: Int = 0
@@ -77,32 +77,32 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     @IBOutlet weak var tbTagButton: NSButton!
     @IBOutlet weak var tbTagItem: NSToolbarItem!
     
-    private var currentTagOperation: TagOperation = .None
+    fileprivate var currentTagOperation: TagOperation = .none
     
     lazy var popover: NSPopover = {
         let pop = NSPopover()
-        pop.behavior = NSPopoverBehavior.Transient
-        let tvc = AppSingleton.tagsStoryboard.instantiateControllerWithIdentifier("TagViewController")
+        pop.behavior = NSPopoverBehavior.transient
+        let tvc = AppSingleton.tagsStoryboard.instantiateController(withIdentifier: "TagViewController")
         pop.contentViewController = tvc as! TagViewController
         pop.delegate = self
         return pop
     }()
     
-    @IBAction func tagShow(sender: AnyObject?) {
+    @IBAction func tagShow(_ sender: AnyObject?) {
         
         // Skip if dime is out
         guard DiMePusher.dimeAvailable else {
             return
         }
         
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             
             let tvc = self.popover.contentViewController as! TagViewController
             tvc.tagDelegate = self // prepare to receive tag updates
             
             // if popover is not shown, show it, otherwise close it
             
-            if !self.popover.shown {
+            if !self.popover.isShown {
                 
                 // decide what to do when popover appears
                 // if the pdfReader wants to show it in relation to tags,
@@ -116,32 +116,32 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                     let edge: NSRectEdge
                     
                     // use first tag to get rect encompassing the whole tagged paragraph
-                    let tagRect = clickTags[0].rRects.reduce(NSRect(), combine: {
+                    let tagRect = clickTags[0].rRects.reduce(NSRect(), {
                         p, r in
-                        let page = self.pdfReader!.document!.pageAtIndex(Int(r.pageIndex))
-                        let pageRect = self.pdfReader!.convertRect(r.rect, fromPage: page!)
+                        let page = self.pdfReader!.document!.page(at: Int(r.pageIndex))
+                        let pageRect = self.pdfReader!.convert(r.rect, from: page!)
                         return NSUnionRect(p, pageRect)
                     })
                     
                     if (tagRect.minX + tagRect.size.width / 2) > self.pdfReader!.bounds.width / 2 {
-                        edge = NSRectEdge.MaxX
+                        edge = NSRectEdge.maxX
                     } else {
-                        edge = NSRectEdge.MinX
+                        edge = NSRectEdge.minX
                     }
                     
-                    self.popover.showRelativeToRect(tagRect, ofView: self.pdfReader!, preferredEdge: edge)
+                    self.popover.show(relativeTo: tagRect, of: self.pdfReader!, preferredEdge: edge)
                     
                     tvc.setStatus(false)
                     
                     tvc.setTags(clickTags)
                     
-                    self.currentTagOperation = .PreviousReading(clickTags)
+                    self.currentTagOperation = .previousReading(clickTags)
                     
                 } else if (self.pdfReader!.currentSelection?.string!.trimmed().isEmpty ?? true) {
                     
                     // document-level tagging
                     
-                    self.popover.showRelativeToRect(self.tbTagButton.bounds, ofView: self.tbTagButton, preferredEdge: NSRectEdge.MinY)
+                    self.popover.show(relativeTo: self.tbTagButton.bounds, of: self.tbTagButton, preferredEdge: NSRectEdge.minY)
                     tvc.setStatus(true)
                     
                     // refresh document tags if different from what's stored
@@ -149,7 +149,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                         tvc.setTags(self.pdfReader!.sciDoc!.tags)
                     }
                     
-                    self.currentTagOperation = .Document
+                    self.currentTagOperation = .document
                     
                 } else {
                     
@@ -161,18 +161,18 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                     guard let sel = self.pdfReader!.currentSelection else {
                         return
                     }
-                    var selBounds = sel.boundsForPage(sel.pages[0] )
-                    selBounds = self.pdfReader!.convertRect(selBounds, fromPage: sel.pages[0] )
+                    var selBounds = sel.bounds(for: sel.pages[0] )
+                    selBounds = self.pdfReader!.convert(selBounds, from: sel.pages[0] )
                     if (selBounds.minX + selBounds.size.width / 2) > self.pdfReader!.bounds.width / 2 {
-                        edge = NSRectEdge.MaxX
+                        edge = NSRectEdge.maxX
                     } else {
-                        edge = NSRectEdge.MinX
+                        edge = NSRectEdge.minX
                     }
-                    self.popover.showRelativeToRect(selBounds, ofView: self.pdfReader!, preferredEdge: edge)
+                    self.popover.show(relativeTo: selBounds, of: self.pdfReader!, preferredEdge: edge)
                     
                     tvc.setStatus(false)
                     
-                    self.currentTagOperation = TagOperation.ManualSelection(sel)
+                    self.currentTagOperation = TagOperation.manualSelection(sel)
                     
                     // set tags in popup
                     let (selRects, selIdxs) = self.pdfReader!.getLineRects(sel)
@@ -182,7 +182,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                 }
                 
             } else {
-                self.currentTagOperation = .None
+                self.currentTagOperation = .none
                 self.popover.performClose(self)
             }
         }
@@ -190,9 +190,9 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     /// Exports all readingtags (tags referring to blocks of text) to a json
     /// file specified by the user.
-    @IBAction func exportReadingTags(sender: AnyObject?) {
-        guard let pdfReader = self.pdfReader, win = self.window
-          where pdfReader.readingTags.count > 0 else {
+    @IBAction func exportReadingTags(_ sender: AnyObject?) {
+        guard let pdfReader = self.pdfReader, let win = self.window
+          , pdfReader.readingTags.count > 0 else {
             AppSingleton.alertUser("Could not find any text-related tags")
             return
         }
@@ -200,25 +200,25 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         let panel = NSSavePanel()
         panel.allowedFileTypes = ["json", "JSON"]
         panel.canSelectHiddenExtension = true
-        panel.nameFieldStringValue = "\((self.document as! PeyeDocument).fileURL!.URLByDeletingPathExtension!.lastPathComponent!)-Tags.json"
-        panel.beginSheetModalForWindow(win, completionHandler: {
+        panel.nameFieldStringValue = "\((self.document as! PeyeDocument).fileURL!.deletingPathExtension().lastPathComponent)-Tags.json"
+        panel.beginSheetModal(for: win, completionHandler: {
             result in
             if result == NSFileHandlingPanelOKButton {
-                let outURL = panel.URL!
-                let options = NSJSONWritingOptions.PrettyPrinted
+                let outURL = panel.url!
+                let options = JSONSerialization.WritingOptions.prettyPrinted
                 
                 do {
                     let outDict = pdfReader.readingTags.flatMap({$0.getDict()}) as AnyObject
-                    let outData = try NSJSONSerialization.dataWithJSONObject(outDict, options: options)
+                    let outData = try JSONSerialization.data(withJSONObject: outDict, options: options)
                     
                     // create output file if it doesn't exist
-                    if !NSFileManager.defaultManager().fileExistsAtPath(outURL.path!) {
-                        NSFileManager.defaultManager().createFileAtPath(outURL.path!, contents: nil, attributes: nil)
+                    if !FileManager.default.fileExists(atPath: outURL.path) {
+                        FileManager.default.createFile(atPath: outURL.path, contents: nil, attributes: nil)
                     } else {
                     // if file exists, delete it and create id
                         do {
-                            try NSFileManager.defaultManager().removeItemAtURL(outURL)
-                            NSFileManager.defaultManager().createFileAtPath(outURL.path!, contents: nil, attributes: nil)
+                            try FileManager.default.removeItem(at: outURL)
+                            FileManager.default.createFile(atPath: outURL.path, contents: nil, attributes: nil)
                         } catch {
                             AppSingleton.log.error("Could not delete file at \(outURL): \(error)")
                         }
@@ -226,8 +226,8 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                     
                     // write data to existing file
                     do {
-                        let file = try NSFileHandle(forWritingToURL: outURL)
-                        file.writeData(outData)
+                        let file = try FileHandle(forWritingTo: outURL)
+                        file.write(outData)
                     } catch {
                         AppSingleton.alertUser("Error while creating output file", infoText: "\(error)")
                     }
@@ -239,56 +239,56 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         })
     }
     
-    func tagAdded(theTag: String) {
+    func tagAdded(_ theTag: String) {
         switch currentTagOperation {
-        case .Document:
+        case .document:
             // simple tag
             pdfReader?.sciDoc?.addTag(theTag)
-        case .ManualSelection(let sel):
+        case .manualSelection(let sel):
             let (rects, idxs) = pdfReader!.getLineRects(sel)
             if rects.count > 0 {
                 let sdTag = ReadingTag(text: theTag, withRects: rects, pages: idxs, pdfBase: self.pdfReader)
                 pdfReader?.sciDoc?.addTag(sdTag)  // add reading tag to scidoc
-                CollaborationMessage.AddReadingTag(sdTag).sendToAll()  // tell peers we added this tag
+                CollaborationMessage.addReadingTag(sdTag).sendToAll()  // tell peers we added this tag
             }
-        case .PreviousReading(let readingTags):
+        case .previousReading(let readingTags):
             let theTag = ReadingTag(withText: theTag, fromTag: readingTags[0])
             pdfReader?.sciDoc?.addTag(theTag)  // add reading tag to scidoc
-            CollaborationMessage.AddReadingTag(theTag).sendToAll()  // tell peers we added this tag
-        case .None:
+            CollaborationMessage.addReadingTag(theTag).sendToAll()  // tell peers we added this tag
+        case .none:
             AppSingleton.log.error("Adding a tag when no tags are currently being edited")
         }
     }
     
-    func tagRemoved(theTag: String) {
+    func tagRemoved(_ theTag: String) {
         switch currentTagOperation {
-        case .Document:
+        case .document:
             pdfReader?.sciDoc?.removeTag(theTag)
-        case .ManualSelection(let sel):
-            if let tags = pdfReader?.tagsForSelection(sel) where tags.count > 0 {
+        case .manualSelection(let sel):
+            if let tags = pdfReader?.tagsForSelection(sel) , tags.count > 0 {
                 let (rects, idxs) = pdfReader!.getLineRects(sel)
                 if rects.count > 0 {
                     let sdTag = ReadingTag(text: theTag, withRects: rects, pages: idxs, pdfBase: self.pdfReader)
                     pdfReader?.sciDoc?.subtractTag(sdTag)  // remove tag from scidoc
-                    CollaborationMessage.RemoveReadingTag(sdTag).sendToAll()  // tell peers we removed this tag
+                    CollaborationMessage.removeReadingTag(sdTag).sendToAll()  // tell peers we removed this tag
                 }
             }
-        case .PreviousReading(let readingTags):
+        case .previousReading(let readingTags):
             let theTag = ReadingTag(withText: theTag, fromTag: readingTags[0])
             pdfReader?.sciDoc?.subtractTag(theTag)  // remove tag from scidoc
-            CollaborationMessage.RemoveReadingTag(theTag).sendToAll()  // tell peers we removed this tag
-        case .None:
+            CollaborationMessage.removeReadingTag(theTag).sendToAll()  // tell peers we removed this tag
+        case .none:
             AppSingleton.log.error("Removing a tag when no tags are currently being edited")
         }
     }
     
-    func tagInfo(theTag: String) {
+    func tagInfo(_ theTag: String) {
         doSearch(TagConstants.tagSearchPrefix + theTag, exact: false)
     }
     
     func isNextTagReading() -> Bool {
         switch currentTagOperation {
-        case .PreviousReading, .ManualSelection:
+        case .previousReading, .manualSelection:
              return true
         default:
             return false
@@ -296,8 +296,8 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     }
     
     /// Implemented to detect when the tag popover is closed (to clear current tag)
-    func popoverWillClose(notification: NSNotification) {
-        self.currentTagOperation = .None
+    func popoverWillClose(_ notification: Notification) {
+        self.currentTagOperation = .none
         pdfReader!.clearClickedOnTags()
     }
     
@@ -305,29 +305,29 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     /// Do a search using a predefined string (when called from outside ui, e.g. from other applications)
     /// - parameter exact: If true, searches for exact phrase (false for all words)
-    func doSearch(searchString: String, exact: Bool) {
-        dispatch_async(dispatch_get_main_queue()) {
+    func doSearch(_ searchString: String, exact: Bool) {
+        DispatchQueue.main.async {
             self.mainSplitController?.openSearchPanel()
             self.mainSplitController?.searchPanelController?.doSearch(searchString, exact: exact)
         }
     }
     
     /// Perform search using default methods.
-    @objc func performFindPanelAction(sender: AnyObject) {
+    @objc func performFindPanelAction(_ sender: AnyObject) {
         switch UInt(sender.tag) {
-        case NSFindPanelAction.ShowFindPanel.rawValue:
+        case NSFindPanelAction.showFindPanel.rawValue:
             focusOnSearch()
-        case NSFindPanelAction.Next.rawValue:
+        case NSFindPanelAction.next.rawValue:
             mainSplitController?.searchProvider?.selectNextResult(nil)
-        case NSFindPanelAction.Previous.rawValue:
+        case NSFindPanelAction.previous.rawValue:
             mainSplitController?.searchProvider?.selectPreviousResult(nil)
-        case NSFindPanelAction.SetFindString.rawValue:
+        case NSFindPanelAction.setFindString.rawValue:
             if let currentSelection = pdfReader!.currentSelection {
                 mainSplitController?.searchProvider?.doSearch(currentSelection.string!, exact: true)
                 mainSplitController?.openSearchPanel()
             }
         default:
-            let exception = NSException(name: "Unimplemented search function", reason: "Enum raw value not recognized", userInfo: nil)
+            let exception = NSException(name: NSExceptionName(rawValue: "Unimplemented search function"), reason: "Enum raw value not recognized", userInfo: nil)
             exception.raise()
         }
     }
@@ -335,21 +335,21 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     // MARK: - Menu validation
     
     /// Checks which menu items should be enabled (some logic used for find next and previous menu items).
-    @objc override func validateMenuItem(menuItem: NSMenuItem) -> Bool {
+    @objc override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
         switch UInt(menuItem.tag) {
             
         // we always allow find
-        case NSFindPanelAction.ShowFindPanel.rawValue:
+        case NSFindPanelAction.showFindPanel.rawValue:
             return true
             
         // we allow next and previous if there is some search done
-        case NSFindPanelAction.Next.rawValue:
+        case NSFindPanelAction.next.rawValue:
             return mainSplitController!.searchProvider!.hasResult()
-        case NSFindPanelAction.Previous.rawValue:
+        case NSFindPanelAction.previous.rawValue:
             return mainSplitController!.searchProvider!.hasResult()
             
         // we allow use selection if something is selected in the pdf view
-        case NSFindPanelAction.SetFindString.rawValue:
+        case NSFindPanelAction.setFindString.rawValue:
             if let _ = pdfReader!.currentSelection {
                 return true
             }
@@ -360,14 +360,18 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             
         default:
             // in any other case, we check the action instead of tag
-            switch menuItem.action.description {
-                // these should always be enabled
-                case "saveDocument:", "saveDocumentAs:", "exportReadingTags:":
-                return true
-            default:
-                // any other tag was not considered we disable it by default
-                // we can print to check who else is calling this function using
-                // print(menuItem.action)
+            if let action = menuItem.action {
+                switch action.description {
+                    // these should always be enabled
+                    case "saveDocument:", "saveDocumentAs:", "exportReadingTags:":
+                    return true
+                default:
+                    // any other tag was not considered we disable it by default
+                    // we can print to check who else is calling this function using
+                    // print(menuItem.action)
+                    return false
+                }
+            } else {
                 return false
             }
         }
@@ -376,7 +380,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     // MARK: - Search panel
     
     @IBOutlet weak var searchTB: NSToolbarItem!
-    @IBAction func toggleSearch(sender: NSToolbarItem) {
+    @IBAction func toggleSearch(_ sender: NSToolbarItem) {
         mainSplitController?.toggleSearchPanel()
     }
     
@@ -384,7 +388,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         mainSplitController?.openSearchPanel()
     }
     
-    func searchCollapseAction(wasCollapsed: Bool) {
+    func searchCollapseAction(_ wasCollapsed: Bool) {
         if wasCollapsed {
             searchTB.image = NSImage(named: PeyeConstants.searchButton_UP)
         } else {
@@ -395,11 +399,11 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     // MARK: - Thumbnail side expand / reduce
     
     @IBOutlet weak var thumbTB: NSToolbarItem!
-    @IBAction func showSide(sender: NSToolbarItem) {
+    @IBAction func showSide(_ sender: NSToolbarItem) {
         docSplitController?.toggleThumbSide()
     }
     
-    func sideCollapseAction(wasCollapsed: Bool) {
+    func sideCollapseAction(_ wasCollapsed: Bool) {
         if wasCollapsed {
             thumbTB.image = NSImage(named: PeyeConstants.thumbButton_UP)
         } else {
@@ -409,7 +413,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     // MARK: - Annotations
     
-    @IBAction func toggleAnnotate(sender: AnyObject?) {
+    @IBAction func toggleAnnotate(_ sender: AnyObject?) {
         if let delegate = clickDelegate {
             if delegate.getRecognizersState() {
                 setAnnotate(false)
@@ -420,8 +424,8 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     }
     
     /// Set the annotate function to on (true) or off (false)
-    func setAnnotate(toState: Bool) {
-        if let annotateTB = tbAnnotate, delegate = clickDelegate {
+    func setAnnotate(_ toState: Bool) {
+        if let annotateTB = tbAnnotate, let delegate = clickDelegate {
             if toState {
                 delegate.setRecognizersTo(true)
                 annotateTB.image = NSImage(named: PeyeConstants.annotateButton_DOWN)
@@ -439,11 +443,11 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     func startedReading() {
         // Tell the history manager to "start recording"
         HistoryManager.sharedManager.entry(self)
-        lastStartedReading = NSDate()
+        lastStartedReading = Date()
         
         // Send current position to peers, if connected
         if Multipeer.session.connectedPeers.count > 0, let cp = pdfReader?.getCurrentPoint() {
-            CollaborationMessage.ScrollTo(area: cp).sendToAll(.Unreliable)
+            CollaborationMessage.scrollTo(area: cp).sendToAll(.unreliable)
         }
     }
     
@@ -472,7 +476,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     /// Send the scientific document associated to the reader and updates the id stored by the reader with the value
     /// obtained from dime.
-    func sendAndUpdateScidoc(sciDoc: ScientificDocument) {
+    func sendAndUpdateScidoc(_ sciDoc: ScientificDocument) {
         DiMePusher.sendToDiMe(sciDoc) {
             success, id in
             if success {
@@ -483,10 +487,10 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     // MARK: - Metadata window
     
-    @IBAction func thisDocMdata(sender: AnyObject?) {
+    @IBAction func thisDocMdata(_ sender: AnyObject?) {
         // create metadata window, if currently nil
         if metadataWindowController == nil {
-            metadataWindowController = AppSingleton.mainStoryboard.instantiateControllerWithIdentifier("MetadataWindow") as? MetadataWindowController
+            metadataWindowController = AppSingleton.mainStoryboard.instantiateController(withIdentifier: "MetadataWindow") as? MetadataWindowController
         }
         
         // show window controller for metadata and send data
@@ -497,18 +501,18 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     // MARK: - Saving
     
-    func saveDocument(sender: AnyObject) {
+    func saveDocument(_ sender: AnyObject) {
         saveDocumentAs(sender)
     }
     
-    func saveDocumentAs(sender: AnyObject) {
+    func saveDocumentAs(_ sender: AnyObject) {
         let panel = NSSavePanel()
         panel.allowedFileTypes = ["pdf", "PDF"]
         panel.nameFieldStringValue = (document as? NSDocument)?.fileURL?.lastPathComponent ?? "Untitled"
         if panel.runModal() == NSFileHandlingPanelOKButton {
-            pdfReader?.document!.writeToURL(panel.URL!)
-            let documentController = NSDocumentController.sharedDocumentController() 
-            documentController.openDocumentWithContentsOfURL(panel.URL!, display: true) { _ in
+            pdfReader?.document!.write(to: panel.url!)
+            let documentController = NSDocumentController.shared() 
+            documentController.openDocument(withContentsOf: panel.url!, display: true) { _ in
                 // empty, nothing else to do (NSDocumentController will automacally link URL to NSDocument (pdf file)
             }
         }
@@ -520,7 +524,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         super.windowDidLoad()
         
         // metadata disabled at start (will be enabled in checkMetadata(_) )
-        tbMetadata.enabled = false
+        tbMetadata.isEnabled = false
         
         // set size of window to 2/3 of screen size, if avaiable, otherwise use contants
         let oldFrame: NSRect
@@ -548,7 +552,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         pdfReader?.autoScales = true
         
         // Set annotate on or off depending on preference
-        let enableAnnotate: Bool = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefEnableAnnotate) as! Bool
+        let enableAnnotate: Bool = UserDefaults.standard.value(forKey: PeyeConstants.prefEnableAnnotate) as! Bool
         setAnnotate(enableAnnotate)
         
         // Prepare to receive events
@@ -562,21 +566,21 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         var pdfDoc: PDFDocument
         
         if let document: NSDocument = self.document as? NSDocument {
-            let url: NSURL = document.fileURL!
+            let url: URL = document.fileURL!
             
             // set NSDocument subclass fields
             let peyeDoc = self.document as! PeyeDocument
             
-            pdfDoc = PDFDocument(URL: url)!
+            pdfDoc = PDFDocument(url: url)!
             peyeDoc.pdfDoc = pdfDoc
             pdfReader!.document = pdfDoc
             
-            dispatch_async(dispatch_get_main_queue()) {
-                NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.documentChangeNotification, object: self.document)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: PeyeConstants.documentChangeNotification, object: self.document)
                 
                 // Set tag button and toolbar status to DiMe's status
-                self.tbTagButton.enabled = DiMePusher.dimeAvailable
-                self.tbTagItem.enabled = DiMePusher.dimeAvailable
+                self.tbTagButton.isEnabled = DiMePusher.dimeAvailable
+                self.tbTagItem.isEnabled = DiMePusher.dimeAvailable
             }
             
             // Tell app singleton which screen size we are using
@@ -597,20 +601,20 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     /// Try to find the document which matches extracted data in DiMe.
     /// Enables the toolbar item when done.
     /// Tells multipeer that this window is associated to the found contentHash (if file has text).
-    private func checkMetadata(plainText: String?) {
-        guard let pdfr = self.pdfReader, _ = self.document else {
+    fileprivate func checkMetadata(_ plainText: String?) {
+        guard let pdfr = self.pdfReader, let _ = self.document else {
             return
         }
         
         // check if there is text
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             if let _ = plainText {
                 pdfr.containsRawString = true
                 self.tbMetadata.image = NSImage(named: "NSStatusAvailable")
             } else {
                 self.tbMetadata.image = NSImage(named: "NSStatusUnavailable")
             }
-            self.tbMetadata.enabled = true
+            self.tbMetadata.isEnabled = true
         }
         
         // Associate PDF view to info element
@@ -620,12 +624,12 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         }
         let sciDoc: ScientificDocument
         if let txt = plainText,
-            _sciDoc = DiMeFetcher.getScientificDocument(contentHash: txt.sha1()) {
+            let _sciDoc = DiMeFetcher.getScientificDocument(contentHash: txt.sha1()) {
             // if found, associate object and update uri
             sciDoc = _sciDoc
-            sciDoc.uri = url.path!
+            sciDoc.uri = url.path
         } else {
-            sciDoc = ScientificDocument(uri: url.path!, plainTextContent: plainText, title: pdfDoc.getTitle(), authors: pdfDoc.getAuthorsAsArray(), keywords: pdfDoc.getKeywordsAsArray(), subject: pdfDoc.getSubject())
+            sciDoc = ScientificDocument(uri: url.path, plainTextContent: plainText, title: pdfDoc.getTitle(), authors: pdfDoc.getAuthorsAsArray(), keywords: pdfDoc.getKeywordsAsArray(), subject: pdfDoc.getSubject())
         }
         
         pdfReader!.sciDoc = sciDoc
@@ -638,12 +642,11 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         
         // Download metadata if needed, and send to dime if we want this and is found
         // Dispatch this on utility queue because crossref request blocks.
-        let showTime = dispatch_time(DISPATCH_TIME_NOW,
-                                     Int64(1 * Double(NSEC_PER_SEC)))
-        dispatch_after(showTime, dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
+        let showTime = DispatchTime.now() + Double(Int64(1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.utility).asyncAfter(deadline: showTime) {
             [weak self] in
             
-            if (NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDownloadMetadata) as! Bool),
+            if (UserDefaults.standard.value(forKey: PeyeConstants.prefDownloadMetadata) as! Bool),
               let json = self?.pdfReader?.document?.autoCrossref() {
                 // found crossref, use it
                 sciDoc.updateFields(fromCrossRef: json)
@@ -666,36 +669,36 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     
     /// Prepares all the notification centre observers + timers (will have to be removed when the window wants to close). See unSetObservers, these two methods should load / unload the same observers.
-    private func setUpObservers() {
+    fileprivate func setUpObservers() {
         
         // Get notifications from pdfview for window
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(autoAnnotateComplete(_:)), name: PeyeConstants.autoAnnotationComplete, object: self.pdfReader!)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(zoomChanged(_:)), name: PDFViewScaleChangedNotification, object: self.pdfReader!)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(frameChanged(_:)), name: NSViewFrameDidChangeNotification, object: self.pdfReader!)
+        NotificationCenter.default.addObserver(self, selector: #selector(autoAnnotateComplete(_:)), name: PeyeConstants.autoAnnotationComplete, object: self.pdfReader!)
+        NotificationCenter.default.addObserver(self, selector: #selector(zoomChanged(_:)), name: NSNotification.Name.PDFViewScaleChanged, object: self.pdfReader!)
+        NotificationCenter.default.addObserver(self, selector: #selector(frameChanged(_:)), name: NSNotification.Name.NSViewFrameDidChange, object: self.pdfReader!)
         // Note: forced downcast below relies on "undocumented" view tree
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(scrollingChanged(_:)), name: NSViewBoundsDidChangeNotification, object: self.pdfReader!.subviews[0].subviews[0] as! NSClipView)
+        NotificationCenter.default.addObserver(self, selector: #selector(scrollingChanged(_:)), name: NSNotification.Name.NSViewBoundsDidChange, object: self.pdfReader!.subviews[0].subviews[0] as! NSClipView)
         
         // Get notifications from managed window
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(windowMoved(_:)), name: NSWindowDidMoveNotification, object: self.window)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(windowWillSwitchAway(_:)), name: NSWindowDidResignKeyNotification, object: self.window)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(windowWantsMain(_:)), name: NSWindowDidBecomeKeyNotification, object: self.window)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(windowOcclusionChange(_:)), name: NSWindowDidChangeOcclusionStateNotification, object: self.window)
+        NotificationCenter.default.addObserver(self, selector: #selector(windowMoved(_:)), name: NSNotification.Name.NSWindowDidMove, object: self.window)
+        NotificationCenter.default.addObserver(self, selector: #selector(windowWillSwitchAway(_:)), name: NSNotification.Name.NSWindowDidResignKey, object: self.window)
+        NotificationCenter.default.addObserver(self, selector: #selector(windowWantsMain(_:)), name: NSNotification.Name.NSWindowDidBecomeKey, object: self.window)
+        NotificationCenter.default.addObserver(self, selector: #selector(windowOcclusionChange(_:)), name: NSNotification.Name.NSWindowDidChangeOcclusionState, object: self.window)
         
         // Get notifications from midas manager
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(eyeStateCallback(_:)), name: PeyeConstants.eyesAvailabilityNotification, object: MidasManager.sharedInstance)
+        NotificationCenter.default.addObserver(self, selector: #selector(eyeStateCallback(_:)), name: PeyeConstants.eyesAvailabilityNotification, object: MidasManager.sharedInstance)
         
         // Get notification from DiMe connection status
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(dimeConnectionChanged(_:)), name: PeyeConstants.diMeConnectionNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(dimeConnectionChanged(_:)), name: PeyeConstants.diMeConnectionNotification, object: nil)
         
         // Set up regular timer
-        dispatch_sync(DocumentWindowController.timerQueue) {
+        DocumentWindowController.timerQueue.sync {
             if self.regularTimer == nil {
-                self.regularTimer = NSTimer(timeInterval: PeyeConstants.regularSummaryEventInterval, target: self, selector: #selector(self.regularTimerFire(_:)), userInfo: nil, repeats: true)
-                NSRunLoop.currentRunLoop().addTimer(self.regularTimer!, forMode: NSRunLoopCommonModes)
+                self.regularTimer = Timer(timeInterval: PeyeConstants.regularSummaryEventInterval, target: self, selector: #selector(self.regularTimerFire(_:)), userInfo: nil, repeats: true)
+                RunLoop.current.add(self.regularTimer!, forMode: RunLoopMode.commonModes)
             }
         }
     }
@@ -703,9 +706,9 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     // MARK: - Timer callbacks
     
     /// The regular timer is a repeating timer that regularly submits a summary event to dime
-    @objc private func regularTimerFire(regularTimer: NSTimer) {
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0)) {
-            if let mpdf = self.pdfReader where self.totalReadingTime >= PeyeConstants.minTotalReadTime {
+    @objc fileprivate func regularTimerFire(_ regularTimer: Timer) {
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
+            if let mpdf = self.pdfReader , self.totalReadingTime >= PeyeConstants.minTotalReadTime {
                 // update id of summary event
                 let summaryEv = mpdf.makeSummaryEvent()
                 summaryEv.readingTime = self.totalReadingTime
@@ -715,7 +718,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                 }
                 
                 // update tags
-                if let own_sciDoc = self.pdfReader!.sciDoc, cHash = own_sciDoc.contentHash, dime_sciDoc = DiMeFetcher.getScientificDocument(contentHash: cHash) {
+                if let own_sciDoc = self.pdfReader!.sciDoc, let cHash = own_sciDoc.contentHash, let dime_sciDoc = DiMeFetcher.getScientificDocument(contentHash: cHash) {
                     self.pdfReader!.sciDoc!.id = dime_sciDoc.id!
                     self.pdfReader!.sciDoc!.updateTags()
                 }
@@ -726,7 +729,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     // MARK: - Unloading
     
     /// This window is going to close, send exit event and send all paragraph data to HistoryManager as summary. Calls the given callback once done saving to dime.
-    func unload(callback: (Void -> Void)? = nil) {
+    func unload(_ callback: ((Void) -> Void)? = nil) {
         guard closeToken == 0 else {
             return
         }
@@ -737,27 +740,27 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         
         // tell multipeer to forget about this window
         if let cHash = pdfReader?.sciDoc?.contentHash {
-            Multipeer.ourWindows.removeValueForKey(cHash)
+            Multipeer.ourWindows.removeValue(forKey: cHash)
         }
         // tell other peers that we are now idle
-        CollaborationMessage.ReportIdle.sendToAll()
+        CollaborationMessage.reportIdle.sendToAll()
         
         // If dime is available, call the callback after the dime operation is done,
         // otherwise call the callback right now
         if DiMePusher.dimeAvailable {
             let ww = NSWindow()
-            let wvc = AppSingleton.mainStoryboard.instantiateControllerWithIdentifier("WaitVC") as! WaitViewController
+            let wvc = AppSingleton.mainStoryboard.instantiateController(withIdentifier: "WaitVC") as! WaitViewController
             ww.contentViewController = wvc
             wvc.someText = "Sending data to DiMe..."
             self.window!.beginSheet(ww, completionHandler: nil)
             // send data to dime
-            if let mpdf = self.pdfReader where self.totalReadingTime >= PeyeConstants.minTotalReadTime {
+            if let mpdf = self.pdfReader , self.totalReadingTime >= PeyeConstants.minTotalReadTime {
                 let summaryEv = mpdf.makeSummaryEvent()
                 summaryEv.readingTime = self.totalReadingTime
                 DiMePusher.sendToDiMe(summaryEv) {
                     _ in
                     // signal when done
-                    dispatch_async(dispatch_get_main_queue()) {
+                    DispatchQueue.main.async {
                         self.pdfReader!.document = nil
                         self.pdfReader!.markings = nil
                         self.window!.endSheet(ww)
@@ -765,7 +768,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                     }
                 }
             } else {
-                dispatch_async(dispatch_get_main_queue()) {
+                DispatchQueue.main.async {
                     self.pdfReader!.document = nil
                     self.pdfReader!.markings = nil
                     self.window!.endSheet(ww)
@@ -773,7 +776,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                 }
             }
         } else {
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 self.pdfReader!.document = nil
                 self.pdfReader!.markings = nil
                 callback?()
@@ -782,13 +785,13 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     }
     
     /// Removes all the observers created in setUpObservers()
-    private func unSetObservers() {
+    fileprivate func unSetObservers() {
         
         // Notifications unloading is no longer required (observers deallocate automatically)
         
         // Stop regular timer
         if let timer = regularTimer {
-            dispatch_sync(DocumentWindowController.timerQueue) {
+            DocumentWindowController.timerQueue.sync {
                     timer.invalidate()
             }
             regularTimer = nil
@@ -797,50 +800,49 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     // MARK: - Notification callbacks from managed pdf view
     
-    @objc private func zoomChanged(notification: NSNotification) {
+    @objc fileprivate func zoomChanged(_ notification: Notification) {
         startedReading()
     }
     
-    @objc private func frameChanged(notification: NSNotification) {
+    @objc fileprivate func frameChanged(_ notification: Notification) {
         startedReading()
     }
     
-    @objc private func scrollingChanged(notification: NSNotification) {
+    @objc fileprivate func scrollingChanged(_ notification: Notification) {
         startedReading()
     }
     
     // MARK: - Notification callbacks from window
     
-    @objc private func windowMoved(notification: NSNotification) {
+    @objc fileprivate func windowMoved(_ notification: Notification) {
         startedReading()
     }
     
     /// Enables the annotate toolbar button when auto annotation is complete
-    @objc private func autoAnnotateComplete(notification: NSNotification) {
-        tbAnnotate.enabled = true
+    @objc fileprivate func autoAnnotateComplete(_ notification: Notification) {
+        tbAnnotate.isEnabled = true
     }
     
     /// This method is called when the managed window wants to become main window
-    @objc private func windowWantsMain(notification: NSNotification) {
-        NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.documentChangeNotification, object: self.document)
+    @objc fileprivate func windowWantsMain(_ notification: Notification) {
+        NotificationCenter.default.post(name: PeyeConstants.documentChangeNotification, object: self.document)
         
         // Set up regular timer
-        dispatch_sync(DocumentWindowController.timerQueue) {
+        DocumentWindowController.timerQueue.sync {
             if self.regularTimer == nil {
-                self.regularTimer = NSTimer(timeInterval: PeyeConstants.regularSummaryEventInterval, target: self, selector: #selector(self.regularTimerFire(_:)), userInfo: nil, repeats: true)
-                NSRunLoop.currentRunLoop().addTimer(self.regularTimer!, forMode: NSRunLoopCommonModes)
+                self.regularTimer = Timer(timeInterval: PeyeConstants.regularSummaryEventInterval, target: self, selector: #selector(self.regularTimerFire(_:)), userInfo: nil, repeats: true)
+                RunLoop.current.add(self.regularTimer!, forMode: RunLoopMode.commonModes)
             }
         }
         
         // If the relevant preference is set, send a DesktopEvent for the current document
-        if (NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefSendEventOnFocusSwitch) as! Bool) {
+        if (UserDefaults.standard.value(forKey: PeyeConstants.prefSendEventOnFocusSwitch) as! Bool) {
             sendDeskEvent()
         } else if let sciDoc = self.pdfReader?.sciDoc {
             // otherwise just send an information element for the given document if the current document
             // does not have already an associated info elemen in dime
-            let showTime = dispatch_time(DISPATCH_TIME_NOW,
-                                         Int64(2 * Double(NSEC_PER_SEC)))
-            dispatch_after(showTime, dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
+            let showTime = DispatchTime.now() + Double(Int64(2 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+            DispatchQueue.global(qos: DispatchQoS.QoSClass.utility).asyncAfter(deadline: showTime) {
                 DiMeFetcher.retrieveScientificDocument(sciDoc.appId) {
                     scidoc in
                     if scidoc == nil {
@@ -856,17 +858,17 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     }
     
     /// Unused yet (probably not really needed as we already know when windowWillSwitchAway)
-    @objc private func windowOcclusionChange(notification: NSNotification) {
-        NSNotificationCenter.defaultCenter().postNotificationName(PeyeConstants.occlusionChangeNotification, object: self.window)
+    @objc fileprivate func windowOcclusionChange(_ notification: Notification) {
+        NotificationCenter.default.post(name: PeyeConstants.occlusionChangeNotification, object: self.window)
     }
     
     /// The managed window will stop being key window
-    @objc private func windowWillSwitchAway(notification: NSNotification) {
+    @objc fileprivate func windowWillSwitchAway(_ notification: Notification) {
         stoppedReading()
         
         // Stop regular timer
         if let timer = regularTimer {
-            dispatch_sync(DocumentWindowController.timerQueue) {
+            DocumentWindowController.timerQueue.sync {
                     timer.invalidate()
             }
             regularTimer = nil
@@ -877,12 +879,12 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     /// Ensures that the document window never gets bigger than the maximum
     /// allowed size when midas is active and stays within its boundaries.
-    func windowDidResize(notification: NSNotification) {
+    func windowDidResize(_ notification: Notification) {
         // only constrain if midas is active
         if MidasManager.sharedInstance.midasAvailable {
-            if let window = notification.object as? NSWindow, screen = window.screen {
+            if let window = notification.object as? NSWindow, let screen = window.screen {
                 let shrankRect = DocumentWindow.getConstrainingRect(forScreen: screen)
-                let intersectedRect = shrankRect.intersect(window.frame)
+                let intersectedRect = shrankRect.intersection(window.frame)
                 if intersectedRect != window.frame {
                     window.setFrame(intersectedRect, display: true)
                 }
@@ -894,9 +896,9 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     /// Reacts to eye being lost / found. If status changes when this is
     /// key window, send exit / enter event as necessary
-    @objc private func eyeStateCallback(notification: NSNotification) {
-        if self.window!.keyWindow {
-            let uInfo = notification.userInfo as! [String: AnyObject]
+    @objc fileprivate func eyeStateCallback(_ notification: Notification) {
+        if self.window!.isKeyWindow {
+            let uInfo = (notification as NSNotification).userInfo as! [String: AnyObject]
             let avail = uInfo["available"] as! Bool
             if avail {
                 startedReading()
@@ -907,22 +909,21 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     }
     
     /// Enable functions related to dime (e.g. tags) and refreshes scidoc when dime comes online
-    @objc private func dimeConnectionChanged(notification: NSNotification) {
-        let userInfo = notification.userInfo as! [String: Bool]
+    @objc fileprivate func dimeConnectionChanged(_ notification: Notification) {
+        let userInfo = (notification as NSNotification).userInfo as! [String: Bool]
         let dimeAvailable = userInfo["available"]!
         
-        dispatch_async(dispatch_get_main_queue()) {
-            self.tbTagButton.enabled = dimeAvailable
-            self.tbTagItem.enabled = dimeAvailable
+        DispatchQueue.main.async {
+            self.tbTagButton.isEnabled = dimeAvailable
+            self.tbTagItem.isEnabled = dimeAvailable
         }
         
         // update data from dime after a small random delay
         if dimeAvailable {
             let randWait = 1 + drand48() * 0.5  // random amount between 1 and 1.5
-            let showTime = dispatch_time(DISPATCH_TIME_NOW,
-                                         Int64(randWait * Double(NSEC_PER_SEC)))
-            dispatch_after(showTime, dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)) {
-                if let own_sciDoc = self.pdfReader!.sciDoc, cHash = own_sciDoc.contentHash, dime_sciDoc = DiMeFetcher.getScientificDocument(contentHash: cHash) {
+            let showTime = DispatchTime.now() + Double(Int64(randWait * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+            DispatchQueue.global(qos: DispatchQoS.QoSClass.default).asyncAfter(deadline: showTime) {
+                if let own_sciDoc = self.pdfReader!.sciDoc, let cHash = own_sciDoc.contentHash, let dime_sciDoc = DiMeFetcher.getScientificDocument(contentHash: cHash) {
                     self.pdfReader!.sciDoc!.id = dime_sciDoc.id!
                     self.pdfReader!.sciDoc!.updateTags()
                 }
@@ -932,8 +933,8 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
 }
 
 enum TagOperation {
-    case None  // we are not tagging
-    case Document  // tagging the document as a whole
-    case ManualSelection(PDFSelection)  // tagging a manual selection
-    case PreviousReading([ReadingTag])  // tagging previously existing reading tags (user clicked on them)
+    case none  // we are not tagging
+    case document  // tagging the document as a whole
+    case manualSelection(PDFSelection)  // tagging a manual selection
+    case previousReading([ReadingTag])  // tagging previously existing reading tags (user clicked on them)
 }

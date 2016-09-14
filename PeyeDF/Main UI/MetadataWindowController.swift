@@ -34,11 +34,11 @@ class MetadataWindowController: NSWindowController, NSWindowDelegate {
     }
     
     /// Overriding this to ask the user if changes should be saved before closing
-    func windowShouldClose(sender: AnyObject) -> Bool {
+    func windowShouldClose(_ sender: Any) -> Bool {
         guard let sender = sender as? NSWindow else {
             return true
         }
-        if sender.documentEdited {
+        if sender.isDocumentEdited {
             self.metadataView?.saveData()
             return true
         } else {
@@ -46,8 +46,8 @@ class MetadataWindowController: NSWindowController, NSWindowDelegate {
         }
     }
     
-    func setDoc(pdfDoc: PDFDocument, mainWC: DocumentWindowController) {
-        self.window!.title = "Metdata for \(pdfDoc.documentURL!.lastPathComponent!)"
+    func setDoc(_ pdfDoc: PDFDocument, mainWC: DocumentWindowController) {
+        self.window!.title = "Metdata for \(pdfDoc.documentURL!.lastPathComponent)"
         metadataView?.setDoc(pdfDoc, mainWC: mainWC)
     }
     

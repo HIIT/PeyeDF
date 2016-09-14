@@ -26,10 +26,10 @@ import Cocoa
 
 class HistoryTableCell: NSTableCellView {
     
-    static let dateComponentsFormatter: NSDateComponentsFormatter = {
-        let formatter = NSDateComponentsFormatter()
-        formatter.zeroFormattingBehavior = .Pad
-        formatter.allowedUnits = [NSCalendarUnit.Hour, NSCalendarUnit.Minute]
+    static let dateComponentsFormatter: DateComponentsFormatter = {
+        let formatter = DateComponentsFormatter()
+        formatter.zeroFormattingBehavior = .pad
+        formatter.allowedUnits = [NSCalendar.Unit.hour, NSCalendar.Unit.minute]
         return formatter
     }()
 
@@ -46,12 +46,12 @@ class HistoryTableCell: NSTableCellView {
     @IBOutlet weak var criticalBar: RefinderProgressIndicator!
     
     func setValues(fromReadingEvent readingEvent: SummaryReadingEvent, sciDoc: ScientificDocument) {
-        readBar.setProgress(readingEvent.proportionRead!, forClass: .Low)
-        interestingBar.setProgress(readingEvent.proportionInteresting!, forClass: .Medium)
-        criticalBar.setProgress(readingEvent.proportionCritical!, forClass: .High)
+        readBar.setProgress(readingEvent.proportionRead!, forClass: .low)
+        interestingBar.setProgress(readingEvent.proportionInteresting!, forClass: .medium)
+        criticalBar.setProgress(readingEvent.proportionCritical!, forClass: .high)
         
-        let fnameUrl = NSURL(fileURLWithPath: sciDoc.uri)
-        filenameLab.stringValue = fnameUrl.lastPathComponent!
+        let fnameUrl = URL(fileURLWithPath: sciDoc.uri)
+        filenameLab.stringValue = fnameUrl.lastPathComponent
         if let tit = sciDoc.title {
             titleLab.stringValue = tit
         } else {
@@ -62,16 +62,16 @@ class HistoryTableCell: NSTableCellView {
         } else {
             authorsLab.stringValue = ""
         }
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateStyle = .FullStyle
-        dateFormatter.timeStyle = .MediumStyle
-        dateLab.stringValue = dateFormatter.stringFromDate(readingEvent.startDate)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .full
+        dateFormatter.timeStyle = .medium
+        dateLab.stringValue = dateFormatter.string(from: readingEvent.startDate as Date)
         
         if let rTime = readingEvent.readingTime {
-            self.readingTimeLab.stringValue = HistoryTableCell.dateComponentsFormatter.stringFromTimeInterval(rTime)!
-            self.readingTimeLab.hidden = false
+            self.readingTimeLab.stringValue = HistoryTableCell.dateComponentsFormatter.string(from: rTime)!
+            self.readingTimeLab.isHidden = false
             self.readingTimeClock.hours = CGFloat((rTime / 3600))
-            self.readingTimeClock.minutes = CGFloat((rTime / 60) % 60)
+            self.readingTimeClock.minutes = CGFloat((rTime / 60).truncatingRemainder(dividingBy: 60))
             self.readingTimeClock.showClock = true
         }
     }

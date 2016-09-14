@@ -43,26 +43,26 @@ class PeerViewController: NSViewController {
     var currentState: PeerState = .idle { willSet {
         switch newValue {
         case .idle:
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 self.fileLab.stringValue = "(connected)"
                 self.titleLab.stringValue = ""
-                self.readButton.hidden = false
-                self.readButton.enabled = true
-                self.trackButton.hidden = true
+                self.readButton.isHidden = false
+                self.readButton.isEnabled = true
+                self.trackButton.isHidden = true
                 self.trackButton.state = NSOffState
             }
         case .reading:
-            dispatch_async(dispatch_get_main_queue()) {
-                self.readButton.hidden = false
-                self.readButton.enabled = true
-                self.trackButton.hidden = true
+            DispatchQueue.main.async {
+                self.readButton.isHidden = false
+                self.readButton.isEnabled = true
+                self.trackButton.isHidden = true
                 self.trackButton.state = NSOffState
             }
         case .trackable:
-            dispatch_async(dispatch_get_main_queue()) {
-                self.readButton.hidden = true
-                self.readButton.enabled = false
-                self.trackButton.hidden = false
+            DispatchQueue.main.async {
+                self.readButton.isHidden = true
+                self.readButton.isEnabled = false
+                self.trackButton.isHidden = false
                 self.trackButton.state = NSOffState
             }
         }
@@ -80,7 +80,7 @@ class PeerViewController: NSViewController {
         }
     } }
     
-    weak var fileProgress: NSProgress?
+    weak var fileProgress: Progress?
     
     @IBOutlet weak var peerImg: NSImageView!
     @IBOutlet weak var peerLab: NSTextField!
@@ -92,7 +92,7 @@ class PeerViewController: NSViewController {
     @IBOutlet weak var eyesLabel: NSTextField!
     
     /// Initializes this controller to be "owned" by a peer
-    func setPeer(peer: MCPeerID) {
+    func setPeer(_ peer: MCPeerID) {
         readButton.tag = peer.hash
         trackButton.tag = peer.hash
         peerLab.stringValue = peer.displayName
@@ -100,9 +100,9 @@ class PeerViewController: NSViewController {
     
     /// Sets the paper that the peer is currently reading.
     /// (Only acts if it is different than the previous time this was called).
-    func setPaperDetails(fname: String, cHash: String, title: String) {
+    func setPaperDetails(_ fname: String, cHash: String, title: String) {
         if currentHash == nil || currentHash! != cHash {
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 self.fileLab.stringValue = fname
                 self.titleLab.stringValue = title
             }
@@ -118,7 +118,7 @@ class PeerViewController: NSViewController {
     /// Pressing the track button causes a check to make sure we have a window open
     /// related to the content hash of this controller. It then changes the multipeer.track
     /// field (which will in turn change the state of this button).
-    @IBAction func trackPress(sender: NSButton) {
+    @IBAction func trackPress(_ sender: NSButton) {
         // make sure the current state is trackable, if so set values accordingly. If not, reset tracking and post an error.
         switch currentState {
         case .trackable(let cHash):
@@ -142,7 +142,7 @@ class PeerViewController: NSViewController {
         }
     }
     
-    @IBAction func readPress(sender: NSButton) {
+    @IBAction func readPress(_ sender: NSButton) {
         // get the peer corresponding to the senders' tag (we set the tag to the peer's hash)
         let peers = Multipeer.session.connectedPeers.filter({$0.hash == sender.tag})
         guard peers.count == 1 else {
@@ -151,14 +151,14 @@ class PeerViewController: NSViewController {
         // make sure the current state is reading. If not, post an error and return.
         switch currentState {
         case .reading(let cHash):
-            self.readButton.enabled = false
+            self.readButton.isEnabled = false
             // check if we have a file corresponding to the given content hash in dime (and open it). If not, request file to peer (will be opened once received)
             DiMeFetcher.retrieveUrl(forContentHash: cHash) {
                 foundUrl in
                 if let url = foundUrl {
-                    (NSApplication.sharedApplication().delegate! as! AppDelegate).openDocument(url, searchString: nil)
+                    (NSApplication.shared().delegate! as! AppDelegate).openDocument(url, searchString: nil)
                 } else {
-                    CollaborationMessage.RequestFile(contentHash: cHash).sendTo(peers)
+                    CollaborationMessage.requestFile(contentHash: cHash).sendTo(peers)
                 }
                 self.currentState = .trackable(contentHash: cHash)
             }
@@ -169,30 +169,30 @@ class PeerViewController: NSViewController {
     
     // MARK: - Receiving file and progress bar updates
     
-    func startReceivingFile(progress: NSProgress) {
+    func startReceivingFile(_ progress: Progress) {
         fileProgress = progress
-        fileProgress?.addObserver(self, forKeyPath: "fractionCompleted", options: .New, context: &pContext)
-        dispatch_async(dispatch_get_main_queue()) {
-            self.progbar.hidden = false
+        fileProgress?.addObserver(self, forKeyPath: "fractionCompleted", options: .new, context: &pContext)
+        DispatchQueue.main.async {
+            self.progbar.isHidden = false
         }
     }
     
     func receiptComplete() {
         fileProgress?.removeObserver(self, forKeyPath: "fractionCompleted", context: &pContext)
-        dispatch_async(dispatch_get_main_queue()) {
-            self.progbar.hidden = true
+        DispatchQueue.main.async {
+            self.progbar.isHidden = true
         }
         fileProgress = nil
     }
     
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         guard context == &pContext else {
-            super.observeValueForKeyPath(keyPath, ofObject: object, change: change, context: context)
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
             return
         }
         
-        dispatch_async(dispatch_get_main_queue()) {
-            self.progbar.doubleValue = change![NSKeyValueChangeNewKey]! as! Double
+        DispatchQueue.main.async {
+            self.progbar.doubleValue = change![NSKeyValueChangeKey.newKey]! as! Double
         }
     }
     

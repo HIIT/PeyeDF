@@ -29,9 +29,9 @@ class AnimatedStack: NSStackView {
     
     static let timingFunc = CAMediaTimingFunction(name: kCAMediaTimingFunctionDefault)
 
-    func animateViewIn(theView: NSView) {
+    func animateViewIn(_ theView: NSView) {
         theView.alphaValue = 0
-        addView(theView, inGravity: .Top)
+        addView(theView, in: .top)
         NSAnimationContext.runAnimationGroup({
             context in
             context.duration = 0.5
@@ -43,7 +43,7 @@ class AnimatedStack: NSStackView {
         })
     }
     
-    func animateViewOut(theView: NSView) {
+    func animateViewOut(_ theView: NSView) {
         NSAnimationContext.runAnimationGroup({
             context in
             context.duration = 0.2

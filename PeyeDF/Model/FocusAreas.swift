@@ -36,33 +36,33 @@ enum FocusAreaType: CustomStringConvertible {
     */
     var description: String { get {
         switch self {
-        case .Page:
+        case .page:
             return ""
-        case .Rect(let r):
+        case .rect(let r):
             return r.description
-        case .Point(let p):
+        case .point(let p):
             return p.description
         }
     } }
     
-    case Page
-    case Rect(NSRect)
-    case Point(NSPoint)
+    case page
+    case rect(NSRect)
+    case point(NSPoint)
     
     /// Creates itself from nsurlcomponents. If both a rect and point are found,
     /// rect takes precedence.
-    init?(fromURLComponents comps: NSURLComponents) {
+    init?(fromURLComponents comps: URLComponents) {
         
         guard let params = comps.parameterDictionary else {
             return nil
         }
         
-        if let sr = params["rect"]?.withoutChars(["(", ")"]), r = NSRect(string: sr) {
-            self = .Rect(r)
-        } else if let sp = params["point"]?.withoutChars(["(", ")"]), p = NSPoint(string: sp) {
-            self = .Point(p)
+        if let sr = params["rect"]?.withoutChars(["(", ")"]), let r = NSRect(string: sr) {
+            self = .rect(r)
+        } else if let sp = params["point"]?.withoutChars(["(", ")"]), let p = NSPoint(string: sp) {
+            self = .point(p)
         } else {
-            self = .Page
+            self = .page
         }
     }
     
@@ -70,11 +70,11 @@ enum FocusAreaType: CustomStringConvertible {
     /// description, empty String returns .page).
     init?(fromString string: String) {
         if let r = NSRect(string: string) {
-            self = .Rect(r)
+            self = .rect(r)
         } else if let p = NSPoint(string: string) {
-            self = .Point(p)
+            self = .point(p)
         } else if string.isEmpty {
-            self = .Page
+            self = .page
         } else {
             AppSingleton.log.error("Failed to parse '\(string)'")
             return nil
@@ -99,11 +99,11 @@ struct FocusArea: CustomStringConvertible {
      */
     var description: String { get {
         switch self.type {
-        case .Page:
+        case .page:
             return "\(self.pageIndex)"
-        case .Point(let p):
+        case .point(let p):
             return "\(self.pageIndex):\(p.description)"
-        case .Rect(let r):
+        case .rect(let r):
             return "\(self.pageIndex):\(r.description)"
         }
     } }
@@ -112,23 +112,23 @@ struct FocusArea: CustomStringConvertible {
     let pageIndex: Int
     
     init(forPoint: NSPoint, onPage: Int) {
-        self.type = .Point(forPoint)
+        self.type = .point(forPoint)
         self.pageIndex = onPage
     }
     
     init(forRect: NSRect, onPage: Int) {
-        self.type = .Rect(forRect)
+        self.type = .rect(forRect)
         self.pageIndex = onPage
     }
     
     init(forPage: Int) {
         self.pageIndex = forPage
-        self.type = .Page
+        self.type = .page
     }
     
     /// Fails if page is missing is below 0, or did not contain a type
-    init?(fromURLComponents comps: NSURLComponents) {
-        guard let params = comps.parameterDictionary, pageS = params["page"], pageIndex = Int(pageS) where pageIndex >= 0 else {
+    init?(fromURLComponents comps: URLComponents) {
+        guard let params = comps.parameterDictionary, let pageS = params["page"], let pageIndex = Int(pageS) , pageIndex >= 0 else {
             AppSingleton.log.warning("Could not parse string: \(comps.string)")
             return nil
         }
@@ -142,13 +142,13 @@ struct FocusArea: CustomStringConvertible {
     
     /// Creates itself from a string with the same format as description.
     init?(fromString string: String) {
-        if let r = string.rangeOfString(":"), pno = Int(string.substringToIndex(r.startIndex)), fatype = FocusAreaType(fromString: string.substringFromIndex(r.endIndex)) {
+        if let r = string.range(of: ":"), let pno = Int(string.substring(to: r.lowerBound)), let fatype = FocusAreaType(fromString: string.substring(from: r.upperBound)) {
             // there is range, extract page and focus area type
             self.pageIndex = pno
             self.type = fatype
         } else if let pno = Int(string) {
             // it is only valid if the string can be converted to int (page number)
-            self.type = .Page
+            self.type = .page
             self.pageIndex = pno
         } else {
             AppSingleton.log.error("Failed to parse '\(string)'")
@@ -183,15 +183,14 @@ extension PDFBase {
     /// - Parameter delay: Apply a delay for user feedback (a small amount by default)
     /// - Parameter offset: If true, when focusing on a point, slightly offset the
     ///    point so that there is some more page shown above the point.
-    func focusOn(f: FocusArea, delay: Double = 0.5, offset: Bool = true) {
+    func focusOn(_ f: FocusArea, delay: Double = 0.5, offset: Bool = true) {
         guard f.pageIndex < self.document!.pageCount else {
            AppSingleton.log.warning("Attempted to focus on a non-existing page")
             return
         }
         
-        let showTime = dispatch_time(DISPATCH_TIME_NOW,
-                                     Int64(delay * Double(NSEC_PER_SEC)))
-        dispatch_after(showTime, dispatch_get_main_queue()) {
+        let showTime = DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+        DispatchQueue.main.asyncAfter(deadline: showTime) {
             
             guard f.pageIndex < self.document!.pageCount, let pdfpage = self.document!.getPage(atIndex: f.pageIndex) else {
                 return
@@ -200,18 +199,18 @@ extension PDFBase {
             let pageRect = self.getPageRect(pdfpage)
             
             switch f.type {
-            case let .Rect(r):
+            case let .rect(r):
                 guard NSContainsRect(pageRect, r) else {
                    AppSingleton.log.warning("Attempted to focus on a rect outside bounds")
                     return
                 }
                 
-                let sel = pdfpage.selectionForRect(r)
+                let sel = pdfpage.selection(for: r)
                 self.setCurrentSelection(sel, animate: false)
                 self.scrollSelectionToVisible(self)
                 self.setCurrentSelection(sel, animate: true)
                 
-            case let .Point(p):
+            case let .point(p):
                 guard NSPointInRect(p, pageRect) else {
                    AppSingleton.log.warning("Attempted to focus on a point outside bounds")
                     return
@@ -224,9 +223,9 @@ extension PDFBase {
                     pointRect.origin.y += self.frame.size.height * FocusArea.kPointFocusDistanceMult
                 }
                 
-                self.goToRect(pointRect, onPage: pdfpage)
+                self.go(to: pointRect, on: pdfpage)
                 
-            case .Page:
+            case .page:
                 
                 // Get beginning of page (x: 0, y: top)
                 let pageRect = self.getPageRect(pdfpage)
@@ -236,7 +235,7 @@ extension PDFBase {
                 // Get tiny rect for beginning of page
                 let pointRect = NSRect(origin: p, size: NSSize())
                 
-                self.goToRect(pointRect, onPage: pdfpage)
+                self.go(to: pointRect, on: pdfpage)
                 
             }
         }

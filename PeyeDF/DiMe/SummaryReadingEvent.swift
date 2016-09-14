@@ -30,16 +30,16 @@ class SummaryReadingEvent: ReadingEvent {
     /// Set this before submitting event to dime if we want this to be sent.
     var readingTime: Double?
     
-    private(set) var proportionRead: Double?
-    private(set) var proportionCritical: Double?
-    private(set) var proportionInteresting: Double?
+    fileprivate(set) var proportionRead: Double?
+    fileprivate(set) var proportionCritical: Double?
+    fileprivate(set) var proportionInteresting: Double?
     
-    private(set) var foundStrings = [String]()
+    fileprivate(set) var foundStrings = [String]()
     
     
     /** Creates a summary reading event, which contains all "markings" in form of rectangles
     */
-    required init(rects: [ReadingRect], sessionId: String, plainTextContent: NSString?, infoElemId: NSString, foundStrings: [String], proportionRead: Double, proportionInteresting: Double, proportionCritical: Double) {
+    required init(rects: [ReadingRect], sessionId: String, plainTextContent: String?, infoElemId: String, foundStrings: [String], proportionRead: Double, proportionInteresting: Double, proportionCritical: Double) {
         
         self.proportionRead = proportionRead
         self.proportionCritical = proportionCritical
@@ -48,7 +48,7 @@ class SummaryReadingEvent: ReadingEvent {
         
         super.init(sessionId: sessionId, pageNumbers: nil, pageLabels: nil, pageRects: rects,  plainTextContent: plainTextContent, infoElemId: infoElemId)
         
-        self.foundStrings.appendContentsOf(foundStrings)
+        self.foundStrings.append(contentsOf: foundStrings)
     }
     
     required init(fromDime json: JSON) {
@@ -64,7 +64,7 @@ class SummaryReadingEvent: ReadingEvent {
         super.init(fromDime: json)
     }
     
-    override func getDict() -> [String : AnyObject] {
+    override func getDict() -> [String : Any] {
         var retDict = super.getDict()
         
         if let pread = proportionRead {
@@ -91,7 +91,7 @@ class SummaryReadingEvent: ReadingEvent {
     }
     
     /// Overwrite the current set of read/critical/interesting values
-    func setProportions(pRead: Double, pInteresting: Double, pCritical: Double) {
+    func setProportions(_ pRead: Double, pInteresting: Double, pCritical: Double) {
         self.proportionRead = pRead
         self.proportionInteresting = pInteresting
         self.proportionCritical = pCritical

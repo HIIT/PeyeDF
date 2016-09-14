@@ -41,9 +41,9 @@ class Multipeer: NSObject {
         // check if a peerid is present in nsuser defaults. If yes, and it has the same display name
         // as the one set for the dime user preference, use that.
         let peer: MCPeerID
-        let name = NSUserDefaults.standardUserDefaults().valueForKey(PeyeConstants.prefDiMeServerUserName) as! String
-        if let storedPeerData = NSUserDefaults.standardUserDefaults().valueForKey(MPConstants.peerIdKey) as? NSData,
-          storedPeer = NSKeyedUnarchiver.unarchiveObjectWithData(storedPeerData) as? MCPeerID where
+        let name = UserDefaults.standard.value(forKey: PeyeConstants.prefDiMeServerUserName) as! String
+        if let storedPeerData = UserDefaults.standard.value(forKey: MPConstants.peerIdKey) as? Data,
+          let storedPeer = NSKeyedUnarchiver.unarchiveObject(with: storedPeerData) as? MCPeerID ,
           storedPeer.displayName == name {
             // we have a stored peer, and its name matches ours
             peer = storedPeer
@@ -52,9 +52,9 @@ class Multipeer: NSObject {
             peer = MCPeerID(displayName: name)
         }
         // save generated peer in user defaults
-        let peerData = NSKeyedArchiver.archivedDataWithRootObject(peer)
-        NSUserDefaults.standardUserDefaults().setValue(peerData, forKey: MPConstants.peerIdKey)
-        NSUserDefaults.standardUserDefaults().synchronize()
+        let peerData = NSKeyedArchiver.archivedData(withRootObject: peer)
+        UserDefaults.standard.setValue(peerData, forKey: MPConstants.peerIdKey)
+        UserDefaults.standard.synchronize()
         return peer
     }()
     
@@ -77,7 +77,7 @@ class Multipeer: NSObject {
     static var browserWindow: SecondaryWindow = {
         let window = SecondaryWindow(contentViewController: Multipeer.browserController)
         window.title = "Connect to peer"
-        window.releasedWhenClosed = false
+        window.isReleasedWhenClosed = false
         return window
     }()
     
@@ -89,7 +89,7 @@ class Multipeer: NSObject {
     
     /// Peer window, showing list of all peers we are connected to (normally, one)
     static var peerWindow: NSWindowController = {
-        let win = AppSingleton.collaborationStoryboard.instantiateControllerWithIdentifier("AllPeersWindowController")
+        let win = AppSingleton.collaborationStoryboard.instantiateController(withIdentifier: "AllPeersWindowController")
         return win as! NSWindowController
     }()
     
@@ -110,11 +110,11 @@ class Multipeer: NSObject {
         Multipeer.peerController.trackUpdate(newValue)  // update tracked peer
         // tell previously tracked peer that we stopped tracking them
         if let pHash = tracked.peer {
-            CollaborationMessage.TrackingChange(newState: false).sendTo(Multipeer.session.connectedPeers.filter({$0.hash == pHash}))
+            CollaborationMessage.trackingChange(newState: false).sendTo(Multipeer.session.connectedPeers.filter({$0.hash == pHash}))
         }
         // tell tracked peer that we started tracking them
         if let pHash = newValue.peer {
-            CollaborationMessage.TrackingChange(newState: true).sendTo(Multipeer.session.connectedPeers.filter({$0.hash == pHash}))
+            CollaborationMessage.trackingChange(newState: true).sendTo(Multipeer.session.connectedPeers.filter({$0.hash == pHash}))
         }
     } }
     
@@ -125,7 +125,7 @@ class Multipeer: NSObject {
             let removed = oldValue.keys.filter({!ourWindows.keys.contains($0)})
             // if a window that contained the document we want to track is closed,
             // undo tracking
-            if let tHash = tracked.cHash where removed.contains(tHash) {
+            if let tHash = tracked.cHash , removed.contains(tHash) {
                 tracked.cHash = nil
             }
             // reset state for peers that were reading the document that we closed
@@ -154,12 +154,12 @@ class Multipeer: NSObject {
             return
         }
         
-        let newController = AppSingleton.collaborationStoryboard.instantiateControllerWithIdentifier("PeerOverviewController") as! PeerOverviewController
+        let newController = AppSingleton.collaborationStoryboard.instantiateController(withIdentifier: "PeerOverviewController") as! PeerOverviewController
         overviewControllers[cHash] = newController
         
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             let win = SecondaryWindow(contentViewController: newController)
-            win.releasedWhenClosed = false
+            win.isReleasedWhenClosed = false
             win.orderFront(Multipeer.sharedInstance)
             newController.win = win  // create strong ref to keep window in memory
             newController.pdfOverview.pdfDetail = self.ourWindows[cHash]?.pdfReader
@@ -173,8 +173,8 @@ class Multipeer: NSObject {
             return
         }
         
-        let removedController = overviewControllers.removeValueForKey(cHash)
-        dispatch_async(dispatch_get_main_queue()) {
+        let removedController = overviewControllers.removeValue(forKey: cHash)
+        DispatchQueue.main.async {
             removedController?.pdfOverview.pdfDetail = nil
             removedController?.pdfOverview = nil
             removedController?.win.close()
@@ -185,11 +185,11 @@ class Multipeer: NSObject {
 
 /// Implementation of delegate to respond to button presses on view controller
 extension Multipeer: MCBrowserViewControllerDelegate {
-    @objc func browserViewControllerDidFinish(browserViewController: MCBrowserViewController) {
+    @objc func browserViewControllerDidFinish(_ browserViewController: MCBrowserViewController) {
         Multipeer.browserWindow.close()
     }
     
-    @objc func browserViewControllerWasCancelled(browserViewController: MCBrowserViewController) {
+    @objc func browserViewControllerWasCancelled(_ browserViewController: MCBrowserViewController) {
         Multipeer.browserWindow.close()
     }
 }

@@ -37,10 +37,10 @@ protocol SearchProvider: class {
     func doSearch(_: String, exact: Bool)
     
     /// Gets the next found item
-    func selectNextResult(sender: AnyObject?)
+    func selectNextResult(_ sender: AnyObject?)
     
     /// Gets the previous found item
-    func selectPreviousResult(sender: AnyObject?)
+    func selectPreviousResult(_ sender: AnyObject?)
     
 }
 
@@ -89,12 +89,12 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     /// Keeps instances of found selections
     var foundSelections = [PDFSelection]()
     
-    @IBAction func exactMatchPress(sender: NSButton) {
+    @IBAction func exactMatchPress(_ sender: NSButton) {
         exactMatch = true
         separateWordsButton.state = NSOffState
     }
     
-    @IBAction func separateWordsPress(sender: NSButton) {
+    @IBAction func separateWordsPress(_ sender: NSButton) {
         exactMatch = false
         exactMatchButton.state = NSOffState
     }
@@ -112,19 +112,19 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
         let cellMenu = NSMenu(title: NSLocalizedString("recentSearchMenu.title", value: "Search Menu", comment: "Search menu title"))
         let clearMenuItem = NSMenuItem(title: NSLocalizedString("recentSearchMenu.clear", value: "Clear", comment: "Clear recent searches menu item"), action: nil, keyEquivalent: "")
         clearMenuItem.tag = Int(NSSearchFieldClearRecentsMenuItemTag)
-        cellMenu.insertItem(clearMenuItem, atIndex: 0)
+        cellMenu.insertItem(clearMenuItem, at: 0)
         
-        let menuSep = NSMenuItem.separatorItem()
+        let menuSep = NSMenuItem.separator()
         menuSep.tag = Int(NSSearchFieldRecentsTitleMenuItemTag)
-        cellMenu.insertItem(menuSep, atIndex: 1)
+        cellMenu.insertItem(menuSep, at: 1)
         
         let recentSearchMenuItem = NSMenuItem(title: NSLocalizedString("recentSearchMenu.recentSearches", value: "Recent Searches", comment: "Recent searches menu item"), action: nil, keyEquivalent: "")
         recentSearchMenuItem.tag = Int(NSSearchFieldRecentsTitleMenuItemTag)
-        cellMenu.insertItem(recentSearchMenuItem, atIndex: 2)
+        cellMenu.insertItem(recentSearchMenuItem, at: 2)
         
         let recentMenu = NSMenuItem(title: "Recents", action: nil, keyEquivalent: "")
         recentMenu.tag = Int(NSSearchFieldRecentsMenuItemTag)
-        cellMenu.insertItem(recentMenu, atIndex: 3)
+        cellMenu.insertItem(recentMenu, at: 3)
         
         searchCell.searchMenuTemplate = cellMenu
         // end recents menu --
@@ -136,15 +136,15 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     
     override func viewDidAppear() {
         // set up PDFView search notification
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(foundPDFSearchItem(_:)), name: PDFDocumentDidFindMatchNotification, object: pdfReader!.document)
+        NotificationCenter.default.addObserver(self, selector: #selector(foundPDFSearchItem(_:)), name: NSNotification.Name.PDFDocumentDidFindMatch, object: pdfReader!.document)
         // set up PDFBase tag search notification
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(foundPDFSearchItem(_:)), name: TagConstants.tagStringFoundNotification, object: pdfReader!)
+        NotificationCenter.default.addObserver(self, selector: #selector(foundPDFSearchItem(_:)), name: NSNotification.Name(rawValue: TagConstants.tagStringFoundNotification), object: pdfReader!)
     }
     
     override func viewWillDisappear() {
         // unset search notifications
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: PDFDocumentDidFindMatchNotification, object: pdfReader!.document)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: TagConstants.tagStringFoundNotification, object: pdfReader!)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.PDFDocumentDidFindMatch, object: pdfReader!.document)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: TagConstants.tagStringFoundNotification), object: pdfReader!)
         
         // table unset
         resultTable.dataSource = nil
@@ -166,7 +166,7 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     /// Make the search field first responder, but with a delay
     func makeSearchFieldFirstResponderWithDelay() {
         labelColumnCheck()
-        NSTimer.scheduledTimerWithTimeInterval(kFirstResponderDelay, target: self, selector: #selector(makeSearchFieldFirstResponder), userInfo: nil, repeats: false)
+        Timer.scheduledTimer(timeInterval: kFirstResponderDelay, target: self, selector: #selector(makeSearchFieldFirstResponder), userInfo: nil, repeats: false)
     }
     
     /// Make the search field the first reponder (i.e. focus on it)
@@ -180,33 +180,33 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
         return numberOfResultsFound != 0
     }
     
-    @IBAction func selectPreviousResult(sender: AnyObject?) {
+    @IBAction func selectPreviousResult(_ sender: AnyObject?) {
         if hasResult() {
             let selectedRow = resultTable.selectedRow  // is -1 if nothing
             
             // if nothing is selected, or first is selected, select last
             if selectedRow == -1 || selectedRow == 0 {
-                resultTable.selectRowIndexes(NSIndexSet(index: numberOfResultsFound - 1), byExtendingSelection: false)
+                resultTable.selectRowIndexes(IndexSet(integer: numberOfResultsFound - 1), byExtendingSelection: false)
                 
             // otherwise select selectedRow -1
             } else {
-                resultTable.selectRowIndexes(NSIndexSet(index: selectedRow - 1), byExtendingSelection: false)
+                resultTable.selectRowIndexes(IndexSet(integer: selectedRow - 1), byExtendingSelection: false)
             }
             resultTable.scrollRowToVisible(resultTable.selectedRow)
         }
     }
     
-    @IBAction func selectNextResult(sender: AnyObject?) {
+    @IBAction func selectNextResult(_ sender: AnyObject?) {
         if hasResult() {
             let selectedRow = resultTable.selectedRow  // is -1 if nothing
             
             // if nothing is selected, or last is selected, select first
             if selectedRow == -1 || selectedRow == numberOfResultsFound - 1 {
-                resultTable.selectRowIndexes(NSIndexSet(index: 0), byExtendingSelection: false)
+                resultTable.selectRowIndexes(IndexSet(integer: 0), byExtendingSelection: false)
                 
             // otherwise select selectedRow +1
             } else {
-                resultTable.selectRowIndexes(NSIndexSet(index: selectedRow + 1), byExtendingSelection: false)
+                resultTable.selectRowIndexes(IndexSet(integer: selectedRow + 1), byExtendingSelection: false)
             }
             resultTable.scrollRowToVisible(resultTable.selectedRow)
         }
@@ -215,21 +215,21 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     /// Performs a search using the given string, with the exact phrase flag.
     /// If the string is between quotes ("something") forces an exact phrase search.
     /// If the string starts with "#tag:" (kTagSString) searches for tags with that name instead.
-    func doSearch(theString: String, exact: Bool) {
+    func doSearch(_ theString: String, exact: Bool) {
         var theString = theString
         var exact = exact
         
         // -- check if recent search element is present in recent searches --
         let recentSearches = searchCell.recentSearches
         // if list is empty add it
-        if recentSearches.isEmpty {
+        if (recentSearches!.isEmpty) {
             searchCell.recentSearches.append(theString)
         } else {
-            for i in 0..<recentSearches.count {
+            for i in 0 ..< recentSearches!.count {
                 // if item present, remove it
-                let item = recentSearches[i] 
+                let item = recentSearches![i]
                 if item == searchString {
-                    searchCell.recentSearches.removeAtIndex(i)
+                    searchCell.recentSearches.remove(at: i)
                     break
                 }
             }
@@ -270,10 +270,10 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
             // tag search
             
             // get wanted text of tag from string (if present)
-            guard let r = theString.rangeOfString(kTagSString) else {
+            guard let r = theString.range(of: kTagSString) else {
                 return
             }
-            let tagString = theString.substringFromIndex(r.endIndex)
+            let tagString = theString.substring(from: r.upperBound)
             guard tagString.characters.count > 0 else {
                 return
             }
@@ -284,23 +284,23 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
             
             // normal search
             if exact {
-                pdfReader!.document!.beginFindString(theString, withOptions: Int(NSStringCompareOptions.CaseInsensitiveSearch.rawValue))
+                pdfReader!.document!.beginFindString(theString, withOptions: Int(NSString.CompareOptions.caseInsensitive.rawValue))
             } else {
                 guard let searchS = theString.split(" ") else {
                     return
                 }
-                pdfReader!.document!.beginFindStrings(searchS, withOptions: Int(NSStringCompareOptions.CaseInsensitiveSearch.rawValue))
+                pdfReader!.document!.beginFind(searchS, withOptions: Int(NSString.CompareOptions.caseInsensitive.rawValue))
             }
         }
         
-        previousButton.enabled = false
-        nextButton.enabled = false
+        previousButton.isEnabled = false
+        nextButton.isEnabled = false
     }
     
     // MARK: - Other search
     
     /// Some text has been entered in the search field
-    @IBAction func startSearch(sender: NSSearchField) {
+    @IBAction func startSearch(_ sender: NSSearchField) {
         if pdfReader!.document!.isFinding {
             pdfReader!.document!.cancelFindString()
         }
@@ -312,14 +312,14 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     
     // MARK: - Notification callbacks
     
-    @objc func foundPDFSearchItem(notification: NSNotification) {
-        let infoDict = notification.userInfo as! [String: AnyObject]
+    @objc func foundPDFSearchItem(_ notification: Notification) {
+        let infoDict = (notification as NSNotification).userInfo as! [String: AnyObject]
         
         let pdfSel: PDFSelection
         // discriminate between pdfView string and MyPDF tag string searches
-        if notification.name == PDFDocumentDidFindMatchNotification {
+        if notification.name == NSNotification.Name.PDFDocumentDidFindMatch {
             pdfSel = infoDict["PDFDocumentFoundSelection"] as! PDFSelection
-        } else if notification.name == TagConstants.tagStringFoundNotification {
+        } else if notification.name.rawValue == TagConstants.tagStringFoundNotification {
             pdfSel = infoDict["MyPDFTagFoundSelection"] as! PDFSelection
         } else {
             fatalError("Unrecognized notification name!")
@@ -328,31 +328,33 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
         numberOfResultsFound += 1
         foundSelections.append(pdfSel.copy() as! PDFSelection)
         self.resultTable.noteNumberOfRowsChanged()
-        let updateRect = self.resultTable.rectOfRow(self.numberOfResultsFound)
-        self.resultTable.setNeedsDisplayInRect(updateRect)
+        let updateRect = self.resultTable.rect(ofRow: self.numberOfResultsFound)
+        self.resultTable.setNeedsDisplay(updateRect)
         resultNumberField.stringValue = "\(numberOfResultsFound)"
         
         if numberOfResultsFound > 1 {
-            nextButton.enabled = true
-            previousButton.enabled = true
+            nextButton.isEnabled = true
+            previousButton.isEnabled = true
         }
     }
     
     // MARK: - Table data source
     
-    func numberOfRowsInTableView(aTableView: NSTableView) -> Int {
+    func numberOfRows(in aTableView: NSTableView) -> Int {
         return foundSelections.count
     }
     
-    func tableView(tableView: NSTableView, objectValueForTableColumn tableColumn: NSTableColumn?, row: Int) -> AnyObject? {
+    func tableView(_ tableView: NSTableView, objectValueFor tableColumn: NSTableColumn?, row: Int) -> Any? {
         
         let pages = foundSelections[row].pages
         
         // check that foundSelections contains valid data first and unwrap values
         guard foundSelections.count > row && foundSelections[row].pages.count > 0 &&
-              pages.count > 0, let page = pages[0] as? PDFPage, document = page.document else {
+              pages.count > 0, let document = pages[0].document else {
             return nil
         }
+        
+        let page = pages[0]
         
         if tableColumn?.identifier == kColumnTitlePageLabel {
             
@@ -361,18 +363,18 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
             
         } else if tableColumn?.identifier == kColumnTitlePageNumber {
             
-            return document.indexForPage(page) + 1
+            return document.index(for: page) + 1
             
         } else if tableColumn?.identifier == kColumnTitleLine {
             
             // extract line from found selection
             let foundString = foundSelections[row].string
-            let lineString: NSString = foundSelections[row].lineString()
+            let lineString = foundSelections[row].lineString() as NSString
             
             // make found result bold
             let attrString = NSMutableAttributedString(string: lineString as String)
-            let rangeOfQuery = lineString.rangeOfString(foundString!, options: NSStringCompareOptions.CaseInsensitiveSearch)
-            let boldFont = NSFont.boldSystemFontOfSize(12.0)
+            let rangeOfQuery = lineString.range(of: foundString!, options: NSString.CompareOptions.caseInsensitive)
+            let boldFont = NSFont.boldSystemFont(ofSize: 12.0)
             attrString.beginEditing()
             attrString.addAttribute(NSFontAttributeName, value: boldFont, range: rangeOfQuery)
             attrString.endEditing()
@@ -383,7 +385,7 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     
     // MARK: - Table delegate
     
-    func tableViewSelectionDidChange(notification: NSNotification) {
+    func tableViewSelectionDidChange(_ notification: Notification) {
         let tabView = notification.object as! NSTableView
         let rowIndex = tabView.selectedRow
         if rowIndex >= 0 {

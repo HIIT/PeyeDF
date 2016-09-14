@@ -33,7 +33,7 @@ class ThresholdEditor: NSViewController {
     
     weak var detailDelegate: HistoryDetailDelegate?
     
-    @IBAction func applyPress(sender: NSButton) {
+    @IBAction func applyPress(_ sender: NSButton) {
         detailDelegate?.setEyeThresholds(readSlider.doubleValue, interestingThresh: interestingSlider.doubleValue, criticalThresh: criticalSlider.doubleValue)
     }
     
