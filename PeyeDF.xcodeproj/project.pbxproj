@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		A9038F761B8F5EE500A7D183 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9038F751B8F5EE500A7D183 /* Event.swift */; };
 		A9038F7B1B8F634200A7D183 /* Dictionariable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9038F7A1B8F634200A7D183 /* Dictionariable.swift */; };
+		A90520B01D89403300F3C35E /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90520AF1D89403300F3C35E /* SwiftyJSON.swift */; };
+		A90520CD1D89406600F3C35E /* XCGLogger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A90520BF1D89405900F3C35E /* XCGLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A90BA3111CB681A400E7303D /* Tags.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A90BA3101CB681A400E7303D /* Tags.storyboard */; };
 		A90C0AD61CEE0F22000D4B75 /* Multipeer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90C0AD51CEE0F22000D4B75 /* Multipeer.swift */; };
 		A912D8A41B8B5C3A006F0657 /* DocumentInformationElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A912D8A21B8B5C3A006F0657 /* DocumentInformationElement.swift */; };
@@ -51,7 +53,6 @@
 		A95A8CF71B94407D0093119E /* DiMePreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95A8CF01B94407D0093119E /* DiMePreferencesViewController.swift */; };
 		A95A8CF81B94407D0093119E /* ThumbSideController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95A8CF11B94407D0093119E /* ThumbSideController.swift */; };
 		A95DF5651BC511A400EA1157 /* PDFDocument+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95DF5641BC511A400EA1157 /* PDFDocument+Extensions.swift */; };
-		A95FE9801B8B3C1D0010E813 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95FE97F1B8B3C1D0010E813 /* SwiftyJSON.swift */; };
 		A95FE9911B8B3F7D0010E813 /* Alamofire.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A95FE98B1B8B3EC60010E813 /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A964E1001CD8F23D00EE72B5 /* PeyeDFUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A964E0FF1CD8F23D00EE72B5 /* PeyeDFUITests.swift */; };
 		A964E10E1CD8F50400EE72B5 /* CalvoDMello.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A964E10D1CD8F50400EE72B5 /* CalvoDMello.pdf */; };
@@ -91,7 +92,6 @@
 		A9D362A11CF86196003E5DAF /* PeerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D362A01CF86196003E5DAF /* PeerViewController.swift */; };
 		A9D833AD1BA868520046B21F /* PageEyeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D833AC1BA868520046B21F /* PageEyeData.swift */; };
 		A9D9A8BF1C1C883D0014C1EB /* EyeRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D9A8BE1C1C883D0014C1EB /* EyeRectangle.swift */; };
-		A9DFF1721B7E3D1A008CFF0C /* XCGLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9DFF1711B7E3D1A008CFF0C /* XCGLogger.swift */; };
 		A9E771111B96091F0005A4B3 /* ReadingRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E771101B96091F0005A4B3 /* ReadingRect.swift */; };
 		A9F335731B3ABC090042BFB3 /* AppSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F335721B3ABC090042BFB3 /* AppSingleton.swift */; };
 		A9F9D2761CBFB58700FFAE72 /* LittleClock.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F9D2751CBFB58600FFAE72 /* LittleClock.swift */; };
@@ -99,6 +99,69 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		A90520BC1D89405900F3C35E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 55E3EE4519D76F280068C3A7;
+			remoteInfo = "XCGLogger (iOS)";
+		};
+		A90520BE1D89405900F3C35E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 554DF41719D76FE7005708BE;
+			remoteInfo = "XCGLogger (OS X)";
+		};
+		A90520C01D89405900F3C35E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 70CB94201B99E728007802FF;
+			remoteInfo = "XCGLogger (watchOS)";
+		};
+		A90520C21D89405900F3C35E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5515A3DF1BA119FA0047BA31;
+			remoteInfo = "XCGLogger (tvOS)";
+		};
+		A90520C41D89405900F3C35E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 55E3EE5019D76F280068C3A7;
+			remoteInfo = XCGLoggerTests_iOS;
+		};
+		A90520C61D89405900F3C35E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 55BB1F011B79DC7500709779;
+			remoteInfo = XCGLoggerTests_OSX;
+		};
+		A90520C81D89405900F3C35E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 558EEB851D6BAC61006A9C7A;
+			remoteInfo = XCGLoggerTests_watchOS;
+		};
+		A90520CA1D89405900F3C35E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 558EEB921D6BAC66006A9C7A;
+			remoteInfo = XCGLoggerTests_tvOS;
+		};
+		A90520CE1D89406600F3C35E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 554DF41619D76FE7005708BE;
+			remoteInfo = "XCGLogger (OS X)";
+		};
 		A906D9011BAD827800DF10C4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A95FE9811B8B3EC60010E813 /* Alamofire.xcodeproj */;
@@ -179,6 +242,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				A95FE9911B8B3F7D0010E813 /* Alamofire.framework in Embed Frameworks */,
+				A90520CD1D89406600F3C35E /* XCGLogger.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -188,6 +252,8 @@
 /* Begin PBXFileReference section */
 		A9038F751B8F5EE500A7D183 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Event.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9038F7A1B8F634200A7D183 /* Dictionariable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = Dictionariable.swift; path = ../DiMe/Dictionariable.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		A90520AF1D89403300F3C35E /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftyJSON.swift; path = SwiftyJSON/Source/SwiftyJSON.swift; sourceTree = "<group>"; };
+		A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = XCGLogger.xcodeproj; path = XCGLogger/Sources/XCGLogger.xcodeproj; sourceTree = "<group>"; };
 		A90BA3101CB681A400E7303D /* Tags.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Tags.storyboard; sourceTree = "<group>"; };
 		A90C0AD51CEE0F22000D4B75 /* Multipeer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Multipeer.swift; sourceTree = "<group>"; };
 		A912D8A21B8B5C3A006F0657 /* DocumentInformationElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DocumentInformationElement.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -234,7 +300,6 @@
 		A95A8CF01B94407D0093119E /* DiMePreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DiMePreferencesViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A95A8CF11B94407D0093119E /* ThumbSideController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThumbSideController.swift; sourceTree = "<group>"; };
 		A95DF5641BC511A400EA1157 /* PDFDocument+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "PDFDocument+Extensions.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		A95FE97F1B8B3C1D0010E813 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
 		A95FE9811B8B3EC60010E813 /* Alamofire.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Alamofire.xcodeproj; path = Alamofire/Alamofire.xcodeproj; sourceTree = "<group>"; };
 		A964E0FD1CD8F23D00EE72B5 /* PeyeDFUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PeyeDFUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A964E0FF1CD8F23D00EE72B5 /* PeyeDFUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeyeDFUITests.swift; sourceTree = "<group>"; };
@@ -277,7 +342,6 @@
 		A9D362A01CF86196003E5DAF /* PeerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeerViewController.swift; sourceTree = "<group>"; };
 		A9D833AC1BA868520046B21F /* PageEyeData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageEyeData.swift; sourceTree = "<group>"; };
 		A9D9A8BE1C1C883D0014C1EB /* EyeRectangle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = EyeRectangle.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		A9DFF1711B7E3D1A008CFF0C /* XCGLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCGLogger.swift; sourceTree = "<group>"; };
 		A9E771101B96091F0005A4B3 /* ReadingRect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadingRect.swift; sourceTree = "<group>"; };
 		A9F335721B3ABC090042BFB3 /* AppSingleton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AppSingleton.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9F9D2751CBFB58600FFAE72 /* LittleClock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LittleClock.swift; sourceTree = "<group>"; };
@@ -334,8 +398,6 @@
 			children = (
 				A9CDB2E81B3AC49800347398 /* PeyeConstants.swift */,
 				A9A793531CD35E1F00E14CCF /* NearlyEquatable.swift */,
-				A95FE97F1B8B3C1D0010E813 /* SwiftyJSON.swift */,
-				A9DFF1711B7E3D1A008CFF0C /* XCGLogger.swift */,
 				A981F69C1B42FC4C00E7E9BD /* Utils.swift */,
 				A91CB9691B332FB700671868 /* EyeFormulas.swift */,
 				A97F7B951B8CB32700013E26 /* PeyeDF-Bridging-Header.h */,
@@ -361,6 +423,31 @@
 			name = Model;
 			path = PeyeDF/Model;
 			sourceTree = SOURCE_ROOT;
+		};
+		A90520A71D89400B00F3C35E /* Dependencies */ = {
+			isa = PBXGroup;
+			children = (
+				A90520AF1D89403300F3C35E /* SwiftyJSON.swift */,
+				A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */,
+				A95FE9811B8B3EC60010E813 /* Alamofire.xcodeproj */,
+			);
+			name = Dependencies;
+			sourceTree = "<group>";
+		};
+		A90520B21D89405800F3C35E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A90520BD1D89405900F3C35E /* XCGLogger.framework */,
+				A90520BF1D89405900F3C35E /* XCGLogger.framework */,
+				A90520C11D89405900F3C35E /* XCGLogger.framework */,
+				A90520C31D89405900F3C35E /* XCGLogger.framework */,
+				A90520C51D89405900F3C35E /* XCGLoggerTests_iOS.xctest */,
+				A90520C71D89405900F3C35E /* XCGLoggerTests (OS X).xctest */,
+				A90520C91D89405900F3C35E /* XCGLoggerTests_watchOS.xctest */,
+				A90520CB1D89405900F3C35E /* XCGLoggerTests_tvOS.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
 		};
 		A90C0AD41CEE0EAD000D4B75 /* Collaboration */ = {
 			isa = PBXGroup;
@@ -399,6 +486,7 @@
 		A91CB93B1B332EDB00671868 = {
 			isa = PBXGroup;
 			children = (
+				A90520A71D89400B00F3C35E /* Dependencies */,
 				A9CC31541C79FF5600AE7556 /* peyedoc.icns */,
 				A9A23CE21C776989008B61C4 /* PeyeDF.icns */,
 				A9D9545F1B8B59DD007A34BF /* DiMe data types */,
@@ -414,7 +502,6 @@
 				A91CB95B1B332EDB00671868 /* PeyeDFTests */,
 				A964E0FE1CD8F23D00EE72B5 /* PeyeDFUITests */,
 				A91CB9451B332EDB00671868 /* Products */,
-				A95FE9811B8B3EC60010E813 /* Alamofire.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
@@ -586,6 +673,7 @@
 			);
 			dependencies = (
 				A95FE9931B8B3F7D0010E813 /* PBXTargetDependency */,
+				A90520CF1D89406600F3C35E /* PBXTargetDependency */,
 			);
 			name = PeyeDF;
 			productName = PeyeDF;
@@ -672,6 +760,10 @@
 					ProductGroup = A95FE9821B8B3EC60010E813 /* Products */;
 					ProjectRef = A95FE9811B8B3EC60010E813 /* Alamofire.xcodeproj */;
 				},
+				{
+					ProductGroup = A90520B21D89405800F3C35E /* Products */;
+					ProjectRef = A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -683,6 +775,62 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		A90520BD1D89405900F3C35E /* XCGLogger.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = XCGLogger.framework;
+			remoteRef = A90520BC1D89405900F3C35E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A90520BF1D89405900F3C35E /* XCGLogger.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = XCGLogger.framework;
+			remoteRef = A90520BE1D89405900F3C35E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A90520C11D89405900F3C35E /* XCGLogger.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = XCGLogger.framework;
+			remoteRef = A90520C01D89405900F3C35E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A90520C31D89405900F3C35E /* XCGLogger.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = XCGLogger.framework;
+			remoteRef = A90520C21D89405900F3C35E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A90520C51D89405900F3C35E /* XCGLoggerTests_iOS.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = XCGLoggerTests_iOS.xctest;
+			remoteRef = A90520C41D89405900F3C35E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A90520C71D89405900F3C35E /* XCGLoggerTests (OS X).xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "XCGLoggerTests (OS X).xctest";
+			remoteRef = A90520C61D89405900F3C35E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A90520C91D89405900F3C35E /* XCGLoggerTests_watchOS.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = XCGLoggerTests_watchOS.xctest;
+			remoteRef = A90520C81D89405900F3C35E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A90520CB1D89405900F3C35E /* XCGLoggerTests_tvOS.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = XCGLoggerTests_tvOS.xctest;
+			remoteRef = A90520CA1D89405900F3C35E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		A906D9021BAD827800DF10C4 /* Alamofire.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -811,7 +959,6 @@
 				A92323031CB3E1560060AF1C /* AnimatedStack.swift in Sources */,
 				A91DA4781C7A395200257FF0 /* FocusAreas.swift in Sources */,
 				A95A8CF81B94407D0093119E /* ThumbSideController.swift in Sources */,
-				A95FE9801B8B3C1D0010E813 /* SwiftyJSON.swift in Sources */,
 				A9CDB2E91B3AC49800347398 /* PeyeConstants.swift in Sources */,
 				A92323051CB3E1A80060AF1C /* TagFieldDelegate.swift in Sources */,
 				A95A8CF41B94407D0093119E /* DocumentWindowController.swift in Sources */,
@@ -835,11 +982,11 @@
 				A9A23CD41C771A5D008B61C4 /* NSDate+Extensions.swift in Sources */,
 				A9F9D2761CBFB58700FFAE72 /* LittleClock.swift in Sources */,
 				A9B36CA31BEA0FE300A27861 /* RefinderProgressIndicator.swift in Sources */,
+				A90520B01D89403300F3C35E /* SwiftyJSON.swift in Sources */,
 				A9C8F0251BC2B309007ABE1A /* Fixation.swift in Sources */,
 				A912D8A51B8B5C3A006F0657 /* ReadingEvent.swift in Sources */,
 				A9CDFD931CF74717000C4282 /* SessionDelegate.swift in Sources */,
 				A954F8C11D1DA1E5003A23F1 /* PDFPeerOverview.swift in Sources */,
-				A9DFF1721B7E3D1A008CFF0C /* XCGLogger.swift in Sources */,
 				A999D3311CFDF6410057F561 /* SecondaryWindow.swift in Sources */,
 				A9B36CB01BEA4A3A00A27861 /* PDFBase.swift in Sources */,
 				A981F69D1B42FC4C00E7E9BD /* Utils.swift in Sources */,
@@ -871,6 +1018,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		A90520CF1D89406600F3C35E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "XCGLogger (OS X)";
+			targetProxy = A90520CE1D89406600F3C35E /* PBXContainerItemProxy */;
+		};
 		A91CB95A1B332EDB00671868 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = A91CB9431B332EDB00671868 /* PeyeDF */;
@@ -986,6 +1138,7 @@
 		A91CB9631B332EDB00671868 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
@@ -1004,6 +1157,7 @@
 		A91CB9641B332EDB00671868 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";

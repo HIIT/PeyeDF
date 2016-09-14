@@ -26,6 +26,7 @@ import Foundation
 import Cocoa
 import Quartz
 import Alamofire
+import XCGLogger
 
 /// Used to share states across the whole application, including posting history notifications to store. Contains:
 ///

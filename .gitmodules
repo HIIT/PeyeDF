@@ -1,6 +1,9 @@
-[submodule "wiki_submodule"]
-	path = wiki_submodule
-	url = ../PeyeDF.wiki.git
 [submodule "Alamofire"]
 	path = Alamofire
 	url = ../../Alamofire/Alamofire.git
+[submodule "XCGLogger"]
+	path = XCGLogger
+	url = https://github.com/DaveWoodCom/XCGLogger.git
+[submodule "SwiftyJSON"]
+	path = SwiftyJSON
+	url = https://github.com/SwiftyJSON/SwiftyJSON.git
