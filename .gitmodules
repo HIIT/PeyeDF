@@ -1,6 +1,6 @@
 [submodule "Alamofire"]
 	path = Alamofire
-	url = ../../Alamofire/Alamofire.git
+	url = https://github.com/Alamofire/Alamofire.git
 [submodule "XCGLogger"]
 	path = XCGLogger
 	url = https://github.com/DaveWoodCom/XCGLogger.git
