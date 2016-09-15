@@ -595,6 +595,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                 self?.checkMetadata(result)
             }
         }
+        
     }
     
     /// Asynchronously fetch metadata (including plain text) from PDF.

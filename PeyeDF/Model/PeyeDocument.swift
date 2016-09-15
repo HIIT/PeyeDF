@@ -29,6 +29,14 @@ import Quartz
 /// Implementation of a (PDF) Document (partially?) following NSDocument's guidelines
 class PeyeDocument: NSDocument {
     
+    override var isDocumentEdited: Bool { get {
+        if UserDefaults.standard.value(forKey: PeyeConstants.prefAskToSaveOnClose) as! Int == 0 {
+            return false
+        } else {
+            return super.isDocumentEdited
+        }
+    } }
+    
     /// Reference to underlying PDFDocument. Set after loading document by window controller.
     weak var pdfDoc: PDFDocument?
     

@@ -382,12 +382,12 @@
 				A9B36CAF1BEA4A3A00A27861 /* PDFBase.swift */,
 				A9B36CAA1BEA30BF00A27861 /* PDFOverview.swift */,
 				A9FE38A71B98497400680F31 /* GeneralSettingsController.swift */,
-				A92323021CB3E1560060AF1C /* AnimatedStack.swift */,
 				A95A8CF01B94407D0093119E /* DiMePreferencesViewController.swift */,
 				A9A2DFC51BC427BE006C07FD /* MetadataWindowController.swift */,
 				A9A2DFCB1BC427D2006C07FD /* MetadataViewController.swift */,
 				A99C22FA1BE8EC9D005EDFD9 /* WaitViewController.swift */,
 				A999D3301CFDF6410057F561 /* SecondaryWindow.swift */,
+				A92323021CB3E1560060AF1C /* AnimatedStack.swift */,
 			);
 			name = "Main UI";
 			path = "PeyeDF/Main UI";

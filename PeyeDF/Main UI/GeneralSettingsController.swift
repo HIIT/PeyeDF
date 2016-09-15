@@ -38,6 +38,7 @@ class GeneralSettingsController: NSViewController {
     @IBOutlet weak var midasCheckCell: NSButtonCell!
     @IBOutlet weak var refinderDrawGazedCheckCell: NSButtonCell!
     @IBOutlet weak var drawDebugCircleCheckCell: NSButtonCell!
+    @IBOutlet weak var askToSaveAnnotatedPDFCell: NSButtonCell!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -76,6 +77,7 @@ class GeneralSettingsController: NSViewController {
         midasCheckCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefUseMidas, options: options)
         refinderDrawGazedCheckCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefRefinderDrawGazedUpon, options: options)
         drawDebugCircleCheckCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefDrawDebugCircle, options: options)
+        askToSaveAnnotatedPDFCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefAskToSaveOnClose, options: options)
     }
     
     @IBAction func dominantButtonPress(_ sender: NSButton) {

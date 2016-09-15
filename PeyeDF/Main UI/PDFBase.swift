@@ -617,6 +617,7 @@ class PDFBase: PDFView {
         onPage.addAnnotation(annotation)
         DispatchQueue.main.async {
             self.setNeedsDisplay(self.convert(annotation.bounds, from: onPage))
+            self.layoutDocumentView()
         }
     }
     

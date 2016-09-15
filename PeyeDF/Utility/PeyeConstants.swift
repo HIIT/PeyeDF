@@ -34,6 +34,9 @@ class PeyeConstants {
     /// Whether we want to try to fetch metadata on document open
     static let prefDownloadMetadata = "metadata.usecrossref"
     
+    /// If we want to be asked to save pdf document edits (new annotations) on window close
+    static let prefAskToSaveOnClose = "documentWindow.askToSaveOnClose"
+    
     /// Whether we want "annotate" to be enabled by default
     static let prefEnableAnnotate = "annotate.defaultOn"
     

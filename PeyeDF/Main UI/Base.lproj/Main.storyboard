@@ -53,18 +53,18 @@
             <objects>
                 <viewController title="General Settings" showSeguePresentationStyle="single" id="62w-oK-rf7" customClass="GeneralSettingsController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="WGw-LJ-0lD">
-                        <rect key="frame" x="0.0" y="0.0" width="462" height="304"/>
+                        <rect key="frame" x="0.0" y="0.0" width="462" height="326"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="wEK-ud-1k4">
-                                <rect key="frame" x="18" y="268" width="288" height="18"/>
+                                <rect key="frame" x="18" y="288" width="288" height="20"/>
                                 <buttonCell key="cell" type="check" title="Annotate function enabled for new windows" bezelStyle="regularSquare" imagePosition="left" inset="2" id="seh-ry-ahZ">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
-                            <button translatesAutoresizingMaskIntoConstraints="NO" id="PGH-u0-em8">
-                                <rect key="frame" x="18" y="248" width="327" height="18"/>
+                            <button verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="PGH-u0-em8">
+                                <rect key="frame" x="18" y="268" width="327" height="18"/>
                                 <buttonCell key="cell" type="check" title="Attempt to download metadata on document open" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="dby-mW-4qK">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
@@ -200,22 +200,34 @@
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="lGv-gP-N9u">
+                                <rect key="frame" x="18" y="248" width="430" height="18"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="14" id="IWM-MG-iGI"/>
+                                </constraints>
+                                <buttonCell key="cell" type="check" title="Ask to save the original PDF Document with embedded annotations" bezelStyle="regularSquare" imagePosition="left" inset="2" id="0mL-lV-CWw">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="afp-6T-41F" firstAttribute="top" secondItem="S1W-xx-0w2" secondAttribute="bottom" constant="8" symbolic="YES" id="5Ka-dp-EXl"/>
-                            <constraint firstItem="BVV-hH-JyH" firstAttribute="top" secondItem="PGH-u0-em8" secondAttribute="bottom" constant="6" symbolic="YES" id="AGt-z4-MIT"/>
                             <constraint firstItem="kwa-ow-smM" firstAttribute="centerY" secondItem="gxa-Hp-eF0" secondAttribute="centerY" constant="-0.5" id="AMn-gO-zt9"/>
                             <constraint firstItem="S1W-xx-0w2" firstAttribute="top" secondItem="GFc-xH-ekV" secondAttribute="bottom" constant="6" symbolic="YES" id="D74-0d-whb"/>
                             <constraint firstItem="kwa-ow-smM" firstAttribute="top" secondItem="afp-6T-41F" secondAttribute="bottom" constant="8" symbolic="YES" id="F5Z-PG-XBm"/>
                             <constraint firstItem="S1W-xx-0w2" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" symbolic="YES" id="Fe1-0s-bZy"/>
                             <constraint firstItem="UC7-V4-Wrp" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" id="GDs-Qo-G4q"/>
+                            <constraint firstItem="lGv-gP-N9u" firstAttribute="top" secondItem="PGH-u0-em8" secondAttribute="bottom" constant="6" symbolic="YES" id="Ibm-G8-fRv"/>
                             <constraint firstItem="UC7-V4-Wrp" firstAttribute="top" secondItem="gxa-Hp-eF0" secondAttribute="bottom" constant="8" symbolic="YES" id="My0-gm-Agt"/>
                             <constraint firstItem="wEK-ud-1k4" firstAttribute="top" secondItem="WGw-LJ-0lD" secondAttribute="top" constant="20" symbolic="YES" id="Pba-Rh-7DG"/>
                             <constraint firstItem="PGH-u0-em8" firstAttribute="leading" secondItem="wEK-ud-1k4" secondAttribute="leading" id="Rla-LV-4W2"/>
+                            <constraint firstItem="BVV-hH-JyH" firstAttribute="top" secondItem="lGv-gP-N9u" secondAttribute="bottom" constant="6" symbolic="YES" id="U3r-GQ-Kmt"/>
                             <constraint firstAttribute="bottom" secondItem="UC7-V4-Wrp" secondAttribute="bottom" constant="20" symbolic="YES" id="YhJ-Bc-HLK"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="gxa-Hp-eF0" secondAttribute="trailing" constant="254" id="ZTB-dj-bam"/>
                             <constraint firstItem="afp-6T-41F" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" symbolic="YES" id="am1-DD-o8Q"/>
                             <constraint firstItem="BVV-hH-JyH" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" symbolic="YES" id="fXk-kY-jPK"/>
+                            <constraint firstItem="lGv-gP-N9u" firstAttribute="leading" secondItem="PGH-u0-em8" secondAttribute="leading" id="g4X-is-xIq"/>
                             <constraint firstItem="PGH-u0-em8" firstAttribute="top" secondItem="wEK-ud-1k4" secondAttribute="bottom" constant="6" symbolic="YES" id="h4i-oZ-NIt"/>
                             <constraint firstItem="gxa-Hp-eF0" firstAttribute="leading" secondItem="kwa-ow-smM" secondAttribute="trailing" constant="15" id="jDD-qL-Gav"/>
                             <constraint firstItem="GFc-xH-ekV" firstAttribute="top" secondItem="BVV-hH-JyH" secondAttribute="bottom" constant="6" symbolic="YES" id="jSb-WS-XYW"/>
@@ -227,6 +239,7 @@
                     </view>
                     <connections>
                         <outlet property="annotateDefaultOnCell" destination="seh-ry-ahZ" id="URs-Qf-W6e"/>
+                        <outlet property="askToSaveAnnotatedPDFCell" destination="0mL-lV-CWw" id="Qc0-Tg-MAc"/>
                         <outlet property="downloadMetadataCell" destination="dby-mW-4qK" id="8Nk-3m-sD5"/>
                         <outlet property="dpiField" destination="gxa-Hp-eF0" id="Ag9-HG-C3H"/>
                         <outlet property="drawDebugCircleCheckCell" destination="qEt-ZY-ZQF" id="IEe-IU-hs7"/>
@@ -240,7 +253,7 @@
                 </viewController>
                 <customObject id="ThY-Hh-P4H" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="508" y="-1783.5"/>
+            <point key="canvasLocation" x="508" y="-1795"/>
         </scene>
         <!--DiMe Preferences-->
         <scene sceneID="JFC-Eo-9Mb">
@@ -1263,7 +1276,7 @@
         <scene sceneID="f6R-Kc-PFL">
             <objects>
                 <windowController storyboardIdentifier="Document Window Controller" id="sy6-nO-Tdf" userLabel="Document Window Controller" customClass="DocumentWindowController" customModule="PeyeDF" sceneMemberID="viewController">
-                    <window key="window" title="Window for &lt;&lt;Filename&gt;&gt;" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="Ezf-2B-VUj" customClass="DocumentWindow" customModule="PeyeDF" customModuleProvider="target">
+                    <window key="window" title="Window for &lt;&lt;Filename&gt;&gt;" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" tabbingMode="preferred" id="Ezf-2B-VUj" customClass="DocumentWindow" customModule="PeyeDF" customModuleProvider="target">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="200" y="350" width="810" height="485"/>
@@ -1643,22 +1656,24 @@
                 <viewController title="Thumbnail Controller" id="NDG-Mr-8zT" customClass="ThumbSideController" customModule="PeyeDF" sceneMemberID="viewController">
                     <view key="view" horizontalHuggingPriority="240" verticalHuggingPriority="240" id="Xcj-vT-c4k">
                         <rect key="frame" x="0.0" y="0.0" width="200" height="144"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <pdfThumbnailView horizontalHuggingPriority="248" verticalHuggingPriority="248" horizontalCompressionResistancePriority="748" verticalCompressionResistancePriority="748" translatesAutoresizingMaskIntoConstraints="NO" id="67W-LG-b20">
+                            <pdfThumbnailView horizontalHuggingPriority="248" verticalHuggingPriority="248" horizontalCompressionResistancePriority="748" verticalCompressionResistancePriority="748" allowsDragging="NO" translatesAutoresizingMaskIntoConstraints="NO" id="67W-LG-b20">
                                 <rect key="frame" x="0.0" y="0.0" width="200" height="144"/>
                                 <constraints>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="104" id="Hkx-92-wIT"/>
                                     <constraint firstAttribute="width" relation="lessThanOrEqual" priority="750" constant="200" id="cr3-Zp-R0O"/>
                                 </constraints>
-                                <size key="thumbnailSize" width="64" height="64"/>
+                                <size key="thumbnailSize" width="72" height="72"/>
                             </pdfThumbnailView>
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="67W-LG-b20" secondAttribute="trailing" id="75m-sb-zEz"/>
                             <constraint firstItem="67W-LG-b20" firstAttribute="leading" secondItem="Xcj-vT-c4k" secondAttribute="leading" id="H86-rS-Wrj"/>
+                            <constraint firstItem="67W-LG-b20" firstAttribute="centerY" secondItem="Xcj-vT-c4k" secondAttribute="centerY" id="URx-Zj-5de"/>
                             <constraint firstAttribute="bottom" secondItem="67W-LG-b20" secondAttribute="bottom" id="dth-1C-qE3"/>
                             <constraint firstItem="67W-LG-b20" firstAttribute="top" secondItem="Xcj-vT-c4k" secondAttribute="top" id="gXL-mn-gnC"/>
+                            <constraint firstItem="67W-LG-b20" firstAttribute="centerX" secondItem="Xcj-vT-c4k" secondAttribute="centerX" id="gY8-e4-88H"/>
                         </constraints>
                     </view>
                     <connections>
@@ -1673,9 +1688,9 @@
         <scene sceneID="hIz-AP-VOD">
             <objects>
                 <viewController title="PDFReader Controller" storyboardIdentifier="MyPDFController" id="XfG-lQ-9wD" userLabel="PDFSideController" customClass="PDFSideController" customModule="PeyeDF" sceneMemberID="viewController">
-                    <view key="view" horizontalCompressionResistancePriority="740" verticalCompressionResistancePriority="740" id="m2S-Jp-Qdl">
+                    <view key="view" wantsLayer="YES" horizontalCompressionResistancePriority="740" verticalCompressionResistancePriority="740" id="m2S-Jp-Qdl">
                         <rect key="frame" x="0.0" y="0.0" width="632" height="629"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <pdfView autoresizesSubviews="NO" wantsLayer="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0Dp-rz-UVv" customClass="PDFReader" customModule="PeyeDF" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="632" height="629"/>

@@ -6,9 +6,17 @@ After some documents have been marked, the "Refinder" function shows the user's 
 
 To see what data is pushed to DiMe, see the [wiki](https://github.com/HIIT/PeyeDF/wiki/Data-Format).
 
+[latest release](https://github.com/HIIT/PeyeDF/releases/latest)
+
+## Sumobules update
+
+To update the submodules, use:
+
+`git submodule init && git submodule update`
+
 # Setup
 
-PeyeDF can be installed like any app. After running, open the preferences window by click on PeyeDF > Preferences, or press command + comma ( **&#8984;** + **,** ). Make sure the DiMe preferences (username, password) are correct.
+PeyeDF can be installed like any app. After running, open the preferences window by click on PeyeDF > Preferences, or press command + comma ( **&#8984;** + **,** -&#8997;- ). Make sure the DiMe preferences (username, password) are correct.
 
 # Additional software
 
