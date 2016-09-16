@@ -668,6 +668,7 @@
 				A91CB9411B332EDB00671868 /* Frameworks */,
 				A91CB9421B332EDB00671868 /* Resources */,
 				A95FE9941B8B3F7D0010E813 /* Embed Frameworks */,
+				A967F3FD1D8C168600380540 /* Update Build Number */,
 			);
 			buildRules = (
 			);
@@ -914,6 +915,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A967F3FD1D8C168600380540 /* Update Build Number */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Update Build Number";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "bash Scripts/update_build_number.sh";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		A91CB9401B332EDB00671868 /* Sources */ = {
