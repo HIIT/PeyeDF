@@ -25,28 +25,28 @@
 import Foundation
 import Cocoa
 import Quartz
-import Alamofire
 import XCGLogger
-fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
-}
-
-fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l > r
-  default:
-    return rhs < lhs
-  }
-}
-
+//
+//fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+//  switch (lhs, rhs) {
+//  case let (l?, r?):
+//    return l < r
+//  case (nil, _?):
+//    return true
+//  default:
+//    return false
+//  }
+//}
+//
+//fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+//  switch (lhs, rhs) {
+//  case let (l?, r?):
+//    return l > r
+//  default:
+//    return rhs < lhs
+//  }
+//}
+//
 
 /// Used to share states across the whole application, including posting history notifications to store. Contains:
 ///
@@ -59,17 +59,7 @@ class AppSingleton {
     static let tagsStoryboard = NSStoryboard(name: "Tags", bundle: nil)
     static let collaborationStoryboard = NSStoryboard(name: "Collaboration", bundle: nil)
     static let appDelegate = NSApplication.shared().delegate! as! AppDelegate
-    
-    /// Static holder for alamofire manager (to use this configuration)
-    static let dimefire: Alamofire.SessionManager = {
-        var manager = Alamofire.SessionManager.default
-        let configuration = URLSessionConfiguration.default
-        configuration.httpAdditionalHeaders = AppSingleton.dimeHeaders()
-        configuration.timeoutIntervalForRequest = 4 // seconds
-        configuration.timeoutIntervalForResource = 4
-        return Alamofire.SessionManager(configuration: configuration)
-    }()
-    
+        
     static let log = AppSingleton.createLog()
     static fileprivate(set) var logsURL: URL?
     
@@ -80,11 +70,6 @@ class AppSingleton {
     /// Position of new PDF Document window (for cascading)
     static var nextDocWindowPos = NSPoint(x: 200, y: 350)
     
-    /// Returns dime server url
-    static var dimeUrl: String = {
-        return UserDefaults.standard.value(forKey: PeyeConstants.prefDiMeServerURL) as! String
-    }()
-    
     /// Convenience function to get monitor DPI
     static func getMonitorDPI() -> Int {
         return UserDefaults.standard.value(forKey: PeyeConstants.prefMonitorDPI) as! Int
@@ -92,7 +77,7 @@ class AppSingleton {
     
     /// Gets DPI programmatically
     static func getComputedDPI() -> Int? {
-        if NSScreen.screens()?.count > 1 {
+        if NSScreen.screens()?.count ?? 0 > 1 {
             AppSingleton.alertUser("Can't get dpi", infoText: "Using multiple monitors is not supported yet.")
             return nil
         } else {
@@ -123,17 +108,6 @@ class AppSingleton {
             }
             UserDefaults.standard.setValue(recentTags, forKey: TagConstants.defaultsSavedTags)
         }
-    }
-    
-    /// Returns HTTP headers used for DiMe connection
-    static func dimeHeaders() -> [String: String] {
-        let user: String = UserDefaults.standard.value(forKey: PeyeConstants.prefDiMeServerUserName) as! String
-        let password: String = UserDefaults.standard.value(forKey: PeyeConstants.prefDiMeServerPassword) as! String
-        
-        let credentialData = "\(user):\(password)".data(using: String.Encoding.utf8)!
-        let base64Credentials = credentialData.base64EncodedString(options: [])
-        
-        return ["Authorization": "Basic \(base64Credentials)"]
     }
     
     /// Convenience function to show an alerting alert (with additional info)

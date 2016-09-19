@@ -23,7 +23,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 import Foundation
-import Alamofire
 
 /// The fixation data receiver specifies a class that can receive new fixation events
 protocol FixationDataDelegate: class {
@@ -123,23 +122,24 @@ class MidasManager {
         // Take action only if midas is currently off
         
         if !midasAvailable {
-            // Checks if midas is available, if not doesn't start
-            Alamofire.request(kTestURL).responseJSON {
-                response in
-                
-                if response.result.isFailure {
-                    self.midasAvailable = false
-                    AppSingleton.log.error("Midas is down: \(response.result.error!)")
-                    AppSingleton.alertUser("Midas is down", infoText: "Initial connection to midas failed")
-                } else if self.fetchTimer == nil {
-                    NotificationCenter.default.post(name: PeyeConstants.midasConnectionNotification, object: self, userInfo: ["available": true])
-                    self.midasAvailable = true
-                    MidasManager.sharedQueue.async {
-                        self.fetchTimer = Timer(timeInterval: self.kFetchInterval, target: self, selector: #selector(self.fetchTimerHit(_:)), userInfo: nil, repeats: true)
-                        RunLoop.current.add(self.fetchTimer!, forMode: RunLoopMode.commonModes)
-                    }
-                }
-            }
+            // TODO: this block has to be converted to use urlsession
+//            // Checks if midas is available, if not doesn't start
+//            Alamofire.request(kTestURL).responseJSON {
+//                response in
+//                
+//                if response.result.isFailure {
+//                    self.midasAvailable = false
+//                    AppSingleton.log.error("Midas is down: \(response.result.error!)")
+//                    AppSingleton.alertUser("Midas is down", infoText: "Initial connection to midas failed")
+//                } else if self.fetchTimer == nil {
+//                    NotificationCenter.default.post(name: PeyeConstants.midasConnectionNotification, object: self, userInfo: ["available": true])
+//                    self.midasAvailable = true
+//                    MidasManager.sharedQueue.async {
+//                        self.fetchTimer = Timer(timeInterval: self.kFetchInterval, target: self, selector: #selector(self.fetchTimerHit(_:)), userInfo: nil, repeats: true)
+//                        RunLoop.current.add(self.fetchTimer!, forMode: RunLoopMode.commonModes)
+//                    }
+//                }
+//            }
         }
     }
     
@@ -177,30 +177,31 @@ class MidasManager {
     
     /// Gets data from the given node, for the given channels
     fileprivate func fetchData(_ nodeName: String, channels: [String], fetchKind: MidasFetchKind) {
-        
-        let chanString = midasChanString(channels)
-        
-        let fetchString = "http://\(MidasManager.kMidasAddress):\(MidasManager.kMidasPort)/\(nodeName)/data/{\(chanString), \"time_window\":[\(kBufferLength),\(kBufferLength)]}"
-        
-        let manager = Alamofire.SessionManager.default
-        let midasUrl = URL(string: fetchString.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!)
-        
-        let urlRequest = URLRequest(url: midasUrl!)
-        let request = manager.request(urlRequest)
-        
-        request.responseJSON {
-            response in
-            if response.result.isFailure {
-                self.stop()
-                AppSingleton.log.error("Error while reading json response from Midas: \(response.result.error!)")
-                if self.warnings < MidasManager.kMaxWarnings {
-                    AppSingleton.alertUser("Error while reading json response from Midas", infoText: "Message:\n\(response.result.error!)")
-                    self.warnings += 1
-                }
-            } else {
-                self.gotData(ofKind: fetchKind, json: JSON(response.result.value!))
-            }
-        }
+
+        // TODO: implement MIDAS using URLSession
+//        let chanString = midasChanString(channels)
+//        
+//        let fetchString = "http://\(MidasManager.kMidasAddress):\(MidasManager.kMidasPort)/\(nodeName)/data/{\(chanString), \"time_window\":[\(kBufferLength),\(kBufferLength)]}"
+//        
+//        let manager = Alamofire.SessionManager.default
+//        let midasUrl = URL(string: fetchString.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!)
+//        
+//        let urlRequest = URLRequest(url: midasUrl!)
+//        let request = manager.request(urlRequest)
+//        
+//        request.responseJSON {
+//            response in
+//            if response.result.isFailure {
+//                self.stop()
+//                AppSingleton.log.error("Error while reading json response from Midas: \(response.result.error!)")
+//                if self.warnings < MidasManager.kMaxWarnings {
+//                    AppSingleton.alertUser("Error while reading json response from Midas", infoText: "Message:\n\(response.result.error!)")
+//                    self.warnings += 1
+//                }
+//            } else {
+//                self.gotData(ofKind: fetchKind, json: JSON(response.result.value!))
+//            }
+//        }
     }
  
     /// Called when new data arrives (in fetchdata, Alamofire, hence asynchronously)

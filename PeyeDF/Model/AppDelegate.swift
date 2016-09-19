@@ -68,7 +68,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         UserDefaults.standard.synchronize()
         
         // Attempt dime connection (required even if we don't use dime, because this sets up historymanager shared object)
-        DiMePusher.dimeConnect()  // will automatically detect if dime is down
+        DiMeSession.dimeConnect()  // will automatically detect if dime is down
         
         // Set up handler for custom url types (peyedf://)
         NSAppleEventManager.shared().setEventHandler(self, andSelector: #selector(handleURL(_:)), forEventClass: UInt32(kInternetEventClass), andEventID: UInt32(kAEGetURL))
@@ -102,13 +102,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// proceeding.
     func application(_ sender: NSApplication, openFiles filenames: [String]) {
         let searchString = NSAppleEventManager.shared().currentAppleEvent?.forKeyword(UInt32(keyAESearchText))?.stringValue
-        if DiMePusher.dimeAvailable {
+        if DiMeSession.dimeAvailable {
             for filename in filenames {
                 let fileUrl = URL(fileURLWithPath: filename)
                 openDocument(fileUrl, searchString: searchString)
             }
         } else {
-            DiMePusher.dimeConnect() {
+            DiMeSession.dimeConnect() {
                 _ in
                 for filename in filenames {
                     let fileUrl = URL(fileURLWithPath: filename)
@@ -176,15 +176,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     /// Callback for click on connect to dime
     @IBAction func connectDime(_ sender: NSMenuItem) {
-        DiMePusher.dimeConnect() {
-            success, response in
+        DiMeSession.dimeConnect() {
+            success, error in
             
             if !success {
-                let infoText: String = "<none>"
-                // TODO: put me back
-//                if let error = response.result.error {
-//                    infoText = error.localizedDescription
-//                }
+                var infoText: String = "<none>"
+                if let error = error {
+                    infoText = error.localizedDescription
+                }
                 AppSingleton.alertUser("Error while communcating with DiMe. Dime has now been disconnected", infoText: "Message from dime:\n\(infoText)")
             }
         }

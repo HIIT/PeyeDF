@@ -91,7 +91,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     @IBAction func tagShow(_ sender: AnyObject?) {
         
         // Skip if dime is out
-        guard DiMePusher.dimeAvailable else {
+        guard DiMeSession.dimeAvailable else {
             return
         }
         
@@ -359,7 +359,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             return false
             
         case TagConstants.tagMenuTag:
-            return DiMePusher.dimeAvailable
+            return DiMeSession.dimeAvailable
             
         default:
             // in any other case, we check the action instead of tag
@@ -582,8 +582,8 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                 NotificationCenter.default.post(name: PeyeConstants.documentChangeNotification, object: self.document)
                 
                 // Set tag button and toolbar status to DiMe's status
-                self.tbTagButton.isEnabled = DiMePusher.dimeAvailable
-                self.tbTagItem.isEnabled = DiMePusher.dimeAvailable
+                self.tbTagButton.isEnabled = DiMeSession.dimeAvailable
+                self.tbTagItem.isEnabled = DiMeSession.dimeAvailable
             }
             
             // Tell app singleton which screen size we are using
@@ -751,7 +751,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         
         // If dime is available, call the callback after the dime operation is done,
         // otherwise call the callback right now
-        if DiMePusher.dimeAvailable {
+        if DiMeSession.dimeAvailable {
             let ww = NSWindow()
             let wvc = AppSingleton.mainStoryboard.instantiateController(withIdentifier: "WaitVC") as! WaitViewController
             ww.contentViewController = wvc

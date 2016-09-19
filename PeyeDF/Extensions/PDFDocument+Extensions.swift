@@ -24,7 +24,6 @@
 
 import Foundation
 import Quartz
-import Alamofire
 
 extension PDFDocument {
     
@@ -201,22 +200,21 @@ extension PDFDocument {
         var foundJson: JSON?
         let sema = DispatchSemaphore(value: 0)
         
-        Alamofire.request("http://api.crossref.org/works/\(doi)").responseJSON() {
-            response in
-            if let resp = response.result.value , response.result.isSuccess {
-                let _json = JSON(resp)
-                if let status = _json["status"].string , status == "ok" {
-                    if let title = _json["message"]["title"][0].string {
+        CrossRefSession.fetch(doi: doi) {
+            json in
+            if let json = json {
+                if let status = json["status"].string , status == "ok" {
+                    if let title = json["message"]["title"][0].string {
                         self.setTitle(title)
                     }
-                    if let subj = _json["message"]["container-title"][0].string {
+                    if let subj = json["message"]["container-title"][0].string {
                         self.setSubject(subj)
                     }
-                    if let auths = _json["message"]["author"].array {
+                    if let auths = json["message"]["author"].array {
                         let authString = auths.map({$0["given"].stringValue + " " + $0["family"].stringValue}).joined(separator: "; ")
                         self.setAuthor(authString)
                     }
-                    foundJson = _json
+                    foundJson = json
                 }
             }
             sema.signal()

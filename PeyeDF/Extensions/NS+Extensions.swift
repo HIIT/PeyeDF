@@ -177,10 +177,10 @@ extension URLComponents {
     /// - parameter mustConnect: If true, proceeds only if dime connects after trying. If false, 
     ///  tries once but then proceeds even if dime is off.
     func onDiMeAvail(_ callback: @escaping ((URLComponents) -> Void), mustConnect: Bool) {
-        if DiMePusher.dimeAvailable {
+        if DiMeSession.dimeAvailable {
             callback(self)
         } else {
-            DiMePusher.dimeConnect() {
+            DiMeSession.dimeConnect() {
                 success, _ in
                 if !mustConnect || success {
                     callback(self)

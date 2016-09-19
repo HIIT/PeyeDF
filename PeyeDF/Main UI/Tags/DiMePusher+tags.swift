@@ -23,7 +23,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 import Foundation
-import Alamofire
 
 extension DiMePusher {
     
@@ -31,7 +30,7 @@ extension DiMePusher {
     /// elements tag operations are supported.
     /// Calls the given callback with the updated list of tags from dime, nil if the operation failed.
     static func editTag(_ action: TagAction, tag: Tag, forId: Int, callback: (([Tag]?) -> Void)? = nil) {
-        guard dimeAvailable else {
+        guard DiMeSession.dimeAvailable else {
             return
         }
         
@@ -43,16 +42,12 @@ extension DiMePusher {
             let endpoint = DiMeEndpoint.InformationElement
             
             // assume json conversion was a success, hence send to dime
-            let server_url = AppSingleton.dimeUrl
+            let server_url = DiMeSession.dimeUrl
             
-            AppSingleton.dimefire.request(server_url + "/data/\(endpoint.rawValue)/\(forId)/\(action.rawValue)", method: .post, parameters: tag.getDict(), encoding: JSONEncoding.default).responseJSON {
-                response in
-                if response.result.isFailure {
-                    AppSingleton.log.error("Error while reading json response from DiMe: \(response.result.error)")
-                    callback?(nil)
-                } else {
-                    let json = JSON(response.result.value!)
-                    if let error = json["error"].string {
+            DiMeSession.fetch(urlString: server_url + "/data/\(endpoint.rawValue)/\(forId)/\(action.rawValue)") {
+                json, _ in
+                if let json = json {
+                        if let error = json["error"].string {
                         AppSingleton.log.error("DiMe reply to submission contains error:\n\(error)")
                         if let message = json["message"].string {
                             AppSingleton.log.error("DiMe's error message:\n\(message)")

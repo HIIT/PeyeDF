@@ -123,7 +123,7 @@ class DocumentInformationElement: DiMeBase {
         }
         
         // send data to dime
-        if DiMePusher.dimeAvailable {
+        if DiMeSession.dimeAvailable {
             DiMePusher.editTag(.Add, tag: tagToAdd, forId: self.id!) {
                 tags in
                 if tags != nil {
@@ -157,7 +157,7 @@ class DocumentInformationElement: DiMeBase {
         let tagToAdd = oldReadingTag.subtract(newTag)
         
         // send data to dime
-        if DiMePusher.dimeAvailable {
+        if DiMeSession.dimeAvailable {
             DiMePusher.editTag(.Add, tag: tagToAdd, forId: self.id!) {
                 tags in
                 if tags != nil {
@@ -200,7 +200,7 @@ class DocumentInformationElement: DiMeBase {
     func removeTag(_ tagText: String) {
         let tag = Tag(withText: tagText)
         if tags.containsTag(withText: tagText) {
-            if DiMePusher.dimeAvailable {
+            if DiMeSession.dimeAvailable {
                 DiMePusher.editTag(.Remove, tag: tag, forId: self.id!) {
                     tags in
                     if tags != nil {

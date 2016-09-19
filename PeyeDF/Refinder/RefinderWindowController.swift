@@ -48,7 +48,7 @@ class RefinderWindowController: NSWindowController, NSWindowDelegate {
     }
     
     @IBAction func reloadData(_ sender: AnyObject) {
-        if DiMePusher.dimeAvailable {
+        if DiMeSession.dimeAvailable {
             // retrieve data
             DispatchQueue.global(qos: DispatchQoS.QoSClass.userInitiated).async {
                 self.allHistoryController?.reloadData()

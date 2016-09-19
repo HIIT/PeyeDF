@@ -23,7 +23,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 import Foundation
-import Alamofire
 
 /// Instances that want to receive dime data must implement this protocol and add themselves as delegates to the DiMeFetcher
 protocol DiMeReceiverDelegate: class {
@@ -155,28 +154,25 @@ class DiMeFetcher {
     /// Calls the callback with a list of tags (empty if none) or nil if it failed.
     static func retrieveTags(forAppId appId: String, callback: @escaping ([Tag]?) -> Void) {
         
-        let server_url = AppSingleton.dimeUrl
+        let server_url = DiMeSession.dimeUrl
         
         let reqString = server_url + "/data/informationelements?appId=" + appId
         
-        AppSingleton.dimefire.request(reqString).responseJSON() {
-            response in
-            if response.result.isFailure {
-                AppSingleton.log.error("Error fetching information element: \(response.result.error!)")
-                callback(nil)
-            } else {
+        DiMeSession.fetch(urlString: reqString) {
+            json, _ in
+            if let json = json {
                 // assume first returned item is the one we are looking for
-                let json = JSON(response.result.value!)[0]
-                if let error = json["error"].string {
+                let firstResponse = json[0]
+                if let error = firstResponse["error"].string {
                     AppSingleton.log.error("Dime fetched json contains error:\n\(error)")
                 }
-                if let appId = json["appId"].string {
+                if let appId = firstResponse["appId"].string {
                     if appId == appId {
                         // success
-                        let newInfoElem = DocumentInformationElement(fromDime: json)
+                        let newInfoElem = DocumentInformationElement(fromDime: firstResponse)
                         callback(newInfoElem.tags)
                     } else {
-                        AppSingleton.log.error("Retrieved info element id does not match requested id: \(response.result.value!)")
+                        AppSingleton.log.error("Retrieved info element id does not match requested id: \(json)")
                         callback(nil)
                     }
                 } else {
@@ -196,27 +192,25 @@ class DiMeFetcher {
         
         let dGroup = DispatchGroup()
         
-        let server_url = AppSingleton.dimeUrl
+        let server_url = DiMeSession.dimeUrl
         
         let reqString = server_url + "/data/informationelements?contentHash=" + hash
         
         dGroup.enter()
-        AppSingleton.dimefire.request(reqString).responseJSON() {
-            response in
-            if response.result.isFailure {
-                AppSingleton.log.error("Error fetching information element: \(response.result.error!)")
-            } else {
+        DiMeSession.fetch(urlString: reqString) {
+            json, _ in
+            if let json = json {
                 // assume first returned item is the one we are looking for
-                let json = JSON(response.result.value!)[0]
-                if let error = json["error"].string {
+                let firstResponse = json[0]
+                if let error = firstResponse["error"].string {
                     AppSingleton.log.error("Dime fetched json contains error:\n\(error)")
                 }
-                if let contentHash = json["contentHash"].string {
+                if let contentHash = firstResponse["contentHash"].string {
                     if hash == contentHash {
                         // success
-                        foundDoc = ScientificDocument(fromDime: json)
+                        foundDoc = ScientificDocument(fromDime: firstResponse)
                     } else {
-                        AppSingleton.log.error("Retrieved contentHash does not match requested contentHash: \(response.result.value!)")
+                        AppSingleton.log.error("Retrieved contentHash does not match requested contentHash: \(json)")
                     }
                 } else {
                     AppSingleton.log.debug("Info element with contentHash:'\(hash)' was not found in the database.")
@@ -240,28 +234,23 @@ class DiMeFetcher {
     /// Called-back function will contain nil if retrieval failed.
     static func retrieveScientificDocument(_ appId: String, callback: @escaping (ScientificDocument?) -> Void) {
         
-        let server_url = AppSingleton.dimeUrl
+        let reqString = DiMeSession.dimeUrl + "/data/informationelements?appId=" + appId
         
-        let reqString = server_url + "/data/informationelements?appId=" + appId
-        
-        AppSingleton.dimefire.request(reqString).responseJSON() {
-            response in
-            if response.result.isFailure {
-                AppSingleton.log.error("Error fetching information element: \(response.result.error!)")
-                callback(nil)
-            } else {
+        DiMeSession.fetch(urlString: reqString) {
+            json, _ in
+            if let json = json {
                 // assume first returned item is the one we are looking for
-                let json = JSON(response.result.value!)[0]
-                if let error = json["error"].string {
+                let firstResponse = json[0]
+                if let error = firstResponse["error"].string {
                     AppSingleton.log.error("Dime fetched json contains error:\n\(error)")
                 }
-                if let appId = json["appId"].string {
+                if let appId = firstResponse["appId"].string {
                     if appId == appId {
                         // success
-                        let newScidoc = ScientificDocument(fromDime: json)
+                        let newScidoc = ScientificDocument(fromDime: firstResponse)
                         callback(newScidoc)
                     } else {
-                        AppSingleton.log.error("Retrieved info element id does not match requested id: \(response.result.value!)")
+                        AppSingleton.log.error("Retrieved info element id does not match requested id: \(json)")
                         callback(nil)
                     }
                 } else {
@@ -300,8 +289,7 @@ class DiMeFetcher {
     /// - parameter sessionId: If not-nil, retrieves only elements with the given sessionId
     ///                        using dime filtering. Set to nil to get all events.
     fileprivate func fetchPeyeDFEvents(getSummaries: Bool, sessionId: String?, callback: @escaping (JSON) -> Void) {
-        let server_url = AppSingleton.dimeUrl
-        let headers = AppSingleton.dimeHeaders()
+        let server_url = DiMeSession.dimeUrl
         
         var filterString = ""
         if sessionId != nil {
@@ -315,12 +303,12 @@ class DiMeFetcher {
             typeString = "ReadingEvent"
         }
         
-        AppSingleton.dimefire.request(server_url + "/data/events?actor=PeyeDF&type=http://www.hiit.fi/ontologies/dime/%23\(typeString)" + filterString, headers: headers).responseJSON() {
-            response in
-            if response.result.isFailure {
-                AppSingleton.log.error("Error fetching list of PeyeDF events: \(response.result.error!)")
+        DiMeSession.fetch(urlString: server_url + "/data/events?actor=PeyeDF&type=http://www.hiit.fi/ontologies/dime/%23\(typeString)" + filterString) {
+            json, error in
+            if let json = json {
+                callback(json)
             } else {
-                callback(JSON(response.result.value!))
+                AppSingleton.log.error("Error fetching list of PeyeDF events: \(error)")
             }
         }
     }

@@ -23,20 +23,16 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 import Foundation
-import Alamofire
 
 /// This class is used to send data to dime, and to check the current connection to dime (it is useful to check
 /// before sending anything).
 class DiMePusher {
-    
-    /// Is true if there is a connection to DiMe, and can be used
-    private(set) static var dimeAvailable: Bool = false
 
     /// Send the given data to dime
     /// - parameter callback: When done calls the callback where the first parameter is a boolean (true if successful) and
     /// the second the id of the returned item (nil if couldn't be found, or operation failed)
     static func sendToDiMe(_ dimeData: DiMeBase, callback: ((Bool, Int?) -> Void)? = nil) {
-        guard dimeAvailable else {
+        guard DiMeSession.dimeAvailable else {
             callback?(false, nil)
             return
         }
@@ -58,15 +54,10 @@ class DiMePusher {
             try JSONSerialization.data(withJSONObject: dimeData.getDict(), options: options)
             
             // assume json conversion was a success, hence send to dime
-            let server_url = AppSingleton.dimeUrl
-            AppSingleton.dimefire.request(server_url + "/data/\(endPoint.rawValue)",method: .post, parameters: dimeData.getDict(), encoding: JSONEncoding.default).responseJSON {
-                response in
-                if response.result.isFailure {
-                    AppSingleton.log.error("Error while reading json response from DiMe: \(response.result.error)")
-                    DiMePusher.updateDimeConnectState(false)
-                    callback?(false, nil)
-                } else {
-                    let json = JSON(response.result.value!)
+            let server_url = DiMeSession.dimeUrl
+            DiMeSession.push(urlString: server_url + "/data/\(endPoint.rawValue)", jsonDict: dimeData.getDict()) {
+                json, _ in
+                if let json = json {
                     if let error = json["error"].string {
                         AppSingleton.log.error("DiMe reply to submission contains error:\n\(error)")
                         if let message = json["message"].string {
@@ -85,39 +76,5 @@ class DiMePusher {
         }
             
     }
-    
-    /// Attempts to connect to dime. Sends a notification if we succeeded / failed.
-    /// Also calls the given callback with a boolean (which is true if operation succeeded) and a response.
-    static func dimeConnect(_ callback: ((Bool, DataResponse<Any>) -> ())? = nil) {
-        
-        let server_url = AppSingleton.dimeUrl
-        
-        AppSingleton.dimefire.request(server_url + "/ping", encoding: JSONEncoding.default).responseJSON {
-            response in
-            if response.result.isFailure {
-                // connection failed
-                AppSingleton.log.error("Error while connecting to (pinging) DiMe. Error message:\n\(response.result.error!)")
-                
-                updateDimeConnectState(false)
-                callback?(false, response)
-            } else {
-                // succesfully connected
-                updateDimeConnectState(true)
-                callback?(true, response)
-            }
-        }
-    }
-    
-    /// Report dime successful / failed
-    fileprivate static func updateDimeConnectState(_ success: Bool) {
-        if !success {
-            dimeAvailable = false
-            NotificationCenter.default.post(name: PeyeConstants.diMeConnectionNotification, object: self, userInfo: ["available": false])
-        } else {
-            // succesfully connected
-            dimeAvailable = true
-            NotificationCenter.default.post(name: PeyeConstants.diMeConnectionNotification, object: self, userInfo: ["available": true])
-        }
-    }
-    
+
 }

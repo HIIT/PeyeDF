@@ -55,8 +55,8 @@ class MyOverlay: NSView {
         NotificationCenter.default.addObserver(self, selector: #selector(eyeStateCallback(_:)), name: PeyeConstants.eyesAvailabilityNotification, object: MidasManager.sharedInstance)
         
         // dime connection check
-        if !DiMePusher.dimeAvailable {
-            DiMePusher.dimeConnect() {
+        if !DiMeSession.dimeAvailable {
+            DiMeSession.dimeConnect() {
                 success, _ in
                 
                 if !success {
