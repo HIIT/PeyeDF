@@ -57,6 +57,13 @@ struct PDFMarkings {
         return allRects.filter({$0.classSource == source})
     }
     
+    /// Return all rectangles made from any of the given sources
+    func getAll(forSources sources: [ClassSource]) -> [ReadingRect] {
+        return allRects.filter({ rect in
+            sources.reduce(false, {$0 || rect.classSource == $1})
+        })
+    }
+    
     /// Return all rectangles made from the given source, of the given class
     func get(onlySource source: ClassSource, ofClass: ReadingClass) -> [ReadingRect] {
         return allRects.filter({$0.classSource == source && $0.readingClass == ofClass})
@@ -116,7 +123,21 @@ struct PDFMarkings {
             }
         }
     }
-    
+
+    /// Set all rect with the given sources to a new list of rects (i.e. remove them and replace them with newRects).
+    mutating func setAll(forSources sources: [ClassSource], newRects: [ReadingRect]) {
+        allRects = allRects.filter({rect in
+            sources.reduce(true, {$0 && rect.classSource != $1})
+        })
+        for rect in newRects {
+            if !(sources.reduce(false, {$0 || rect.classSource == $1})) {
+                AppSingleton.log.error("Passed rect with source \(rect.classSource) does not match any of the given sources (\(sources))")
+            } else {
+                allRects.append(rect)
+            }
+        }
+    }
+
     /// Set all underlying rects to the given array
     mutating func setAll(_ newRects: [ReadingRect]) {
         self.allRects = newRects
@@ -369,26 +390,16 @@ struct PDFMarkings {
 /// This class represents a "marking state", that is a selection of importance rectangles and the last rectangle and
 /// last page that were edited. It is used to store states in undo operations.
 class PDFMarkingsState: NSObject {
-    /// All rectangles, prior to addition / deletion
+    /// All rectangles representing a set of marks on a given document
     var rectState: [ReadingRect]
-    /// The rectangle on which the last modification was made.
-    /// If nil, assumes that this is change encompasses all rectangles
-    /// (this means that the whole screen, instead of a section, has to be refreshed)
-    fileprivate var lastRect: ReadingRect?
+    /// The rectangles on which the last modification was made.
+    /// If the change only affects one, this array contains one rect.
+    /// If empty, assumes that this is change encompasses all document
+    /// (this means that the whole pdfview, instead of a section, has to be refreshed)
+    var lastRects: [ReadingRect] = []
     
     init(oldState: [ReadingRect]) {
         self.rectState = oldState
-    }
-    
-    /// Sets the last rectangle (and on which page) that was added / removed
-    func setLastRect(_ lastRect: ReadingRect) {
-        self.lastRect = lastRect
-    }
-    
-    /// Returns the last rectangle. If the change was not related to a single rect
-    /// (e.g many were set at once) this should return nil.
-    func getLastRect() -> ReadingRect? {
-        return lastRect
     }
 }
 
@@ -410,10 +421,11 @@ public enum ReadingClass: Int {
 public enum ClassSource: Int {
     case unset = 0
     case viewport = 1
-    case click = 2
+    case click = 2  // "Quick-annotate" function: double click for important, triple for critical
     case smi = 3
     case ml = 4
     case search = 5
     case localPeer = 6  // TODO: `Peer`s are not currently considered in DiMe
     case networkPeer = 7
+    case manualSelection = 8 // Selected by dragging and then setting importance
 }

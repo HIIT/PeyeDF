@@ -59,7 +59,7 @@ class DiMePusher {
             
             // assume json conversion was a success, hence send to dime
             let server_url = AppSingleton.dimeUrl
-            AppSingleton.dimefire.request(server_url + "/data/\(endPoint.rawValue)", parameters: dimeData.getDict(), encoding: JSONEncoding.default).responseJSON {
+            AppSingleton.dimefire.request(server_url + "/data/\(endPoint.rawValue)",method: .post, parameters: dimeData.getDict(), encoding: JSONEncoding.default).responseJSON {
                 response in
                 if response.result.isFailure {
                     AppSingleton.log.error("Error while reading json response from DiMe: \(response.result.error)")
@@ -92,9 +92,7 @@ class DiMePusher {
         
         let server_url = AppSingleton.dimeUrl
         
-        let dictionaryObject = ["test": "test"]
-        
-        AppSingleton.dimefire.request(server_url + "/ping", parameters: dictionaryObject, encoding: JSONEncoding.default).responseJSON {
+        AppSingleton.dimefire.request(server_url + "/ping", encoding: JSONEncoding.default).responseJSON {
             response in
             if response.result.isFailure {
                 // connection failed

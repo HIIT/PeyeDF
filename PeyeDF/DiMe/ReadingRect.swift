@@ -268,3 +268,89 @@ public func < (lhs: ReadingRect, rhs: ReadingRect) -> Bool {
         return lrect.origin.x < rrect.origin.x
     }
 }
+
+// MARK: - PDFAnnotation-related
+
+extension ReadingRect {
+    
+    
+    /// Create a ReadingRect from a single point, and hence the paragraph/subparagraph related to it (for quick, or "click" annotations)
+    /// should be marked as somehow important
+    ///
+    /// - returns: A ReadingRect representing the rectangle that was created, on which page it was created and what importance, nil if the operation failed
+    init?(fromPoint locationInView: NSPoint, pdfBase: PDFBase, importance: ReadingClass) {
+        
+        // Page we're on.
+        let activePage = pdfBase.page(for: locationInView, nearest: true)
+        
+        // Index for current page
+        let pageIndex = pdfBase.document!.index(for: activePage!)
+        
+        // Get location in "page space".
+        let pagePoint = pdfBase.convert(locationInView, to: activePage!)
+        
+        // Convert point to rect, if possible
+        guard let markRect = pdfBase.pointToParagraphRect(pagePoint, forPage: activePage!) else {
+            return nil
+        }
+        
+        if importance != ReadingClass.low && importance != ReadingClass.medium && importance != ReadingClass.high {
+            let exception = NSException(name: NSExceptionName(rawValue: "Not implemented"), reason: "Unsupported reading class for annotation", userInfo: nil)
+            exception.raise()
+        }
+        
+        // Create new reading rect using given parameters and put in history for dime submission
+        self = ReadingRect(pageIndex: pageIndex, rect: markRect, readingClass: importance, classSource: .click, pdfBase: pdfBase)
+        
+    }
+    
+    /// Returns a set of ReadingRects from a selection made in a PDF document.
+    /// Returns nil if operation failed.
+    static func makeReadingRects(fromSelectionIn pdfBase: PDFBase, importance: ReadingClass) -> [ReadingRect]? {
+        guard let selection = pdfBase.currentSelection else {
+            return nil
+        }
+        
+        let (rects, idxs) = pdfBase.getLineRects(selection)
+        
+        guard rects.count > 0 else {
+            return nil
+        }
+
+        var rRects = [ReadingRect]()
+        for i in 0..<rects.count {
+            rRects.append(ReadingRect(pageIndex: idxs[i], rect: rects[i], readingClass: importance, classSource: .manualSelection, pdfBase: pdfBase))
+        }
+        return rRects
+    }
+    
+    /// Returns an NSRect corresponding to the annotation shown for a reading rectangle representing to a mark (shown slightly on the left of a given paragraph or as underline).
+    ///
+    /// - parameter markRect: The rectangle corresponding to the mark
+    /// - returns: A rectangle representing the annotation
+    var annotationRect: NSRect { get {
+        switch self.classSource {
+        case .click:
+            // if this is for a quick annotation, show on the left of paragraph
+            let markRect = self.rect
+            let lineThickness = UserDefaults.standard.value(forKey: PeyeConstants.prefAnnotationLineThickness) as! CGFloat
+            let newRect_x = markRect.origin.x - PeyeConstants.quickAnnotationDistance
+            let newRect_y = markRect.origin.y
+            let newRect_height = markRect.height
+            let newRect_width = lineThickness
+            return NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
+        case .manualSelection:
+            // if this is for a manual selection annotation show below (underline)
+            let markRect = self.rect
+            let lineThickness = UserDefaults.standard.value(forKey: PeyeConstants.prefAnnotationLineThickness) as! CGFloat
+            let newRect_x = markRect.origin.x
+            let newRect_y = markRect.origin.y - PeyeConstants.selectionAnnotationDistance
+            let newRect_height = lineThickness
+            let newRect_width = markRect.width
+            return NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
+        default:
+            // for all other cases the rect == annotation
+            return self.rect
+        }
+    } }
+}

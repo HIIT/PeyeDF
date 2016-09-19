@@ -37,6 +37,10 @@ class PeyeDocument: NSDocument {
         }
     } }
     
+    var wereAnnotationsAdded: Bool { get {
+        return super.isDocumentEdited
+    } }
+    
     /// Reference to underlying PDFDocument. Set after loading document by window controller.
     weak var pdfDoc: PDFDocument?
     

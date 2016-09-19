@@ -239,6 +239,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         })
     }
     
+    /// Acknowledges that a tag was added, updates scientific document accordingly and sends message to peers
     func tagAdded(_ theTag: String) {
         switch currentTagOperation {
         case .document:
@@ -260,6 +261,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         }
     }
     
+    /// Acknowledges that a tag was removed, updates scientific document accordingly and sends message to peers
     func tagRemoved(_ theTag: String) {
         switch currentTagOperation {
         case .document:
@@ -282,6 +284,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         }
     }
     
+    /// Searches for a tag's text
     func tagInfo(_ theTag: String) {
         doSearch(TagConstants.tagSearchPrefix + theTag, exact: false)
     }
@@ -754,8 +757,10 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             ww.contentViewController = wvc
             wvc.someText = "Sending data to DiMe..."
             self.window!.beginSheet(ww, completionHandler: nil)
-            // send data to dime
-            if let mpdf = self.pdfReader , self.totalReadingTime >= PeyeConstants.minTotalReadTime {
+            // send data to dime (if document has been edited -- annotations have been added -- or enough
+            // time elapsed)
+            if let mpdf = self.pdfReader, let doc = self.document as? PeyeDocument,
+                (doc.wereAnnotationsAdded || self.totalReadingTime >= PeyeConstants.minTotalReadTime) {
                 let summaryEv = mpdf.makeSummaryEvent()
                 summaryEv.readingTime = self.totalReadingTime
                 DiMePusher.sendToDiMe(summaryEv) {

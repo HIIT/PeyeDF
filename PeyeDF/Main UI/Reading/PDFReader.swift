@@ -66,21 +66,32 @@ class PDFReader: PDFBase {
     /// Delegate for clicks gesture recognizer
     var clickDelegate: ClickRecognizerDelegate?
     
-    // MARK: - Tagging
+    // MARK: - Right click menu
     
     /// Overridden menu to allow extra actions such as tagging
     override func menu(for event: NSEvent) -> NSMenu? {
         let menu = super.menu(for: event)
-        let docwin = self.window!.windowController! as! DocumentWindowController
-        let menuitem = NSMenuItem(title: "Tag", action: #selector(docwin.tagShow(_:)), keyEquivalent: "t")
-        menuitem.tag = Int(TagConstants.tagMenuTag)
-        menu?.insertItem(NSMenuItem.separator(), at: 0)
-        menu?.insertItem(menuitem, at: 0)
         
+        menu?.insertItem(NSMenuItem.separator(), at: 0)
+        
+        let markAsCriticalMenuItem = NSMenuItem(title: "Mark as Critical", action: #selector(selectionMark), keyEquivalent: "2")
+        markAsCriticalMenuItem.tag = ReadingClass.high.rawValue
+        menu?.insertItem(markAsCriticalMenuItem, at: 0)
+        
+        let markAsImportantMenuItem = NSMenuItem(title: "Mark as Important", action: #selector(selectionMark), keyEquivalent: "1")
+        markAsImportantMenuItem.tag = ReadingClass.medium.rawValue
+        menu?.insertItem(markAsImportantMenuItem, at: 0)
+        
+        let docwin = self.window!.windowController! as! DocumentWindowController
+        let tagMenuItem = NSMenuItem(title: "Tag", action: #selector(docwin.tagShow(_:)), keyEquivalent: "t")
+        tagMenuItem.tag = Int(TagConstants.tagMenuTag)
+        menu?.insertItem(NSMenuItem.separator(), at: 0)
+        menu?.insertItem(tagMenuItem, at: 0)
+
         return menu
     }
     
-    // MARK: - Semi-debug fields
+    // MARK: - Debugging-related fields
     
     /// Position of the circle
     var circlePosition: NSPoint?
@@ -112,6 +123,7 @@ class PDFReader: PDFBase {
                         // if there are no tags here, propagate event
                         if !showTags(mouseInView.origin) {
                             // MF: TODO: remove this once debugging is complete
+                            #if DEBUG
                             let activePage = self.page(for: mouseInView.origin, nearest: true)
                             let pointOnPage = self.convert(mouseInView.origin, to: activePage!)
                             if let rect = pointToParagraphRect(pointOnPage, forPage: activePage!),
@@ -122,6 +134,7 @@ class PDFReader: PDFBase {
                                 }
                                 CollaborationMessage.readAreas([area]).sendToAll()
                             }
+                            #endif
                         }
                     }
                 }
@@ -190,30 +203,46 @@ class PDFReader: PDFBase {
     
     // MARK: - Markings and Annotations
     
+    /// Marks the given selection with a predefined importance
+    @IBAction func selectionMark(sender: AnyObject?) {
+        
+        guard let sender = sender, let importance = ReadingClass(rawValue: sender.tag) else {
+            AppSingleton.log.error("Failed to convert sender's tag to an importance")
+            return
+        }
+        
+        if importance != ReadingClass.low && importance != ReadingClass.medium && importance != ReadingClass.high {
+            let exception = NSException(name: NSExceptionName(rawValue: "Not implemented"), reason: "Unsupported reading class for annotation", userInfo: nil)
+            exception.raise()
+        }
+        
+        selectionMarkAndAnnotate(importance: importance)
+    }
+    
     /// This method is called (so far) only by the undo manager.
     /// It sets the state of markings to the specified object (markingState) and
     /// refreshes the view (so that the change can be seen appearing / disappearing immediately).
     @objc func undoMarkAndAnnotate(_ previousState: PDFMarkingsState) {
         
         // store previous state before making any modification
-        let evenPreviousState = PDFMarkingsState(oldState: markings.getAll(forSource: .click))
+        let evenPreviousState = PDFMarkingsState(oldState: markings.getAll(forSources: [.click, .manualSelection]))
         
         // apply previous state and perform annotations
-        markings.setAll(forSource: .click, newRects: previousState.rectState)
+        markings.setAll(forSources: [.click, .manualSelection], newRects: previousState.rectState)
         autoAnnotate()
     
         // if we have a last rect, refresh the view only for the area covered by it.
         // if last rect is nil (this was a big change) refresh whole document.
-        if let lastRect = previousState.getLastRect() {
-            let annotRect = annotationRectForMark(lastRect.rect)
-            
-            DispatchQueue.main.async {
-                self.setNeedsDisplay(self.convert(annotRect, from: self.document!.page(at: lastRect.pageIndex)!))
+        if previousState.lastRects.count > 0 {
+            // refresh the view for all rects affected by the undo
+            previousState.lastRects.forEach() {
+                rRect in
+                DispatchQueue.main.async {
+                    self.setNeedsDisplay(self.convert(rRect.annotationRect, from: self.document!.page(at: rRect.pageIndex)!))
+                }
             }
-            
-            // save last rect in state for redo
-            let lastR = previousState.getLastRect()!
-            evenPreviousState.setLastRect(lastR)
+            // save last modified rects in state for redo
+            evenPreviousState.lastRects = previousState.lastRects
         } else {
             DispatchQueue.main.async {
                 self.layoutDocumentView()
@@ -231,22 +260,63 @@ class PDFReader: PDFBase {
     ///
     /// - parameter location: The point for which a rect will be created (in view coordinates)
     /// - parameter importance: The importance of the rect that will be created
-    func markAndAnnotate(_ location: NSPoint, importance: ReadingClass) {
-        if containsRawString {
-            // prepare a marking state to store this operation
-            let previousState = PDFMarkingsState(oldState: self.markings.getAll(forSource: .click))
-            let newMaybeMark = mark(location, importance: importance)
-            // if noting was done (i.e. no paragraph at point) do nothing, otherwise store state and annotate
-            if let newMark = newMaybeMark {
-                previousState.setLastRect(newMark)
-                undoManager?.registerUndo(withTarget: self, selector: #selector(undoMarkAndAnnotate(_:)), object: previousState)
-                undoManager?.setActionName(NSLocalizedString("actions.annotate", value: "Mark Text", comment: "Some text was marked via clicking / undoing"))
-                autoAnnotate()
-            }
+    func quickMarkAndAnnotate(_ location: NSPoint, importance: ReadingClass) {
+        guard containsRawString else {
+            return
         }
+
+        // prepare a marking state to store this operation
+        let previousState = PDFMarkingsState(oldState: self.markings.getAll(forSources: [.click, .manualSelection]))
+        
+        let newMark = ReadingRect(fromPoint: location, pdfBase: self, importance: importance)
+        
+        // if noting was done (i.e. no paragraph at point) do nothing, otherwise store state and annotate
+        guard let markRect = newMark else {
+            return
+        }
+        
+        previousState.lastRects = [markRect]
+        undoManager?.registerUndo(withTarget: self, selector: #selector(undoMarkAndAnnotate(_:)), object: previousState)
+        undoManager?.setActionName(NSLocalizedString("actions.annotate", value: "Quick Mark Text", comment: "Some text was marked via clicking / undoing"))
+        
+        markings.addRect(markRect)
+        HistoryManager.sharedManager.addReadingRect(markRect)
+        autoAnnotate()
+        
         let unixtimeDict = ["unixtime": Date().unixTime]
         NotificationCenter.default.post(name: PeyeConstants.manualParagraphMarkNotification, object: self, userInfo: unixtimeDict)
     }
+    
+    /// Create a set of markings for the current selection (which can span multiple lines).
+    /// Sends a notification that the marking was done.
+    /// Does not do anything if nothing is currently selected.
+    func selectionMarkAndAnnotate(importance: ReadingClass) {
+        guard containsRawString else {
+            return
+        }
+        
+        guard let markRects = ReadingRect.makeReadingRects(fromSelectionIn: self, importance: importance),
+                  markRects.count > 0 else {
+            return
+        }
+        
+        // prepare a marking state to store this operation
+        let previousState = PDFMarkingsState(oldState: self.markings.getAll(forSources: [.click, .manualSelection]))
+        
+        previousState.lastRects = markRects
+        undoManager?.registerUndo(withTarget: self, selector: #selector(undoMarkAndAnnotate(_:)), object: previousState)
+        undoManager?.setActionName(NSLocalizedString("actions.annotate", value: "Selection Mark Text", comment: "Some text was marked via clicking / undoing"))
+        
+        markRects.forEach({
+            markings.addRect($0)
+            HistoryManager.sharedManager.addReadingRect($0)
+        })
+        autoAnnotate()
+
+        let unixtimeDict = ["unixtime": Date().unixTime]
+        NotificationCenter.default.post(name: PeyeConstants.manualParagraphMarkNotification, object: self, userInfo: unixtimeDict)
+    }
+
     
     /// Given a set of markings, apply them all at once as click markings and create
     /// and undo operation so that the previous state can be restored.
@@ -257,43 +327,10 @@ class PDFReader: PDFBase {
         undoManager?.registerUndo(withTarget: self, selector: #selector(undoMarkAndAnnotate(_:)), object: previousState)
         undoManager?.setActionName(NSLocalizedString("actions.annotate", value: "Bulk Annotate", comment: "Many annotations were changed in bulk"))
         
-        self.markings.setAll(forSource: .click, newRects: newMarks)
+        self.markings.setAll(forSources: [.click, .manualSelection], newRects: newMarks)
         autoAnnotate()
     }
-    
-    /// Manually tell that a point (and hence the paragraph/subparagraph related to it
-    /// should be marked as somehow important
-    ///
-    /// - returns: A triplet containing the rectangle that was created, on which page it was created and what importance
-    func mark(_ locationInView: NSPoint, importance: ReadingClass) -> ReadingRect? {
-        
-        // Page we're on.
-        let activePage = self.page(for: locationInView, nearest: true)
-        
-        // Index for current page
-        let pageIndex = self.document!.index(for: activePage!)
-        
-        // Get location in "page space".
-        let pagePoint = self.convert(locationInView, to: activePage!)
-        
-        // Convert point to rect, if possible
-        guard let markRect = pointToParagraphRect(pagePoint, forPage: activePage!) else {
-            return nil
-        }
-        
-        if importance != ReadingClass.low && importance != ReadingClass.medium && importance != ReadingClass.high {
-            let exception = NSException(name: NSExceptionName(rawValue: "Not implemented"), reason: "Unsupported reading class for annotation", userInfo: nil)
-            exception.raise()
-        }
-        
-        // Create new reading rect using given parameters and put in history for dime submission
-        let newRect = ReadingRect(pageIndex: pageIndex, rect: markRect, readingClass: importance, classSource: .click, pdfBase: self)
-        markings.addRect(newRect)
-        HistoryManager.sharedManager.addReadingRect(newRect)
-        
-        return newRect
-    }
-    
+
     /// Returns wheter annotation by click is enabled
     func clickAnnotationIsEnabled() -> Bool {
         return self.clickAnnotationEnabled

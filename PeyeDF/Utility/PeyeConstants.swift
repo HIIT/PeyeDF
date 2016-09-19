@@ -146,8 +146,11 @@ class PeyeConstants {
     /// as summary events to DiMe
     static let minProportion = 0.001
     
-    /// Space between the "selection" (seen paragraph) rectangle and its line (in page points)
-    static let annotationLineDistance: CGFloat = 7
+    /// Space between the "quick mark" (paragraph) rectangle and its line (in page points)
+    static let quickAnnotationDistance: CGFloat = 7
+    
+    /// Space between the "selection mark" (text) rectangles and their underline
+    static let selectionAnnotationDistance: CGFloat = 1
     
     // MARK: - Eye Analysis
     

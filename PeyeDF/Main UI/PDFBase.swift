@@ -546,21 +546,7 @@ class PDFBase: PDFView {
     func stringForRect(_ theRect: EyeRectangle) -> String? {
         return stringForRect(NSRect(origin: theRect.origin, size: theRect.size), onPage: theRect.pageIndex)
     }
-    
-    /// Returns a rectangle corresponding to the annotation for a rectangle corresponding to the mark, using all appropriate constants / preferences.
-    ///
-    /// - parameter markRect: The rectangle corresponding to the mark
-    /// - returns: A rectangle representing the annotation
-    func annotationRectForMark(_ markRect: NSRect) -> NSRect {
-        let lineThickness = UserDefaults.standard.value(forKey: PeyeConstants.prefAnnotationLineThickness) as! CGFloat
-        let newRect_x = markRect.origin.x - PeyeConstants.annotationLineDistance
-        let newRect_y = markRect.origin.y
-        let newRect_height = markRect.height
-        let newRect_width: CGFloat = lineThickness
-        return NSRect(x: newRect_x, y: newRect_y, width: newRect_width, height: newRect_height)
-    }
-    
-    
+        
     /// Create PDFAnnotationSquare related to the markings of the specified class
     ///
     /// - parameter forClass: The class of annotations to output
@@ -571,7 +557,7 @@ class PDFBase: PDFView {
         myBord.lineWidth = lineThickness
         
         for rect in markings.get(onlyClass: forClass) {
-            let newRect = annotationRectForMark(rect.rect)
+            let newRect = rect.annotationRect
             let annotation = PDFAnnotationSquare(bounds: newRect)
             annotation.color = colour
             annotation.border = myBord
