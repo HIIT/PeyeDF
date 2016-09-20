@@ -61,6 +61,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         defaultPrefs[PeyeConstants.prefAskToSaveOnClose] = 0
         defaultPrefs[PeyeConstants.prefEnableAnnotate] = 0
         defaultPrefs[PeyeConstants.prefDownloadMetadata] = 1
+        defaultPrefs[PeyeConstants.prefCheckForUpdatesOnStartup] = 1
         defaultPrefs[PeyeConstants.prefRefinderDrawGazedUpon] = 0
         defaultPrefs[PeyeConstants.prefDrawDebugCircle] = 0
         defaultPrefs[PeyeConstants.prefSendEventOnFocusSwitch] = 0
@@ -79,7 +80,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
         // Auto-update check
-        Sparkle.SUUpdater.shared().checkForUpdatesInBackground()
+        if UserDefaults.standard.value(forKey: PeyeConstants.prefCheckForUpdatesOnStartup) as! Bool {
+            Sparkle.SUUpdater.shared().checkForUpdatesInBackground()
+        }
         
         // If we want to use midas, start the manager
         let useMidas = UserDefaults.standard.value(forKey: PeyeConstants.prefUseMidas) as! Bool

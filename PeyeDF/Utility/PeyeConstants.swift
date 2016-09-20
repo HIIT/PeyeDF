@@ -46,6 +46,9 @@ class PeyeConstants {
     /// Use midas on start
     static let prefUseMidas = "midas.use"
     
+    /// Check for updates on startup
+    static let prefCheckForUpdatesOnStartup = "updates.checkOnStartup"
+    
     /// Draw gazed-upon paragraphs in refinder
     static let prefRefinderDrawGazedUpon = "refinder.drawGazedUpon"
     

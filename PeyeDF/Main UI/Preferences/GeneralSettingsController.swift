@@ -31,6 +31,7 @@ class GeneralSettingsController: NSViewController {
     @IBOutlet weak var rightDomEyeButton: NSButton!
     
     @IBOutlet weak var downloadMetadataCell: NSButtonCell!
+    @IBOutlet weak var checkForUpdatesCell: NSButtonCell!
     @IBOutlet weak var dpiField: NSTextField!
     @IBOutlet weak var midasCheckCell: NSButtonCell!
     
@@ -58,6 +59,7 @@ class GeneralSettingsController: NSViewController {
         
         dpiField.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefMonitorDPI, options: options)
         downloadMetadataCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefDownloadMetadata, options: options)
+        checkForUpdatesCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefCheckForUpdatesOnStartup, options: options)
         midasCheckCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefUseMidas, options: options)
     }
     
