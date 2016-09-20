@@ -24,8 +24,7 @@
 
 import Foundation
 
-/// This class is used to send data to dime, and to check the current connection to dime (it is useful to check
-/// before sending anything).
+/// This class is used as a convenience to snd data to dime
 class DiMePusher {
 
     /// Send the given data to dime

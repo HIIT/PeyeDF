@@ -606,23 +606,6 @@
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="uyl-h8-XO2"/>
-                                        <menuItem title="Tag" tag="194851" keyEquivalent="t" id="qj1-9m-dSa">
-                                            <connections>
-                                                <action selector="tagShow:" target="Ady-hI-5gd" id="Eoo-em-Wcv"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem isSeparatorItem="YES" id="Qhs-Ip-VV2"/>
-                                        <menuItem title="Mark as Important" tag="30" keyEquivalent="1" id="pyt-np-wiI">
-                                            <connections>
-                                                <action selector="selectionMarkWithSender:" target="Ady-hI-5gd" id="2Nd-Tb-kUh"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Mark as Critical" tag="40" keyEquivalent="2" id="SWh-Cs-cEE">
-                                            <connections>
-                                                <action selector="selectionMarkWithSender:" target="Ady-hI-5gd" id="B0g-6Y-TRU"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem isSeparatorItem="YES" id="za7-F2-mqL"/>
                                         <menuItem title="Find" id="4EN-yA-p0u">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <menu key="submenu" title="Find" id="1b7-l0-nxx">
@@ -779,6 +762,29 @@
                                                     </menuItem>
                                                 </items>
                                             </menu>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem title="Annotate" id="jom-af-gap" userLabel="Annotate">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Annotate" id="8bB-hp-gzU">
+                                    <items>
+                                        <menuItem title="Tag" tag="194851" keyEquivalent="t" id="qj1-9m-dSa">
+                                            <connections>
+                                                <action selector="tagShow:" target="Ady-hI-5gd" id="Eoo-em-Wcv"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="Qhs-Ip-VV2"/>
+                                        <menuItem title="Mark as Important" tag="30" keyEquivalent="1" id="pyt-np-wiI">
+                                            <connections>
+                                                <action selector="selectionMarkWithSender:" target="Ady-hI-5gd" id="2Nd-Tb-kUh"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Mark as Critical" tag="40" keyEquivalent="2" id="SWh-Cs-cEE">
+                                            <connections>
+                                                <action selector="selectionMarkWithSender:" target="Ady-hI-5gd" id="B0g-6Y-TRU"/>
+                                            </connections>
                                         </menuItem>
                                     </items>
                                 </menu>
