@@ -387,7 +387,7 @@
                                         <menuItem title="Check for Updates..." id="Ecb-hM-LxE">
                                             <modifierMask key="keyEquivalentModifierMask" shift="YES"/>
                                             <connections>
-                                                <action selector="checkForUpdates:" target="D2d-uZ-Hy7" id="edv-ND-9sM"/>
+                                                <action selector="checkForUpdates:" target="Voe-Tx-rLC" id="WWa-fv-ST9"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="VOq-y0-SEH"/>
@@ -1097,7 +1097,6 @@
                     </connections>
                 </customObject>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-                <customObject id="D2d-uZ-Hy7" customClass="SUUpdater"/>
             </objects>
             <point key="canvasLocation" x="-1857.5" y="-1212"/>
         </scene>

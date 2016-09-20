@@ -431,6 +431,7 @@
 		A90520A71D89400B00F3C35E /* Dependencies */ = {
 			isa = PBXGroup;
 			children = (
+				A90D0EE21D91185D00CB7011 /* Sparkle.xcodeproj */,
 				A90520AF1D89403300F3C35E /* SwiftyJSON.swift */,
 				A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */,
 			);
@@ -503,7 +504,6 @@
 		A91CB93B1B332EDB00671868 = {
 			isa = PBXGroup;
 			children = (
-				A90D0EE21D91185D00CB7011 /* Sparkle.xcodeproj */,
 				A90520A71D89400B00F3C35E /* Dependencies */,
 				A9CC31541C79FF5600AE7556 /* peyedoc.icns */,
 				A9A23CE21C776989008B61C4 /* PeyeDF.icns */,

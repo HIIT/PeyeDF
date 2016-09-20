@@ -23,6 +23,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 import Cocoa
+import Sparkle
 import Quartz
 
 @NSApplicationMain
@@ -76,6 +77,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     /// Creates default preferences and sets up dime
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        
+        // Auto-update check without prompt (unless SUScheduledCheckInterval expired)
+        Sparkle.SUUpdater.shared().checkForUpdateInformation()
         
         // If we want to use midas, start the manager
         let useMidas = UserDefaults.standard.value(forKey: PeyeConstants.prefUseMidas) as! Bool
@@ -249,6 +253,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     // MARK: - Callbacks
     
+    /// Calls sparkle, asking to check for new version
+    @IBAction func checkForUpdates(_ sender: NSMenuItem) {
+        Sparkle.SUUpdater.shared().checkForUpdates(self)
+    }
+
     /// Handles PeyeDF's url type (with protocol peyedf://)
     @objc func handleURL(_ event: NSAppleEventDescriptor) {
         if let pDesc = event.paramDescriptor(forKeyword: UInt32(keyDirectObject)), let stringVal = pDesc.stringValue {
