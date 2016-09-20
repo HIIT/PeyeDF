@@ -44,10 +44,10 @@ extension DiMePusher {
             // assume json conversion was a success, hence send to dime
             let server_url = DiMeSession.dimeUrl
             
-            DiMeSession.fetch(urlString: server_url + "/data/\(endpoint.rawValue)/\(forId)/\(action.rawValue)") {
+            DiMeSession.push(urlString: server_url + "/data/\(endpoint.rawValue)/\(forId)/\(action.rawValue)", jsonDict: tag.getDict()) {
                 json, _ in
                 if let json = json {
-                        if let error = json["error"].string {
+                    if let error = json["error"].string {
                         AppSingleton.log.error("DiMe reply to submission contains error:\n\(error)")
                         if let message = json["message"].string {
                             AppSingleton.log.error("DiMe's error message:\n\(message)")
