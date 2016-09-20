@@ -51,7 +51,6 @@
 		A95A8CF41B94407D0093119E /* DocumentWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95A8CED1B94407D0093119E /* DocumentWindowController.swift */; };
 		A95A8CF51B94407D0093119E /* PDFReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95A8CEE1B94407D0093119E /* PDFReader.swift */; };
 		A95A8CF61B94407D0093119E /* PDFSideController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95A8CEF1B94407D0093119E /* PDFSideController.swift */; };
-		A95A8CF71B94407D0093119E /* DiMePreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95A8CF01B94407D0093119E /* DiMePreferencesViewController.swift */; };
 		A95A8CF81B94407D0093119E /* ThumbSideController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95A8CF11B94407D0093119E /* ThumbSideController.swift */; };
 		A95DF5651BC511A400EA1157 /* PDFDocument+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95DF5641BC511A400EA1157 /* PDFDocument+Extensions.swift */; };
 		A964E1001CD8F23D00EE72B5 /* PeyeDFUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A964E0FF1CD8F23D00EE72B5 /* PeyeDFUITests.swift */; };
@@ -82,6 +81,9 @@
 		A9B36CA91BEA2E0800A27861 /* HistoryDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B36CA81BEA2E0800A27861 /* HistoryDetailController.swift */; };
 		A9B36CAB1BEA30BF00A27861 /* PDFOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B36CAA1BEA30BF00A27861 /* PDFOverview.swift */; };
 		A9B36CB01BEA4A3A00A27861 /* PDFBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B36CAF1BEA4A3A00A27861 /* PDFBase.swift */; };
+		A9C3F9DA1D9174AB00191363 /* GeneralSettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C3F9D91D9174AB00191363 /* GeneralSettingsController.swift */; };
+		A9C3F9DC1D9174D100191363 /* DiMePreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C3F9DB1D9174D100191363 /* DiMePreferencesViewController.swift */; };
+		A9C3F9DE1D9176D900191363 /* AnnotationPreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C3F9DD1D9176D900191363 /* AnnotationPreferencesViewController.swift */; };
 		A9C8F0251BC2B309007ABE1A /* Fixation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C8F0241BC2B309007ABE1A /* Fixation.swift */; };
 		A9C8F0271BC2B31A007ABE1A /* Raw.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C8F0261BC2B31A007ABE1A /* Raw.swift */; };
 		A9CC31551C79FF5600AE7556 /* peyedoc.icns in Resources */ = {isa = PBXBuildFile; fileRef = A9CC31541C79FF5600AE7556 /* peyedoc.icns */; };
@@ -98,7 +100,6 @@
 		A9F8A89C1D902AD3002252DD /* DiMePusher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F8A89B1D902AD3002252DD /* DiMePusher.swift */; };
 		A9F8A89E1D902AE3002252DD /* DiMeFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F8A89D1D902AE3002252DD /* DiMeFetcher.swift */; };
 		A9F9D2761CBFB58700FFAE72 /* LittleClock.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F9D2751CBFB58600FFAE72 /* LittleClock.swift */; };
-		A9FE38A81B98497400680F31 /* GeneralSettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9FE38A71B98497400680F31 /* GeneralSettingsController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -301,7 +302,6 @@
 		A95A8CED1B94407D0093119E /* DocumentWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DocumentWindowController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A95A8CEE1B94407D0093119E /* PDFReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PDFReader.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A95A8CEF1B94407D0093119E /* PDFSideController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFSideController.swift; sourceTree = "<group>"; };
-		A95A8CF01B94407D0093119E /* DiMePreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DiMePreferencesViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A95A8CF11B94407D0093119E /* ThumbSideController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThumbSideController.swift; sourceTree = "<group>"; };
 		A95DF5641BC511A400EA1157 /* PDFDocument+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = "PDFDocument+Extensions.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A964E0FD1CD8F23D00EE72B5 /* PeyeDFUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PeyeDFUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -335,6 +335,9 @@
 		A9B36CA81BEA2E0800A27861 /* HistoryDetailController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = HistoryDetailController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9B36CAA1BEA30BF00A27861 /* PDFOverview.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PDFOverview.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9B36CAF1BEA4A3A00A27861 /* PDFBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PDFBase.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		A9C3F9D91D9174AB00191363 /* GeneralSettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneralSettingsController.swift; sourceTree = "<group>"; };
+		A9C3F9DB1D9174D100191363 /* DiMePreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiMePreferencesViewController.swift; sourceTree = "<group>"; };
+		A9C3F9DD1D9176D900191363 /* AnnotationPreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnotationPreferencesViewController.swift; sourceTree = "<group>"; };
 		A9C8F0241BC2B309007ABE1A /* Fixation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Fixation.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9C8F0261BC2B31A007ABE1A /* Raw.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Raw.swift; sourceTree = "<group>"; };
 		A9CC31541C79FF5600AE7556 /* peyedoc.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = peyedoc.icns; sourceTree = "<group>"; };
@@ -351,7 +354,6 @@
 		A9F8A89B1D902AD3002252DD /* DiMePusher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiMePusher.swift; sourceTree = "<group>"; };
 		A9F8A89D1D902AE3002252DD /* DiMeFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiMeFetcher.swift; sourceTree = "<group>"; };
 		A9F9D2751CBFB58600FFAE72 /* LittleClock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LittleClock.swift; sourceTree = "<group>"; };
-		A9FE38A71B98497400680F31 /* GeneralSettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = GeneralSettingsController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -382,13 +384,12 @@
 		A9000C5B1B358B7F00E59C7B /* Main UI */ = {
 			isa = PBXGroup;
 			children = (
+				A9C3F9C81D91746C00191363 /* Preferences */,
 				A90C0AD71CEE169C000D4B75 /* Reading */,
 				A92322F51CB3DE750060AF1C /* Tags */,
 				A91CB9511B332EDB00671868 /* Main.storyboard */,
 				A9B36CAF1BEA4A3A00A27861 /* PDFBase.swift */,
 				A9B36CAA1BEA30BF00A27861 /* PDFOverview.swift */,
-				A9FE38A71B98497400680F31 /* GeneralSettingsController.swift */,
-				A95A8CF01B94407D0093119E /* DiMePreferencesViewController.swift */,
 				A9A2DFC51BC427BE006C07FD /* MetadataWindowController.swift */,
 				A9A2DFCB1BC427D2006C07FD /* MetadataViewController.swift */,
 				A99C22FA1BE8EC9D005EDFD9 /* WaitViewController.swift */,
@@ -623,6 +624,16 @@
 			);
 			name = Extensions;
 			path = PeyeDF/Extensions;
+			sourceTree = "<group>";
+		};
+		A9C3F9C81D91746C00191363 /* Preferences */ = {
+			isa = PBXGroup;
+			children = (
+				A9C3F9D91D9174AB00191363 /* GeneralSettingsController.swift */,
+				A9C3F9DB1D9174D100191363 /* DiMePreferencesViewController.swift */,
+				A9C3F9DD1D9176D900191363 /* AnnotationPreferencesViewController.swift */,
+			);
+			path = Preferences;
 			sourceTree = "<group>";
 		};
 		A9C8F0231BC2B27A007ABE1A /* Midas data types */ = {
@@ -972,12 +983,10 @@
 				A90C0AD61CEE0F22000D4B75 /* Multipeer.swift in Sources */,
 				A91CB9721B332FB700671868 /* PeyeDocument.swift in Sources */,
 				A95A8CF51B94407D0093119E /* PDFReader.swift in Sources */,
-				A9FE38A81B98497400680F31 /* GeneralSettingsController.swift in Sources */,
 				A97D46761CF4527000377BB2 /* TagConstants.swift in Sources */,
 				A9B36CA91BEA2E0800A27861 /* HistoryDetailController.swift in Sources */,
 				A9F8A89E1D902AE3002252DD /* DiMeFetcher.swift in Sources */,
 				A95795071BD668E40083525C /* Person.swift in Sources */,
-				A95A8CF71B94407D0093119E /* DiMePreferencesViewController.swift in Sources */,
 				A9A2DFC61BC427BE006C07FD /* MetadataWindowController.swift in Sources */,
 				A95795191BD6A31B0083525C /* AllHistoryController.swift in Sources */,
 				A92323071CB3E1B70060AF1C /* TagRemoveButton.swift in Sources */,
@@ -1004,7 +1013,9 @@
 				A9677F921BA806F700DC48CC /* MidasManager.swift in Sources */,
 				A9038F7B1B8F634200A7D183 /* Dictionariable.swift in Sources */,
 				A972BC9B1C7CC0B40076BEF0 /* PDFSelection+Extensions.swift in Sources */,
+				A9C3F9DE1D9176D900191363 /* AnnotationPreferencesViewController.swift in Sources */,
 				A989F79E1D903FF8003C902D /* CrossRefSession.swift in Sources */,
+				A9C3F9DC1D9174D100191363 /* DiMePreferencesViewController.swift in Sources */,
 				A9D362A11CF86196003E5DAF /* PeerViewController.swift in Sources */,
 				A91AFB731C1DC9A60025D1F6 /* ThresholdEditor.swift in Sources */,
 				A957950D1BD66A600083525C /* ScientificDocument.swift in Sources */,
@@ -1029,6 +1040,7 @@
 				A999D3311CFDF6410057F561 /* SecondaryWindow.swift in Sources */,
 				A9B36CB01BEA4A3A00A27861 /* PDFBase.swift in Sources */,
 				A981F69D1B42FC4C00E7E9BD /* Utils.swift in Sources */,
+				A9C3F9DA1D9174AB00191363 /* GeneralSettingsController.swift in Sources */,
 				A9F8A8981D902620002252DD /* DiMeSession.swift in Sources */,
 				A95DF5651BC511A400EA1157 /* PDFDocument+Extensions.swift in Sources */,
 				A948C0ED1CF734D000625FF4 /* CollaborationMessage.swift in Sources */,

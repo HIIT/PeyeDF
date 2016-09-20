@@ -14,6 +14,7 @@ class CrossRefSession {
     static func fetch(doi: String, callback: @escaping (JSON?) -> Void) {
         guard let url = URL(string: "http://api.crossref.org/works/\(doi)") else {
             AppSingleton.log.error("Error while creating crossref url")
+            callback(nil)
             return
         }
         let urlRequest = URLRequest(url: url, timeoutInterval: 10)

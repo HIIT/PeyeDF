@@ -78,8 +78,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// Creates default preferences and sets up dime
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         
-        // Auto-update check without prompt (unless SUScheduledCheckInterval expired)
-        Sparkle.SUUpdater.shared().checkForUpdateInformation()
+        // Auto-update check
+        Sparkle.SUUpdater.shared().checkForUpdatesInBackground()
         
         // If we want to use midas, start the manager
         let useMidas = UserDefaults.standard.value(forKey: PeyeConstants.prefUseMidas) as! Bool

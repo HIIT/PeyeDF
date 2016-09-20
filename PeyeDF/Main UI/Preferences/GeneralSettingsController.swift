@@ -31,14 +31,8 @@ class GeneralSettingsController: NSViewController {
     @IBOutlet weak var rightDomEyeButton: NSButton!
     
     @IBOutlet weak var downloadMetadataCell: NSButtonCell!
-    @IBOutlet weak var annotateDefaultOnCell: NSButtonCell!
     @IBOutlet weak var dpiField: NSTextField!
-    @IBOutlet weak var thicknessField: NSTextField!
-    @IBOutlet weak var thicknessSlider: NSSlider!
     @IBOutlet weak var midasCheckCell: NSButtonCell!
-    @IBOutlet weak var refinderDrawGazedCheckCell: NSButtonCell!
-    @IBOutlet weak var drawDebugCircleCheckCell: NSButtonCell!
-    @IBOutlet weak var askToSaveAnnotatedPDFCell: NSButtonCell!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,11 +48,7 @@ class GeneralSettingsController: NSViewController {
             rightDomEyeButton.state = NSOnState
         }
         
-        let floatFormatter = NumberFormatter()
-        floatFormatter.numberStyle = NumberFormatter.Style.decimal
-        floatFormatter.allowsFloats = true
-        thicknessField.formatter = floatFormatter
-        
+        // number formatter for dpi
         let intFormatter = NumberFormatter()
         intFormatter.numberStyle = NumberFormatter.Style.decimal
         intFormatter.allowsFloats = false
@@ -67,17 +57,8 @@ class GeneralSettingsController: NSViewController {
         let options: [String: AnyObject] = ["NSContinuouslyUpdatesValue": true as AnyObject]
         
         dpiField.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefMonitorDPI, options: options)
-        
-        thicknessSlider.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefAnnotationLineThickness, options: options)
-        thicknessField.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefAnnotationLineThickness, options: options)
-        
-        
-        annotateDefaultOnCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefEnableAnnotate, options: options)
         downloadMetadataCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefDownloadMetadata, options: options)
         midasCheckCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefUseMidas, options: options)
-        refinderDrawGazedCheckCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefRefinderDrawGazedUpon, options: options)
-        drawDebugCircleCheckCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefDrawDebugCircle, options: options)
-        askToSaveAnnotatedPDFCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefAskToSaveOnClose, options: options)
     }
     
     @IBAction func dominantButtonPress(_ sender: NSButton) {
@@ -92,7 +73,4 @@ class GeneralSettingsController: NSViewController {
         }
     }
     
-    @IBAction func thicknessSlided(_ sender: NSSlider) {
-        thicknessField.floatValue = sender.floatValue
-    }
 }

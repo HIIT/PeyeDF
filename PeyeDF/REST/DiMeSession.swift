@@ -89,10 +89,13 @@ class DiMeSession {
             callback(false, RESTError.invalidUrl)
             return
         }
-        let urlRequest = URLRequest(url: url, timeoutInterval: 5.0)
         do {
-            let data = try JSONSerialization.data(withJSONObject: jsonDict, options: .prettyPrinted)
-            DiMeSession.sharedSession?.uploadTask(with: urlRequest, from: data) {
+            var urlRequest = URLRequest(url: url, timeoutInterval: 5.0)
+            urlRequest.httpMethod = "POST"
+            urlRequest.httpBody = try JSONSerialization.data(withJSONObject: jsonDict, options: .prettyPrinted)
+            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
+            DiMeSession.sharedSession?.dataTask(with: urlRequest) {
                 data, _, error in
                 if let error = error {
                     AppSingleton.log.error("Error while uploading json: \(error)")

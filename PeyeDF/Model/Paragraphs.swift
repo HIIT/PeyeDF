@@ -152,18 +152,45 @@ struct PDFMarkings {
     ///   This is because critical rectangles are assumed to be both interesting and read.
     mutating func flattenRectangles_relevance() {
         // "relevance" classes in order of importance: Critical, Interesting, Read
-        uniteRectangles(.high)
-        uniteRectangles(.medium)
-        uniteRectangles(.low)
-        // Subtract critical (high) rects from interesting (medium) and read (low) rects
-        subtractRectsOfClass(minuend: .medium, subtrahend: .high)
-        subtractRectsOfClass(minuend: .low, subtrahend: .high)
         
-        uniteRectangles(.medium)
-        // Subtract (remaining) interesting rects from read rects
-        subtractRectsOfClass(minuend: .low, subtrahend: .medium)
+        // remove lower-relevance rects which are completely enclosed by other rects
+        let topRects = allRects.filter({$0.readingClass == .high})
+        let mediumRects = allRects.filter({$0.readingClass == .medium})
         
-        uniteRectangles(.low)
+        // remove very low when enclosed by medium and high
+        allRects = allRects.filter() {
+            rect in
+            switch rect.readingClass {
+            case .high:
+                return true
+            case .medium:
+                let enclosedByTopRect = topRects.reduce(false, {$0 || ($1.pageIndex == rect.pageIndex && $1.rect.contains(rect.rect))})
+                return !enclosedByTopRect
+            case .low:
+                let enclosedByTopRect = topRects.reduce(false, {$0 || ($1.pageIndex == rect.pageIndex && $1.rect.contains(rect.rect))})
+                let enclosedByMediumRect = mediumRects.reduce(false, {$0 || ($1.pageIndex == rect.pageIndex && $1.rect.contains(rect.rect))})
+                return !enclosedByTopRect && !enclosedByMediumRect
+            default:
+                return true
+            }
+        }
+        
+        // operate on quick marks and manual selection marks separately
+        let sourcesOfInterest: [ClassSource] = [.click, .manualSelection]
+        for source in sourcesOfInterest {
+            uniteRectangles(.high, onlySource: source)
+            uniteRectangles(.medium, onlySource: source)
+            uniteRectangles(.low, onlySource: source)
+            // Subtract critical (high) rects from interesting (medium) and read (low) rects
+            subtractRectsOfClass(minuend: .medium, subtrahend: .high, onlySource: source)
+            subtractRectsOfClass(minuend: .low, subtrahend: .high, onlySource: source)
+            
+            uniteRectangles(.medium, onlySource: source)
+            // Subtract (remaining) interesting rects from read rects
+            subtractRectsOfClass(minuend: .low, subtrahend: .medium, onlySource: source)
+            
+            uniteRectangles(.low, onlySource: source)
+        }
     }
     
     /// "Flatten" all "relevant" rectangles so that:
@@ -176,14 +203,14 @@ struct PDFMarkings {
     ///   This is because critical rectangles are assumed to be both interesting and read.
     mutating func flattenRectangles_intersectToHigh() {
         // "relevance" classes in order of importance: Critical, Interesting, Read
-        uniteRectangles(.high)
-        uniteRectangles(.medium)
-        uniteRectangles(.low)
+        uniteRectangles(.high, onlySource: .localPeer)
+        uniteRectangles(.medium, onlySource: .localPeer)
+        uniteRectangles(.low, onlySource: .localPeer)
         
         // - start intersection (low and medium class interesecting sections will result in high class rect)
-        let mediumRects = allRects.filter({$0.readingClass == .medium})
+        let mediumRects = allRects.filter({$0.readingClass == .medium && $0.classSource == .localPeer})
         for mRect in mediumRects {
-            let lowRects = allRects.filter({$0.readingClass == .low && $0.pageIndex == mRect.pageIndex})
+            let lowRects = allRects.filter({$0.readingClass == .low && $0.pageIndex == mRect.pageIndex && $0.classSource == .localPeer})
             for lRect in lowRects {
                 let intersection = NSIntersectionRect(mRect.rect, lRect.rect)
                 if !NSIsEmptyRect(intersection) {
@@ -192,37 +219,40 @@ struct PDFMarkings {
             }
         }
         
-        uniteRectangles(.high)
+        uniteRectangles(.high, onlySource: .localPeer)
         // - end intersection
         
         // Subtract critical (high) rects from interesting (medium) and read (low) rects
-        subtractRectsOfClass(minuend: .medium, subtrahend: .high)
-        subtractRectsOfClass(minuend: .low, subtrahend: .high)
+        subtractRectsOfClass(minuend: .medium, subtrahend: .high, onlySource: .localPeer)
+        subtractRectsOfClass(minuend: .low, subtrahend: .high, onlySource: .localPeer)
         
-        uniteRectangles(.medium)
+        uniteRectangles(.medium, onlySource: .localPeer)
         // Subtract (remaining) interesting rects from read rects
-        subtractRectsOfClass(minuend: .low, subtrahend: .medium)
+        subtractRectsOfClass(minuend: .low, subtrahend: .medium, onlySource: .localPeer)
         
-        uniteRectangles(.low)
+        uniteRectangles(.low, onlySource: .localPeer)
     }
     
     /// Unite all floating eye rectangles into bigger rectangles that enclose them
     mutating func flattenRectangles_eye() {
-        uniteRectangles(.paragraph)
+        uniteRectangles(.paragraph, onlySource: .smi)
     }
     
     /// Unite all rectangles of the given class
-    mutating func uniteRectangles(_ ofClass: ReadingClass) {
+    /// Only the given class source is used (e.g. quick annotations and manual
+    /// selection annotations are not combined)
+    mutating func uniteRectangles(_ ofClass: ReadingClass, onlySource source: ClassSource) {
         // create set of all possible page indices
         var pis = Set<Int>()
+        // only consider pages of interest to save time
         for rrect in allRects {
-            if rrect.readingClass == ofClass {
+            if rrect.readingClass == ofClass && rrect.classSource == source {
                 pis.insert(rrect.pageIndex)
             }
         }
         for page in pis {
-            let rectsToUnite = allRects.filter({$0.readingClass == ofClass && $0.pageIndex == page})
-            allRects = allRects.filter({!($0.readingClass == ofClass && $0.pageIndex == page)})
+            let rectsToUnite = allRects.filter({$0.readingClass == ofClass && $0.pageIndex == page && $0.classSource == source})
+            allRects = allRects.filter({!($0.readingClass == ofClass && $0.pageIndex == page && $0.classSource == source)})
             let unitedRects = uniteCollidingRects(forPage: page, inputArray: rectsToUnite)
             allRects.append(contentsOf: unitedRects)
         }
@@ -232,21 +262,22 @@ struct PDFMarkings {
     ///
     /// - parameter minuend: The class of rectangles to subtract from
     /// - parameter subtrahend: The class of rectangles that will be subtracted
-    mutating func subtractRectsOfClass(minuend lhs: ReadingClass, subtrahend rhs: ReadingClass) {
+    mutating func subtractRectsOfClass(minuend lhs: ReadingClass, subtrahend rhs: ReadingClass, onlySource source: ClassSource) {
         // create set of all possible page indices
         var pis = Set<Int>()
-        for rrect in allRects {
+        // only consider pages of interest to save time
+        for rrect in allRects.filter({$0.classSource == source}) {
             if rrect.readingClass == lhs || rrect.readingClass == rhs {
                 pis.insert(rrect.pageIndex)
             }
         }
         for page in pis {
             // only continue if there is something to subtract in rhs
-            let subtrahends = allRects.filter({$0.readingClass == rhs && $0.pageIndex == page})
+            let subtrahends = allRects.filter({$0.readingClass == rhs && $0.pageIndex == page && $0.classSource == source})
             if subtrahends.count > 0 {
                 // assign minuends and remove them from allRects
-                let minuends = allRects.filter({$0.readingClass == lhs && $0.pageIndex == page})
-                allRects = allRects.filter({!($0.readingClass == lhs && $0.pageIndex == page)})
+                let minuends = allRects.filter({$0.readingClass == lhs && $0.pageIndex == page && $0.classSource == source})
+                allRects = allRects.filter({!($0.readingClass == lhs && $0.pageIndex == page && $0.classSource == source)})
                 let subtractedRects = subtractRectangles(forPage: page, minuends: minuends, subtrahends: subtrahends)
                 // add result of subtraction back to allRects
                 allRects.append(contentsOf: subtractedRects)
@@ -308,7 +339,6 @@ struct PDFMarkings {
         return proportionGazed
     }
     
-
     /// Given an array of reading rectangles, return a sorted version of the array
     /// (sorted so that elements coming first should have been read first in western order)
     /// with the colliding rectangles united (two rects collide when their intersection is not zero).
