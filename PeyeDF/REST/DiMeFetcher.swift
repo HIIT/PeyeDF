@@ -349,8 +349,8 @@ class DiMeFetcher {
             // all data has been fetched, send it
             if self.missingInfoElems == 0 {
                 self.receiver.receiveAllSummaries(self.outgoingSummaries)
-                }
             }
+        }
     }
     
 }

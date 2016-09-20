@@ -291,7 +291,9 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     func receiveAllSummaries(_ tuples: [(ev: SummaryReadingEvent, ie: ScientificDocument?)]?) {
         if let t = tuples {
             allHistoryTuples = t
-            historyTable.reloadData()
+            DispatchQueue.main.async {
+                self.historyTable.reloadData()
+            }
         } else {
             AppSingleton.alertUser("No data found.")
         }
@@ -300,7 +302,9 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     
     /// Update progress bar
     func updateProgress(_ received: Int, total: Int) {
-        self.progressBar.doubleValue = Double(received) / Double(total)
+        DispatchQueue.main.async {
+            self.progressBar.doubleValue = Double(received) / Double(total)
+        }
     }
     
     // MARK: - Table delegate & data source
@@ -314,8 +318,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
             let listItem = tableView.make(withIdentifier: "HistoryListItem", owner: self) as! HistoryTableCell
             listItem.setValues(fromReadingEvent: allHistoryTuples[row].ev, sciDoc: allHistoryTuples[row].ie!)
             return listItem
-        }
-        else {
+        } else {
             return nil
         }
     }

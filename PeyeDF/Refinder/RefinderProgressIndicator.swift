@@ -84,6 +84,7 @@ class RefinderProgressIndicator: NSView {
         
         backLayer.strokeColor = colour.cgColor
         frontLayer.fillColor = colour.cgColor
+        self.needsDisplay = true
     }
     
     /// Overriden to readjust its own size

@@ -455,7 +455,7 @@ public enum ClassSource: Int {
     case smi = 3
     case ml = 4
     case search = 5
-    case localPeer = 6  // TODO: `Peer`s are not currently considered in DiMe
+    case localPeer = 6
     case networkPeer = 7
     case manualSelection = 8 // Selected by dragging and then setting importance
 }

@@ -21,15 +21,16 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-// This class bridges PeyeDF's own ReadingEvent struct with a Dictionary suitable for JSON serialization.
-// Represent a ReadingEvent in DiMe. Refer to https://github.com/HIIT/PeyeDF/wiki/Data-Format for the data which is passed to DiMe
 
 import Cocoa
 import Foundation
 
+// This class bridges PeyeDF's own ReadingEvent struct with a Dictionary suitable for JSON serialization.
+// Represent a ReadingEvent in DiMe. Refer to https://github.com/HIIT/PeyeDF/wiki/Data-Format for the data which is passed to DiMe
 class ReadingEvent: Event, NSCopying {
     
     let sessionId: String
+    var previousSessionId: String?
     
     // page eye data can only be modified by addEyeData(...), can't be initialized
     fileprivate(set) var pageEyeData = [PageEyeDataChunk]()
@@ -77,6 +78,9 @@ class ReadingEvent: Event, NSCopying {
         //optionals
         plainTextContent = json["plainTextContent"].string
         dpi = json["dpi"].int
+        if let psi = json["previousSessionId"].string {
+            previousSessionId = psi
+        }
         if let pns = json["pageNumbers"].arrayObject {
             pageNumbers = pns as? [Int]
         }
@@ -129,7 +133,9 @@ class ReadingEvent: Event, NSCopying {
         var retDict = theDictionary
         
         retDict["sessionId"] = sessionId
-        
+        if let psi = previousSessionId {
+            retDict["previousSessionId"] = psi
+        }
         if let plabels = self.pageLabels {
             retDict["pageLabels"] = plabels
         }

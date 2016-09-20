@@ -11,6 +11,8 @@ import Foundation
 class CrossRefSession {
     fileprivate static let urlSession = URLSession(configuration: .default)
     
+    /// Fetches metedata for a given doi using CrossRef, and calls a callback with the result
+    /// (nil if failed)
     static func fetch(doi: String, callback: @escaping (JSON?) -> Void) {
         guard let url = URL(string: "http://api.crossref.org/works/\(doi)") else {
             AppSingleton.log.error("Error while creating crossref url")

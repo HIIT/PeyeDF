@@ -94,7 +94,7 @@ open class ReadingTag: Tag {
         var pageRects = [ReadingRect]()
         
         for (n, r) in withRects.enumerated() {
-            var r = ReadingRect(pageIndex: pages[n], rect: r, readingClass: .tag, classSource: .manualSelection, pdfBase: pdfBase)  // TODO: check if changing classSource from .click to .manualSelection causes errors
+            var r = ReadingRect(pageIndex: pages[n], rect: r, readingClass: .tag, classSource: .manualSelection, pdfBase: pdfBase)
             r.scaleFactor = -1
             pageRects.append(r)
         }

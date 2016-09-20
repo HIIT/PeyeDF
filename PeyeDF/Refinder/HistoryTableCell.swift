@@ -46,33 +46,35 @@ class HistoryTableCell: NSTableCellView {
     @IBOutlet weak var criticalBar: RefinderProgressIndicator!
     
     func setValues(fromReadingEvent readingEvent: SummaryReadingEvent, sciDoc: ScientificDocument) {
-        readBar.setProgress(readingEvent.proportionRead!, forClass: .low)
-        interestingBar.setProgress(readingEvent.proportionInteresting!, forClass: .medium)
-        criticalBar.setProgress(readingEvent.proportionCritical!, forClass: .high)
-        
-        let fnameUrl = URL(fileURLWithPath: sciDoc.uri)
-        filenameLab.stringValue = fnameUrl.lastPathComponent
-        if let tit = sciDoc.title {
-            titleLab.stringValue = tit
-        } else {
-            titleLab.stringValue = sciDoc.uri
-        }
-        if let authors = sciDoc.authors {
-            authorsLab.stringValue = authors.description
-        } else {
-            authorsLab.stringValue = ""
-        }
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .full
-        dateFormatter.timeStyle = .medium
-        dateLab.stringValue = dateFormatter.string(from: readingEvent.startDate as Date)
-        
-        if let rTime = readingEvent.readingTime {
-            self.readingTimeLab.stringValue = HistoryTableCell.dateComponentsFormatter.string(from: rTime)!
-            self.readingTimeLab.isHidden = false
-            self.readingTimeClock.hours = CGFloat((rTime / 3600))
-            self.readingTimeClock.minutes = CGFloat((rTime / 60).truncatingRemainder(dividingBy: 60))
-            self.readingTimeClock.showClock = true
+        DispatchQueue.main.async {
+            self.readBar.setProgress(readingEvent.proportionRead!, forClass: .low)
+            self.interestingBar.setProgress(readingEvent.proportionInteresting!, forClass: .medium)
+            self.criticalBar.setProgress(readingEvent.proportionCritical!, forClass: .high)
+            
+            let fnameUrl = URL(fileURLWithPath: sciDoc.uri)
+            self.filenameLab.stringValue = fnameUrl.lastPathComponent
+            if let tit = sciDoc.title {
+                self.titleLab.stringValue = tit
+            } else {
+                self.titleLab.stringValue = sciDoc.uri
+            }
+            if let authors = sciDoc.authors {
+                self.authorsLab.stringValue = authors.description
+            } else {
+                self.authorsLab.stringValue = ""
+            }
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateStyle = .full
+            dateFormatter.timeStyle = .medium
+            self.dateLab.stringValue = dateFormatter.string(from: readingEvent.startDate as Date)
+            
+            if let rTime = readingEvent.readingTime {
+                self.readingTimeLab.stringValue = HistoryTableCell.dateComponentsFormatter.string(from: rTime)!
+                self.readingTimeLab.isHidden = false
+                self.readingTimeClock.hours = CGFloat((rTime / 3600))
+                self.readingTimeClock.minutes = CGFloat((rTime / 60).truncatingRemainder(dividingBy: 60))
+                self.readingTimeClock.showClock = true
+            }
         }
     }
 }

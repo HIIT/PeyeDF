@@ -53,8 +53,8 @@ class DiMeSession {
     } }
     
     /// Shared url session used to push / fetch data
-    fileprivate static var sharedSession: URLSession? = URLSession(configuration: getConfiguration()) { willSet {
-        sharedSession?.finishTasksAndInvalidate()
+    fileprivate static var sharedSession: URLSession = URLSession(configuration: getConfiguration()) { willSet {
+        sharedSession.finishTasksAndInvalidate()
     } }
 
     /// Updates the configuration (in case username and password change, for example)
@@ -66,13 +66,14 @@ class DiMeSession {
         return configuration
     }
     
+    /// Fetches a given URL using dime and calls back the given function with a json (if successful).
+    /// Calls back with an error, if an error was given.
     static func fetch(urlString: String, callback: @escaping (JSON?, Error?) -> Void) {
         guard let url = URL(string: urlString) else {
             callback(nil, RESTError.invalidUrl)
             return
         }
-        // TODO: check shared session is not nil before continuing
-        DiMeSession.sharedSession?.dataTask(with: url) {
+        DiMeSession.sharedSession.dataTask(with: url) {
             data, response, error in
             if let data = data, error == nil {
                 callback(JSON(data: data), nil)
@@ -84,6 +85,8 @@ class DiMeSession {
         }.resume()
     }
     
+    /// Pushes a given dictionary (representing a json entry) to dime.
+    /// Calls back the callback with the response from dime (which should mirror the pushed data).
     static func push(urlString: String, jsonDict: [String: Any], callback: @escaping (JSON?, Error?) -> Void) {
         guard let url = URL(string: urlString) else {
             callback(false, RESTError.invalidUrl)
@@ -95,7 +98,7 @@ class DiMeSession {
             urlRequest.httpBody = try JSONSerialization.data(withJSONObject: jsonDict, options: .prettyPrinted)
             urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
             urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
-            DiMeSession.sharedSession?.dataTask(with: urlRequest) {
+            DiMeSession.sharedSession.dataTask(with: urlRequest) {
                 data, _, error in
                 if let error = error {
                     AppSingleton.log.error("Error while uploading json: \(error)")
