@@ -61,6 +61,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         defaultPrefs[PeyeConstants.prefAskToSaveOnClose] = 0
         defaultPrefs[PeyeConstants.prefEnableAnnotate] = 0
         defaultPrefs[PeyeConstants.prefDownloadMetadata] = 1
+        defaultPrefs[PeyeConstants.prefLoadPreviousAnnotations] = 1
         defaultPrefs[PeyeConstants.prefCheckForUpdatesOnStartup] = 1
         defaultPrefs[PeyeConstants.prefRefinderDrawGazedUpon] = 0
         defaultPrefs[PeyeConstants.prefDrawDebugCircle] = 0

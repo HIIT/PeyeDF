@@ -188,7 +188,7 @@
             <objects>
                 <viewController title="Annotations" id="uJx-Uk-FW4" customClass="AnnotationPreferencesViewController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="Rzz-8T-XGf">
-                        <rect key="frame" x="0.0" y="0.0" width="462" height="182"/>
+                        <rect key="frame" x="0.0" y="0.0" width="462" height="206"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <box borderType="line" title="Annotation line thickness" translatesAutoresizingMaskIntoConstraints="NO" id="UC7-V4-Wrp">
@@ -233,9 +233,9 @@
                                 <font key="titleFont" metaFont="system"/>
                             </box>
                             <button horizontalHuggingPriority="252" verticalHuggingPriority="252" translatesAutoresizingMaskIntoConstraints="NO" id="wEK-ud-1k4">
-                                <rect key="frame" x="18" y="150" width="288" height="14"/>
+                                <rect key="frame" x="18" y="150" width="288" height="18"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="10" id="mmL-Ge-tqN"/>
+                                    <constraint firstAttribute="height" constant="14" id="mmL-Ge-tqN"/>
                                 </constraints>
                                 <buttonCell key="cell" type="check" title="Annotate function enabled for new windows" bezelStyle="regularSquare" imagePosition="left" inset="2" id="seh-ry-ahZ">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -272,26 +272,39 @@
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="Yfd-O9-RLA">
+                                <rect key="frame" x="18" y="170" width="405" height="18"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="14" id="deY-au-4mI"/>
+                                </constraints>
+                                <buttonCell key="cell" type="check" title="Display all previous annotations on recently opened documents" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="uMf-Br-Dym">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="UC7-V4-Wrp" secondAttribute="trailing" constant="20" id="37I-KI-kOd"/>
+                            <constraint firstItem="wEK-ud-1k4" firstAttribute="top" secondItem="Yfd-O9-RLA" secondAttribute="bottom" constant="6" symbolic="YES" id="Fqf-pC-xnw"/>
                             <constraint firstItem="GFc-xH-ekV" firstAttribute="leading" secondItem="Rzz-8T-XGf" secondAttribute="leading" constant="20" symbolic="YES" id="H9s-Sv-oha"/>
                             <constraint firstItem="lGv-gP-N9u" firstAttribute="top" secondItem="wEK-ud-1k4" secondAttribute="bottom" constant="6" symbolic="YES" id="Qsn-Lt-oDP"/>
                             <constraint firstItem="GFc-xH-ekV" firstAttribute="top" secondItem="lGv-gP-N9u" secondAttribute="bottom" constant="6" symbolic="YES" id="TLe-3x-VTr"/>
                             <constraint firstItem="GFc-xH-ekV" firstAttribute="leading" secondItem="lGv-gP-N9u" secondAttribute="leading" id="URO-RT-efZ"/>
                             <constraint firstItem="S1W-xx-0w2" firstAttribute="top" secondItem="GFc-xH-ekV" secondAttribute="bottom" constant="6" symbolic="YES" id="Wh6-OH-4bG"/>
                             <constraint firstItem="UC7-V4-Wrp" firstAttribute="leading" secondItem="Rzz-8T-XGf" secondAttribute="leading" constant="20" id="YUe-8v-oO6"/>
+                            <constraint firstItem="Yfd-O9-RLA" firstAttribute="top" secondItem="Rzz-8T-XGf" secondAttribute="top" constant="20" symbolic="YES" id="ctA-Zf-BeA"/>
                             <constraint firstItem="S1W-xx-0w2" firstAttribute="leading" secondItem="Rzz-8T-XGf" secondAttribute="leading" constant="20" symbolic="YES" id="fDD-SY-jYc"/>
                             <constraint firstAttribute="bottom" secondItem="UC7-V4-Wrp" secondAttribute="bottom" constant="20" symbolic="YES" id="s3R-7G-5O8"/>
                             <constraint firstItem="UC7-V4-Wrp" firstAttribute="top" secondItem="S1W-xx-0w2" secondAttribute="bottom" constant="8" symbolic="YES" id="tCy-0c-vZJ"/>
                             <constraint firstItem="wEK-ud-1k4" firstAttribute="leading" secondItem="Rzz-8T-XGf" secondAttribute="leading" constant="20" id="tia-5i-vYA"/>
-                            <constraint firstItem="wEK-ud-1k4" firstAttribute="top" secondItem="Rzz-8T-XGf" secondAttribute="top" constant="20" symbolic="YES" id="xKp-Ls-GeE"/>
+                            <constraint firstItem="wEK-ud-1k4" firstAttribute="leading" secondItem="Yfd-O9-RLA" secondAttribute="leading" id="vcT-rj-dVO"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="annotateDefaultOnCell" destination="seh-ry-ahZ" id="amT-Ux-ium"/>
                         <outlet property="askToSaveAnnotatedPDFCell" destination="0mL-lV-CWw" id="1cO-0p-sbh"/>
                         <outlet property="drawDebugCircleCheckCell" destination="qEt-ZY-ZQF" id="Lqc-EW-w3A"/>
+                        <outlet property="loadPreviousAnnotationsCell" destination="uMf-Br-Dym" id="tQk-1o-ECY"/>
                         <outlet property="refinderDrawGazedCheckCell" destination="Boz-tG-XcV" id="Zei-wP-x5L"/>
                         <outlet property="thicknessField" destination="uRt-4J-vlE" id="kJR-2z-Q2Y"/>
                         <outlet property="thicknessSlider" destination="E15-lK-fvD" id="66H-EW-xos"/>
@@ -299,7 +312,7 @@
                 </viewController>
                 <customObject id="ylo-t2-XEJ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="510" y="-1749"/>
+            <point key="canvasLocation" x="510" y="-1736"/>
         </scene>
         <!--DiMe-->
         <scene sceneID="JFC-Eo-9Mb">

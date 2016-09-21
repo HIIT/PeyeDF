@@ -172,6 +172,12 @@ extension PDFDocument {
     /// - Attention: Do not call this from main thread (blocks while waiting for an answer).
     /// - Returns: The json found with crossref, or nil if the operation failed.
     func autoCrossref() -> JSON? {
+        
+        guard !Thread.isMainThread else {
+            AppSingleton.log.error("Attempted to call on the main thread, aborting")
+            return nil
+        }
+        
         // Try to find doi
         var _doi: String? = nil
         

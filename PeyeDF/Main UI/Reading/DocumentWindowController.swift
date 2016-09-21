@@ -638,15 +638,29 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         
         pdfReader!.sciDoc = sciDoc
         
-        // Multipeer-related (requires a content hash)
+        // Operations which require a document to have a content hash
         if let cHash = sciDoc.contentHash {
             // tell multipeer about the contenthash related to the file we have open in this window
             Multipeer.ourWindows[cHash] = self
+            
+            // if the relevant preference is set, fetch all summaryreadingevents which are associated to this document and display the annotations in those
+            if (UserDefaults.standard.value(forKey: PeyeConstants.prefLoadPreviousAnnotations) as! Bool) {
+                let showTime = DispatchTime.now() + 0.5  // half second later
+                DispatchQueue.global(qos: DispatchQoS.QoSClass.utility).asyncAfter(deadline: showTime) {
+                    [weak self] in
+                    DiMeFetcher.retrieveAllManualReadingRects(forSciDoc: sciDoc) {
+                        $0.forEach() {
+                            self?.pdfReader?.markings.addRect($0)
+                        }
+                        self?.pdfReader?.autoAnnotate()
+                    }
+                }
+            }
         }
         
         // Download metadata if needed, and send to dime if we want this and is found
         // Dispatch this on utility queue because crossref request blocks.
-        let showTime = DispatchTime.now() + Double(Int64(1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+        let showTime = DispatchTime.now() + 1  // one second later
         DispatchQueue.global(qos: DispatchQoS.QoSClass.utility).asyncAfter(deadline: showTime) {
             [weak self] in
             
@@ -847,7 +861,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         } else if let sciDoc = self.pdfReader?.sciDoc {
             // otherwise just send an information element for the given document if the current document
             // does not have already an associated info elemen in dime
-            let showTime = DispatchTime.now() + Double(Int64(2 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+            let showTime = DispatchTime.now() + 2  // two-second wait
             DispatchQueue.global(qos: DispatchQoS.QoSClass.utility).asyncAfter(deadline: showTime) {
                 DiMeFetcher.retrieveScientificDocument(sciDoc.appId) {
                     scidoc in

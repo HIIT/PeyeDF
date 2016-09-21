@@ -40,6 +40,9 @@ class PeyeConstants {
     /// Whether we want "annotate" to be enabled by default
     static let prefEnableAnnotate = "annotate.defaultOn"
     
+    /// Whether we load previous annotations from dime when opening a document
+    static let prefLoadPreviousAnnotations = "annotate.loadPrevious"
+    
     /// Dominant eye
     static let prefDominantEye = "eye.dominant"
     

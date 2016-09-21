@@ -54,17 +54,17 @@ class DiMeFetcher {
     
     /// Retrieves **all** summary information elements from dime and later sends outgoingSummaries to the receiver via fetchSummaryEvents.
     func getSummaries() {
-        fetchPeyeDFEvents(getSummaries: true, sessionId: nil, callback: fetchSummaryEvents)
+        DiMeFetcher.fetchPeyeDFEvents(getSummaries: true, callback: sendSummaryEvents)
     }
     
     /// Retrieves all non-summary reading events with the given sessionId and callbacks the given function using the
     /// result as a parameter.
     func getNonSummaries(withSessionId sessionId: String, callbackOnComplete: @escaping (([ReadingEvent]) -> Void)) {
-        fetchPeyeDFEvents(getSummaries: false, sessionId: sessionId) {
+        DiMeFetcher.fetchPeyeDFEvents(getSummaries: false, sessionId: sessionId) {
             json in
             var foundEvents = [ReadingEvent]()
             
-            for elem in json.arrayValue {
+            for elem in (json?.arrayValue)! {
                 let readingEvent = ReadingEvent(fromDime: elem)
                 if readingEvent.sessionId == sessionId {
                     foundEvents.append(readingEvent)
@@ -98,15 +98,20 @@ class DiMeFetcher {
     /// - Attention: Don't call this from the main thread.
     func getTuple(forSessionId sesId: String) -> (ev: SummaryReadingEvent, ie: ScientificDocument)? {
         
+        guard !Thread.isMainThread else {
+            AppSingleton.log.error("Attempted to call on the main thread, aborting")
+            return nil
+        }
+        
         var foundEvent: SummaryReadingEvent?
         var foundDoc: ScientificDocument?
         
         let dGroup = DispatchGroup()
         
         dGroup.enter()
-        fetchPeyeDFEvents(getSummaries: true, sessionId: sesId) {
+        DiMeFetcher.fetchPeyeDFEvents(getSummaries: true, sessionId: sesId) {
             json in
-            guard let retVals = json.array , retVals.count > 0 else {
+            guard let retVals = json?.array , retVals.count > 0 else {
                 AppSingleton.log.error("Failed to find results for sessionId \(sesId)")
                 dGroup.leave()
                 return
@@ -187,6 +192,11 @@ class DiMeFetcher {
     /// Returns a scientific document or nil if it failed.
     /// - Attention: Don't call this from the main thread.
     static func getScientificDocument(contentHash hash: String) -> ScientificDocument? {
+        
+        guard !Thread.isMainThread else {
+            AppSingleton.log.error("Attempted to call on the main thread, aborting")
+            return nil
+        }
         
         var foundDoc: ScientificDocument?
         
@@ -282,21 +292,54 @@ class DiMeFetcher {
         }
     }
     
+    /// Asynchronously fetch all ReadingRects associated to an information element id which have been added by the user (selection or quick mark)
+    /// Returns an empty array, if operation fails or none are found
+    static func retrieveAllManualReadingRects(forSciDoc: ScientificDocument, callback: @escaping ([ReadingRect]) -> Void) -> Void {
+        
+        fetchPeyeDFEvents(getSummaries: true, elemId: forSciDoc.id!) {
+            json in
+            
+            var foundRects = [ReadingRect]()  // this will be set to an array of count > 0 if successful
+            
+            // eventually call the callback, no matter what
+            defer {
+                callback(foundRects)
+            }
+            
+            guard let retVals = json?.array , retVals.count > 0 else {
+                return
+            }
+            
+            let foundEvents: [SummaryReadingEvent] = retVals.map({SummaryReadingEvent(fromDime: $0)})
+            foundEvents.forEach {
+                foundRects.append(contentsOf: $0.pageRects.filter({$0.classSource == .click || $0.classSource == .manualSelection}))
+            }
+        }
+        
+    }
+    
     // MARK: - Private methods
     
     /// Retrieves PeyeDF Reading events and calls the specified function once retrieval is complete.
     /// - parameter getSummaries: Set to true to get summary reading events, false for non-summary
-    /// - parameter sessionId: If not-nil, retrieves only elements with the given sessionId
+    /// - parameter sessionId: If given, retrieves only elements with the given sessionId
     ///                        using dime filtering. Set to nil to get all events.
-    fileprivate func fetchPeyeDFEvents(getSummaries: Bool, sessionId: String?, callback: @escaping (JSON) -> Void) {
+    /// - parameter elemId: If given, only retrieves elements associated to InformationElements
+    ///                     which have this id (integer id, not appId)
+    fileprivate static func fetchPeyeDFEvents(getSummaries: Bool, sessionId: String? = nil, elemId: Int? = nil, callback: @escaping (JSON?) -> Void) {
         let server_url = DiMeSession.dimeUrl
         
         var filterString = ""
-        if sessionId != nil {
-            filterString = "&sessionId=\(sessionId!)"
-        }
         
-        var typeString = "<UNSET>"
+        // append optional query parameters as our filters
+        if sessionId != nil {
+            filterString += "&sessionId=\(sessionId!)"
+        }
+        if elemId != nil {
+            filterString += "&elemId=\(elemId!)"
+        }
+
+        let typeString: String
         if getSummaries {
             typeString = "SummaryReadingEvent"
         } else {
@@ -309,6 +352,7 @@ class DiMeFetcher {
                 callback(json)
             } else {
                 AppSingleton.log.error("Error fetching list of PeyeDF events: \(error)")
+                callback(nil)
             }
         }
     }
@@ -316,7 +360,13 @@ class DiMeFetcher {
     /// Puts all reading events which are summary in the outgoing tuple, and fetches scientific documents
     /// (aka information elements) associated to each summary event.
     /// Can be used as a callback function for fetchAllPeyeDFEvents(...)
-    fileprivate func fetchSummaryEvents(_ json: JSON) {
+    fileprivate func sendSummaryEvents(_ json: JSON?) {
+        
+        guard let json = json else {
+            AppSingleton.log.warning("Failed to obtain summary events")
+            return
+        }
+        
         missingInfoElems = 0
         outgoingSummaries = [(ev: SummaryReadingEvent, ie: ScientificDocument?)]()
         for readingEvent in json.arrayValue {

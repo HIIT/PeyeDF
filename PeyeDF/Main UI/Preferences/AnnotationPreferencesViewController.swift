@@ -27,6 +27,7 @@ import Cocoa
 
 class AnnotationPreferencesViewController: NSViewController {
     
+    @IBOutlet weak var loadPreviousAnnotationsCell: NSButtonCell!
     @IBOutlet weak var annotateDefaultOnCell: NSButtonCell!
     @IBOutlet weak var thicknessField: NSTextField!
     @IBOutlet weak var thicknessSlider: NSSlider!
@@ -45,9 +46,10 @@ class AnnotationPreferencesViewController: NSViewController {
         
         let options: [String: AnyObject] = ["NSContinuouslyUpdatesValue": true as AnyObject]
         
+        loadPreviousAnnotationsCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefLoadPreviousAnnotations, options: options)
+        annotateDefaultOnCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefEnableAnnotate, options: options)
         thicknessSlider.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefAnnotationLineThickness, options: options)
         thicknessField.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefAnnotationLineThickness, options: options)
-        annotateDefaultOnCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefEnableAnnotate, options: options)
         refinderDrawGazedCheckCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefRefinderDrawGazedUpon, options: options)
         drawDebugCircleCheckCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefDrawDebugCircle, options: options)
         askToSaveAnnotatedPDFCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefAskToSaveOnClose, options: options)
