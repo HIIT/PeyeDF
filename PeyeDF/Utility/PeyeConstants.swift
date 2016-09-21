@@ -118,30 +118,34 @@ class PeyeConstants {
     // MARK: - Colours
     
     /// Default color of the read annotation lines (in single user case)
-    static let annotationColourRead: NSColor = NSColor(red: 0.24, green: 0.74, blue: 0.97, alpha: 0.75)
+    static let annotationColourRead = #colorLiteral(red: 0.2392156863, green: 0.7411764706, blue: 0.968627451, alpha: 0.75)
     
     /// Default color of the "interesting" annotation lines (in single user case)
-    static let annotationColourInteresting: NSColor = NSColor(red: 0.92, green: 0.71, blue: 0.43, alpha: 0.75)
+    static let annotationColourInteresting = #colorLiteral(red: 0.9215686275, green: 0.7098039216, blue: 0.431372549, alpha: 0.75)
     
     /// Default color of the "critical" annotation lines (in single user case)
-    static let annotationColourCritical: NSColor = NSColor(red: 0.99, green: 0.24, blue: 0.26, alpha: 0.75)
+    static let annotationColourCritical = #colorLiteral(red: 0.9882352941, green: 0.2392156863, blue: 0.2588235294, alpha: 0.75)
     
     /// Default color for "floating" paragraphs detected using fixations
-    static let colourParagraph: NSColor = NSColor(red: 0.40, green: 0.40, blue: 0.40, alpha: 0.75)
+    static let colourParagraph = #colorLiteral(red: 0.4, green: 0.4, blue: 0.4, alpha: 0.75)
+    
+    /// Default color for paragraphs read by peer
+    static let colourPeerRead = #colorLiteral(red: 0, green: 0.6760809769, blue: 0.212035954, alpha: 0.75)
     
     /// Default color for paragraphs when showing raw attention value (assuming attVal between 0 and 1)
     static func colourAttnVal(_ attnVal: Double) -> NSColor {
-        return NSColor(red: 0.675, green: 0.25, blue: 0.675, alpha: CGFloat(attnVal))
+        let baseColor = #colorLiteral(red: 0.6745098039, green: 0.2509803922, blue: 0.6745098039, alpha: 1)
+        return baseColor.withAlphaComponent(CGFloat(attnVal))
     }
     
     /// Default color for searched, found and looked at string queries
-    static let colourFoundStrings: NSColor = NSColor(red: 0.88, green: 0.89, blue: 0.0, alpha: 0.85)
+    static let colourFoundStrings = #colorLiteral(red: 0.9568627451, green: 0.8901960784, blue: 0, alpha: 0.85)
     
     /// Dictionary of annotation colours for smi
     static let smiColours: [ReadingClass: NSColor] = [.paragraph: colourParagraph]
     
     /// Colour for highlighted rect (PDFBase.highlightRect)
-    static let highlightRectColour = NSColor(red: 0.79, green: 0.99, blue: 0.82, alpha: 0.25)
+    static let highlightRectColour = #colorLiteral(red: 0.7882352941, green: 0.9882352941, blue: 0.8196078431, alpha: 0.25)
     
     // MARK: - Annotations
     

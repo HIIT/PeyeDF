@@ -29,7 +29,7 @@ class PDFPeerOverview: PDFOverview {
     
     /// Which colours are associated to which reading class (can be overridden in subclasses)
     override var markAnnotationColours: [ReadingClass: NSColor] { get {
-        return [.low: NSColor.green,  // TODO: use a better colour
+        return [.low: PeyeConstants.colourPeerRead,
                 .medium: PeyeConstants.annotationColourInteresting,
                 .high: PeyeConstants.annotationColourCritical]
     } }
