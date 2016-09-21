@@ -289,7 +289,8 @@ struct PDFMarkings {
     /// This is done by calculating the total area of each page and multiplying it by a constant.
     /// All rectangles (which will be united) are then cycled and the area of each is subtracted
     /// to calculate a proportion. Returns nil if no pdfBase is connected.
-    mutating func calculateProportions_relevance() -> (proportionRead: Double, proportionInteresting: Double, proportionCritical: Double)? {
+    /// If only new is set to true, calculates proportions only for rect which are marked as "new" (created during this reading session).
+    mutating func calculateProportions_relevance(onlyNew: Bool = false) -> (proportionRead: Double, proportionInteresting: Double, proportionCritical: Double)? {
         flattenRectangles_relevance()
         var totalSurface = 0.0
         var readSurface = 0.0
@@ -301,13 +302,19 @@ struct PDFMarkings {
             let pageSurface = Double(pageRect.size.height * pageRect.size.width)
             totalSurface += pageSurface
             for rect in get(ofClass: .low, forPage: pageI) {
-                readSurface += Double(rect.rect.size.height * rect.rect.size.width)
+                if !onlyNew || rect.new {
+                    readSurface += Double(rect.rect.size.height * rect.rect.size.width)
+                }
             }
             for rect in get(ofClass: .medium, forPage: pageI) {
-                interestingSurface += Double(rect.rect.size.height * rect.rect.size.width)
+                if !onlyNew || rect.new {
+                    interestingSurface += Double(rect.rect.size.height * rect.rect.size.width)
+                }
             }
             for rect in get(ofClass: .high, forPage: pageI) {
-                criticalSurface += Double(rect.rect.size.height * rect.rect.size.width)
+                if !onlyNew || rect.new {
+                    criticalSurface += Double(rect.rect.size.height * rect.rect.size.width)
+                }
             }
         }
         totalSurface *= PeyeConstants.pageAreaMultiplier

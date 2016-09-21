@@ -38,6 +38,11 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable, NearlyEquatabl
     var screenDistance: Double
     var attnVal: Double?
     
+    /// Rects which are fetched from DiMe or json are not "new".
+    /// This is used so that only newly created rects are sent in summary events
+    /// after reading a document.
+    fileprivate(set) var new: Bool = true
+    
     init(pageIndex: Int, origin: NSPoint, size: NSSize, readingClass: ReadingClass, classSource: ClassSource, pdfBase: PDFBase?) {
         let newUnixt = Date().unixTime
         self.screenDistance = Double(MidasManager.sharedInstance.lastValidDistance)
@@ -113,6 +118,8 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable, NearlyEquatabl
     init(fromJson json: JSON) {
         self.unixt = json["unixt"].arrayObject! as! [Int]
         self.floating = json["floating"].bool!
+        
+        self.new = false
         
         let origin = NSPoint(x: json["origin"]["x"].doubleValue, y: json["origin"]["y"].doubleValue)
         let size = NSSize(width: json["size"]["width"].doubleValue, height: json["size"]["height"].doubleValue)

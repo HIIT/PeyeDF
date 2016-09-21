@@ -458,14 +458,17 @@ class PDFReader: PDFBase {
     /// - returns: A summary reading event containing to all marks
     func makeSummaryEvent() -> SummaryReadingEvent {
         // Calculate proportion for Read, Critical and Interesting rectangles
-        let prop = markings.calculateProportions_relevance()!
+        let prop = markings.calculateProportions_relevance(onlyNew: true)!
         
         var totProportion = 0.0
         totProportion += prop.proportionRead
         totProportion += prop.proportionInteresting
         totProportion += prop.proportionCritical
         
-        let retEv = SummaryReadingEvent(rects: markings.getAllReadingRects(), sessionId: sessionId, plainTextContent: nil, infoElemId: sciDoc!.getAppId(), foundStrings: foundStrings, proportionRead: prop.proportionRead, proportionInteresting: prop.proportionInteresting, proportionCritical: prop.proportionCritical)
+        // only include new readingrects in outgoing summary
+        let outgoingRects = markings.getAllReadingRects().filter({$0.new})
+        
+        let retEv = SummaryReadingEvent(rects: outgoingRects, sessionId: sessionId, plainTextContent: nil, infoElemId: sciDoc!.getAppId(), foundStrings: foundStrings, proportionRead: prop.proportionRead, proportionInteresting: prop.proportionInteresting, proportionCritical: prop.proportionCritical)
         if let id = summaryId {
             retEv.setId(id)
         }
