@@ -65,11 +65,14 @@ class MainSplitController: NSSplitViewController {
         // let the delegate know what happened
         searchCollapseDelegate?.searchCollapseAction(collState)
         if collState {
+            tw.subviews[0].isHidden = false
             tw.setPosition(PeyeConstants.defaultSearchPanelViewHeight, ofDividerAt: 0)
             searchPanelController?.makeSearchFieldFirstResponderWithDelay()
         } else {
             tw.setPosition(0, ofDividerAt: 0)
+            tw.subviews[0].isHidden = true
         }
+        tw.adjustSubviews()
     }
     
     

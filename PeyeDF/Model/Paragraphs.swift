@@ -346,6 +346,46 @@ struct PDFMarkings {
         return proportionGazed
     }
     
+    /// Calculate the proportion of the document that has been displayed
+    /// to the user (summated are of all viewports / total area of document)
+    func calculateProportion_seen() -> Double? {
+        
+        guard let document = pdfBase.document, document.pageCount > 0 else {
+            return nil
+        }
+        
+        var totalSeenArea: Double = 0
+        var totalPageArea: Double = 0
+        
+        for pNo in 0..<document.pageCount {
+            
+            var seenArea: Double = 0
+            
+            guard let page = document.page(at: pNo) else {
+                AppSingleton.log.error("Failed to get page at \(pNo)")
+                return nil
+            }
+            
+            totalPageArea += Double(pdfBase.getPageRect(page).area)
+            
+            var computedRects = [NSRect]()
+            
+            for r in get(ofClass: .viewport, forPage: pNo) {
+                var area = r.rect.area
+                for cRect in computedRects.filter({$0.intersects(r.rect)}) {
+                    area -= cRect.intersection(r.rect).area
+                }
+                seenArea += Double(area)
+                computedRects.append(r.rect)
+            }
+            
+            totalSeenArea += seenArea
+        }
+        
+        let seenProportion = totalSeenArea / totalPageArea
+        return seenProportion < 1 ? seenProportion : 1
+    }
+    
     /// Given an array of reading rectangles, return a sorted version of the array
     /// (sorted so that elements coming first should have been read first in western order)
     /// with the colliding rectangles united (two rects collide when their intersection is not zero).

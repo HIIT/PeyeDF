@@ -50,6 +50,10 @@ public func < (lhs: NSRect, rhs: NSRect) -> Bool {
 
 extension NSRect {
     
+    public var area: CGFloat { get {
+        return self.size.height * self.size.width
+    } }
+    
     /// Creates a rect from a string specifying 'x,y,w,h'
     /// - returns: nil if conversion failed
     init?(string: String) {

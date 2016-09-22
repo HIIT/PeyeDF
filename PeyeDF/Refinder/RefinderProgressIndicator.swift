@@ -68,8 +68,14 @@ class RefinderProgressIndicator: NSView {
     /// Class represented by this bar
     var readingC = ReadingClass.unset
 
-    func setProgress(_ newProgress: Double, forClass: ReadingClass) {
-        self.progress = newProgress
+    func setProgress(_ newProgress: Double?, forClass: ReadingClass) {
+        if let progress = newProgress, progress > 0 {
+            if progress < 1 {
+                self.progress = progress
+            } else {
+                self.progress = 1
+            }
+        }
         self.readingC = forClass
         
         // set own colours depending on class

@@ -65,6 +65,8 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     
     // MARK: - Setup
     
+    @IBOutlet weak var noDataLabel: NSTextField!
+    
     var delegate: HistoryDetailDelegate?
     
     @IBOutlet weak var historyTable: NSTableView!
@@ -266,7 +268,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
             
             if let info = delegate!.getMarkings() {
                 let summaryEvent = allHistoryTuples[row].ev
-                summaryEvent.setProportions(info.pRead, pInteresting: info.pInteresting, pCritical: info.pCritical)
+                summaryEvent.setProportions(nil, info.pRead, info.pInteresting, info.pCritical)
                 summaryEvent.setRects(info.rects)
                 DiMePusher.sendToDiMe(summaryEvent) {
                     success, _ in
@@ -293,9 +295,12 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
             allHistoryTuples = t
             DispatchQueue.main.async {
                 self.historyTable.reloadData()
+                self.noDataLabel.isHidden = true
             }
         } else {
-            AppSingleton.alertUser("No data found.")
+            DispatchQueue.main.async {
+                self.noDataLabel.isHidden = false
+            }
         }
         loadingComplete()
     }

@@ -47,9 +47,13 @@ class HistoryTableCell: NSTableCellView {
     
     func setValues(fromReadingEvent readingEvent: SummaryReadingEvent, sciDoc: ScientificDocument) {
         DispatchQueue.main.async {
-            self.readBar.setProgress(readingEvent.proportionRead!, forClass: .low)
-            self.interestingBar.setProgress(readingEvent.proportionInteresting!, forClass: .medium)
-            self.criticalBar.setProgress(readingEvent.proportionCritical!, forClass: .high)
+            if UserDefaults.standard.value(forKey: PeyeConstants.prefUseEyeTracker) as! Bool {
+                self.readBar.setProgress(readingEvent.proportionRead, forClass: .low)
+            } else {
+                self.readBar.setProgress(readingEvent.proportionSeen, forClass: .low)
+            }
+            self.interestingBar.setProgress(readingEvent.proportionInteresting, forClass: .medium)
+            self.criticalBar.setProgress(readingEvent.proportionCritical, forClass: .high)
             
             let fnameUrl = URL(fileURLWithPath: sciDoc.uri)
             self.filenameLab.stringValue = fnameUrl.lastPathComponent

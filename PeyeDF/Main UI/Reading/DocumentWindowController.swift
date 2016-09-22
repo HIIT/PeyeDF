@@ -472,8 +472,10 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         }
     }
     
-    /// Retrieves current ReadingEvent (for HistoryManager)
-    func getCurrentStatus() -> ReadingEvent? {
+    /// Acknowledges that the user has been looking at this part of a document
+    /// for some time.
+    /// Generates and returns a ReadingEvent for this (ie. for HistoryManager)
+    func reportContinuedReading() -> ReadingEvent? {
         return pdfReader!.getViewportStatus() as ReadingEvent?
     }
     

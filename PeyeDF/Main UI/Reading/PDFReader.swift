@@ -425,6 +425,7 @@ class PDFReader: PDFBase {
     }
     
     /// Converts the current viewport to a reading event.
+    /// Adds the current viewport to our markings.
     ///
     /// - returns: The reading event for the current status, or nil if nothing is actually visible
     func getViewportStatus() -> ReadingEvent? {
@@ -444,6 +445,7 @@ class PDFReader: PDFBase {
                 let visiblePageNum = visiblePageNums[vpi]
                 let newRect = ReadingRect(pageIndex: visiblePageNum, rect: rect, readingClass: ReadingClass.viewport, classSource: ClassSource.viewport, pdfBase: self)
                 readingRects.append(newRect)
+                markings.addRect(newRect) // keep track of seen viewports
                 vpi += 1
             }
             
@@ -457,21 +459,20 @@ class PDFReader: PDFBase {
     ///
     /// - returns: A summary reading event containing to all marks
     func makeSummaryEvent() -> SummaryReadingEvent {
-        // Calculate proportion for Read, Critical and Interesting rectangles
-        let prop = markings.calculateProportions_relevance(onlyNew: true)!
-        
-        var totProportion = 0.0
-        totProportion += prop.proportionRead
-        totProportion += prop.proportionInteresting
-        totProportion += prop.proportionCritical
         
         // only include new readingrects in outgoing summary
         let outgoingRects = markings.getAllReadingRects().filter({$0.new})
         
-        let retEv = SummaryReadingEvent(rects: outgoingRects, sessionId: sessionId, plainTextContent: nil, infoElemId: sciDoc!.getAppId(), foundStrings: foundStrings, proportionRead: prop.proportionRead, proportionInteresting: prop.proportionInteresting, proportionCritical: prop.proportionCritical)
+        let retEv = SummaryReadingEvent(rects: outgoingRects, sessionId: sessionId, plainTextContent: nil, infoElemId: sciDoc!.getAppId(), foundStrings: foundStrings)
         if let id = summaryId {
             retEv.setId(id)
         }
+        
+        // Calculate proportion for Read, Critical and Interesting rectangles
+        let prop = markings.calculateProportions_relevance(onlyNew: true)!
+        let proportionSeen = markings.calculateProportion_seen()
+        
+        retEv.setProportions(proportionSeen, prop.proportionRead, prop.proportionInteresting, prop.proportionCritical)
         return retEv
     }
     

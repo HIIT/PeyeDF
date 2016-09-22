@@ -46,6 +46,9 @@ class PeyeConstants {
     /// Dominant eye
     static let prefDominantEye = "eye.dominant"
     
+    /// Use eye tracker on start
+    static let prefUseEyeTracker = "eye.useTracker"
+    
     /// Use midas on start
     static let prefUseMidas = "midas.use"
     
@@ -80,7 +83,7 @@ class PeyeConstants {
     
     /// Amount of seconds which is required to assume that the user did read a specific document
     /// during a single session
-    static let minTotalReadTime: TimeInterval = 60.0
+    static let minTotalReadTime: TimeInterval = 30.0
     
     /// Amount of seconds that are needed before we assume user is reading (after, we start recording the current readingevent).
     static let minReadTime: TimeInterval = 2.0

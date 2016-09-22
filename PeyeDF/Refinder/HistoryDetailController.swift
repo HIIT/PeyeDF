@@ -46,7 +46,8 @@ protocol HistoryDetailDelegate: class {
     /// - Requires: call setEyeRects before this because historyElementSelected invalidates eyeRects
     func setEyeThresholds(_ readThresh: Double, interestingThresh: Double, criticalThresh: Double)
     
-    /// Returns all information (reading rectangles, proportion) from a document
+    /// Returns all information (reading rectangles, proportion) from a document.
+    /// - Note: These are used for eye tracking (i.e. proportionSeen is not relevant here).
     /// - Requires: Threshold computation after import
     /// - Returns: Annotated eye rects and proportions (nil if thresholds were not computed)
     func getMarkings() -> (rects: [ReadingRect], pRead: Double, pInteresting: Double, pCritical: Double)?

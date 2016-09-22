@@ -30,6 +30,7 @@ class SummaryReadingEvent: ReadingEvent {
     /// Set this before submitting event to dime if we want this to be sent.
     var readingTime: Double?
     
+    fileprivate(set) var proportionSeen: Double?
     fileprivate(set) var proportionRead: Double?
     fileprivate(set) var proportionCritical: Double?
     fileprivate(set) var proportionInteresting: Double?
@@ -39,11 +40,8 @@ class SummaryReadingEvent: ReadingEvent {
     
     /** Creates a summary reading event, which contains all "markings" in form of rectangles
     */
-    required init(rects: [ReadingRect], sessionId: String, plainTextContent: String?, infoElemId: String, foundStrings: [String], proportionRead: Double, proportionInteresting: Double, proportionCritical: Double) {
+    required init(rects: [ReadingRect], sessionId: String, plainTextContent: String?, infoElemId: String, foundStrings: [String]) {
         
-        self.proportionRead = proportionRead
-        self.proportionCritical = proportionCritical
-        self.proportionInteresting = proportionInteresting
         self.foundStrings = foundStrings
         
         super.init(sessionId: sessionId, pageNumbers: nil, pageLabels: nil, pageRects: rects,  plainTextContent: plainTextContent, infoElemId: infoElemId)
@@ -57,6 +55,7 @@ class SummaryReadingEvent: ReadingEvent {
                 foundStrings.append(fString.stringValue)
             }
         }
+        proportionSeen = json["proportionSeen"].double
         proportionRead = json["proportionRead"].double
         proportionInteresting = json["proportionInteresting"].double
         proportionCritical = json["proportionCritical"].double
@@ -67,6 +66,9 @@ class SummaryReadingEvent: ReadingEvent {
     override func getDict() -> [String : Any] {
         var retDict = super.getDict()
         
+        if let pseen = proportionSeen {
+            retDict["proportionSeen"] = pseen
+        }
         if let pread = proportionRead {
             retDict["proportionRead"] = pread
         }
@@ -90,8 +92,9 @@ class SummaryReadingEvent: ReadingEvent {
         return retDict
     }
     
-    /// Overwrite the current set of read/critical/interesting values
-    func setProportions(_ pRead: Double, pInteresting: Double, pCritical: Double) {
+    /// Overwrite the current set of seen/read/critical/interesting values
+    func setProportions(_ pSeen: Double?, _ pRead: Double?, _ pInteresting: Double?, _ pCritical: Double?) {
+        self.proportionSeen = pSeen
         self.proportionRead = pRead
         self.proportionInteresting = pInteresting
         self.proportionCritical = pCritical

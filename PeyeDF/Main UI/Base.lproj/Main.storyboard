@@ -68,11 +68,11 @@
                                 </buttonCell>
                             </button>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="BVV-hH-JyH">
-                                <rect key="frame" x="18" y="106" width="440" height="18"/>
+                                <rect key="frame" x="18" y="106" width="223" height="18"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="14" id="Shn-cO-s2n"/>
                                 </constraints>
-                                <buttonCell key="cell" type="check" title="Automatically attempt to connect to MIDAS on start (requires restart)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="7Or-3q-KEa">
+                                <buttonCell key="cell" type="check" title="Use eye tracker (requires restart)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="7Or-3q-KEa">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -172,8 +172,8 @@
                         <outlet property="downloadMetadataCell" destination="dby-mW-4qK" id="8Nk-3m-sD5"/>
                         <outlet property="dpiField" destination="gxa-Hp-eF0" id="Ag9-HG-C3H"/>
                         <outlet property="drawDebugCircleCheckCell" destination="qEt-ZY-ZQF" id="IEe-IU-hs7"/>
+                        <outlet property="eyeTrackerCell" destination="7Or-3q-KEa" id="duG-na-tQC"/>
                         <outlet property="leftDomEyeButton" destination="I21-cq-meB" id="xHI-t6-wUf"/>
-                        <outlet property="midasCheckCell" destination="7Or-3q-KEa" id="uQA-7a-iu5"/>
                         <outlet property="refinderDrawGazedCheckCell" destination="Boz-tG-XcV" id="DpV-AS-Kms"/>
                         <outlet property="rightDomEyeButton" destination="8qy-dl-5fN" id="hNA-b5-fpP"/>
                         <outlet property="thicknessField" destination="uRt-4J-vlE" id="X4Y-Zs-osl"/>
@@ -625,7 +625,7 @@
                                                 <items>
                                                     <menuItem title="Find…" tag="1" keyEquivalent="f" id="Xz5-n4-O0W">
                                                         <connections>
-                                                            <action selector="manualSearch:" target="Voe-Tx-rLC" id="vZO-MO-69E"/>
+                                                            <action selector="performFindPanelAction:" target="Ady-hI-5gd" id="HeP-cy-0Hf"/>
                                                         </connections>
                                                     </menuItem>
                                                     <menuItem title="Find Next" tag="2" keyEquivalent="g" id="q09-fT-Sye">
@@ -1481,7 +1481,7 @@
             <objects>
                 <splitViewController title="Main Split" id="f9L-GU-eYT" customClass="MainSplitController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
                     <splitViewItems>
-                        <splitViewItem holdingPriority="252" id="8W1-Ac-SG8"/>
+                        <splitViewItem collapsed="YES" holdingPriority="252" id="8W1-Ac-SG8"/>
                         <splitViewItem id="hS7-nY-Y6y"/>
                     </splitViewItems>
                     <splitView key="splitView" dividerStyle="thin" id="JxJ-iL-XPO">

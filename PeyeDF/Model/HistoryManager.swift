@@ -178,7 +178,7 @@ class HistoryManager: FixationDataDelegate {
         self.entryTimer = nil
         
         // retrieve status
-        self.currentReadingEvent = docWindow.getCurrentStatus()
+        self.currentReadingEvent = docWindow.reportContinuedReading()
         
         // prepare to convert eye coordinates
         self.currentEyeReceiver = docWindow.pdfReader

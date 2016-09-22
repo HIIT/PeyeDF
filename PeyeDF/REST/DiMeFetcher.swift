@@ -296,7 +296,12 @@ class DiMeFetcher {
     /// Returns an empty array, if operation fails or none are found
     static func retrieveAllManualReadingRects(forSciDoc: ScientificDocument, callback: @escaping ([ReadingRect]) -> Void) -> Void {
         
-        fetchPeyeDFEvents(getSummaries: true, elemId: forSciDoc.id!) {
+        guard let id = forSciDoc.id else {
+            callback([])
+            return
+        }
+        
+        fetchPeyeDFEvents(getSummaries: true, elemId: id) {
             json in
             
             var foundRects = [ReadingRect]()  // this will be set to an array of count > 0 if successful
