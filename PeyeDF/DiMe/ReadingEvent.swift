@@ -32,7 +32,10 @@ class ReadingEvent: Event, NSCopying {
     let sessionId: String
     var previousSessionId: String?
     
-    // page eye data can only be modified by addEyeData(...), can't be initialized
+    /// Associated scientific document (set only when we receive from dime
+    fileprivate(set) var targettedResource: ScientificDocument?
+    
+    /// page eye data can only be modified by addEyeData(...), can't be initialized
     fileprivate(set) var pageEyeData = [PageEyeDataChunk]()
     
     let infoElemId: String
@@ -91,6 +94,9 @@ class ReadingEvent: Event, NSCopying {
             for chunk in pedata {
                 pageEyeData.append(PageEyeDataChunk(fromDime: chunk))
             }
+        }
+        if json["targettedResource"].exists() {
+            targettedResource = ScientificDocument(fromDime: json["targettedResource"])
         }
         
         let dateCreated: Date = Date(timeIntervalSince1970: TimeInterval(json["start"].intValue / 1000))

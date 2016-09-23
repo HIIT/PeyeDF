@@ -72,7 +72,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     @IBOutlet weak var historyTable: NSTableView!
     var diMeFetcher: DiMeFetcher?
     
-    var allHistoryTuples = [(ev: SummaryReadingEvent, ie: ScientificDocument?)]()
+    var allHistoryTuples = [(ev: SummaryReadingEvent, ie: ScientificDocument)]()
     
     var lastImportedSessionId = ""
     var lastImportedIndex = -1
@@ -85,6 +85,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     override func viewDidLoad() {
         // creates dime fetcher with self as receiver and prepares to receive table selection notifications
         diMeFetcher = DiMeFetcher(receiver: self)
+        progressBar.bind("value", to: diMeFetcher!.fetchProgress, withKeyPath: "fractionCompleted")
         NotificationCenter.default.addObserver(self, selector: #selector(newHistoryTableSelection(_:)), name: NSNotification.Name.NSTableViewSelectionDidChange, object: historyTable)
     }
     
@@ -95,7 +96,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
         }
         let selectedSesId = allHistoryTuples[selectedRow].ev.sessionId
         if  selectedSesId != lastSelectedSessionId {
-            delegate?.historyElementSelected((ev: allHistoryTuples[selectedRow].ev, ie: allHistoryTuples[selectedRow].ie!))
+            delegate?.historyElementSelected((ev: allHistoryTuples[selectedRow].ev, ie: allHistoryTuples[selectedRow].ie))
             if let f = mustFocusOn[allHistoryTuples[selectedRow].ev.sessionId] {
                 mustFocusOn.removeValue(forKey: allHistoryTuples[selectedRow].ev.sessionId)
                 delegate?.focusOn(f)
@@ -113,23 +114,18 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     
     // MARK: - Search
     
+    @IBOutlet weak var searchField: NSSearchField!
     @IBOutlet weak var documentsRadio: NSButton!
     @IBOutlet weak var seenTextRadio: NSButton!
     
-    /// Uses same tag as radio buttons (make sure this is reflected in IB)
-    enum SearchIn: Int {
-        case documents
-        case seenText
-    }
-    
-    fileprivate(set) var searchIn: SearchIn = .documents { didSet {
+    fileprivate(set) var searchIn: DiMeSearchableItem = .sciDoc { didSet {
         switch searchIn {
-        case .documents:
+        case .sciDoc:
             DispatchQueue.main.async {
                 self.documentsRadio.state = NSOnState
                 self.seenTextRadio.state = NSOffState
             }
-        case .seenText:
+        case .readingEvent:
             DispatchQueue.main.async {
                 self.documentsRadio.state = NSOffState
                 self.seenTextRadio.state = NSOnState
@@ -138,7 +134,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     } }
     
     @IBAction func searchRadioPress(_ sender: NSButton) {
-        searchIn = SearchIn(rawValue: sender.tag)!
+        searchIn = DiMeSearchableItem(rawValue: sender.tag)!
     }
     
     // MARK: - Contextual menu
@@ -151,9 +147,9 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     @IBAction func extractJson(_ sender: NSMenuItem) {
         
         let row = historyTable.clickedRow
-        delegate?.historyElementSelected((ev: allHistoryTuples[row].ev, ie: allHistoryTuples[row].ie!))
+        delegate?.historyElementSelected((ev: allHistoryTuples[row].ev, ie: allHistoryTuples[row].ie))
         let sessionId = allHistoryTuples[row].ev.sessionId
-        let contentHash = allHistoryTuples[row].ie!.contentHash!
+        let contentHash = allHistoryTuples[row].ie.contentHash!
         
         // ask for output file first
         let panel = NSSavePanel()
@@ -235,7 +231,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
         
         let row = historyTable.clickedRow
         if row >= 0 {
-            delegate?.historyElementSelected((ev: allHistoryTuples[row].ev, ie: allHistoryTuples[row].ie!))
+            delegate?.historyElementSelected((ev: allHistoryTuples[row].ev, ie: allHistoryTuples[row].ie))
         
             let panel = NSOpenPanel()
             panel.allowedFileTypes = ["json", "JSON"]
@@ -316,11 +312,15 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     /// Ask dime to fetch data
     func reloadData() {
         loadingStarted()
-        diMeFetcher?.getSummaries()
+        if searchField.stringValue == "" {
+            diMeFetcher?.getAllSummaries()
+        } else {
+            diMeFetcher?.getSummariesForSearch(string: searchField.stringValue, inData: searchIn)
+        }
     }
     
     /// Receive summaries from dime fetcher, as per protocol
-    func receiveAllSummaries(_ tuples: [(ev: SummaryReadingEvent, ie: ScientificDocument?)]?) {
+    func receiveAllSummaries(_ tuples: [(ev: SummaryReadingEvent, ie: ScientificDocument)]?) {
         if let t = tuples {
             allHistoryTuples = t
             DispatchQueue.main.async {
@@ -328,18 +328,13 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
                 self.noDataLabel.isHidden = true
             }
         } else {
+            allHistoryTuples = []
             DispatchQueue.main.async {
+                self.historyTable.reloadData()
                 self.noDataLabel.isHidden = false
             }
         }
         loadingComplete()
-    }
-    
-    /// Update progress bar
-    func updateProgress(_ received: Int, total: Int) {
-        DispatchQueue.main.async {
-            self.progressBar.doubleValue = Double(received) / Double(total)
-        }
     }
     
     // MARK: - Table delegate & data source
@@ -351,7 +346,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         if tableColumn?.identifier == "HistoryList" {
             let listItem = tableView.make(withIdentifier: "HistoryListItem", owner: self) as! HistoryTableCell
-            listItem.setValues(fromReadingEvent: allHistoryTuples[row].ev, sciDoc: allHistoryTuples[row].ie!)
+            listItem.setValues(fromReadingEvent: allHistoryTuples[row].ev, sciDoc: allHistoryTuples[row].ie)
             return listItem
         } else {
             return nil

@@ -28,23 +28,18 @@ import Foundation
 protocol DiMeReceiverDelegate: class {
     
     /// Receive all summaries information elements and associated informatione elements in a tuple. Nil means nothing was found. Receving this signals that the fetching operation is finished.
-    func receiveAllSummaries(_ tuples: [(ev: SummaryReadingEvent, ie: ScientificDocument?)]?)
+    func receiveAllSummaries(_ tuples: [(ev: SummaryReadingEvent, ie: ScientificDocument)]?)
     
-    /// Indicates that the fetching operation started / isprogessing, by communicating how many items have been received and how many are missing.
-    func updateProgress(_ received: Int, total: Int)
 }
 
 /// DiMeFetcher is supposed to be used as a singleton (via sharedFetcher)
 class DiMeFetcher {
     
+    /// Progress indicating amount of units to fetch vs units fetched
+    let fetchProgress = Progress()
+    
     /// Receiver of dime info. Delegate method will be called once fetching finishes.
     fileprivate let receiver: DiMeReceiverDelegate
-    
-    /// How many info elements still have to be fetched. When this number reaches 0, the delegate is called.
-    fileprivate var missingInfoElems = Int.max
-    
-    /// Outgoing summary reading events and associate info elements
-    fileprivate var outgoingSummaries = [(ev: SummaryReadingEvent, ie: ScientificDocument?)]()
     
     init(receiver: DiMeReceiverDelegate) {
         self.receiver = receiver
@@ -52,9 +47,99 @@ class DiMeFetcher {
     
     // MARK: - Instance methods
     
-    /// Retrieves **all** summary information elements from dime and later sends outgoingSummaries to the receiver via fetchSummaryEvents.
-    func getSummaries() {
+    /// Retrieves **all** summary information elements from dime and later sends them to the receiver via fetchSummaryEvents.
+    func getAllSummaries() {
+        // update progress so that it displays in ui
+        DispatchQueue.main.async {
+            self.fetchProgress.completedUnitCount = 0
+            self.fetchProgress.totalUnitCount = Int64.max
+        }
         DiMeFetcher.fetchPeyeDFEvents(getSummaries: true, callback: sendSummaryEvents)
+    }
+    
+    /// Searches for whole documents (information elements) or seen text (reading events) containig the given text. Asynchronously lets the receiver know using the receiveAllSummaries method
+    func getSummariesForSearch(string: String, inData: DiMeSearchableItem) {
+        
+        // update progress so that it displays in ui
+        DispatchQueue.main.async {
+            self.fetchProgress.completedUnitCount = 0
+            self.fetchProgress.totalUnitCount = Int64.max
+        }
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            
+            var foundSummaries = [(ev: SummaryReadingEvent, ie: ScientificDocument)]()
+            switch inData {
+            case .readingEvent:
+                // reading event search: once we got the list of events that satisfy query,
+                // use all their sessionIds to find all summary reading events that have those sessionIds
+                let foundEvents = DiMeFetcher.searchReadingEvents(for: string)
+                
+                DispatchQueue.main.async {
+                    self.fetchProgress.totalUnitCount = Int64(foundEvents?.count ?? 0)
+                }
+                
+                var processedSessionIds = Set<String>()
+                
+                foundEvents?.forEach() {
+                    if !processedSessionIds.contains($0.sessionId) {
+                        
+                        let scidoc = $0.targettedResource
+                        let summaryEvents = DiMeFetcher.getPeyeDFEvents(getSummaries: true, sessionId: $0.sessionId, elemId: scidoc!.id)
+                        summaryEvents?.forEach() {
+                            if let scidoc = scidoc {
+                                foundSummaries.append((ev: $0, ie: scidoc))
+                            }
+                        }
+                        
+                        processedSessionIds.insert($0.sessionId)
+                    }
+                    // advance count for each element
+                    DispatchQueue.main.async {
+                        self.fetchProgress.completedUnitCount += 1
+                    }
+                }
+                
+                if foundSummaries.count > 0 {
+                    self.receiver.receiveAllSummaries(foundSummaries)
+                } else {
+                    self.receiver.receiveAllSummaries(nil)
+                }
+                
+            case .sciDoc:
+                // document search: once we got the list of documents that satisfy query,
+                // use their "id" field to get all summary events that have the same id
+                let foundScidocs = DiMeFetcher.searchSciDocs(for: string)
+                    
+                DispatchQueue.main.async {
+                    self.fetchProgress.totalUnitCount = Int64(foundScidocs?.count ?? 0)
+                }
+                
+                var processedIds = Set<Int>()
+                
+                foundScidocs?.forEach() {
+                    scidoc in
+                    
+                    if let id = scidoc.id, !processedIds.contains(id) {
+                        let summaryEvents = DiMeFetcher.getPeyeDFEvents(getSummaries: true, elemId: id)
+                        summaryEvents?.forEach() {foundSummaries.append((ev: $0, ie: scidoc))}
+                        
+                        processedIds.insert(id)
+                    }
+                    // advance count for each element
+                    DispatchQueue.main.async {
+                        self.fetchProgress.completedUnitCount += 1
+                    }
+                }
+                
+                if foundSummaries.count > 0 {
+                    self.receiver.receiveAllSummaries(foundSummaries)
+                } else {
+                    self.receiver.receiveAllSummaries(nil)
+                }
+                    
+            }
+        }
     }
     
     /// Retrieves all non-summary reading events with the given sessionId and callbacks the given function using the
@@ -155,6 +240,98 @@ class DiMeFetcher {
     
     // MARK: - Static methods
     
+    /// Asynchronously retrieves PeyeDF Reading events and calls the specified function once retrieval is complete.
+    /// - parameter getSummaries: Set to true to get summary reading events, false for non-summary
+    /// - parameter sessionId: If given, retrieves only elements with the given sessionId
+    ///                        using dime filtering. Set to nil to get all events.
+    /// - parameter elemId: If given, only retrieves elements associated to InformationElements
+    ///                     which have this id (integer id, not appId)
+    static func fetchPeyeDFEvents(getSummaries: Bool, sessionId: String? = nil, elemId: Int? = nil, callback: @escaping (JSON?) -> Void) {
+        let server_url = DiMeSession.dimeUrl
+        
+        var filterString = ""
+        
+        // append optional query parameters as our filters
+        if sessionId != nil {
+            filterString += "&sessionId=\(sessionId!)"
+        }
+        if elemId != nil {
+            filterString += "&elemId=\(elemId!)"
+        }
+        
+        let typeString: String
+        if getSummaries {
+            typeString = "SummaryReadingEvent"
+        } else {
+            typeString = "ReadingEvent"
+        }
+        
+        DiMeSession.fetch(urlString: server_url + "/data/events?actor=PeyeDF&type=http://www.hiit.fi/ontologies/dime/%23\(typeString)" + filterString) {
+            json, error in
+            if let json = json {
+                callback(json)
+            } else {
+                AppSingleton.log.error("Error fetching list of PeyeDF events: \(error)")
+                callback(nil)
+            }
+        }
+    }
+    
+    /// **Synchronously** attempt to retrieve reading events satisfying the given parameters.
+    /// - parameter getSummaries: Set to true to get summary reading events, false for non-summary
+    /// - parameter sessionId: If given, retrieves only elements with the given sessionId
+    ///                        using dime filtering. Set to nil to get all events.
+    /// - parameter elemId: If given, only retrieves elements associated to InformationElements
+    ///                     which have this id (integer id, not appId)
+    /// - Attention: Don't call this from the main thread.
+    static func getPeyeDFEvents(getSummaries: Bool, sessionId: String? = nil, elemId: Int? = nil) -> [SummaryReadingEvent]? {
+        
+        guard !Thread.isMainThread else {
+            AppSingleton.log.error("Attempted to call on the main thread, aborting")
+            return nil
+        }
+        var foundEvents: [SummaryReadingEvent]?
+        
+        let dGroup = DispatchGroup()
+        
+        let server_url = DiMeSession.dimeUrl
+        
+        var filterString = ""
+        
+        // append optional query parameters as our filters
+        if sessionId != nil {
+            filterString += "&sessionId=\(sessionId!)"
+        }
+        if elemId != nil {
+            filterString += "&elemId=\(elemId!)"
+        }
+        
+        let typeString: String
+        if getSummaries {
+            typeString = "SummaryReadingEvent"
+        } else {
+            typeString = "ReadingEvent"
+        }
+        
+        dGroup.enter()
+        DiMeSession.fetch(urlString: server_url + "/data/events?actor=PeyeDF&type=http://www.hiit.fi/ontologies/dime/%23\(typeString)" + filterString) {
+            json, error in
+            if let retrievedEvents = json?.array {
+                foundEvents = retrievedEvents.map({SummaryReadingEvent(fromDime: $0)})
+            }
+            dGroup.leave()
+        }
+        
+        // wait 60 seconds for operation to complete
+        let waitTime = DispatchTime.now() + 5.0
+        
+        if dGroup.wait(timeout: waitTime) == DispatchTimeoutResult.timedOut {
+            AppSingleton.log.debug("Summary Reading Event request timed out")
+        }
+            
+        return foundEvents
+    }
+
     /// Asynchronously attempt to retrieve a list of tags for a given information element (using appId).
     /// Calls the callback with a list of tags (empty if none) or nil if it failed.
     static func retrieveTags(forAppId appId: String, callback: @escaping ([Tag]?) -> Void) {
@@ -230,7 +407,7 @@ class DiMeFetcher {
         }
         
         // wait 5 seconds for operation to complete
-        let waitTime = DispatchTime.now() + Double(Int64(5 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+        let waitTime = DispatchTime.now() + 5.0
         
         if dGroup.wait(timeout: waitTime) == DispatchTimeoutResult.timedOut {
             AppSingleton.log.debug("SciDoc request timed out")
@@ -269,6 +446,36 @@ class DiMeFetcher {
                 }
             }
         }
+    }
+    
+    /// **Synchronously** search for the given string in reading events only (not summary reading events)
+    static func searchReadingEvents(for searchQuery: String) -> [ReadingEvent]? {
+        
+        let searchType = "http://www.hiit.fi/ontologies/dime/%23ReadingEvent"
+        
+        let result = DiMeSession.fetch_sync(urlString: DiMeSession.dimeUrl + "/eventsearch?query=\(searchQuery)&type=\(searchType)")
+        
+        guard let json = result.json, let docs = json["docs"].array, docs.count > 0 else {
+            return nil
+        }
+        
+        return docs.map({ReadingEvent(fromDime: $0)})
+
+    }
+    
+    /// **Synchronously** search for the given string in scientific documents only
+    static func searchSciDocs(for searchQuery: String) -> [ScientificDocument]? {
+        
+        let searchType = "http://www.hiit.fi/ontologies/dime/%23ScientificDocument"
+        
+        let result = DiMeSession.fetch_sync(urlString: DiMeSession.dimeUrl + "/search?query=\(searchQuery)&type=\(searchType)")
+    
+        guard let json = result.json, let docs = json["docs"].array, docs.count > 0 else {
+            return nil
+        }
+
+        return docs.map({ScientificDocument(fromDime: $0)})
+    
     }
     
     /// Attempts to convert a contenthash to a URL pointing to a file on disk.
@@ -325,86 +532,40 @@ class DiMeFetcher {
     
     // MARK: - Private methods
     
-    /// Retrieves PeyeDF Reading events and calls the specified function once retrieval is complete.
-    /// - parameter getSummaries: Set to true to get summary reading events, false for non-summary
-    /// - parameter sessionId: If given, retrieves only elements with the given sessionId
-    ///                        using dime filtering. Set to nil to get all events.
-    /// - parameter elemId: If given, only retrieves elements associated to InformationElements
-    ///                     which have this id (integer id, not appId)
-    fileprivate static func fetchPeyeDFEvents(getSummaries: Bool, sessionId: String? = nil, elemId: Int? = nil, callback: @escaping (JSON?) -> Void) {
-        let server_url = DiMeSession.dimeUrl
-        
-        var filterString = ""
-        
-        // append optional query parameters as our filters
-        if sessionId != nil {
-            filterString += "&sessionId=\(sessionId!)"
-        }
-        if elemId != nil {
-            filterString += "&elemId=\(elemId!)"
-        }
-
-        let typeString: String
-        if getSummaries {
-            typeString = "SummaryReadingEvent"
-        } else {
-            typeString = "ReadingEvent"
-        }
-        
-        DiMeSession.fetch(urlString: server_url + "/data/events?actor=PeyeDF&type=http://www.hiit.fi/ontologies/dime/%23\(typeString)" + filterString) {
-            json, error in
-            if let json = json {
-                callback(json)
-            } else {
-                AppSingleton.log.error("Error fetching list of PeyeDF events: \(error)")
-                callback(nil)
-            }
-        }
-    }
-   
     /// Puts all reading events which are summary in the outgoing tuple, and fetches scientific documents
     /// (aka information elements) associated to each summary event.
+    /// Sends the result to the receiver.
     /// Can be used as a callback function for fetchAllPeyeDFEvents(...)
     fileprivate func sendSummaryEvents(_ json: JSON?) {
+        
+        var outgoingSummaries = [(ev: SummaryReadingEvent, ie: ScientificDocument)]()
         
         guard let json = json else {
             AppSingleton.log.warning("Failed to obtain summary events")
             return
         }
-        
-        missingInfoElems = 0
-        outgoingSummaries = [(ev: SummaryReadingEvent, ie: ScientificDocument?)]()
-        for readingEvent in json.arrayValue {
-            outgoingSummaries.append((ev: SummaryReadingEvent(fromDime: readingEvent), ie: nil))
-            missingInfoElems += 1
+
+        // Update amount of work to do on main queue (so it shows in UI)
+        DispatchQueue.main.async {
+            self.fetchProgress.totalUnitCount = Int64(json.array?.count ?? 0)
         }
-        // convert info element ids to scientific documents and add them to outgoing data
-        var i = 0
-        for tuple in outgoingSummaries {
-            getScientificDocument(i, infoElemId: tuple.ev.infoElemId as String)
-            i += 1
+
+        for jsonItem in json.arrayValue {
+            let readingEvent = SummaryReadingEvent(fromDime: jsonItem)
+            if let sciDoc = readingEvent.targettedResource {
+                outgoingSummaries.append((ev: readingEvent, ie: sciDoc))
+            }
+            // update amount of work done (on main queue, so it shows on UI)
+            DispatchQueue.main.async {
+                self.fetchProgress.completedUnitCount += 1
+            }
         }
         
         // if nothing is being sent, call receiveAllSummaries with nil
         if outgoingSummaries.count == 0 {
             self.receiver.receiveAllSummaries(nil)
         } else {
-            self.receiver.updateProgress(outgoingSummaries.count - missingInfoElems, total: outgoingSummaries.count)
-        }
-    }
-    
-    /// Gets a scientific document for a given index (referring to the outgoing tuple) and puts it in the appropriate place
-    fileprivate func getScientificDocument(_ forIndex: Int, infoElemId: String) {
-        DiMeFetcher.retrieveScientificDocument(infoElemId) {
-            newScidoc in
-            
-            self.outgoingSummaries[forIndex].ie = newScidoc
-            self.missingInfoElems -= 1
-            self.receiver.updateProgress(self.outgoingSummaries.count - self.missingInfoElems, total: self.outgoingSummaries.count)
-            // all data has been fetched, send it
-            if self.missingInfoElems == 0 {
-                self.receiver.receiveAllSummaries(self.outgoingSummaries)
-            }
+            self.receiver.receiveAllSummaries(outgoingSummaries)
         }
     }
     

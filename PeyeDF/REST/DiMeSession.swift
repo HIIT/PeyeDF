@@ -28,6 +28,17 @@ enum RESTError: Error {
     case invalidUrl
 }
 
+enum DiMeEndpoint: String {
+    case Event = "event"
+    case InformationElement = "informationelement"
+}
+
+/// Uses same tags as radio buttons used to select these (make sure this is reflected in IB)
+enum DiMeSearchableItem: Int {
+    case sciDoc
+    case readingEvent
+}
+
 /// Contains configurations for the DiMe API using the native macOS URL Loading System
 class DiMeSession {
     
@@ -85,6 +96,42 @@ class DiMeSession {
         }.resume()
     }
     
+    /// Fetches a given URL using dime and calls back the given function with a json (if successful).
+    /// Calls back with an error, if an error was given.
+    /// - Attention: Do not call from main thread
+    static func fetch_sync(urlString: String) -> (json: JSON?, error: Error?) {
+        
+        guard !Thread.isMainThread else {
+            AppSingleton.log.error("Called from main thread, exiting")
+            return (nil, nil)
+        }
+        
+        guard let url = URL(string: urlString) else {
+            return(nil, RESTError.invalidUrl)
+        }
+        var retVal: (JSON?, Error?) = (nil, nil)
+        let dGroup = DispatchGroup()
+        
+        dGroup.enter()
+        DiMeSession.sharedSession.dataTask(with: url) {
+            data, response, error in
+            if let data = data, error == nil {
+                retVal = (JSON(data: data), nil)
+            } else if let error = error {
+                retVal = (nil, error)
+            } else {
+                retVal = (nil, nil)
+            }
+            dGroup.leave()
+        }.resume()
+        
+        if dGroup.wait(timeout: DispatchTime.now() + 10.0) == .timedOut {
+            AppSingleton.log.error("Synchronous request fetch timeout")
+        }
+        
+        return retVal
+    }
+
     /// Pushes a given dictionary (representing a json entry) to dime.
     /// Calls back the callback with the response from dime (which should mirror the pushed data).
     static func push(urlString: String, jsonDict: [String: Any], callback: @escaping (JSON?, Error?) -> Void) {

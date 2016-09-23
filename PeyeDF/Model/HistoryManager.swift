@@ -263,8 +263,3 @@ class HistoryManager: FixationDataDelegate {
     }
     
 }
-
-enum DiMeEndpoint: String {
-    case Event = "event"
-    case InformationElement = "informationelement"
-}

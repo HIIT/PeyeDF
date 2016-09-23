@@ -482,6 +482,7 @@
                         <outlet property="noDataLabel" destination="wia-Yd-RnA" id="ktZ-Wn-htK"/>
                         <outlet property="progressBar" destination="ECp-iC-NU9" id="zjL-9v-JTJ"/>
                         <outlet property="reloadButton" destination="Xoc-Gj-MX2" id="lbj-QM-tug"/>
+                        <outlet property="searchField" destination="peL-R7-tE3" id="E85-3y-hwv"/>
                         <outlet property="seenTextRadio" destination="kfz-cv-khF" id="omC-i1-OBs"/>
                         <segue destination="b4I-LT-AQi" kind="show" identifier="showThresholdEditor" id="pCu-7b-i2Z"/>
                     </connections>
