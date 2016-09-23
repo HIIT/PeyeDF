@@ -3,6 +3,7 @@
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11201"/>
         <plugIn identifier="com.apple.pdfkit.ibplugin" version="11201"/>
+        <capability name="box content view" minToolsVersion="7.0"/>
     </dependencies>
     <scenes>
         <!--Window Controller-->
@@ -190,13 +191,13 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <scrollView wantsLayer="YES" autohidesScrollers="YES" horizontalLineScroll="236" horizontalPageScroll="10" verticalLineScroll="236" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PiP-7z-YlQ">
-                                <rect key="frame" x="0.0" y="20" width="349" height="535"/>
+                                <rect key="frame" x="0.0" y="20" width="349" height="481"/>
                                 <clipView key="contentView" copiesOnScroll="NO" id="nxx-8l-Vpa">
-                                    <rect key="frame" x="1" y="1" width="347" height="533"/>
+                                    <rect key="frame" x="1" y="1" width="347" height="479"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="234" viewBased="YES" id="WGv-dD-r3A">
-                                            <rect key="frame" x="0.0" y="0.0" width="347" height="533"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="347" height="479"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -402,29 +403,86 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <box title="Search in:" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="z9t-Pn-jFH">
+                                <rect key="frame" x="-3" y="496" width="355" height="40"/>
+                                <view key="contentView" id="YTl-qi-ZcU">
+                                    <rect key="frame" x="2" y="2" width="351" height="36"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <button tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="kfz-cv-khF">
+                                            <rect key="frame" x="253" y="9" width="80" height="18"/>
+                                            <buttonCell key="cell" type="radio" title="Seen text" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="CYg-0l-t7J">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="searchRadioPress:" target="GuY-65-HiL" id="bfa-5X-xzi"/>
+                                            </connections>
+                                        </button>
+                                        <button translatesAutoresizingMaskIntoConstraints="NO" id="X1X-Tc-PpR">
+                                            <rect key="frame" x="19" y="9" width="92" height="18"/>
+                                            <buttonCell key="cell" type="radio" title="Documents" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="NmQ-hu-whX">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="searchRadioPress:" target="GuY-65-HiL" id="YkF-mV-dis"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="X1X-Tc-PpR" firstAttribute="centerY" secondItem="YTl-qi-ZcU" secondAttribute="centerY" id="4rc-ko-eZF"/>
+                                        <constraint firstAttribute="trailing" secondItem="kfz-cv-khF" secondAttribute="trailing" constant="20" id="Mhy-TE-21E"/>
+                                        <constraint firstItem="kfz-cv-khF" firstAttribute="centerY" secondItem="YTl-qi-ZcU" secondAttribute="centerY" id="hDF-AL-0i7"/>
+                                        <constraint firstItem="X1X-Tc-PpR" firstAttribute="leading" secondItem="YTl-qi-ZcU" secondAttribute="leading" constant="20" id="nIW-Lv-iDB"/>
+                                    </constraints>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="34" id="HPO-fn-knQ"/>
+                                </constraints>
+                            </box>
+                            <searchField wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="peL-R7-tE3">
+                                <rect key="frame" x="0.0" y="533" width="349" height="22"/>
+                                <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" id="oBx-8J-RUm">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </searchFieldCell>
+                                <connections>
+                                    <action selector="performClick:" target="Xoc-Gj-MX2" id="snD-t0-Fh5"/>
+                                </connections>
+                            </searchField>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="peL-R7-tE3" firstAttribute="top" secondItem="4ti-6V-pgA" secondAttribute="bottom" constant="2" id="0GJ-fb-nx6"/>
                             <constraint firstItem="PiP-7z-YlQ" firstAttribute="leading" secondItem="DXR-Pi-Zmz" secondAttribute="leading" id="3h2-zL-AaB"/>
                             <constraint firstAttribute="trailing" secondItem="Xoc-Gj-MX2" secondAttribute="trailing" id="7Dr-W9-AM0"/>
+                            <constraint firstAttribute="trailing" secondItem="z9t-Pn-jFH" secondAttribute="trailing" id="Bai-Cd-mhP"/>
                             <constraint firstItem="wia-Yd-RnA" firstAttribute="centerX" secondItem="DXR-Pi-Zmz" secondAttribute="centerX" id="CIL-If-8SI"/>
                             <constraint firstAttribute="bottom" secondItem="PiP-7z-YlQ" secondAttribute="bottom" constant="20" id="F95-0H-eQd"/>
                             <constraint firstAttribute="trailing" secondItem="PiP-7z-YlQ" secondAttribute="trailing" id="HZ1-Zh-e2P"/>
                             <constraint firstItem="4ti-6V-pgA" firstAttribute="centerX" secondItem="DXR-Pi-Zmz" secondAttribute="centerX" id="PMh-9h-j3o"/>
                             <constraint firstAttribute="bottom" secondItem="ECp-iC-NU9" secondAttribute="bottom" constant="1" id="Pa9-xj-Bxi"/>
                             <constraint firstItem="Xoc-Gj-MX2" firstAttribute="top" secondItem="DXR-Pi-Zmz" secondAttribute="top" id="Rh5-r1-vmc"/>
-                            <constraint firstItem="PiP-7z-YlQ" firstAttribute="top" secondItem="DXR-Pi-Zmz" secondAttribute="top" constant="20" id="Scg-6N-t7K"/>
                             <constraint firstAttribute="trailing" secondItem="ECp-iC-NU9" secondAttribute="trailing" constant="20" id="WyQ-bj-R4m"/>
+                            <constraint firstItem="z9t-Pn-jFH" firstAttribute="leading" secondItem="DXR-Pi-Zmz" secondAttribute="leading" id="Ycp-iz-J0S"/>
+                            <constraint firstItem="PiP-7z-YlQ" firstAttribute="top" secondItem="z9t-Pn-jFH" secondAttribute="bottom" constant="-1" id="gfa-U2-hfn"/>
+                            <constraint firstItem="z9t-Pn-jFH" firstAttribute="top" secondItem="peL-R7-tE3" secondAttribute="bottom" constant="-1" id="hxJ-6F-KpM"/>
+                            <constraint firstAttribute="trailing" secondItem="peL-R7-tE3" secondAttribute="trailing" id="hy0-VW-Bz1"/>
                             <constraint firstItem="4ti-6V-pgA" firstAttribute="top" secondItem="DXR-Pi-Zmz" secondAttribute="top" constant="1" id="jMS-hk-RnO"/>
+                            <constraint firstItem="peL-R7-tE3" firstAttribute="leading" secondItem="DXR-Pi-Zmz" secondAttribute="leading" id="nd4-l0-aYZ"/>
                             <constraint firstItem="ECp-iC-NU9" firstAttribute="leading" secondItem="DXR-Pi-Zmz" secondAttribute="leading" constant="20" id="yxa-WP-Lse"/>
                             <constraint firstItem="wia-Yd-RnA" firstAttribute="centerY" secondItem="DXR-Pi-Zmz" secondAttribute="centerY" id="z1X-oc-hPO"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="documentsRadio" destination="X1X-Tc-PpR" id="7L6-n3-GiW"/>
                         <outlet property="historyTable" destination="WGv-dD-r3A" id="lJI-Fq-3eb"/>
                         <outlet property="loadingLabel" destination="4ti-6V-pgA" id="bNb-o0-e89"/>
                         <outlet property="noDataLabel" destination="wia-Yd-RnA" id="ktZ-Wn-htK"/>
                         <outlet property="progressBar" destination="ECp-iC-NU9" id="zjL-9v-JTJ"/>
                         <outlet property="reloadButton" destination="Xoc-Gj-MX2" id="lbj-QM-tug"/>
+                        <outlet property="seenTextRadio" destination="kfz-cv-khF" id="omC-i1-OBs"/>
                         <segue destination="b4I-LT-AQi" kind="show" identifier="showThresholdEditor" id="pCu-7b-i2Z"/>
                     </connections>
                 </viewController>

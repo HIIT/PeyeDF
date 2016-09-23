@@ -111,6 +111,36 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
         }
     }
     
+    // MARK: - Search
+    
+    @IBOutlet weak var documentsRadio: NSButton!
+    @IBOutlet weak var seenTextRadio: NSButton!
+    
+    /// Uses same tag as radio buttons (make sure this is reflected in IB)
+    enum SearchIn: Int {
+        case documents
+        case seenText
+    }
+    
+    fileprivate(set) var searchIn: SearchIn = .documents { didSet {
+        switch searchIn {
+        case .documents:
+            DispatchQueue.main.async {
+                self.documentsRadio.state = NSOnState
+                self.seenTextRadio.state = NSOffState
+            }
+        case .seenText:
+            DispatchQueue.main.async {
+                self.documentsRadio.state = NSOffState
+                self.seenTextRadio.state = NSOnState
+            }
+        }
+    } }
+    
+    @IBAction func searchRadioPress(_ sender: NSButton) {
+        searchIn = SearchIn(rawValue: sender.tag)!
+    }
+    
     // MARK: - Contextual menu
     
     /// Extracts a json file containing all (non-summary) reading events associated to the
