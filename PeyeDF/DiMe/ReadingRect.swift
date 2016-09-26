@@ -337,8 +337,9 @@ extension ReadingRect {
     /// - returns: A rectangle representing the annotation
     var annotationRect: NSRect { get {
         switch self.classSource {
-        case .click:
+        case .click, .ml:
             // if this is for a quick annotation, show on the left of paragraph
+            // also used for machine learning
             let markRect = self.rect
             let lineThickness = UserDefaults.standard.value(forKey: PeyeConstants.prefAnnotationLineThickness) as! CGFloat
             let newRect_x = markRect.origin.x - PeyeConstants.quickAnnotationDistance

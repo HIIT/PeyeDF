@@ -28,17 +28,6 @@ enum RESTError: Error {
     case invalidUrl
 }
 
-enum DiMeEndpoint: String {
-    case Event = "event"
-    case InformationElement = "informationelement"
-}
-
-/// Uses same tags as radio buttons used to select these (make sure this is reflected in IB)
-enum DiMeSearchableItem: Int {
-    case sciDoc
-    case readingEvent
-}
-
 /// Contains configurations for the DiMe API using the native macOS URL Loading System
 class DiMeSession {
     

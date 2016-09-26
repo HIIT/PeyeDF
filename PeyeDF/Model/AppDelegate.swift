@@ -131,16 +131,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     /// Convenience function to open a file using a given local url and optionally 
     /// a search string (to initiate a query) and focus area (to highlight a specific area).
-    func openDocument(_ fileURL: URL, searchString: String?, focusArea: FocusArea? = nil) {
+    func openDocument(_ fileURL: URL, searchString: String?, focusArea: FocusArea? = nil, previousSessionId: String? = nil) {
         DispatchQueue.main.async {
             NSDocumentController.shared().openDocument(withContentsOf: fileURL, display: true) {
                 document, _, _ in
-                if let searchS = searchString, let doc = document ,
-                  searchS != "" && doc.windowControllers.count == 1 {
-                    (doc.windowControllers[0] as! DocumentWindowController).doSearch(searchS, exact: false)
+                guard let doc = document as? PeyeDocument,
+                      let vc = doc.windowControllers[0] as? DocumentWindowController else {
+                        AppSingleton.log.error("Failed to obtain PeyeDocument or window controller")
+                        return
                 }
-                if let f = focusArea, let doc = document as? PeyeDocument {
+                if let searchS = searchString, searchS != "" && doc.windowControllers.count == 1 {
+                    vc.doSearch(searchS, exact: false)
+                    vc.pdfReader?.previousSessionId = previousSessionId
+                }
+                if let f = focusArea {
                     doc.focusOn(f)
+                }
+                if let previousSessionId = previousSessionId {
+                    vc.pdfReader?.previousSessionId = previousSessionId
                 }
             }
         }
@@ -148,9 +156,53 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     /// A url sent for opening (using host "reader") is sent here.
     func openComponents(_ comps: URLComponents) {
+
         let query: String? = comps.parameterDictionary?["search"]
-        if comps.path != "" {
-            openDocument(URL(fileURLWithPath: comps.path), searchString: query, focusArea: FocusArea(fromURLComponents: comps))
+        let previousSessionId: String? = comps.parameterDictionary?["previousSessionId"]
+        var focusArea: FocusArea?
+        // attempt to generate a focus area if we have a page parameter
+        if comps.parameterDictionary?["page"] != nil {
+            focusArea = FocusArea(fromURLComponents: comps)
+        }
+        
+        guard comps.path != "", comps.path.skipPrefix(1) != "" else {
+            return
+        }
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            
+            // first check if we have a valid url, if not try to use it as sessionId, if that still doesn't work try contentHash, then appId
+            let possibleURL = URL(fileURLWithPath: comps.path)
+            var failed = false
+            do {
+                if try possibleURL.checkResourceIsReachable() {
+                    self.openDocument(possibleURL, searchString: query, focusArea: focusArea, previousSessionId: previousSessionId)
+                } else {
+                    failed = true
+                }
+            } catch {
+                failed = true
+            }
+            if failed {
+                let path = comps.path.skipPrefix(1)
+                // first try to convert path to sessionId, then contentHash, then appId
+                let foundSciDoc: ScientificDocument?
+                if let sciDoc = DiMeFetcher.getScientificDocument(for: .sessionId(path), reportErrors: false) {
+                    foundSciDoc = sciDoc
+                } else if let sciDoc = DiMeFetcher.getScientificDocument(for: .contentHash(path), reportErrors: false) {
+                    foundSciDoc = sciDoc
+                } else if let sciDoc = DiMeFetcher.getScientificDocument(for: .appId(path), reportErrors: true) {
+                    foundSciDoc = sciDoc
+                } else {
+                    foundSciDoc = nil
+                    AppSingleton.log.error("Failed to open document for url request (path: \(path))")
+                }
+                if let sciDoc = foundSciDoc {
+                    let url = URL(fileURLWithPath: sciDoc.uri)
+                    self.openDocument(url, searchString: query, focusArea: focusArea, previousSessionId: previousSessionId)
+                }
+            }
+
         }
     }
     

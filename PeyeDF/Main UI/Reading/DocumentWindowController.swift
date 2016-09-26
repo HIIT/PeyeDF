@@ -630,7 +630,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         }
         let sciDoc: ScientificDocument
         if let txt = plainText,
-            let _sciDoc = DiMeFetcher.getScientificDocument(contentHash: txt.sha1()) {
+            let _sciDoc = DiMeFetcher.getScientificDocument(for: SciDocConvertible.contentHash(txt.sha1())) {
             // if found, associate object and update uri
             sciDoc = _sciDoc
             sciDoc.uri = url.path
@@ -651,10 +651,14 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                 DispatchQueue.global(qos: DispatchQoS.QoSClass.utility).asyncAfter(deadline: showTime) {
                     [weak self] in
                     DiMeFetcher.retrieveAllManualReadingRects(forSciDoc: sciDoc) {
+                        // disable button until operation is complete
+                        self?.window?.standardWindowButton(.closeButton)?.isEnabled = false
                         $0.forEach() {
                             self?.pdfReader?.markings.addRect($0)
                         }
                         self?.pdfReader?.autoAnnotate()
+                        // re enable close button once all data has been retrieved
+                        self?.window?.standardWindowButton(.closeButton)?.isEnabled = true
                     }
                 }
             }
@@ -670,12 +674,12 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
               let json = self?.pdfReader?.document?.autoCrossref() {
                 // found crossref, use it
                 sciDoc.updateFields(fromCrossRef: json)
-            } else if let tit = self?.pdfReader?.document!.getTitle() {
+            } else if let tit = self?.pdfReader?.document?.getTitle() {
                 // if not, attempt to get title from document
                 sciDoc.title = tit
-            } else if let tit = self?.pdfReader?.document!.guessTitle() {
+            } else if let tit = self?.pdfReader?.document?.guessTitle() {
                 // as a last resort, guess it
-                self?.pdfReader?.document!.setTitle(tit)
+                self?.pdfReader?.document?.setTitle(tit)
                 sciDoc.title = tit
             }
             self?.sendAndUpdateScidoc(sciDoc)
@@ -738,7 +742,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                 }
                 
                 // update tags
-                if let own_sciDoc = self.pdfReader!.sciDoc, let cHash = own_sciDoc.contentHash, let dime_sciDoc = DiMeFetcher.getScientificDocument(contentHash: cHash) {
+                if let own_sciDoc = self.pdfReader!.sciDoc, let cHash = own_sciDoc.contentHash, let dime_sciDoc = DiMeFetcher.getScientificDocument(for: SciDocConvertible.contentHash(cHash)) {
                     self.pdfReader!.sciDoc!.id = dime_sciDoc.id!
                     self.pdfReader!.sciDoc!.updateTags()
                 }
@@ -865,10 +869,11 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             // does not have already an associated info elemen in dime
             let showTime = DispatchTime.now() + 2  // two-second wait
             DispatchQueue.global(qos: DispatchQoS.QoSClass.utility).asyncAfter(deadline: showTime) {
+                [weak self] in
                 DiMeFetcher.retrieveScientificDocument(sciDoc.appId) {
                     scidoc in
                     if scidoc == nil {
-                        self.sendAndUpdateScidoc(sciDoc)
+                        self?.sendAndUpdateScidoc(sciDoc)
                     }
                 }
             }
@@ -945,7 +950,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             let randWait = 1 + drand48() * 0.5  // random amount between 1 and 1.5
             let showTime = DispatchTime.now() + Double(Int64(randWait * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
             DispatchQueue.global(qos: DispatchQoS.QoSClass.default).asyncAfter(deadline: showTime) {
-                if let own_sciDoc = self.pdfReader!.sciDoc, let cHash = own_sciDoc.contentHash, let dime_sciDoc = DiMeFetcher.getScientificDocument(contentHash: cHash) {
+                if let own_sciDoc = self.pdfReader!.sciDoc, let cHash = own_sciDoc.contentHash, let dime_sciDoc = DiMeFetcher.getScientificDocument(for: SciDocConvertible.contentHash(cHash)) {
                     self.pdfReader!.sciDoc!.id = dime_sciDoc.id!
                     self.pdfReader!.sciDoc!.updateTags()
                 }

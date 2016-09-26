@@ -24,6 +24,47 @@
 
 import Foundation
 
+// MARK: - Enums
+
+///
+
+/// Points to an endpoint, with the associated string used in the url for the request
+enum DiMeEndpoint: String {
+    case Event = "event"
+    case InformationElement = "informationelement"
+}
+
+/// Uses same tags as radio buttons used to select these (make sure this is reflected in IB)
+enum DiMeSearchableItem: Int {
+    case sciDoc
+    case readingEvent
+}
+
+/// Can be either reading event or summary reading event. The raw value points
+/// to the DiMe parameter query to only fetch that type.
+enum EventTypeQuery: String {
+    case ReadingEvent = "type=http://www.hiit.fi/ontologies/dime/%23ReadingEvent"
+    case SummaryReadingEvent = "type=http://www.hiit.fi/ontologies/dime/%23SummaryReadingEvent"
+}
+
+/// Used to identify IDs which can be "converted" to a ScientificDocument
+/// by querying DiMe using the DiMeFetcher class.
+/// The String associated to each represents its respective id.
+enum SciDocConvertible {
+    /// The id used by DiMe (from 1 incremental) to store information elements (and hence Scientific Documents)
+    case id(Int)
+    /// The appId used by PeyeDF to identify a Scientific Document. This is normally
+    /// PeyeDF_<contentHash>
+    case appId(String)
+    /// The sessionId which refers to an event which in turn refers to a Scientific Document
+    case sessionId(String)
+    /// The content hash used to identify a Scientific Document (hash of the plain text)
+    case contentHash(String)
+}
+
+
+// MARK: - Protocols
+
 /// Instances that want to receive dime data must implement this protocol and add themselves as delegates to the DiMeFetcher
 protocol DiMeReceiverDelegate: class {
     
@@ -31,6 +72,8 @@ protocol DiMeReceiverDelegate: class {
     func receiveAllSummaries(_ tuples: [(ev: SummaryReadingEvent, ie: ScientificDocument)]?)
     
 }
+
+// MARK: - Main class
 
 /// DiMeFetcher is supposed to be used as a singleton (via sharedFetcher)
 class DiMeFetcher {
@@ -144,7 +187,7 @@ class DiMeFetcher {
     
     /// Retrieves all non-summary reading events with the given sessionId and callbacks the given function using the
     /// result as a parameter.
-    func getNonSummaries(withSessionId sessionId: String, callbackOnComplete: @escaping (([ReadingEvent]) -> Void)) {
+    func retrieveNonSummaries(withSessionId sessionId: String, callbackOnComplete: @escaping (([ReadingEvent]) -> Void)) {
         DiMeFetcher.fetchPeyeDFEvents(getSummaries: false, sessionId: sessionId) {
             json in
             var foundEvents = [ReadingEvent]()
@@ -164,7 +207,7 @@ class DiMeFetcher {
     /// Useful to check to which document any event (NonSummary) was associated to.
     /// Asynchronously calls the given callback with the obtained scidoc.
     func retrieveScientificDocument(forSessionId sesId: String, callback: @escaping (ScientificDocument?) -> Void) {
-        getNonSummaries(withSessionId: sesId) {
+        retrieveNonSummaries(withSessionId: sesId) {
             events in
             if events.count == 0 {
                 callback(nil)
@@ -226,7 +269,7 @@ class DiMeFetcher {
         }
         
         // wait 5 seconds for all operations to complete
-        let waitTime = DispatchTime.now() + Double(Int64(5 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+        let waitTime = DispatchTime.now() + 5.0
         
         if dGroup.wait(timeout: waitTime) == .timedOut {
             AppSingleton.log.debug("Tuple request failed")
@@ -259,14 +302,14 @@ class DiMeFetcher {
             filterString += "&elemId=\(elemId!)"
         }
         
-        let typeString: String
+        let typeQuery: EventTypeQuery
         if getSummaries {
-            typeString = "SummaryReadingEvent"
+            typeQuery = .SummaryReadingEvent
         } else {
-            typeString = "ReadingEvent"
+            typeQuery = .ReadingEvent
         }
         
-        DiMeSession.fetch(urlString: server_url + "/data/events?actor=PeyeDF&type=http://www.hiit.fi/ontologies/dime/%23\(typeString)" + filterString) {
+        DiMeSession.fetch(urlString: server_url + "/data/events?actor=PeyeDF&\(typeQuery.rawValue)" + filterString) {
             json, error in
             if let json = json {
                 callback(json)
@@ -286,14 +329,6 @@ class DiMeFetcher {
     /// - Attention: Don't call this from the main thread.
     static func getPeyeDFEvents(getSummaries: Bool, sessionId: String? = nil, elemId: Int? = nil) -> [SummaryReadingEvent]? {
         
-        guard !Thread.isMainThread else {
-            AppSingleton.log.error("Attempted to call on the main thread, aborting")
-            return nil
-        }
-        var foundEvents: [SummaryReadingEvent]?
-        
-        let dGroup = DispatchGroup()
-        
         let server_url = DiMeSession.dimeUrl
         
         var filterString = ""
@@ -306,30 +341,19 @@ class DiMeFetcher {
             filterString += "&elemId=\(elemId!)"
         }
         
-        let typeString: String
+        let typeQuery: EventTypeQuery
         if getSummaries {
-            typeString = "SummaryReadingEvent"
+            typeQuery = .SummaryReadingEvent
         } else {
-            typeString = "ReadingEvent"
+            typeQuery = .ReadingEvent
         }
         
-        dGroup.enter()
-        DiMeSession.fetch(urlString: server_url + "/data/events?actor=PeyeDF&type=http://www.hiit.fi/ontologies/dime/%23\(typeString)" + filterString) {
-            json, error in
-            if let retrievedEvents = json?.array {
-                foundEvents = retrievedEvents.map({SummaryReadingEvent(fromDime: $0)})
-            }
-            dGroup.leave()
+        let (json, _) = DiMeSession.fetch_sync(urlString: server_url + "/data/events?actor=PeyeDF&\(typeQuery.rawValue)" + filterString)
+        if let retrievedEvents = json?.array {
+            return retrievedEvents.map({SummaryReadingEvent(fromDime: $0)})
+        } else {
+            return nil
         }
-        
-        // wait 60 seconds for operation to complete
-        let waitTime = DispatchTime.now() + 5.0
-        
-        if dGroup.wait(timeout: waitTime) == DispatchTimeoutResult.timedOut {
-            AppSingleton.log.debug("Summary Reading Event request timed out")
-        }
-            
-        return foundEvents
     }
 
     /// Asynchronously attempt to retrieve a list of tags for a given information element (using appId).
@@ -365,55 +389,100 @@ class DiMeFetcher {
         }
     }
     
-    /// **Synchronously** attempt to retrieve a single information element for the given contentHash.
+    /// **Synchronously** attempt to retrieve a single information element for the given id.
+    /// The id can be any id defined by SciDocConvertible (appId, int id, etc.)
     /// Returns a scientific document or nil if it failed.
     /// - Attention: Don't call this from the main thread.
-    static func getScientificDocument(contentHash hash: String) -> ScientificDocument? {
+    static func getScientificDocument(for idType: SciDocConvertible, reportErrors: Bool = true) -> ScientificDocument? {
+        
+        /// Helper function to synchronously fetch a scientific document given a url, logging any error.
+        func getSciDocFromDime(urlString: String, reportErrors: Bool) -> ScientificDocument? {
+            let (responseJson, _) = DiMeSession.fetch_sync(urlString: urlString)
+            guard let json = responseJson, json.count > 0 else {
+                if reportErrors {
+                    AppSingleton.log.debug("ScientificDocument for request:'\(urlString)' was not found in the database.")
+                }
+                return nil
+            }
+            // assume last returned item is the one we are looking for
+            let lastResponse = json[json.count - 1]
+            if let error = lastResponse["error"].string {
+                if reportErrors {
+                    AppSingleton.log.error("Dime fetched json contains error:\n\(error)")
+                }
+                return nil
+            }
+            let foundScidoc = ScientificDocument(fromDime: lastResponse)
+            if foundScidoc.appId == "" || foundScidoc.contentHash == nil {
+                if reportErrors {
+                    AppSingleton.log.error("Found Scientific Document appears invalid (no IDs)")
+                }
+                return nil
+            } else {
+                return foundScidoc
+            }
+        }
         
         guard !Thread.isMainThread else {
             AppSingleton.log.error("Attempted to call on the main thread, aborting")
             return nil
         }
         
-        var foundDoc: ScientificDocument?
+        // format: api/data/informationelement<suffix><value>
         
-        let dGroup = DispatchGroup()
+        let endpoint: DiMeEndpoint
+        let querySuffix: String
+        let queryValue: String
         
-        let server_url = DiMeSession.dimeUrl
+        switch(idType) {
+        case .appId(let appId):
+            // api/data/informationelements/?appId=<appId>
+            endpoint = .InformationElement
+            querySuffix = "s/?appId="
+            queryValue = appId
+        case .contentHash(let cHash):
+            // api/data/informationelements/?contentHash=<appId>
+            endpoint = .InformationElement
+            querySuffix = "s/?contentHash="
+            queryValue = cHash
+        case .id(let id):
+            // api/data/informationelement/<id>
+            endpoint = .InformationElement
+            querySuffix = "/"
+            queryValue = "\(id)"
+        case .sessionId(let sessionId):
+            // api/data/events/?sessionId=<sessionId>
+            endpoint = .Event
+            querySuffix = "s/?sessionId="
+            queryValue = sessionId
+        }
         
-        let reqString = server_url + "/data/informationelements?contentHash=" + hash
+        let query_url = DiMeSession.dimeUrl + "/data/"
         
-        dGroup.enter()
-        DiMeSession.fetch(urlString: reqString) {
-            json, _ in
-            if let json = json {
-                // assume first returned item is the one we are looking for
-                let firstResponse = json[0]
-                if let error = firstResponse["error"].string {
-                    AppSingleton.log.error("Dime fetched json contains error:\n\(error)")
+        switch idType {
+        case .sessionId:
+            // in case we are looking for a sessionId, first we try with summary events,
+            // then if none we try with reading events
+            if let foundSummaries = DiMeFetcher.getPeyeDFEvents(getSummaries: true, sessionId: queryValue),
+                let lastSummary = foundSummaries.last,
+                let targettedResource = lastSummary.targettedResource {
+                return targettedResource
+            } else if let foundEvents = DiMeFetcher.getPeyeDFEvents(getSummaries: true, sessionId: queryValue),
+                let lastEvent = foundEvents.last,
+                let targettedResource = lastEvent.targettedResource {
+                return targettedResource
+            } else  {
+                if reportErrors {
+                    AppSingleton.log.debug("Failed to find an associated document for sessionId:\(queryValue)")
                 }
-                if let contentHash = firstResponse["contentHash"].string {
-                    if hash == contentHash {
-                        // success
-                        foundDoc = ScientificDocument(fromDime: firstResponse)
-                    } else {
-                        AppSingleton.log.error("Retrieved contentHash does not match requested contentHash: \(json)")
-                    }
-                } else {
-                    AppSingleton.log.debug("Info element with contentHash:'\(hash)' was not found in the database.")
-                }
+                return nil
             }
-            dGroup.leave()
+            
+        default:
+            // otherwise, just use the query to filter dime results (use helper function)
+            return getSciDocFromDime(urlString: query_url + "\(endpoint.rawValue)\(querySuffix)\(queryValue)", reportErrors: reportErrors)
         }
         
-        // wait 5 seconds for operation to complete
-        let waitTime = DispatchTime.now() + 5.0
-        
-        if dGroup.wait(timeout: waitTime) == DispatchTimeoutResult.timedOut {
-            AppSingleton.log.debug("SciDoc request timed out")
-        }
-        
-        return foundDoc
     }
     
     /// Attempt to retrieve a single ScientificDocument from a given info element app id.
@@ -451,9 +520,9 @@ class DiMeFetcher {
     /// **Synchronously** search for the given string in reading events only (not summary reading events)
     static func searchReadingEvents(for searchQuery: String) -> [ReadingEvent]? {
         
-        let searchType = "http://www.hiit.fi/ontologies/dime/%23ReadingEvent"
+        let searchType = EventTypeQuery.ReadingEvent
         
-        let result = DiMeSession.fetch_sync(urlString: DiMeSession.dimeUrl + "/eventsearch?query=\(searchQuery)&type=\(searchType)")
+        let result = DiMeSession.fetch_sync(urlString: DiMeSession.dimeUrl + "/eventsearch?query=\(searchQuery)&\(searchType.rawValue)")
         
         guard let json = result.json, let docs = json["docs"].array, docs.count > 0 else {
             return nil
@@ -466,9 +535,9 @@ class DiMeFetcher {
     /// **Synchronously** search for the given string in scientific documents only
     static func searchSciDocs(for searchQuery: String) -> [ScientificDocument]? {
         
-        let searchType = "http://www.hiit.fi/ontologies/dime/%23ScientificDocument"
+        let searchType = EventTypeQuery.SummaryReadingEvent
         
-        let result = DiMeSession.fetch_sync(urlString: DiMeSession.dimeUrl + "/search?query=\(searchQuery)&type=\(searchType)")
+        let result = DiMeSession.fetch_sync(urlString: DiMeSession.dimeUrl + "/search?query=\(searchQuery)&\(searchType.rawValue)")
     
         guard let json = result.json, let docs = json["docs"].array, docs.count > 0 else {
             return nil
@@ -478,14 +547,14 @@ class DiMeFetcher {
     
     }
     
-    /// Attempts to convert a contenthash to a URL pointing to a file on disk.
-    /// Returns nil if the contenthash was not on dime, or if the url points to an non-existing file.
+    /// Attempts to convert any kind of ID string (see SciDocConvertible) to a URL pointing to a file on disk.
+    /// Returns nil if the specified item was not on dime, or if the url points to an non-existing file.
     /// Aysnchronously calls the specified callback with the (nullable) url.
-    static func retrieveUrl(forContentHash cHash: String, callback: @escaping (URL?) -> Void ) {
+    static func retrieveUrl(for idType: SciDocConvertible, reportErrors: Bool = true, callback: @escaping (URL?) -> Void ) {
         // run task on default concurrent queue
         DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async {
             
-            guard let sciDoc = DiMeFetcher.getScientificDocument(contentHash: cHash) else {
+            guard let sciDoc = DiMeFetcher.getScientificDocument(for: idType, reportErrors: reportErrors) else {
                 callback(nil)
                 return
             }
@@ -493,6 +562,9 @@ class DiMeFetcher {
             if FileManager.default.fileExists(atPath: sciDoc.uri) {
                 callback(URL(fileURLWithPath: sciDoc.uri))
             } else {
+                if reportErrors {
+                    AppSingleton.log.warning("URL for associated SciDoc not found: \(sciDoc.uri)")
+                }
                 callback(nil)
             }
             

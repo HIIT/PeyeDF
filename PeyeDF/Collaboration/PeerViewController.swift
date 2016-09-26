@@ -153,7 +153,7 @@ class PeerViewController: NSViewController {
         case .reading(let cHash):
             self.readButton.isEnabled = false
             // check if we have a file corresponding to the given content hash in dime (and open it). If not, request file to peer (will be opened once received)
-            DiMeFetcher.retrieveUrl(forContentHash: cHash) {
+            DiMeFetcher.retrieveUrl(for: SciDocConvertible.contentHash(cHash)) {
                 foundUrl in
                 if let url = foundUrl {
                     (NSApplication.shared().delegate! as! AppDelegate).openDocument(url, searchString: nil)

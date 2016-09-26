@@ -339,11 +339,12 @@ class PDFBase: PDFView {
         self.searching = true
         
         DispatchQueue.global(qos: DispatchQoS.QoSClass.utility).async {
+            [weak self] in
             // loop on tag annotations, since those are split by "closeness" (unlike the readingTags array, which contains whole tags)
-            self.tagAnnotations.forEach() {
+            self?.tagAnnotations.forEach() {
                 
                 // check if we are searching (if not, skip rest)
-                guard self.searching else {
+                guard self?.searching ?? false else {
                     return
                 }
                 
@@ -357,7 +358,7 @@ class PDFBase: PDFView {
                 }
             }
             
-            self.searching = false
+            self?.searching = false
         }
     }
     

@@ -43,6 +43,11 @@ class PDFReader: PDFBase {
     /// Id for this reading session, all events sent by this instance should have the same value
     let sessionId: String = { return UUID().uuidString.sha1() }()
     
+    /// We set this if we have a reference to a preceding reading session
+    /// (we re-started reading).
+    /// Will be sent to all reading events and summary reading events
+    var previousSessionId: String?
+    
     /// Id for the outgoing summary event. If set, forces dime to replace the event with this id
     /// (useful to regularly update the outgoing summary event)
     fileprivate(set) var summaryId: Int?
@@ -449,7 +454,9 @@ class PDFReader: PDFBase {
                 vpi += 1
             }
             
-            return ReadingEvent(sessionId: sessionId, pageNumbers: visiblePageNums, pageLabels: visiblePageLabels, pageRects: readingRects, plainTextContent: plainTextContent, infoElemId: sciDoc!.getAppId())
+            let outgoingEvent = ReadingEvent(sessionId: sessionId, pageNumbers: visiblePageNums, pageLabels: visiblePageLabels, pageRects: readingRects, plainTextContent: plainTextContent, infoElemId: sciDoc!.getAppId())
+            outgoingEvent.previousSessionId = previousSessionId
+            return outgoingEvent
         } else {
             return nil
         }
@@ -464,6 +471,7 @@ class PDFReader: PDFBase {
         let outgoingRects = markings.getAllReadingRects().filter({$0.new})
         
         let retEv = SummaryReadingEvent(rects: outgoingRects, sessionId: sessionId, plainTextContent: nil, infoElemId: sciDoc!.getAppId(), foundStrings: foundStrings)
+        retEv.previousSessionId = previousSessionId
         if let id = summaryId {
             retEv.setId(id)
         }

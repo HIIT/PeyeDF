@@ -161,7 +161,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
             let outURL = panel.url!
             loadingStarted()
             
-            diMeFetcher?.getNonSummaries(withSessionId: sessionId) {
+            diMeFetcher?.retrieveNonSummaries(withSessionId: sessionId) {
                 foundEvents in
                 
                 var outEyeRects = [EyeRectangle]()

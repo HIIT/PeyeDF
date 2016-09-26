@@ -39,10 +39,11 @@ class PDFPeerOverview: PDFOverview {
         switch area.type {
         case .rect(let rect):
             DispatchQueue.global(qos: DispatchQoS.QoSClass.utility).async {
-                self.markings.addRect(rect, ofClass: .medium, withSource: .localPeer, forPage: area.pageIndex)
-                self.markings.flattenRectangles_intersectToHigh()
+                [weak self] in
+                self?.markings.addRect(rect, ofClass: .medium, withSource: .localPeer, forPage: area.pageIndex)
+                self?.markings.flattenRectangles_intersectToHigh()
                 DispatchQueue.main.async {
-                    self.refreshPage(atIndex: area.pageIndex, rect: rect)
+                    self?.refreshPage(atIndex: area.pageIndex, rect: rect)
                 }
             }
         default:
@@ -55,10 +56,11 @@ class PDFPeerOverview: PDFOverview {
         switch area.type {
         case .rect(let rect):
             DispatchQueue.global(qos: DispatchQoS.QoSClass.utility).async {
-                self.markings.addRect(rect, ofClass: .low, withSource: .networkPeer, forPage: area.pageIndex)
-                self.markings.flattenRectangles_intersectToHigh()
+                [weak self] in
+                self?.markings.addRect(rect, ofClass: .low, withSource: .networkPeer, forPage: area.pageIndex)
+                self?.markings.flattenRectangles_intersectToHigh()
                 DispatchQueue.main.async {
-                    self.refreshPage(atIndex: area.pageIndex, rect: rect)
+                    self?.refreshPage(atIndex: area.pageIndex, rect: rect)
                 }
             }
         default:

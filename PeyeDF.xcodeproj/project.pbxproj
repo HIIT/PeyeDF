@@ -416,12 +416,12 @@
 		A9000C5D1B358BBC00E59C7B /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				A91CB9491B332EDB00671868 /* AppDelegate.swift */,
+				A9F335721B3ABC090042BFB3 /* AppSingleton.swift */,
 				A93C53DB1B8DCEFB00179C72 /* HistoryManager.swift */,
 				A9038F7A1B8F634200A7D183 /* Dictionariable.swift */,
 				A9677F911BA806F700DC48CC /* MidasManager.swift */,
-				A9F335721B3ABC090042BFB3 /* AppSingleton.swift */,
 				A91CB96C1B332FB700671868 /* PeyeDocument.swift */,
-				A91CB9491B332EDB00671868 /* AppDelegate.swift */,
 				A9CEAA7F1BE7793500E23964 /* Paragraphs.swift */,
 				A91DA4771C7A395200257FF0 /* FocusAreas.swift */,
 			);
@@ -474,6 +474,7 @@
 		A90C0AD71CEE169C000D4B75 /* Reading */ = {
 			isa = PBXGroup;
 			children = (
+				A95A8CEE1B94407D0093119E /* PDFReader.swift */,
 				A95A8CED1B94407D0093119E /* DocumentWindowController.swift */,
 				A913A9241BA1B047008BA10D /* MainSplitController.swift */,
 				A918F80F1BC2D71500345448 /* eyeBox.swift */,
@@ -481,7 +482,6 @@
 				A9260F561BA4CD10005B1556 /* MyOverlay.swift */,
 				A974ADD71BD169E0008AB977 /* DocumentWindow.swift */,
 				A913A91F1BA1A93B008BA10D /* SearchPanelController.swift */,
-				A95A8CEE1B94407D0093119E /* PDFReader.swift */,
 				A95A8CEF1B94407D0093119E /* PDFSideController.swift */,
 				A95A8CF11B94407D0093119E /* ThumbSideController.swift */,
 			);

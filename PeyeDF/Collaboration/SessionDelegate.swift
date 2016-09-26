@@ -67,7 +67,7 @@ import MultipeerConnectivity
             
         case .requestFile(let cHash):
             // we received a request for current file, send it to sender.
-            DiMeFetcher.retrieveUrl(forContentHash: cHash) {
+            DiMeFetcher.retrieveUrl(for: SciDocConvertible.contentHash(cHash)) {
                 foundUrl in
                 
                 guard let url = foundUrl else {
