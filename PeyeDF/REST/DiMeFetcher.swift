@@ -45,6 +45,7 @@ enum DiMeSearchableItem: Int {
 enum EventTypeQuery: String {
     case ReadingEvent = "type=http://www.hiit.fi/ontologies/dime/%23ReadingEvent"
     case SummaryReadingEvent = "type=http://www.hiit.fi/ontologies/dime/%23SummaryReadingEvent"
+    case ScientificDocument = "type=http://www.hiit.fi/ontologies/dime/%23ScientificDocument"
 }
 
 /// Used to identify IDs which can be "converted" to a ScientificDocument
@@ -535,7 +536,7 @@ class DiMeFetcher {
     /// **Synchronously** search for the given string in scientific documents only
     static func searchSciDocs(for searchQuery: String) -> [ScientificDocument]? {
         
-        let searchType = EventTypeQuery.SummaryReadingEvent
+        let searchType = EventTypeQuery.ScientificDocument
         
         let result = DiMeSession.fetch_sync(urlString: DiMeSession.dimeUrl + "/search?query=\(searchQuery)&\(searchType.rawValue)")
     

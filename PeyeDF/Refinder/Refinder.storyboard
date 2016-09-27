@@ -351,6 +351,7 @@
                                                 </tableColumn>
                                             </tableColumns>
                                             <connections>
+                                                <action trigger="doubleAction" selector="doubleAction:" target="GuY-65-HiL" id="QdD-kL-RDb"/>
                                                 <outlet property="dataSource" destination="GuY-65-HiL" id="KYN-4i-4hh"/>
                                                 <outlet property="delegate" destination="GuY-65-HiL" id="CpR-pL-4EC"/>
                                                 <outlet property="menu" destination="gW1-8G-ZD5" id="meW-79-uKZ"/>
@@ -532,8 +533,15 @@
                                 <rect key="frame" x="228" y="20" width="848" height="533"/>
                                 <constraints>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="400" id="jen-Sz-bd1"/>
-                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="600" id="sgb-oH-7Ra"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="700" id="sgb-oH-7Ra"/>
                                 </constraints>
+                                <gestureRecognizers>
+                                    <clickGestureRecognizer delaysPrimaryMouseButtonEvents="YES" numberOfClicksRequired="2" id="KCO-mZ-hLe" userLabel="Double click recognizer">
+                                        <connections>
+                                            <action selector="doubleClick:" target="dw0-Ff-K13" id="iCL-0E-IDc"/>
+                                        </connections>
+                                    </clickGestureRecognizer>
+                                </gestureRecognizers>
                             </pdfView>
                             <button toolTip="Focus thumbnail on page in preview" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bK8-2r-If3">
                                 <rect key="frame" x="60" y="546" width="120" height="32"/>
@@ -554,6 +562,9 @@
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
+                                <connections>
+                                    <action selector="readPress:" target="dw0-Ff-K13" id="LwR-p7-eZM"/>
+                                </connections>
                             </button>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Xad-mX-pn3">
                                 <rect key="frame" x="522" y="553" width="52" height="22"/>

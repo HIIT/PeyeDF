@@ -131,7 +131,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     /// Convenience function to open a file using a given local url and optionally 
     /// a search string (to initiate a query) and focus area (to highlight a specific area).
-    func openDocument(_ fileURL: URL, searchString: String?, focusArea: FocusArea? = nil, previousSessionId: String? = nil) {
+    func openDocument(_ fileURL: URL, searchString: String? = nil, focusArea: FocusArea? = nil, previousSessionId: String? = nil) {
         DispatchQueue.main.async {
             NSDocumentController.shared().openDocument(withContentsOf: fileURL, display: true) {
                 document, _, _ in
@@ -142,7 +142,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 }
                 if let searchS = searchString, searchS != "" && doc.windowControllers.count == 1 {
                     vc.doSearch(searchS, exact: false)
-                    vc.pdfReader?.previousSessionId = previousSessionId
                 }
                 if let f = focusArea {
                     doc.focusOn(f)
@@ -273,8 +272,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// Shows logs menu
     @IBAction func showLogsPath(_ sender: AnyObject) {
         if let logsPath = AppSingleton.logsURL?.path {
-            NSPasteboard.general().declareTypes([NSStringPboardType], owner: self)
-            NSPasteboard.general().setString(logsPath, forType: NSStringPboardType)
+            NSPasteboard.general().stringValue = logsPath
             AppSingleton.alertUser("Logs file path copied to clipboard.", infoText: logsPath)
         } else {
             AppSingleton.alertUser("Nothing logged so far.")

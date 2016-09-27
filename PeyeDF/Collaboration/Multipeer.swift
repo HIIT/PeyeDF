@@ -31,13 +31,13 @@ class Multipeer: NSObject {
     // MARK: - Useful globals
     
     /// Shared instance used to implement MCBrowserViewControllerDelegate
-    static var sharedInstance = Multipeer()
+    static let sharedInstance = Multipeer()
     
     /// Shared delegate object which responds to all network events
-    static var delegate = SessionDelegate()
+    static let delegate = SessionDelegate()
 
     /// Peer id user for this machine on the network
-    static var peerId: MCPeerID = {
+    static let peerId: MCPeerID = {
         // check if a peerid is present in nsuser defaults. If yes, and it has the same display name
         // as the one set for the dime user preference, use that.
         let peer: MCPeerID
@@ -59,14 +59,14 @@ class Multipeer: NSObject {
     }()
     
     /// Multipeer connectivity session
-    static var session: MCSession = {
+    static let session: MCSession = {
         let ses = MCSession(peer: Multipeer.peerId)
         ses.delegate = Multipeer.delegate
         return ses
     }()
     
     /// Browser view controller
-    static var browserController: MCBrowserViewController = {
+    static let browserController: MCBrowserViewController = {
         let vc = MCBrowserViewController(serviceType: MPConstants.serviceType, session: Multipeer.session)
         vc.delegate = Multipeer.sharedInstance
         vc.maximumNumberOfPeers = 1
@@ -74,7 +74,7 @@ class Multipeer: NSObject {
     }()
     
     /// Browser window
-    static var browserWindow: SecondaryWindow = {
+    static let browserWindow: SecondaryWindow = {
         let window = SecondaryWindow(contentViewController: Multipeer.browserController)
         window.title = "Connect to peer"
         window.isReleasedWhenClosed = false
@@ -82,13 +82,13 @@ class Multipeer: NSObject {
     }()
     
     /// Advertiser assistant
-    static var advertiser: MCAdvertiserAssistant = {
+    static let advertiser: MCAdvertiserAssistant = {
         let adv = MCAdvertiserAssistant(serviceType: MPConstants.serviceType, discoveryInfo: nil, session: session)
         return adv
     }()
     
     /// Peer window, showing list of all peers we are connected to (normally, one)
-    static var peerWindow: NSWindowController = {
+    static let peerWindow: NSWindowController = {
         let win = AppSingleton.collaborationStoryboard.instantiateController(withIdentifier: "AllPeersWindowController")
         return win as! NSWindowController
     }()

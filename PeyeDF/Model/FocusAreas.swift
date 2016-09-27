@@ -160,6 +160,18 @@ struct FocusArea: CustomStringConvertible {
 /// Extends base pdf to support focus areas and focusing to them
 extension PDFBase {
     
+    /// Gets the point corresponding to a location in its own view.
+    func getPoint(fromPointInView aPoint: NSPoint) -> FocusArea? {
+        guard let doc = document, let activePage = self.page(for: aPoint, nearest: true) else {
+            return nil
+        }
+        // Index for current page
+        let pageIndex = doc.index(for: activePage)
+        // Get location in "page space".
+        let pagePoint = self.convert(aPoint, to: activePage)
+        return FocusArea(forPoint: pagePoint, onPage: pageIndex)
+    }
+    
     /// Gets the point currently shown on the top left.
     func getCurrentPoint() -> FocusArea? {
         guard self.visiblePages() != nil else {
@@ -170,7 +182,13 @@ extension PDFBase {
         guard rects.count > 0 && pages.count > 0 && rects.count == pages.count else {
             return nil
         }
-        let newY = rects[0].origin.y + rects[0].size.height
+        var newY = rects[0].origin.y + rects[0].size.height
+        // check that we don't go outside top boundary. If so, get point at 10 points below top
+        if let pageRect = document?.page(at: pages[0])?.bounds(for: .cropBox) {
+            if newY > pageRect.size.height {
+                newY = pageRect.size.height - 10
+            }
+        }
         var newPoint = rects[0].origin
         newPoint.y = newY
         return FocusArea(forPoint: newPoint, onPage: pages[0])

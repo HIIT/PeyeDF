@@ -156,7 +156,7 @@ class PeerViewController: NSViewController {
             DiMeFetcher.retrieveUrl(for: SciDocConvertible.contentHash(cHash)) {
                 foundUrl in
                 if let url = foundUrl {
-                    (NSApplication.shared().delegate! as! AppDelegate).openDocument(url, searchString: nil)
+                    AppSingleton.appDelegate.openDocument(url)
                 } else {
                     CollaborationMessage.requestFile(contentHash: cHash).sendTo(peers)
                 }

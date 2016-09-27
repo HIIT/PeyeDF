@@ -59,6 +59,7 @@ class AppSingleton {
     static let tagsStoryboard = NSStoryboard(name: "Tags", bundle: nil)
     static let collaborationStoryboard = NSStoryboard(name: "Collaboration", bundle: nil)
     static let appDelegate = NSApplication.shared().delegate! as! AppDelegate
+    static let findPasteboard = NSPasteboard(name: NSFindPboard)
         
     static let log = AppSingleton.createLog()
     static fileprivate(set) var logsURL: URL?

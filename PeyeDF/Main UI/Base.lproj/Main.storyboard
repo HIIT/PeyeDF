@@ -1059,12 +1059,6 @@
                                                 <action selector="reloadData:" target="Ady-hI-5gd" id="Quc-nP-lEB"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Re-Open" keyEquivalent="O" id="UOS-cj-KY2">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="reOpenDocument:" target="Ady-hI-5gd" id="xhX-KB-jCz"/>
-                                            </connections>
-                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
@@ -1448,7 +1442,6 @@
                                 <toolbarItem reference="LaI-PY-0lj"/>
                                 <toolbarItem reference="l3s-5e-m3r"/>
                                 <toolbarItem reference="6Ts-EH-w4Q"/>
-                                <toolbarItem reference="dAp-G9-a6k"/>
                                 <toolbarItem reference="6Ts-EH-w4Q"/>
                                 <toolbarItem reference="jQD-2x-7zh"/>
                                 <toolbarItem reference="QlV-kx-zkO"/>
