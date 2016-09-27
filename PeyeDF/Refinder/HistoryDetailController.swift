@@ -35,6 +35,12 @@ protocol HistoryDetailDelegate: class {
     /// Tells the delegate that a new item was selected. Resets setEyeRects
     func historyElementSelected(_ tuple: (ev: ReadingEvent, ie: ScientificDocument))
     
+    /// Asks to open the last history element that was selection
+    func openLastHistoryElement()
+    
+    /// Sets (or clears, if nil) the string to find on the next document open
+    func setSearchString(newString: String?)
+    
     /// Tells the delegate that a new set of eye rectangles should be shown next time
     func setEyeRects(_ eyeRects: [EyeRectangle])
     
@@ -65,13 +71,39 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
     /// Marked rectangles
     fileprivate var pageRects: [ReadingRect]?
     
-    /// Last opened url
+    /// Last displayed url and sessionId
     fileprivate var lastUrl: URL?
+    fileprivate var lastSessionId: String?
+    
+    /// String to find
+    fileprivate var searchString: String?
     
     fileprivate var requiresThresholdComputation = true
 
     @IBOutlet weak var pdfOverview: PDFOverview!
     @IBOutlet weak var pdfDetail: PDFBase!
+    
+    /// The user double clicked in the preview, open a document at that position
+    @IBAction func doubleClick(_ sender: NSClickGestureRecognizer) {
+        guard let clickedPoint = pdfDetail.getPoint(fromPointInView: sender.location(in: pdfDetail)),
+              let url = lastUrl,
+              let sessionId = lastSessionId else {
+            return
+        }
+        // open and focus on clicked point
+        AppSingleton.appDelegate.openDocument(url, searchString: searchString, focusArea: clickedPoint, previousSessionId: sessionId)
+    }
+    
+    /// The user pressed read, open the document approximately where the preview is currently located
+    @IBAction func readPress(_ sender: NSButton) {
+        guard let seenPoint = pdfDetail.getCurrentPoint(),
+            let url = lastUrl,
+            let sessionId = lastSessionId else {
+            return
+        }
+        // open and focus on seen point
+        AppSingleton.appDelegate.openDocument(url, searchString: searchString, focusArea: seenPoint, previousSessionId: sessionId)
+    }
     
     /// A reading event was selected, display the doc and its rectangles in the pdf views
     func historyElementSelected(_ tuple: (ev: ReadingEvent, ie: ScientificDocument)) {
@@ -79,6 +111,7 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
         // check if file exists first (if not, display and error)
         if FileManager.default.fileExists(atPath: tuple.ie.uri) {
             lastUrl = URL(fileURLWithPath: tuple.ie.uri)
+            lastSessionId = tuple.ev.sessionId
             pageRects = tuple.ev.pageRects
             let pdfDoc2 = PDFDocument(url: lastUrl!)
             self.pdfDetail.document = pdfDoc2
@@ -91,6 +124,20 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
             AppSingleton.alertUser("Can't find original file", infoText: tuple.ie.uri)
         }
         requiresThresholdComputation = true
+    }
+    
+    /// Open the last element selected (on the first page, if wasn't already open)
+    func openLastHistoryElement() {
+        guard let url = lastUrl,
+              let sessionId = lastSessionId else {
+                return
+        }
+        // open and focus on seen point
+        AppSingleton.appDelegate.openDocument(url, searchString: searchString, previousSessionId: sessionId)
+    }
+    
+    func setSearchString(newString: String?) {
+        searchString = newString
     }
     
     func focusOn(_ area: FocusArea) {
@@ -158,35 +205,7 @@ class HistoryDetailController: NSViewController, HistoryDetailDelegate {
             return nil
         }
     }
-    
-    // MARK: - Re-Opening
-    
-    /// Opens a document corresponding to the current document with the same annotations
-    /// as those which are being shown.
-    @IBAction func reOpenDocument(_ sender: AnyObject?) {
-        guard let url = lastUrl, let rects = pageRects else {
-            return
-        }
         
-        // open document and set computed (ML) marks to manual (click) marks
-        NSDocumentController.shared().openDocument(withContentsOf: url, display: true) {
-            document, _, _ in
-            if let doc = document as? PeyeDocument {
-                var newRects = rects.filter({$0.classSource == .ml})
-                newRects = newRects.map() {(rect) in var rect = rect; rect.classSource = .click ; return rect}
-                doc.setMarkings(newRects)
-            }
-        }
-    }
-    
-    @objc override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
-        if menuItem.title == "Re-Open" {
-            return lastUrl != nil && pageRects != nil
-        } else {
-            return super.validateMenuItem(menuItem)
-        }
-    }
-    
     /// Focuses the PDFOverview on the page currently shown in the PDFDetail
     @IBAction func overviewCurrentPage(_ sender: AnyObject) {
         guard let cp = pdfDetail.currentPage,

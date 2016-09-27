@@ -197,7 +197,7 @@ import MultipeerConnectivity
                 return
             }
         }
-        (NSApplication.shared().delegate! as! AppDelegate).openDocument(newUrl, searchString: nil)
+        AppSingleton.appDelegate.openDocument(newUrl)
     }
     
     /// Receives a stream. Not used.

@@ -168,23 +168,12 @@ class PDFOverview: PDFBase {
     
     /// Single click to scroll pdfDetail to the desired point
     override func mouseDown(with theEvent: NSEvent) {
-        guard let doc = self.document else {
-            return
-        }
-        
         let piw = theEvent.locationInWindow
         let mouseInView = self.convert(piw, from: nil)
-        
-        // Page we're on.
-        let activePage = self.page(for: mouseInView, nearest: true)
-        
-        // Index for current page
-        let pageIndex = doc.index(for: activePage!)
-
-        // Get location in "page space".
-        let pagePoint = self.convert(mouseInView, to: activePage!)
-        
-        pdfDetail?.focusOn(FocusArea(forPoint: pagePoint, onPage: pageIndex), delay: 0)
+        guard let pagePoint = getPoint(fromPointInView: mouseInView) else {
+            return
+        }
+        pdfDetail?.focusOn(pagePoint, delay: 0)
     }
     
     /// Called when the pdfDetail associated to this overview lands on a new current page

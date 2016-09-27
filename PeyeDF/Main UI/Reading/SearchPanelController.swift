@@ -166,12 +166,16 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     /// Make the search field first responder, but with a delay
     func makeSearchFieldFirstResponderWithDelay() {
         labelColumnCheck()
-        Timer.scheduledTimer(timeInterval: kFirstResponderDelay, target: self, selector: #selector(makeSearchFieldFirstResponder), userInfo: nil, repeats: false)
-    }
-    
-    /// Make the search field the first reponder (i.e. focus on it)
-    @objc func makeSearchFieldFirstResponder() {
-        self.view.window?.makeFirstResponder(searchField)
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + kFirstResponderDelay) {
+            [weak self] in
+            guard self != nil else {
+                return
+            }
+            if let oldString = AppSingleton.findPasteboard.stringValue {
+                self?.searchField.stringValue = oldString
+            }
+            self!.view.window?.makeFirstResponder(self!.searchField)
+        }
     }
     
     // MARK: - SearchProvider implementation

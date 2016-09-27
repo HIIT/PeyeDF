@@ -1059,12 +1059,6 @@
                                                 <action selector="reloadData:" target="Ady-hI-5gd" id="Quc-nP-lEB"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Re-Open" keyEquivalent="O" id="UOS-cj-KY2">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="reOpenDocument:" target="Ady-hI-5gd" id="xhX-KB-jCz"/>
-                                            </connections>
-                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>

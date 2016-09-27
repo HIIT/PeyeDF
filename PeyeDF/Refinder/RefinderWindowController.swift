@@ -46,7 +46,11 @@ class RefinderWindowController: NSWindowController, NSWindowDelegate {
             reloadDataNext = false
         }
     }
-    
+    /// Perform search using default methods.
+    @objc func performFindPanelAction(_ sender: AnyObject) {
+        allHistoryController?.performFindPanelAction(sender)
+    }
+
     @IBAction func reloadData(_ sender: AnyObject) {
         if DiMeSession.dimeAvailable {
             // retrieve data
@@ -58,25 +62,4 @@ class RefinderWindowController: NSWindowController, NSWindowDelegate {
         }
     }
     
-    // MARK: - Re-Opening
-    
-    /// Opens a document corresponding to the current document with the same annotations
-    /// as those which are being shown.
-    @IBAction func reOpenDocument(_ sender: AnyObject?) {
-        historyDetailController?.reOpenDocument(self)
-    }
-    
-    @objc override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
-        if menuItem.title == "Re-Open" && historyDetailController != nil {
-            return historyDetailController!.validateMenuItem(menuItem)
-        } else if menuItem.title == "Reload Data" {
-            return true
-        } else {
-            // any other tag was not considered we disable it by default
-            // we can print to check who else is calling this function using
-            // print(menuItem.action)
-            return false
-        }
-    }
-
 }

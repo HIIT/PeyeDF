@@ -311,7 +311,11 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     func doSearch(_ searchString: String, exact: Bool) {
         DispatchQueue.main.async {
             self.mainSplitController?.openSearchPanel()
-            self.mainSplitController?.searchPanelController?.doSearch(searchString, exact: exact)
+            AppSingleton.findPasteboard.stringValue = searchString
+        }
+        // wait a very short amount to allow loading and display of views
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2) {
+            self.mainSplitController?.searchPanelController!.doSearch(searchString, exact: exact)
         }
     }
     

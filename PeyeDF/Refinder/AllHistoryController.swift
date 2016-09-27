@@ -43,7 +43,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
                     sciDoc in
                     if let doc = sciDoc {
                         let fileUrl = URL(fileURLWithPath: doc.uri)
-                        AppSingleton.appDelegate.openDocument(fileUrl, searchString: nil, focusArea: self.mustFocusOn[sesId])
+                        AppSingleton.appDelegate.openDocument(fileUrl, focusArea: self.mustFocusOn[sesId])
                         self.mustFocusOn.removeValue(forKey: sesId)
                     }
                 }
@@ -89,6 +89,16 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
         NotificationCenter.default.addObserver(self, selector: #selector(newHistoryTableSelection(_:)), name: NSNotification.Name.NSTableViewSelectionDidChange, object: historyTable)
     }
     
+    /// Perform search using default methods.
+    @objc func performFindPanelAction(_ sender: AnyObject) {
+        switch UInt(sender.tag) {
+        case NSFindPanelAction.showFindPanel.rawValue:
+            self.view.window?.makeFirstResponder(searchField)
+        default:
+            break
+        }
+    }
+    
     @objc fileprivate func newHistoryTableSelection(_ notification: Notification) {
         let selectedRow = historyTable.selectedRow
         guard selectedRow >= 0 else {
@@ -103,6 +113,11 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
             }
             lastSelectedSessionId = selectedSesId
         }
+    }
+    
+    /// Double click in table opens document
+    @IBAction func doubleAction(_ sender: NSTableView) {
+        delegate?.openLastHistoryElement()
     }
     
     override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
@@ -134,7 +149,13 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     } }
     
     @IBAction func searchRadioPress(_ sender: NSButton) {
-        searchIn = DiMeSearchableItem(rawValue: sender.tag)!
+        let newSearchIn = DiMeSearchableItem(rawValue: sender.tag)!
+        if newSearchIn != searchIn {
+            searchIn = newSearchIn
+            if searchField.stringValue != "" {
+                reloadData()
+            }
+        }
     }
     
     // MARK: - Contextual menu
@@ -313,8 +334,13 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     func reloadData() {
         loadingStarted()
         if searchField.stringValue == "" {
+            AppSingleton.findPasteboard.clearContents()
+            delegate?.setSearchString(newString: nil)
             diMeFetcher?.getAllSummaries()
         } else {
+            AppSingleton.findPasteboard.declareTypes([NSStringPboardType], owner: nil)
+            AppSingleton.findPasteboard.setString(searchField.stringValue, forType: NSStringPboardType)
+            delegate?.setSearchString(newString: searchField.stringValue)
             diMeFetcher?.getSummariesForSearch(string: searchField.stringValue, inData: searchIn)
         }
     }
@@ -337,7 +363,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
         loadingComplete()
     }
     
-    // MARK: - Table delegate & data source
+        // MARK: - Table delegate & data source
     
     func numberOfRows(in tableView: NSTableView) -> Int {
         return allHistoryTuples.count

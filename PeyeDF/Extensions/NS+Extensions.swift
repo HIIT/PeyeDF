@@ -267,3 +267,23 @@ extension Collection where Index: Strideable, Iterator.Element: Comparable {
     }
     
 }
+
+extension NSPasteboard {
+    /// Retrieves a string from the pasteboard. Nil if there's no string.
+    var stringValue: String? {
+    get {
+        let classes: [AnyClass] = [NSString.self]
+        if let copiedItems = self.readObjects(forClasses: classes, options: nil), copiedItems.count > 0 {
+            return copiedItems[0] as? String
+        } else{
+            return nil
+        }
+    } set {
+        if let newString = newValue {
+            self.declareTypes([NSStringPboardType], owner: nil)
+            self.setString(newString, forType: NSStringPboardType)
+        } else {
+            self.clearContents()
+        }
+    } }
+}
