@@ -62,6 +62,7 @@
 		A972BC9B1C7CC0B40076BEF0 /* PDFSelection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A972BC9A1C7CC0B40076BEF0 /* PDFSelection+Extensions.swift */; };
 		A974ADD81BD169E0008AB977 /* DocumentWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A974ADD71BD169E0008AB977 /* DocumentWindow.swift */; };
 		A9794D8D1D0D9CE2003FBFD4 /* PDFPage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9794D8C1D0D9CE2003FBFD4 /* PDFPage+Extensions.swift */; };
+		A97D2F031D9BB28C00D2536B /* DebugPreferencesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97D2F021D9BB28C00D2536B /* DebugPreferencesController.swift */; };
 		A97D46761CF4527000377BB2 /* TagConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97D46751CF4527000377BB2 /* TagConstants.swift */; };
 		A97D46781CF453AE00377BB2 /* MPConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97D46771CF453AE00377BB2 /* MPConstants.swift */; };
 		A97D467D1CF4570900377BB2 /* AllPeersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97D467B1CF4570900377BB2 /* AllPeersController.swift */; };
@@ -315,6 +316,7 @@
 		A972BC9A1C7CC0B40076BEF0 /* PDFSelection+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PDFSelection+Extensions.swift"; sourceTree = "<group>"; };
 		A974ADD71BD169E0008AB977 /* DocumentWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DocumentWindow.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9794D8C1D0D9CE2003FBFD4 /* PDFPage+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PDFPage+Extensions.swift"; sourceTree = "<group>"; };
+		A97D2F021D9BB28C00D2536B /* DebugPreferencesController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugPreferencesController.swift; sourceTree = "<group>"; };
 		A97D46751CF4527000377BB2 /* TagConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagConstants.swift; sourceTree = "<group>"; };
 		A97D46771CF453AE00377BB2 /* MPConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPConstants.swift; sourceTree = "<group>"; };
 		A97D467B1CF4570900377BB2 /* AllPeersController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllPeersController.swift; sourceTree = "<group>"; };
@@ -632,6 +634,7 @@
 				A9C3F9D91D9174AB00191363 /* GeneralSettingsController.swift */,
 				A9C3F9DB1D9174D100191363 /* DiMePreferencesViewController.swift */,
 				A9C3F9DD1D9176D900191363 /* AnnotationPreferencesViewController.swift */,
+				A97D2F021D9BB28C00D2536B /* DebugPreferencesController.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -1032,6 +1035,7 @@
 				A9A23CD41C771A5D008B61C4 /* NSDate+Extensions.swift in Sources */,
 				A9F9D2761CBFB58700FFAE72 /* LittleClock.swift in Sources */,
 				A9B36CA31BEA0FE300A27861 /* RefinderProgressIndicator.swift in Sources */,
+				A97D2F031D9BB28C00D2536B /* DebugPreferencesController.swift in Sources */,
 				A90520B01D89403300F3C35E /* SwiftyJSON.swift in Sources */,
 				A9C8F0251BC2B309007ABE1A /* Fixation.swift in Sources */,
 				A912D8A51B8B5C3A006F0657 /* ReadingEvent.swift in Sources */,
