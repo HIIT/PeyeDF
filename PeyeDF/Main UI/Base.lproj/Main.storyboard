@@ -3,6 +3,7 @@
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11201"/>
         <plugIn identifier="com.apple.pdfkit.ibplugin" version="11201"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="box content view" minToolsVersion="7.0"/>
     </dependencies>
     <scenes>
@@ -33,6 +34,7 @@
                         <tabViewItem image="AnnotationSettings" id="flN-b9-7gX"/>
                         <tabViewItem image="DiMeSettings" id="V0C-CP-l6e"/>
                         <tabViewItem image="Ladybug" id="YzR-P5-FzO"/>
+                        <tabViewItem image="Alembic" id="mAL-fg-OF3"/>
                     </tabViewItems>
                     <tabView key="tabView" type="noTabsNoBorder" id="DAg-Nl-ODD">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="328"/>
@@ -45,6 +47,7 @@
                         <segue destination="uJx-Uk-FW4" kind="relationship" relationship="tabItems" id="kLt-3A-80c"/>
                         <segue destination="cA3-Nk-NKg" kind="relationship" relationship="tabItems" id="aoy-Tv-E2z"/>
                         <segue destination="maC-f0-zrE" kind="relationship" relationship="tabItems" id="5Sb-cz-vJj"/>
+                        <segue destination="bHM-3n-NND" kind="relationship" relationship="tabItems" id="8NP-Dt-zsb"/>
                     </connections>
                 </tabViewController>
                 <customObject id="lPz-h3-CrG" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -69,75 +72,6 @@
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
-                            <button translatesAutoresizingMaskIntoConstraints="NO" id="BVV-hH-JyH">
-                                <rect key="frame" x="18" y="116" width="223" height="18"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="14" id="Shn-cO-s2n"/>
-                                </constraints>
-                                <buttonCell key="cell" type="check" title="Use eye tracker (requires restart)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="7Or-3q-KEa">
-                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                            </button>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="kwa-ow-smM">
-                                <rect key="frame" x="18" y="23" width="76" height="17"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Monitor DPI" id="H12-Iy-AxQ">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
-                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gxa-Hp-eF0">
-                                <rect key="frame" x="107" y="20" width="96" height="22"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="96" id="muS-6h-TCJ"/>
-                                </constraints>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="gPF-I0-Dms">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
-                            <box borderType="line" title="Dominant Eye" translatesAutoresizingMaskIntoConstraints="NO" id="afp-6T-41F">
-                                <rect key="frame" x="17" y="44" width="234" height="66"/>
-                                <view key="contentView" id="59u-gM-x6L">
-                                    <rect key="frame" x="1" y="1" width="232" height="47"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <subviews>
-                                        <button identifier="rightDomEyeButton" translatesAutoresizingMaskIntoConstraints="NO" id="8qy-dl-5fN">
-                                            <rect key="frame" x="116" y="14" width="54" height="18"/>
-                                            <buttonCell key="cell" type="radio" title="Right" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="b8U-Ci-elD">
-                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <action selector="dominantButtonPress:" target="62w-oK-rf7" id="0fY-0L-S6c"/>
-                                            </connections>
-                                        </button>
-                                        <button identifier="leftDomEyeButton" translatesAutoresizingMaskIntoConstraints="NO" id="I21-cq-meB">
-                                            <rect key="frame" x="47" y="14" width="46" height="18"/>
-                                            <buttonCell key="cell" type="radio" title="Left" bezelStyle="regularSquare" imagePosition="right" alignment="left" inset="2" id="owH-dP-d1g">
-                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <action selector="dominantButtonPress:" target="62w-oK-rf7" id="OiU-wN-PwD"/>
-                                            </connections>
-                                        </button>
-                                    </subviews>
-                                    <constraints>
-                                        <constraint firstItem="8qy-dl-5fN" firstAttribute="leading" secondItem="I21-cq-meB" secondAttribute="trailing" constant="26" id="5es-Xl-0Cy"/>
-                                        <constraint firstItem="8qy-dl-5fN" firstAttribute="centerY" secondItem="I21-cq-meB" secondAttribute="centerY" id="Com-Yi-JaM"/>
-                                        <constraint firstItem="I21-cq-meB" firstAttribute="leading" secondItem="59u-gM-x6L" secondAttribute="leading" constant="48" id="arQ-W9-eG3"/>
-                                    </constraints>
-                                </view>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="62" id="1I9-gW-eKI"/>
-                                    <constraint firstAttribute="width" constant="228" id="G7Y-0g-sV0"/>
-                                    <constraint firstItem="I21-cq-meB" firstAttribute="top" secondItem="afp-6T-41F" secondAttribute="top" constant="34" id="LKD-gp-5Ac"/>
-                                </constraints>
-                                <font key="titleFont" metaFont="system"/>
-                            </box>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="gZM-ns-Zac">
                                 <rect key="frame" x="18" y="136" width="200" height="18"/>
                                 <constraints>
@@ -150,31 +84,15 @@
                             </button>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="kwa-ow-smM" firstAttribute="centerY" secondItem="gxa-Hp-eF0" secondAttribute="centerY" constant="-0.5" id="AMn-gO-zt9"/>
-                            <constraint firstItem="kwa-ow-smM" firstAttribute="top" secondItem="afp-6T-41F" secondAttribute="bottom" constant="8" symbolic="YES" id="F5Z-PG-XBm"/>
                             <constraint firstItem="gZM-ns-Zac" firstAttribute="top" secondItem="PGH-u0-em8" secondAttribute="bottom" constant="6" symbolic="YES" id="JkQ-Ro-EKN"/>
-                            <constraint firstItem="kwa-ow-smM" firstAttribute="leading" secondItem="afp-6T-41F" secondAttribute="leading" id="R3Z-IW-mW0"/>
-                            <constraint firstItem="BVV-hH-JyH" firstAttribute="leading" secondItem="PGH-u0-em8" secondAttribute="leading" id="UTx-cg-0eP"/>
-                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="gxa-Hp-eF0" secondAttribute="trailing" constant="254" id="ZTB-dj-bam"/>
-                            <constraint firstItem="afp-6T-41F" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" symbolic="YES" id="am1-DD-o8Q"/>
-                            <constraint firstAttribute="bottom" secondItem="gxa-Hp-eF0" secondAttribute="bottom" constant="20" symbolic="YES" id="bUJ-3V-HpZ"/>
                             <constraint firstItem="gZM-ns-Zac" firstAttribute="leading" secondItem="PGH-u0-em8" secondAttribute="leading" id="ceD-QO-vUO"/>
-                            <constraint firstItem="BVV-hH-JyH" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" symbolic="YES" id="fXk-kY-jPK"/>
-                            <constraint firstItem="afp-6T-41F" firstAttribute="leading" secondItem="BVV-hH-JyH" secondAttribute="leading" id="fyW-TS-gUR"/>
                             <constraint firstItem="PGH-u0-em8" firstAttribute="top" secondItem="WGw-LJ-0lD" secondAttribute="top" constant="20" symbolic="YES" id="hga-Jg-Zig"/>
-                            <constraint firstItem="afp-6T-41F" firstAttribute="top" secondItem="BVV-hH-JyH" secondAttribute="bottom" constant="8" symbolic="YES" id="isK-mT-tun"/>
-                            <constraint firstItem="gxa-Hp-eF0" firstAttribute="leading" secondItem="kwa-ow-smM" secondAttribute="trailing" constant="15" id="jDD-qL-Gav"/>
-                            <constraint firstItem="BVV-hH-JyH" firstAttribute="top" secondItem="gZM-ns-Zac" secondAttribute="bottom" constant="6" symbolic="YES" id="pFI-Al-8ML"/>
-                            <constraint firstItem="kwa-ow-smM" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" id="spo-cJ-rCU"/>
+                            <constraint firstItem="PGH-u0-em8" firstAttribute="leading" secondItem="WGw-LJ-0lD" secondAttribute="leading" constant="20" symbolic="YES" id="w1z-WF-wZ9"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="checkForUpdatesCell" destination="cFM-aq-nL8" id="7pb-vl-eCP"/>
                         <outlet property="downloadMetadataCell" destination="dby-mW-4qK" id="8Nk-3m-sD5"/>
-                        <outlet property="dpiField" destination="gxa-Hp-eF0" id="Ag9-HG-C3H"/>
-                        <outlet property="eyeTrackerCell" destination="7Or-3q-KEa" id="duG-na-tQC"/>
-                        <outlet property="leftDomEyeButton" destination="I21-cq-meB" id="xHI-t6-wUf"/>
-                        <outlet property="rightDomEyeButton" destination="8qy-dl-5fN" id="hNA-b5-fpP"/>
                     </connections>
                 </viewController>
                 <customObject id="ThY-Hh-P4H" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -399,6 +317,120 @@
             </objects>
             <point key="canvasLocation" x="519" y="-1548"/>
         </scene>
+        <!--Experiment-->
+        <scene sceneID="WdR-1t-XOS">
+            <objects>
+                <viewController title="Experiment" id="bHM-3n-NND" customClass="ExperimentPreferencesController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="9oH-vu-xuj">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="189"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="Iiy-iz-0VN">
+                                <rect key="frame" x="18" y="116" width="223" height="18"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="14" id="RWa-eo-GuO"/>
+                                </constraints>
+                                <buttonCell key="cell" type="check" title="Use eye tracker (requires restart)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="Bb6-6d-9YX">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Fcv-fJ-S98">
+                                <rect key="frame" x="18" y="23" width="76" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Monitor DPI" id="sCg-RY-hSV">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ytI-Iw-v9h">
+                                <rect key="frame" x="107" y="20" width="96" height="22"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="96" id="3h2-Tn-tDe"/>
+                                </constraints>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="1fe-YR-jlV">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <box borderType="line" title="Dominant Eye" translatesAutoresizingMaskIntoConstraints="NO" id="W6i-Y4-YAl">
+                                <rect key="frame" x="17" y="44" width="234" height="66"/>
+                                <view key="contentView" id="mdM-MO-IrL">
+                                    <rect key="frame" x="1" y="1" width="232" height="47"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <button identifier="rightDomEyeButton" translatesAutoresizingMaskIntoConstraints="NO" id="Sb0-iM-7vv">
+                                            <rect key="frame" x="116" y="14" width="54" height="18"/>
+                                            <buttonCell key="cell" type="radio" title="Right" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="M02-EK-VEa">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="dominantButtonPress:" target="bHM-3n-NND" id="doC-mm-onA"/>
+                                            </connections>
+                                        </button>
+                                        <button identifier="leftDomEyeButton" translatesAutoresizingMaskIntoConstraints="NO" id="dqr-WX-3sW">
+                                            <rect key="frame" x="47" y="14" width="46" height="18"/>
+                                            <buttonCell key="cell" type="radio" title="Left" bezelStyle="regularSquare" imagePosition="right" alignment="left" inset="2" id="g07-JB-rgF">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="dominantButtonPress:" target="bHM-3n-NND" id="2rf-Vj-JIH"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="Sb0-iM-7vv" firstAttribute="centerY" secondItem="dqr-WX-3sW" secondAttribute="centerY" id="8dp-uh-zpN"/>
+                                        <constraint firstItem="dqr-WX-3sW" firstAttribute="leading" secondItem="mdM-MO-IrL" secondAttribute="leading" constant="48" id="HGD-Kd-2Pk"/>
+                                        <constraint firstItem="Sb0-iM-7vv" firstAttribute="leading" secondItem="dqr-WX-3sW" secondAttribute="trailing" constant="26" id="qyx-8F-LUk"/>
+                                    </constraints>
+                                </view>
+                                <constraints>
+                                    <constraint firstItem="dqr-WX-3sW" firstAttribute="top" secondItem="W6i-Y4-YAl" secondAttribute="top" constant="34" id="8q3-kR-DTw"/>
+                                    <constraint firstAttribute="height" constant="62" id="N2r-Sb-dg7"/>
+                                    <constraint firstAttribute="width" constant="228" id="qQm-5s-52s"/>
+                                </constraints>
+                                <font key="titleFont" metaFont="system"/>
+                            </box>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="T3S-oz-d7h">
+                                <rect key="frame" x="18" y="153" width="226" height="18"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="14" id="D9T-rp-lnO"/>
+                                </constraints>
+                                <buttonCell key="cell" type="check" title="Show JSON import-export menus" bezelStyle="regularSquare" imagePosition="left" inset="2" id="ARL-jK-6gg">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="T3S-oz-d7h" firstAttribute="top" secondItem="9oH-vu-xuj" secondAttribute="top" constant="20" symbolic="YES" id="0bj-N5-tWZ"/>
+                            <constraint firstItem="ytI-Iw-v9h" firstAttribute="leading" secondItem="Fcv-fJ-S98" secondAttribute="trailing" constant="15" id="2cW-Tc-1bo"/>
+                            <constraint firstItem="Iiy-iz-0VN" firstAttribute="top" secondItem="T3S-oz-d7h" secondAttribute="bottom" multiplier="1.5" constant="6" symbolic="YES" id="67Z-rL-TqZ"/>
+                            <constraint firstItem="W6i-Y4-YAl" firstAttribute="top" secondItem="Iiy-iz-0VN" secondAttribute="bottom" constant="8" symbolic="YES" id="QyQ-iX-TZT"/>
+                            <constraint firstItem="Iiy-iz-0VN" firstAttribute="leading" secondItem="9oH-vu-xuj" secondAttribute="leading" constant="20" symbolic="YES" id="R7S-NZ-1eg"/>
+                            <constraint firstItem="W6i-Y4-YAl" firstAttribute="leading" secondItem="Iiy-iz-0VN" secondAttribute="leading" id="ZXR-on-uY0"/>
+                            <constraint firstItem="T3S-oz-d7h" firstAttribute="leading" secondItem="9oH-vu-xuj" secondAttribute="leading" constant="20" symbolic="YES" id="ZkD-gk-gkW"/>
+                            <constraint firstItem="Fcv-fJ-S98" firstAttribute="centerY" secondItem="ytI-Iw-v9h" secondAttribute="centerY" constant="-0.5" id="fFR-XE-Dm0"/>
+                            <constraint firstItem="Fcv-fJ-S98" firstAttribute="leading" secondItem="W6i-Y4-YAl" secondAttribute="leading" id="oxf-1W-iYK"/>
+                            <constraint firstAttribute="bottom" secondItem="ytI-Iw-v9h" secondAttribute="bottom" constant="20" symbolic="YES" id="vD3-0M-HQQ"/>
+                            <constraint firstItem="Fcv-fJ-S98" firstAttribute="top" secondItem="W6i-Y4-YAl" secondAttribute="bottom" constant="8" symbolic="YES" id="vWl-PY-1wi"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="dpiField" destination="ytI-Iw-v9h" id="yqt-8P-ESx"/>
+                        <outlet property="eyeTrackerCell" destination="Bb6-6d-9YX" id="Pra-vt-c5s"/>
+                        <outlet property="leftDomEyeButton" destination="dqr-WX-3sW" id="eBZ-se-dhC"/>
+                        <outlet property="rightDomEyeButton" destination="Sb0-iM-7vv" id="jLB-xc-REf"/>
+                        <outlet property="showJsonMenusCell" destination="ARL-jK-6gg" id="UNZ-yp-idS"/>
+                    </connections>
+                </viewController>
+                <customObject id="zi8-ON-ajb" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1006" y="-1651"/>
+        </scene>
         <!--Debug-->
         <scene sceneID="2Oi-5q-qjT">
             <objects>
@@ -432,6 +464,7 @@
                             <constraint firstItem="GFc-xH-ekV" firstAttribute="leading" secondItem="e5v-jH-hY8" secondAttribute="leading" constant="20" symbolic="YES" id="Cnv-cQ-DR7"/>
                             <constraint firstItem="GFc-xH-ekV" firstAttribute="top" secondItem="e5v-jH-hY8" secondAttribute="top" constant="20" symbolic="YES" id="LOV-z5-NA0"/>
                             <constraint firstItem="S1W-xx-0w2" firstAttribute="leading" secondItem="e5v-jH-hY8" secondAttribute="leading" constant="20" symbolic="YES" id="ePX-sA-FZG"/>
+                            <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="S1W-xx-0w2" secondAttribute="bottom" constant="160" id="ews-zs-jXE"/>
                             <constraint firstItem="S1W-xx-0w2" firstAttribute="top" secondItem="GFc-xH-ekV" secondAttribute="bottom" constant="6" symbolic="YES" id="mIM-mK-oOg"/>
                         </constraints>
                     </view>
@@ -442,7 +475,7 @@
                 </viewController>
                 <customObject id="epS-rb-wAb" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="521.5" y="-1289.5"/>
+            <point key="canvasLocation" x="522" y="-1286"/>
         </scene>
         <!--Application-->
         <scene sceneID="JPo-4y-FX3">
@@ -1866,6 +1899,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="Alembic" width="64" height="64"/>
         <image name="AnnotationSettings" width="64" height="64"/>
         <image name="DiMeSettings" width="64" height="64"/>
         <image name="Ladybug" width="64" height="64"/>

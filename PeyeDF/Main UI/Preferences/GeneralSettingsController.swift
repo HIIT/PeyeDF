@@ -27,52 +27,17 @@ import Cocoa
 
 class GeneralSettingsController: NSViewController {
     
-    @IBOutlet weak var leftDomEyeButton: NSButton!
-    @IBOutlet weak var rightDomEyeButton: NSButton!
-    
     @IBOutlet weak var downloadMetadataCell: NSButtonCell!
     @IBOutlet weak var checkForUpdatesCell: NSButtonCell!
-    @IBOutlet weak var dpiField: NSTextField!
-    @IBOutlet weak var eyeTrackerCell: NSButtonCell!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // set dominant eye button pressed accordingly to current preference
-        let rawEyePreference = UserDefaults.standard.value(forKey: PeyeConstants.prefDominantEye) as! Int
-        
-        let eyePreference = Eye(rawValue: rawEyePreference)
-        
-        if eyePreference == .left {
-            leftDomEyeButton.state = NSOnState
-        } else {
-            rightDomEyeButton.state = NSOnState
-        }
-        
-        // number formatter for dpi
-        let intFormatter = NumberFormatter()
-        intFormatter.numberStyle = NumberFormatter.Style.decimal
-        intFormatter.allowsFloats = false
-        dpiField.formatter = intFormatter
         
         let options: [String: AnyObject] = ["NSContinuouslyUpdatesValue": true as AnyObject]
         
-        dpiField.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefMonitorDPI, options: options)
         downloadMetadataCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefDownloadMetadata, options: options)
         checkForUpdatesCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefCheckForUpdatesOnStartup, options: options)
-        eyeTrackerCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefUseEyeTracker, options: options)
     }
-    
-    @IBAction func dominantButtonPress(_ sender: NSButton) {
-        if sender.identifier! == "leftDomEyeButton" {
-            UserDefaults.standard.setValue(Eye.left.rawValue, forKey: PeyeConstants.prefDominantEye)
-            MidasManager.sharedInstance.setDominantEye(.left)
-        } else if sender.identifier! == "rightDomEyeButton" {
-            UserDefaults.standard.setValue(Eye.right.rawValue, forKey: PeyeConstants.prefDominantEye)
-            MidasManager.sharedInstance.setDominantEye(.right)
-        } else {
-            fatalError("Some unrecognized button was pressed!?")
-        }
-    }
-    
+        
 }

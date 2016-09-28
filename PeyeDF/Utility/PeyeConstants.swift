@@ -79,6 +79,9 @@ class PeyeConstants {
     /// Wheter we want to push an event at every window focus event (bound in the preferences window)
     static let prefSendEventOnFocusSwitch = "preferences.sendEventOnFocusSwitch"
     
+    /// Experiment show json export-import
+    static let prefShowJsonMenus = "preferences.refinder.showJsonMenus"
+    
     /// MARK: - History-specific constants
     
     /// Amount of seconds which is required to assume that the user did read a specific document

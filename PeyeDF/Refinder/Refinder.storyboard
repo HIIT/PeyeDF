@@ -495,22 +495,41 @@
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>
                                 <action selector="extractJson:" target="GuY-65-HiL" id="GCu-Fl-E3h"/>
+                                <binding destination="0na-TV-JKM" name="hidden" keyPath="values.preferences.refinder.showJsonMenus" id="S3Y-6y-7FX">
+                                    <dictionary key="options">
+                                        <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                    </dictionary>
+                                </binding>
                             </connections>
                         </menuItem>
                         <menuItem title="Import JSON..." id="Nkj-mc-4xe">
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>
                                 <action selector="importJson:" target="GuY-65-HiL" id="DqK-62-JoT"/>
+                                <binding destination="0na-TV-JKM" name="hidden" keyPath="values.preferences.refinder.showJsonMenus" id="vRF-Fq-9Sl">
+                                    <dictionary key="options">
+                                        <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                    </dictionary>
+                                </binding>
                             </connections>
                         </menuItem>
                         <menuItem title="Send to DiMe..." id="63Z-HO-oue">
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>
                                 <action selector="sendToDiMe:" target="GuY-65-HiL" id="jnY-7m-z03"/>
+                                <binding destination="0na-TV-JKM" name="hidden" keyPath="values.preferences.refinder.showJsonMenus" id="vkX-Il-qfH">
+                                    <dictionary key="options">
+                                        <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                    </dictionary>
+                                </binding>
                             </connections>
+                        </menuItem>
+                        <menuItem title="Delete" id="VrL-wc-brc">
+                            <modifierMask key="keyEquivalentModifierMask"/>
                         </menuItem>
                     </items>
                 </menu>
+                <userDefaultsController representsSharedInstance="YES" id="0na-TV-JKM"/>
             </objects>
             <point key="canvasLocation" x="353.5" y="930.5"/>
         </scene>
