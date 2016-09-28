@@ -26,6 +26,17 @@ import Foundation
 
 extension String {
     
+    /// Returns true if the string contains any of the strings given in the array.
+    /// Case insensitive search.
+    func containsAny(strings: [String]) -> Bool {
+        for s2 in strings {
+            if self.range(of: s2, options: .caseInsensitive) != nil {
+                return true
+            }
+        }
+        return false
+    }
+    
     /// Returns an array of the words that compose the string (skipping space and other punctuation). Returns nil if no words were found.
     func words() -> [String]? {
         

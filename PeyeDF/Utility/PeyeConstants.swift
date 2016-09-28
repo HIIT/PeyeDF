@@ -79,6 +79,9 @@ class PeyeConstants {
     /// Wheter we want to push an event at every window focus event (bound in the preferences window)
     static let prefSendEventOnFocusSwitch = "preferences.sendEventOnFocusSwitch"
     
+    /// List of strings that prevent document history tracking if found in source pdf text
+    static let prefStringBlockList = "preferences.blockStringList"
+    
     /// Experiment show json export-import
     static let prefShowJsonMenus = "preferences.refinder.showJsonMenus"
     
