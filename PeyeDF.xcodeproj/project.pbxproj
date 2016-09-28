@@ -64,6 +64,7 @@
 		A9794D8D1D0D9CE2003FBFD4 /* PDFPage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9794D8C1D0D9CE2003FBFD4 /* PDFPage+Extensions.swift */; };
 		A97D2F031D9BB28C00D2536B /* DebugPreferencesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97D2F021D9BB28C00D2536B /* DebugPreferencesController.swift */; };
 		A97D2F181D9BB83000D2536B /* ExperimentPreferencesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97D2F161D9BB83000D2536B /* ExperimentPreferencesController.swift */; };
+		A97D2F2B1D9BC47700D2536B /* DiMeEraser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97D2F2A1D9BC47700D2536B /* DiMeEraser.swift */; };
 		A97D46761CF4527000377BB2 /* TagConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97D46751CF4527000377BB2 /* TagConstants.swift */; };
 		A97D46781CF453AE00377BB2 /* MPConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97D46771CF453AE00377BB2 /* MPConstants.swift */; };
 		A97D467D1CF4570900377BB2 /* AllPeersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97D467B1CF4570900377BB2 /* AllPeersController.swift */; };
@@ -319,6 +320,7 @@
 		A9794D8C1D0D9CE2003FBFD4 /* PDFPage+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PDFPage+Extensions.swift"; sourceTree = "<group>"; };
 		A97D2F021D9BB28C00D2536B /* DebugPreferencesController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugPreferencesController.swift; sourceTree = "<group>"; };
 		A97D2F161D9BB83000D2536B /* ExperimentPreferencesController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExperimentPreferencesController.swift; sourceTree = "<group>"; };
+		A97D2F2A1D9BC47700D2536B /* DiMeEraser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiMeEraser.swift; sourceTree = "<group>"; };
 		A97D46751CF4527000377BB2 /* TagConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagConstants.swift; sourceTree = "<group>"; };
 		A97D46771CF453AE00377BB2 /* MPConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPConstants.swift; sourceTree = "<group>"; };
 		A97D467B1CF4570900377BB2 /* AllPeersController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllPeersController.swift; sourceTree = "<group>"; };
@@ -687,6 +689,7 @@
 				A9F8A8971D902620002252DD /* DiMeSession.swift */,
 				A9F8A89D1D902AE3002252DD /* DiMeFetcher.swift */,
 				A9F8A89B1D902AD3002252DD /* DiMePusher.swift */,
+				A97D2F2A1D9BC47700D2536B /* DiMeEraser.swift */,
 			);
 			name = REST;
 			path = PeyeDF/REST;
@@ -1004,6 +1007,7 @@
 				A97D467D1CF4570900377BB2 /* AllPeersController.swift in Sources */,
 				A96731B21CCA64DA001A5C9F /* Tags.swift in Sources */,
 				A954F8C91D1DA318003A23F1 /* PeerOverviewController.swift in Sources */,
+				A97D2F2B1D9BC47700D2536B /* DiMeEraser.swift in Sources */,
 				A91CB94A1B332EDB00671868 /* AppDelegate.swift in Sources */,
 				A95795171BD6A1CB0083525C /* RefinderWindowController.swift in Sources */,
 				A913A9251BA1B047008BA10D /* MainSplitController.swift in Sources */,

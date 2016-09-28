@@ -42,10 +42,14 @@ enum DiMeSearchableItem: Int {
 
 /// Can be either reading event or summary reading event. The raw value points
 /// to the DiMe parameter query to only fetch that type.
-enum EventTypeQuery: String {
-    case ReadingEvent = "type=http://www.hiit.fi/ontologies/dime/%23ReadingEvent"
-    case SummaryReadingEvent = "type=http://www.hiit.fi/ontologies/dime/%23SummaryReadingEvent"
-    case ScientificDocument = "type=http://www.hiit.fi/ontologies/dime/%23ScientificDocument"
+enum EventQuery: String {
+    case readingEvent = "type=http://www.hiit.fi/ontologies/dime/%23ReadingEvent"
+    case summaryReadingEvent = "type=http://www.hiit.fi/ontologies/dime/%23SummaryReadingEvent"
+}
+
+/// At the moment, only scientific documents are supported
+enum InformationElementQuery: String {
+    case scientificDocument = "type=http://www.hiit.fi/ontologies/dime/%23ScientificDocument"
 }
 
 /// Used to identify IDs which can be "converted" to a ScientificDocument
@@ -117,7 +121,7 @@ class DiMeFetcher {
             case .readingEvent:
                 // reading event search: once we got the list of events that satisfy query,
                 // use all their sessionIds to find all summary reading events that have those sessionIds
-                let foundEvents = DiMeFetcher.searchReadingEvents(for: string)
+                let foundEvents = DiMeFetcher.searchEvents(for: string, in: .readingEvent)
                 
                 DispatchQueue.main.async {
                     self.fetchProgress.totalUnitCount = Int64(foundEvents?.count ?? 0)
@@ -303,11 +307,11 @@ class DiMeFetcher {
             filterString += "&elemId=\(elemId!)"
         }
         
-        let typeQuery: EventTypeQuery
+        let typeQuery: EventQuery
         if getSummaries {
-            typeQuery = .SummaryReadingEvent
+            typeQuery = .summaryReadingEvent
         } else {
-            typeQuery = .ReadingEvent
+            typeQuery = .readingEvent
         }
         
         DiMeSession.fetch(urlString: server_url + "/data/events?actor=PeyeDF&\(typeQuery.rawValue)" + filterString) {
@@ -342,11 +346,11 @@ class DiMeFetcher {
             filterString += "&elemId=\(elemId!)"
         }
         
-        let typeQuery: EventTypeQuery
+        let typeQuery: EventQuery
         if getSummaries {
-            typeQuery = .SummaryReadingEvent
+            typeQuery = .summaryReadingEvent
         } else {
-            typeQuery = .ReadingEvent
+            typeQuery = .readingEvent
         }
         
         let (json, _) = DiMeSession.fetch_sync(urlString: server_url + "/data/events?actor=PeyeDF&\(typeQuery.rawValue)" + filterString)
@@ -518,10 +522,9 @@ class DiMeFetcher {
         }
     }
     
-    /// **Synchronously** search for the given string in reading events only (not summary reading events)
-    static func searchReadingEvents(for searchQuery: String) -> [ReadingEvent]? {
-        
-        let searchType = EventTypeQuery.ReadingEvent
+    /// **Synchronously** search for the given string and type in events
+    ///
+    static func searchEvents(for searchQuery: String, in searchType: EventQuery) -> [ReadingEvent]? {
         
         let result = DiMeSession.fetch_sync(urlString: DiMeSession.dimeUrl + "/eventsearch?query=\(searchQuery)&\(searchType.rawValue)")
         
@@ -536,7 +539,7 @@ class DiMeFetcher {
     /// **Synchronously** search for the given string in scientific documents only
     static func searchSciDocs(for searchQuery: String) -> [ScientificDocument]? {
         
-        let searchType = EventTypeQuery.ScientificDocument
+        let searchType = InformationElementQuery.scientificDocument
         
         let result = DiMeSession.fetch_sync(urlString: DiMeSession.dimeUrl + "/search?query=\(searchQuery)&\(searchType.rawValue)")
     

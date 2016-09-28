@@ -150,6 +150,8 @@ class DiMeSession {
         }
     }
     
+    /// Deletes an event
+    
     /// Attempts to connect to dime. Sends a notification if we succeeded / failed.
     /// Also calls the given callback with a boolean (which is true if operation succeeded).
     static func dimeConnect(_ callback: ((Bool, Error?) -> Void)? = nil) {
