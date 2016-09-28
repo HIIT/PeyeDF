@@ -27,8 +27,17 @@ import Cocoa
 
 class GeneralSettingsController: NSViewController {
     
+    var blockStrings: [String] = {
+        return UserDefaults.standard.value(forKey: PeyeConstants.prefStringBlockList) as! [String]
+    }()
+    
     @IBOutlet weak var downloadMetadataCell: NSButtonCell!
     @IBOutlet weak var checkForUpdatesCell: NSButtonCell!
+    
+    @IBOutlet weak var blockStringTable: NSTableView!
+    @IBOutlet var blockStringController: NSArrayController!
+    
+    @IBOutlet weak var textField: NSTextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,5 +48,46 @@ class GeneralSettingsController: NSViewController {
         downloadMetadataCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefDownloadMetadata, options: options)
         checkForUpdatesCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefCheckForUpdatesOnStartup, options: options)
     }
+    
+    @IBAction func Editeditem(_ sender: NSTextFieldCell) {
+        guard blockStringTable.selectedRow > 0 else {
+            return
+        }
         
+        blockStrings[blockStringTable.selectedRow] = sender.stringValue
+        UserDefaults.standard.setValue(blockStrings, forKey: PeyeConstants.prefStringBlockList)
+    }
+    
+    @IBAction func removePress(_ sender: AnyObject) {
+        guard blockStringTable.selectedRow >= 0 else {
+            return
+        }
+        
+        DispatchQueue.main.async {
+            self.blockStringController.remove(atArrangedObjectIndex: self.blockStringTable.selectedRow)
+            self.blockStringTable.reloadData()
+            UserDefaults.standard.setValue(self.blockStrings, forKey: PeyeConstants.prefStringBlockList)
+        }
+    }
+    
+    @IBAction func addPress(_ sender: NSButton) {
+        guard textField.stringValue.trimmed().characters.count > 0 else {
+            return
+        }
+        
+        guard !blockStrings.contains(textField.stringValue) else {
+            return
+        }
+        
+        UserDefaults.standard.setValue(blockStrings, forKey: PeyeConstants.prefStringBlockList)
+        DispatchQueue.main.async {
+            self.blockStringController.addObject(self.textField.stringValue)
+            self.blockStringTable.reloadData()
+            self.textField.stringValue = ""
+            UserDefaults.standard.setValue(self.blockStrings, forKey: PeyeConstants.prefStringBlockList)
+            if self.blockStringTable.numberOfRows > 2 {
+                self.blockStringTable.scrollRowToVisible(self.blockStringTable.numberOfRows - 1)
+            }
+        }
+    }
 }

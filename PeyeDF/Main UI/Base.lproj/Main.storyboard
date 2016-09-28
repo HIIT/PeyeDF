@@ -138,6 +138,7 @@
                                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                         <connections>
+                                                                            <action selector="Editeditem:" target="62w-oK-rf7" id="f5h-EW-t3W"/>
                                                                             <binding destination="g3m-9U-zLg" name="value" keyPath="objectValue" id="kpA-Gt-YGv">
                                                                                 <dictionary key="options">
                                                                                     <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
@@ -160,18 +161,11 @@
                                                             </connections>
                                                         </tableCellView>
                                                     </prototypeCellViews>
-                                                    <connections>
-                                                        <binding destination="25x-6f-N8i" name="value" keyPath="arrangedObjects.self" id="OXG-Mb-gt1">
-                                                            <dictionary key="options">
-                                                                <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
-                                                                <bool key="NSConditionallySetsEnabled" value="YES"/>
-                                                                <bool key="NSContinuouslyUpdatesValue" value="YES"/>
-                                                                <bool key="NSValidatesImmediately" value="YES"/>
-                                                            </dictionary>
-                                                        </binding>
-                                                    </connections>
                                                 </tableColumn>
                                             </tableColumns>
+                                            <connections>
+                                                <binding destination="25x-6f-N8i" name="content" keyPath="arrangedObjects" id="4yi-ld-d6I"/>
+                                            </connections>
                                         </tableView>
                                     </subviews>
                                 </clipView>
@@ -197,6 +191,9 @@
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
+                                <connections>
+                                    <action selector="removePress:" target="62w-oK-rf7" id="J2R-Qe-QpW"/>
+                                </connections>
                             </button>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="DlF-O6-uET">
                                 <rect key="frame" x="264" y="20" width="213" height="22"/>
@@ -204,11 +201,14 @@
                                     <constraint firstAttribute="height" constant="22" id="N3g-Ax-GgD"/>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="100" id="WcL-fN-7mb"/>
                                 </constraints>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="8Su-2K-zwF">
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="8Su-2K-zwF">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
+                                <connections>
+                                    <action selector="performClick:" target="3eS-Oj-fhs" id="sjf-Fc-meI"/>
+                                </connections>
                             </textField>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="3eS-Oj-fhs">
                                 <rect key="frame" x="481" y="14" width="60" height="32"/>
@@ -220,6 +220,9 @@
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
+                                <connections>
+                                    <action selector="addPress:" target="62w-oK-rf7" id="AgX-Cf-w1A"/>
+                                </connections>
                             </button>
                         </subviews>
                         <constraints>
@@ -246,17 +249,18 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="blockStringController" destination="25x-6f-N8i" id="cof-LJ-YQ7"/>
+                        <outlet property="blockStringTable" destination="xoM-Lq-G0U" id="DRo-vE-0mZ"/>
                         <outlet property="checkForUpdatesCell" destination="cFM-aq-nL8" id="7pb-vl-eCP"/>
                         <outlet property="downloadMetadataCell" destination="dby-mW-4qK" id="8Nk-3m-sD5"/>
+                        <outlet property="textField" destination="DlF-O6-uET" id="Kye-iG-o4j"/>
                     </connections>
                 </viewController>
                 <customObject id="ThY-Hh-P4H" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-                <userDefaultsController representsSharedInstance="YES" id="4tc-l1-Abe"/>
-                <arrayController id="25x-6f-N8i" userLabel="Block String List Controller">
+                <arrayController automaticallyRearrangesObjects="YES" id="25x-6f-N8i" userLabel="Block String List Controller">
                     <connections>
-                        <binding destination="4tc-l1-Abe" name="contentArray" keyPath="values.preferences.blockStringList" id="BPH-kR-XYX">
+                        <binding destination="62w-oK-rf7" name="contentArray" keyPath="blockStrings" id="l0K-9k-qCn">
                             <dictionary key="options">
-                                <bool key="NSDeletesObjectsOnRemove" value="YES"/>
                                 <bool key="NSValidatesImmediately" value="YES"/>
                             </dictionary>
                         </binding>
