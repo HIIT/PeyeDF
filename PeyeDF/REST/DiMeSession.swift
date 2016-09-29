@@ -26,6 +26,11 @@ import Foundation
 
 enum RESTError: Error {
     case invalidUrl
+    case notFound
+    /// We were asked to block the main thread, which is invalid.
+    case waitOnMain
+    /// Error otherwise undefined (check dime logs)
+    case dimeError
 }
 
 /// Contains configurations for the DiMe API using the native macOS URL Loading System
@@ -92,12 +97,13 @@ class DiMeSession {
         
         guard !Thread.isMainThread else {
             AppSingleton.log.error("Called from main thread, exiting")
-            return (nil, nil)
+            return (nil, RESTError.waitOnMain)
         }
         
         guard let url = URL(string: urlString) else {
             return(nil, RESTError.invalidUrl)
         }
+        
         var retVal: (JSON?, Error?) = (nil, nil)
         let dGroup = DispatchGroup()
         
@@ -150,7 +156,50 @@ class DiMeSession {
         }
     }
     
-    /// Deletes an event
+    /// **Synchronously** submits a delete http request for the given url.
+    /// Returns a non-nil error in case operation didn't succeed.
+    /// - Attention: do not call from the main thread.
+    @discardableResult
+    static func delete_sync(urlString: String) -> Error? {
+        guard !Thread.isMainThread else {
+            AppSingleton.log.error("Called from main thread, exiting")
+            return RESTError.waitOnMain
+        }
+
+        guard let url = URL(string: urlString) else {
+            return RESTError.invalidUrl
+        }
+
+        var urlRequest = URLRequest(url: url, timeoutInterval: 5.0)
+        urlRequest.httpMethod = "DELETE"
+        
+        let dGroup = DispatchGroup()
+        
+        var returnedError: Error? = nil
+        
+        dGroup.enter()
+        DiMeSession.sharedSession.dataTask(with: urlRequest) {
+            _, response, error in
+            if let foundError = error {
+                returnedError = foundError
+            } else {
+                if let httpResponse = response as? HTTPURLResponse {
+                    if httpResponse.statusCode != 204 {
+                        returnedError = RESTError.dimeError
+                    }
+                } else {
+                    AppSingleton.log.error("Failed to convert url response to http url response")
+                }
+            }
+            dGroup.leave()
+        }.resume()
+        
+        if dGroup.wait(timeout: DispatchTime.now() + 10.0) == .timedOut {
+            AppSingleton.log.error("Synchronous request fetch timeout")
+        }
+        
+        return returnedError
+    }
     
     /// Attempts to connect to dime. Sends a notification if we succeeded / failed.
     /// Also calls the given callback with a boolean (which is true if operation succeeded).

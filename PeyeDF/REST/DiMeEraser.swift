@@ -31,4 +31,33 @@ class DiMeEraser {
         
     }
     
+    /// **Synchronously Delete all summary and normal reading events which are associated to the given sessionId.
+    /// - Attention: do not call from the main thread.
+    static func deleteAllEvents(relatedToSessionId sessionId: String) {
+        
+        // Delete summaries with that session id
+        (DiMeFetcher.getPeyeDFEvents(getSummaries: true, sessionId: sessionId) as? [SummaryReadingEvent])?.forEach() {
+            if let id = $0.id {
+                DiMeEraser.deleteEvent(id: id)
+            }
+        }
+        
+        // delete normal events with that session id
+        DiMeFetcher.getPeyeDFEvents(getSummaries: true, sessionId: sessionId)?.forEach() {
+            if let id = $0.id {
+                DiMeEraser.deleteEvent(id: id)
+            }
+        }
+
+    }
+    
+    /// **Synchronously** deletes a given event.
+    /// - Attention: do not call from the main thread.
+    static func deleteEvent(id: Int) {
+        let urlString = DiMeSession.dimeUrl + "/data/event/\(id)"
+        if let error = DiMeSession.delete_sync(urlString: urlString) {
+            AppSingleton.log.debug("Found error: \(error)")
+        }
+    }
+    
 }

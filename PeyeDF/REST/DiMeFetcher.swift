@@ -135,8 +135,9 @@ class DiMeFetcher {
                         let scidoc = $0.targettedResource
                         let summaryEvents = DiMeFetcher.getPeyeDFEvents(getSummaries: true, sessionId: $0.sessionId, elemId: scidoc!.id)
                         summaryEvents?.forEach() {
-                            if let scidoc = scidoc {
-                                foundSummaries.append((ev: $0, ie: scidoc))
+                            if let scidoc = scidoc,
+                               let sEv = $0 as? SummaryReadingEvent {
+                                foundSummaries.append((ev: sEv, ie: scidoc))
                             }
                         }
                         
@@ -168,9 +169,11 @@ class DiMeFetcher {
                 foundScidocs?.forEach() {
                     scidoc in
                     
-                    if let id = scidoc.id, !processedIds.contains(id) {
-                        let summaryEvents = DiMeFetcher.getPeyeDFEvents(getSummaries: true, elemId: id)
-                        summaryEvents?.forEach() {foundSummaries.append((ev: $0, ie: scidoc))}
+                    if let id = scidoc.id, !processedIds.contains(id),
+                       let summaryEvents = DiMeFetcher.getPeyeDFEvents(getSummaries: true, elemId: id) as? [SummaryReadingEvent] {
+                        summaryEvents.forEach() {
+                                foundSummaries.append((ev: $0, ie: scidoc))
+                        }
                         
                         processedIds.insert(id)
                     }
@@ -332,7 +335,7 @@ class DiMeFetcher {
     /// - parameter elemId: If given, only retrieves elements associated to InformationElements
     ///                     which have this id (integer id, not appId)
     /// - Attention: Don't call this from the main thread.
-    static func getPeyeDFEvents(getSummaries: Bool, sessionId: String? = nil, elemId: Int? = nil) -> [SummaryReadingEvent]? {
+    static func getPeyeDFEvents(getSummaries: Bool, sessionId: String? = nil, elemId: Int? = nil) -> [ReadingEvent]? {
         
         let server_url = DiMeSession.dimeUrl
         
@@ -355,7 +358,12 @@ class DiMeFetcher {
         
         let (json, _) = DiMeSession.fetch_sync(urlString: server_url + "/data/events?actor=PeyeDF&\(typeQuery.rawValue)" + filterString)
         if let retrievedEvents = json?.array {
-            return retrievedEvents.map({SummaryReadingEvent(fromDime: $0)})
+            switch typeQuery {
+            case .summaryReadingEvent:
+                return retrievedEvents.map({SummaryReadingEvent(fromDime: $0)})
+            case .readingEvent:
+                return retrievedEvents.map({ReadingEvent(fromDime: $0)})
+            }
         } else {
             return nil
         }

@@ -160,6 +160,20 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     
     // MARK: - Contextual menu
     
+    /// Delete the session related to the currently selected summary event
+    @IBAction func deleteMenuAction(_ sender: NSMenuItem) {
+        guard historyTable.clickedRow >= 0 else {
+            return
+        }
+        
+        let row = historyTable.clickedRow
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            DiMeEraser.deleteAllEvents(relatedToSessionId: self.allHistoryTuples[row].ev.sessionId)
+            self.reloadData()
+        }
+    }
+    
     /// Extracts a json file containing all (non-summary) reading events associated to the
     /// selected (summary) reading event, so that they can be analyzed by the eye tracking algo.
     /// Extracted json contains:

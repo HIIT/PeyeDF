@@ -526,6 +526,9 @@
                         </menuItem>
                         <menuItem title="Delete" id="VrL-wc-brc">
                             <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="deleteMenuAction:" target="GuY-65-HiL" id="9ZZ-EC-Aav"/>
+                            </connections>
                         </menuItem>
                     </items>
                 </menu>
