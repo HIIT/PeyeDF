@@ -629,23 +629,42 @@
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="VQ7-bN-Dcw">
+                                <rect key="frame" x="115" y="125" width="255" height="32"/>
+                                <buttonCell key="cell" type="push" title="Delete all orphaned Reading Events" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="twD-LL-ouK">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="deleteOrphanedReadingEvents:" target="maC-f0-zrE" id="XZ0-At-uXf"/>
+                                </connections>
+                            </button>
+                            <progressIndicator wantsLayer="YES" maxValue="1" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="u6S-t5-ngw">
+                                <rect key="frame" x="80" y="112" width="325" height="20"/>
+                            </progressIndicator>
                         </subviews>
                         <constraints>
                             <constraint firstItem="GFc-xH-ekV" firstAttribute="leading" secondItem="e5v-jH-hY8" secondAttribute="leading" constant="20" symbolic="YES" id="Cnv-cQ-DR7"/>
                             <constraint firstItem="GFc-xH-ekV" firstAttribute="top" secondItem="e5v-jH-hY8" secondAttribute="top" constant="20" symbolic="YES" id="LOV-z5-NA0"/>
+                            <constraint firstItem="VQ7-bN-Dcw" firstAttribute="centerX" secondItem="e5v-jH-hY8" secondAttribute="centerX" id="Od1-DA-7oi"/>
+                            <constraint firstItem="u6S-t5-ngw" firstAttribute="leading" secondItem="e5v-jH-hY8" secondAttribute="leading" constant="80" id="a0c-np-gGR"/>
                             <constraint firstItem="S1W-xx-0w2" firstAttribute="leading" secondItem="e5v-jH-hY8" secondAttribute="leading" constant="20" symbolic="YES" id="ePX-sA-FZG"/>
                             <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="S1W-xx-0w2" secondAttribute="bottom" constant="160" id="ews-zs-jXE"/>
+                            <constraint firstAttribute="trailing" secondItem="u6S-t5-ngw" secondAttribute="trailing" constant="80" id="kHe-8w-8Jq"/>
+                            <constraint firstItem="VQ7-bN-Dcw" firstAttribute="top" secondItem="S1W-xx-0w2" secondAttribute="bottom" constant="20" id="l4E-Rj-3tQ"/>
                             <constraint firstItem="S1W-xx-0w2" firstAttribute="top" secondItem="GFc-xH-ekV" secondAttribute="bottom" constant="6" symbolic="YES" id="mIM-mK-oOg"/>
+                            <constraint firstItem="u6S-t5-ngw" firstAttribute="top" secondItem="VQ7-bN-Dcw" secondAttribute="bottom" constant="1" id="moc-5G-O2y"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="drawDebugCircleCheckCell" destination="qEt-ZY-ZQF" id="WIN-HS-kXF"/>
+                        <outlet property="orphanedDeleteProgressBar" destination="u6S-t5-ngw" id="7Id-Zi-gpU"/>
                         <outlet property="refinderDrawGazedCheckCell" destination="Boz-tG-XcV" id="pLG-dl-4ds"/>
                     </connections>
                 </viewController>
                 <customObject id="epS-rb-wAb" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="522" y="-1286"/>
+            <point key="canvasLocation" x="521.5" y="-1286.5"/>
         </scene>
         <!--Application-->
         <scene sceneID="JPo-4y-FX3">

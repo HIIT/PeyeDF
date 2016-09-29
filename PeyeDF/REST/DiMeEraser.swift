@@ -12,23 +12,52 @@ import Foundation
 /// Wraps delete operations
 class DiMeEraser {
     
-    /// Progress so far in deleting all orphaned events (ReadingEvents which do
-    /// not have an associated ReadingEvent).
-    /// Since there is only one bulk delete operation (orphaned deletion)
-    /// we can use a constants here.
-    static let orphanedDeleteProgress = Progress()
-    
-    func delbulk() {
+    /// Returns a progress that can be used to track the operation (which will be
+    /// done asynchronously on the main utility queue).
+    /// Calls the given callback on complete.
+    static func deleteAllOrphaned(callback: ((Void) -> Void)? ) -> Progress {
+        
+        let orphanedDeleteProgress = Progress(totalUnitCount: .max)
         
         /// all session ids which have been already searched to dime
-        /// if an id is here but not in the orphaned set, it is known not to be orphaned
+        /// if an id is here, it should not be searched for again.
         var processedSessionIds = Set<String>()
         
-        /// all session ids for which we know do not have an associated summary event
-        /// if an id is here, all associated readingevents should be deleted
-        var orphanedSessionIds = Set<String>()
+        DispatchQueue.global(qos: .utility).async {
+            guard let allEvents = DiMeFetcher.getPeyeDFEvents(getSummaries: false) else {
+                callback?()
+                return
+            }
+            
+            var orphanedSessionsFound = 0
+            
+            DispatchQueue.main.async {
+                orphanedDeleteProgress.totalUnitCount = Int64(allEvents.count)
+            }
+            
+            for event in allEvents {
+                
+                // if no summary events are found for this session id
+                if !processedSessionIds.contains(event.sessionId) &&
+                    DiMeFetcher.getPeyeDFEvents(getSummaries: true, sessionId: event.sessionId)?.count ?? 0 == 0 {
+                    
+                    deleteAllEvents(relatedToSessionId: event.sessionId)
+                    processedSessionIds.insert(event.sessionId)
+                    orphanedSessionsFound += 1
+                    AppSingleton.log.debug("Deleting for sesId: \(event.sessionId)")
+                }
+                
+                DispatchQueue.main.async {
+                    orphanedDeleteProgress.completedUnitCount += 1
+                }
+
+            }
+            
+            AppSingleton.log.debug("Deleted \(orphanedSessionsFound) orphaned sessions")
+            callback?()
+        }
         
-        
+        return orphanedDeleteProgress
     }
     
     /// **Synchronously Delete all summary and normal reading events which are associated to the given sessionId.
@@ -43,7 +72,7 @@ class DiMeEraser {
         }
         
         // delete normal events with that session id
-        DiMeFetcher.getPeyeDFEvents(getSummaries: true, sessionId: sessionId)?.forEach() {
+        DiMeFetcher.getPeyeDFEvents(getSummaries: false, sessionId: sessionId)?.forEach() {
             if let id = $0.id {
                 DiMeEraser.deleteEvent(id: id)
             }
