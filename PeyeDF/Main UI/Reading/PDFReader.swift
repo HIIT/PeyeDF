@@ -26,7 +26,47 @@ import Foundation
 import Cocoa
 import Quartz
 
-/// Implementation of a custom PDFView class, used to implement additional function related to
+/// Status of a pdfReader instance
+enum TrackingStatus: CustomStringConvertible {
+    /// Yet to be processed
+    case unknown
+    /// Tracking is allowed
+    case trackable
+    /// Tracking was blocked (e.g. document contains sensitive info)
+    case blocked
+    /// Tracking is not supported (e.g. document does not contain text info)
+    case impossible
+    
+    /// An image which can be used to represent this status to the user
+    var image: NSImage { get {
+        switch self {
+        case .unknown:
+            return NSImage(named: NSImageNameStatusNone)!
+        case .trackable:
+            return NSImage(named: NSImageNameStatusAvailable)!
+        case .blocked:
+            return NSImage(named: NSImageNameStatusPartiallyAvailable)!
+        case .impossible:
+            return NSImage(named: NSImageNameStatusUnavailable)!
+        }
+    } }
+    
+    /// A description of the status for the user
+    var description: String { get {
+        switch self {
+        case .blocked:
+            return "Tracking was blocked"
+        case .impossible:
+            return "Tracking is not possible for this document"
+        case .trackable:
+            return "Tracking is enabled"
+        case .unknown:
+            return "Status unknown"
+        }
+    } }
+}
+
+/// Implementation of a custom PDFView class, used to provide additional functions related to
 /// psychophysiology and user activity tracking
 class PDFReader: PDFBase {
     
@@ -38,7 +78,24 @@ class PDFReader: PDFBase {
         return UserDefaults.standard.value(forKey: PeyeConstants.prefDrawDebugCircle) as! Bool
     }()
     
-    var containsRawString = false  // this stores whether the document actually contains scanned text
+    /// Whether history tracking can be done on this document
+    /// Changhing this automatically sets the toolbar image and
+    /// enables the toolbar item (if the status is anything other than unknown).
+    /// If we go to the trackable status, tells the window controller to start tracking
+    var status: TrackingStatus = .unknown { didSet {
+        guard let dwc = self.window?.windowController as? DocumentWindowController else {
+            return
+        }
+        
+        DispatchQueue.main.async {
+            dwc.tbDocument.isEnabled = !(self.status == .unknown)
+            dwc.tbDocument.image = self.status.image
+        }
+        
+        if (oldValue == .blocked || oldValue == .unknown) && status == .trackable {
+            dwc.startTracking()
+        }
+    } }
     
     /// Id for this reading session, all events sent by this instance should have the same value
     let sessionId: String = { return UUID().uuidString.sha1() }()
@@ -109,38 +166,35 @@ class PDFReader: PDFBase {
     /// To receive single click actions (select tag corresponding to text)
     override func mouseUp(with theEvent: NSEvent) {
         
-        if theEvent.clickCount == 1 && !mouseDragging {
-            // Only proceed if there is actually text to select
-            if containsRawString {
-                /// GETTING MOUSE LOCATION IN WINDOW FROM SCREEN COORDINATES (for debug reasons)
-                // get mouse in screen coordinates
-                let mouseLoc = NSEvent.mouseLocation()
-                for screen in (NSScreen.screens() as [NSScreen]!) {
-                    if NSMouseInRect(mouseLoc, screen.frame, false) {
-                        let tinySize = NSSize(width: 1, height: 1)
-                        let mouseRect = NSRect(origin: mouseLoc, size: tinySize)
-                        //let rawLocation = screen.convertRectToBacking(mouseRect)
-                        
-                        // use raw location to map back into view coordinates
-                        let mouseInWindow = self.window!.convertFromScreen(mouseRect)
-                        let mouseInView = self.convert(mouseInWindow, from: self.window!.contentViewController!.view)
-                        
-                        // if there are no tags here, propagate event
-                        if !showTags(mouseInView.origin) {
-                            // MF: TODO: remove this once debugging is complete
-                            #if DEBUG
-                            let activePage = self.page(for: mouseInView.origin, nearest: true)
-                            let pointOnPage = self.convert(mouseInView.origin, to: activePage!)
-                            if let rect = pointToParagraphRect(pointOnPage, forPage: activePage!),
-                               let doc = self.document {
-                                let area = FocusArea(forRect: rect, onPage: doc.index(for: activePage!))
-                                if let cHash = sciDoc?.contentHash {
-                                    Multipeer.overviewControllers[cHash]?.pdfOverview.addAreaForLocal(area)
-                                }
-                                CollaborationMessage.readAreas([area]).sendToAll()
+        if status == .trackable && theEvent.clickCount == 1 && !mouseDragging {
+            /// GETTING MOUSE LOCATION IN WINDOW FROM SCREEN COORDINATES (for debug reasons)
+            // get mouse in screen coordinates
+            let mouseLoc = NSEvent.mouseLocation()
+            for screen in (NSScreen.screens() as [NSScreen]!) {
+                if NSMouseInRect(mouseLoc, screen.frame, false) {
+                    let tinySize = NSSize(width: 1, height: 1)
+                    let mouseRect = NSRect(origin: mouseLoc, size: tinySize)
+                    //let rawLocation = screen.convertRectToBacking(mouseRect)
+                    
+                    // use raw location to map back into view coordinates
+                    let mouseInWindow = self.window!.convertFromScreen(mouseRect)
+                    let mouseInView = self.convert(mouseInWindow, from: self.window!.contentViewController!.view)
+                    
+                    // if there are no tags here, propagate event
+                    if !showTags(mouseInView.origin) {
+                        // MF: TODO: remove this once debugging is complete
+                        #if DEBUG
+                        let activePage = self.page(for: mouseInView.origin, nearest: true)
+                        let pointOnPage = self.convert(mouseInView.origin, to: activePage!)
+                        if let rect = pointToParagraphRect(pointOnPage, forPage: activePage!),
+                           let doc = self.document {
+                            let area = FocusArea(forRect: rect, onPage: doc.index(for: activePage!))
+                            if let cHash = sciDoc?.contentHash {
+                                Multipeer.overviewControllers[cHash]?.pdfOverview.addAreaForLocal(area)
                             }
-                            #endif
+                            CollaborationMessage.readAreas([area]).sendToAll()
                         }
+                        #endif
                     }
                 }
             }
@@ -266,7 +320,7 @@ class PDFReader: PDFBase {
     /// - parameter location: The point for which a rect will be created (in view coordinates)
     /// - parameter importance: The importance of the rect that will be created
     func quickMarkAndAnnotate(_ location: NSPoint, importance: ReadingClass) {
-        guard containsRawString else {
+        guard status == .trackable else {
             return
         }
 
@@ -296,7 +350,7 @@ class PDFReader: PDFBase {
     /// Sends a notification that the marking was done.
     /// Does not do anything if nothing is currently selected.
     func selectionMarkAndAnnotate(importance: ReadingClass) {
-        guard containsRawString else {
+        guard status == .trackable else {
             return
         }
         
@@ -434,38 +488,42 @@ class PDFReader: PDFBase {
     ///
     /// - returns: The reading event for the current status, or nil if nothing is actually visible
     func getViewportStatus() -> ReadingEvent? {
-        if self.visiblePages() != nil {
-            let visiblePageLabels: [String] = getVisiblePageLabels()
-            let visiblePageNums: [Int] = getVisiblePageNums()
-            let pageRects: [NSRect] = getVisibleRects()
-            var plainTextContent = ""
-            
-            if let textContent = getVisibleString() {
-                plainTextContent = textContent
-            }
-            
-            var readingRects = [ReadingRect]()
-            var vpi = 0
-            for rect in pageRects {
-                let visiblePageNum = visiblePageNums[vpi]
-                let newRect = ReadingRect(pageIndex: visiblePageNum, rect: rect, readingClass: ReadingClass.viewport, classSource: ClassSource.viewport, pdfBase: self)
-                readingRects.append(newRect)
-                markings.addRect(newRect) // keep track of seen viewports
-                vpi += 1
-            }
-            
-            let outgoingEvent = ReadingEvent(sessionId: sessionId, pageNumbers: visiblePageNums, pageLabels: visiblePageLabels, pageRects: readingRects, plainTextContent: plainTextContent, infoElemId: sciDoc!.getAppId())
-            outgoingEvent.previousSessionId = previousSessionId
-            return outgoingEvent
-        } else {
+        guard self.status == .trackable && self.visiblePages() != nil else {
             return nil
         }
+        
+        let visiblePageLabels: [String] = getVisiblePageLabels()
+        let visiblePageNums: [Int] = getVisiblePageNums()
+        let pageRects: [NSRect] = getVisibleRects()
+        var plainTextContent = ""
+        
+        if let textContent = getVisibleString() {
+            plainTextContent = textContent
+        }
+        
+        var readingRects = [ReadingRect]()
+        var vpi = 0
+        for rect in pageRects {
+            let visiblePageNum = visiblePageNums[vpi]
+            let newRect = ReadingRect(pageIndex: visiblePageNum, rect: rect, readingClass: ReadingClass.viewport, classSource: ClassSource.viewport, pdfBase: self)
+            readingRects.append(newRect)
+            markings.addRect(newRect) // keep track of seen viewports
+            vpi += 1
+        }
+        
+        let outgoingEvent = ReadingEvent(sessionId: sessionId, pageNumbers: visiblePageNums, pageLabels: visiblePageLabels, pageRects: readingRects, plainTextContent: plainTextContent, infoElemId: sciDoc!.getAppId())
+        outgoingEvent.previousSessionId = previousSessionId
+        return outgoingEvent
     }
     
     /// Returns all rectangles with their corresponding class, marked by the user (and basic eye tracking)
     ///
     /// - returns: A summary reading event containing to all marks
     func makeSummaryEvent() -> SummaryReadingEvent {
+        
+        guard status == .trackable else {
+            fatalError("Attempted to generate a summary of a non-trackable pdf")
+        }
         
         // only include new readingrects in outgoing summary
         let outgoingRects = markings.getAllReadingRects().filter({$0.new})
@@ -507,63 +565,65 @@ class PDFReader: PDFBase {
     /// Returns the visible text as a string, or nil if no text can be fetched.
     func getVisibleString() -> String? {
         // Only proceed if there is actually text to select
-        if containsRawString {
-            guard let visiblePages = self.visiblePages() else {
-                return nil
-            }
-            let generatedSelection = PDFSelection(document: self.document!)
-            
-            for visiblePage in visiblePages {
-                
-                // Get page's rectangle coordinates
-                let pageRect = getPageRect(visiblePage)
-                
-                // Get viewport rect and apply margin
-                var visibleRect = NSRect(origin: CGPoint(x: 0, y: 0), size: self.frame.size)
-                visibleRect = visibleRect.insetBy(dx: PeyeConstants.extraMargin, dy: PeyeConstants.extraMargin)
-                
-                visibleRect = self.convert(visibleRect, to: visiblePage)  // Convert rect to page coordinates
-                visibleRect = visibleRect.intersection(pageRect)  // Intersect to get seen portion
-                
-                if let sel = visiblePage.selection(for: visibleRect) {
-                    generatedSelection.add(sel)
-                }
-            }
-            
-            return generatedSelection.string
+        guard status == .trackable else {
+            return nil
         }
-        return nil
+        
+        guard let visiblePages = self.visiblePages() else {
+            return nil
+        }
+        let generatedSelection = PDFSelection(document: self.document!)
+        
+        for visiblePage in visiblePages {
+            
+            // Get page's rectangle coordinates
+            let pageRect = getPageRect(visiblePage)
+            
+            // Get viewport rect and apply margin
+            var visibleRect = NSRect(origin: CGPoint(x: 0, y: 0), size: self.frame.size)
+            visibleRect = visibleRect.insetBy(dx: PeyeConstants.extraMargin, dy: PeyeConstants.extraMargin)
+            
+            visibleRect = self.convert(visibleRect, to: visiblePage)  // Convert rect to page coordinates
+            visibleRect = visibleRect.intersection(pageRect)  // Intersect to get seen portion
+            
+            if let sel = visiblePage.selection(for: visibleRect) {
+                generatedSelection.add(sel)
+            }
+        }
+        
+        return generatedSelection.string
     }
    
     // MARK: - Debug functions
     
     /// Debug function to test "seen text"
     func selectVisibleText(_ sender: AnyObject?) {
-        // Only proceed if there is actually text to select
-        if containsRawString {
-            guard let visiblePages = self.visiblePages() else {
-                return
-            }
-            let generatedSelection = PDFSelection(document: self.document!)
-            
-            for visiblePage in visiblePages {
-                
-                // Get page's rectangle coordinates
-                let pageRect = getPageRect(visiblePage)
-                
-                // Get viewport rect and apply margin
-                var visibleRect = NSRect(origin: CGPoint(x: 0, y: 0), size: self.frame.size)
-                visibleRect = visibleRect.insetBy(dx: PeyeConstants.extraMargin, dy: PeyeConstants.extraMargin)
-                
-                visibleRect = self.convert(visibleRect, to: visiblePage)  // Convert rect to page coordinates
-                visibleRect = visibleRect.intersection(pageRect)  // Intersect to get seen portion
-                
-                if let sel = visiblePage.selection(for: visibleRect) {
-                    generatedSelection.add(sel)
-                }
-            }
-            
-            self.setCurrentSelection(generatedSelection, animate: true)
+        guard status == .trackable else {
+            return
         }
+            
+        guard let visiblePages = self.visiblePages() else {
+            return
+        }
+        let generatedSelection = PDFSelection(document: self.document!)
+        
+        for visiblePage in visiblePages {
+            
+            // Get page's rectangle coordinates
+            let pageRect = getPageRect(visiblePage)
+            
+            // Get viewport rect and apply margin
+            var visibleRect = NSRect(origin: CGPoint(x: 0, y: 0), size: self.frame.size)
+            visibleRect = visibleRect.insetBy(dx: PeyeConstants.extraMargin, dy: PeyeConstants.extraMargin)
+            
+            visibleRect = self.convert(visibleRect, to: visiblePage)  // Convert rect to page coordinates
+            visibleRect = visibleRect.intersection(pageRect)  // Intersect to get seen portion
+            
+            if let sel = visiblePage.selection(for: visibleRect) {
+                generatedSelection.add(sel)
+            }
+        }
+        
+        self.setCurrentSelection(generatedSelection, animate: true)
     }
 }

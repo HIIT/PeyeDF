@@ -161,6 +161,11 @@ class HistoryManager: FixationDataDelegate {
     /// Starts the "entry timer" and sets up references to the current window
     fileprivate func preparation(_ documentWindow: DocumentWindowController) {
         exitEvent(nil)
+        
+        guard let pdfReader = documentWindow.pdfReader, pdfReader.status == .trackable else {
+            return
+        }
+        
         timerQueue.sync {
             self.entryTimer = Timer(timeInterval: PeyeConstants.minReadTime, target: self, selector: #selector(self.entryTimerFire(_:)), userInfo: documentWindow, repeats: false)
             RunLoop.current.add(self.entryTimer!, forMode: RunLoopMode.commonModes)
@@ -171,14 +176,18 @@ class HistoryManager: FixationDataDelegate {
     
     /// The document has been "seen" long enough, request information and prepare second (exit) timer
     @objc fileprivate func entryTimerFire(_ entryTimer: Timer) {
+        guard let docWindow = entryTimer.userInfo as? DocumentWindowController,
+              let newEvent = docWindow.reportContinuedReading() else {
+            return
+        }
+        
         readingUnixTime = Date().unixTime
         userIsReading = true
         
-        let docWindow = entryTimer.userInfo as! DocumentWindowController
         self.entryTimer = nil
         
         // retrieve status
-        self.currentReadingEvent = docWindow.reportContinuedReading()
+        self.currentReadingEvent = newEvent
         
         // prepare to convert eye coordinates
         self.currentEyeReceiver = docWindow.pdfReader

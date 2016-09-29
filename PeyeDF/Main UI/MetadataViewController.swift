@@ -44,9 +44,16 @@ class MetadataViewController: NSViewController {
     @IBOutlet weak var authorField: NSTextField!
     @IBOutlet weak var keywordsField: NSTextField!
     
+    @IBOutlet weak var statusImageView: NSImageView!
+    @IBOutlet weak var statusDescription: NSTextField!
+    @IBOutlet weak var explanationLabel: NSTextField!
+    @IBOutlet weak var overrideButton: NSButton!
+    
     func setDoc(_ pdfDoc: PDFDocument, mainWC: DocumentWindowController) {
         self.pdfDoc = pdfDoc
         self.mainCont = mainWC
+        
+        refreshStatus()
         
         if let title = pdfDoc.getTitle() {
             titleField.stringValue = title
@@ -65,6 +72,31 @@ class MetadataViewController: NSViewController {
         initialSubject = subjectField.stringValue
         initialKeywords = keywordsField.stringValue
         checkForChanges(nil)
+    }
+    
+    @IBAction func overridePress(_ sender: NSButton) {
+        self.mainCont?.pdfReader?.status = .trackable
+        refreshStatus()
+    }
+    
+    func refreshStatus() {
+        guard let pdfr = mainCont?.pdfReader else {
+            AppSingleton.log.error("Metadata window does not have a valid relation to pdfReader")
+            return
+        }
+        DispatchQueue.main.async {
+            self.statusImageView.image = pdfr.status.image
+            self.statusDescription.stringValue = pdfr.status.description
+            self.overrideButton.isHidden = !(pdfr.status == .blocked)
+            self.overrideButton.isEnabled = pdfr.status == .blocked
+            // show explanation if status is blocked or dime is not available
+            self.explanationLabel.isHidden = !(pdfr.status == .blocked) && DiMeSession.dimeAvailable
+            if pdfr.status == .blocked {
+                self.explanationLabel.stringValue = "To manually override an track document anyway, press:"
+            } else if !DiMeSession.dimeAvailable {
+                self.explanationLabel.stringValue = "DiMe was found to be offline. Make sure that DiMe is running."
+            }
+        }
     }
     
     func saveData() {

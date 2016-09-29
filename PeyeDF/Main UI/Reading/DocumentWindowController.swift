@@ -65,7 +65,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     weak var pdfReader: PDFReader?
     weak var docSplitController: DocumentSplitController?
     weak var mainSplitController: MainSplitController?
-    @IBOutlet weak var tbMetadata: NSToolbarItem!
+    @IBOutlet weak var tbDocument: NSToolbarItem!
     @IBOutlet weak var tbAnnotate: NSToolbarItem!
     
     var metadataWindowController: MetadataWindowController?
@@ -445,6 +445,69 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     // MARK: - Reading tracking
     
+    /// Prepares to start tracking.
+    /// Tells multipeer that this window is associated to the found contentHash (if file has text).
+    func startTracking() {
+        guard let pdfr = self.pdfReader, let sciDoc = pdfr.sciDoc else {
+            AppSingleton.log.error("Could not find pdfReader and valid scientific document")
+            return
+        }
+        
+        // Set tag button and toolbar status to DiMe's status
+        self.tbTagButton.isEnabled = DiMeSession.dimeAvailable
+        self.tbTagItem.isEnabled = DiMeSession.dimeAvailable
+        
+        // Operations which require a document to have a content hash
+        if let cHash = sciDoc.contentHash {
+            // tell multipeer about the contenthash related to the file we have open in this window
+            Multipeer.ourWindows[cHash] = self
+            
+            // if the relevant preference is set, fetch all summaryreadingevents which are associated to this document and display the annotations in those
+            if (UserDefaults.standard.value(forKey: PeyeConstants.prefLoadPreviousAnnotations) as! Bool) {
+                let showTime = DispatchTime.now() + 0.5  // half second later
+                DispatchQueue.global(qos: DispatchQoS.QoSClass.utility).asyncAfter(deadline: showTime) {
+                    [weak self] in
+                    DiMeFetcher.retrieveAllManualReadingRects(forSciDoc: sciDoc) {
+                        // disable button until operation is complete
+                        self?.window?.standardWindowButton(.closeButton)?.isEnabled = false
+                        $0.forEach() {
+                            pdfr.markings.addRect($0)
+                        }
+                        pdfr.autoAnnotate()
+                        // re enable close button once all data has been retrieved
+                        self?.window?.standardWindowButton(.closeButton)?.isEnabled = true
+                    }
+                }
+            }
+        }
+        
+        // Download metadata if needed, and send to dime if we want this and is found
+        // Dispatch this on utility queue because crossref request blocks.
+        let showTime = DispatchTime.now() + 1  // one second later
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.utility).asyncAfter(deadline: showTime) {
+            [weak self] in
+            
+            if (UserDefaults.standard.value(forKey: PeyeConstants.prefDownloadMetadata) as! Bool),
+                let json = pdfr.document?.autoCrossref() {
+                // found crossref, use it
+                sciDoc.updateFields(fromCrossRef: json)
+            } else if let tit = pdfr.document?.getTitle() {
+                // if not, attempt to get title from document
+                sciDoc.title = tit
+            } else if let tit = pdfr.document?.guessTitle() {
+                // as a last resort, guess it
+                pdfr.document?.setTitle(tit)
+                sciDoc.title = tit
+            }
+            self?.sendAndUpdateScidoc(sciDoc)
+        }
+        
+        // Send event regarding opening of file
+        sendDeskEvent()
+        
+        startedReading()
+    }
+    
     /// The user started, or resumed reading (e.g. this window became key, a scroll event
     /// finished, etc.).
     func startedReading() {
@@ -532,8 +595,11 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     override func windowDidLoad() {
         super.windowDidLoad()
         
-        // metadata disabled at start (will be enabled in checkMetadata(_) )
-        tbMetadata.isEnabled = false
+        // Toolbar button disabled at start (will be enabled once self.status changes)
+        tbDocument.isEnabled = false
+        // Toolbar buttons disabled at start (will be enabled in startTracking() if possible)
+        self.tbTagButton.isEnabled = false
+        self.tbTagItem.isEnabled = false
         
         // set size of window to 2/3 of screen size, if avaiable, otherwise use contants
         let oldFrame: NSRect
@@ -586,10 +652,6 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: PeyeConstants.documentChangeNotification, object: self.document)
-                
-                // Set tag button and toolbar status to DiMe's status
-                self.tbTagButton.isEnabled = DiMeSession.dimeAvailable
-                self.tbTagItem.isEnabled = DiMeSession.dimeAvailable
             }
             
             // Tell app singleton which screen size we are using
@@ -597,34 +659,31 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                 AppSingleton.screenRect = screen.frame
             }
             
-            
-            // Asynchronously fetch text from document (if no text is found, nill we be passed)
-            pdfReader?.checkPlainText() {
-                [weak self] result in
-                self?.checkMetadata(result)
-            }
+            // Asynchronously fetch text and other metadata from document
+            processDocument()
         }
         
     }
     
+    /// Asynchronously fetched text in background from document and makes sure that it
+    /// can be tracked. Call this immediately after load or when the document needs to be
+    /// re-processed (e.g. the user wants to track it even if it was previously blocked).
+    func processDocument() {
+        // disable document toolbar button before starting
+        DispatchQueue.main.async {
+            self.tbDocument.isEnabled = false
+        }
+        pdfReader?.checkPlainText() {
+            [weak self] result in
+            self?.checkMetadata(result)
+        }
+    }
+    
     /// Asynchronously fetch metadata (including plain text) from PDF.
     /// Try to find the document which matches extracted data in DiMe.
-    /// Enables the toolbar item when done.
-    /// Tells multipeer that this window is associated to the found contentHash (if file has text).
     fileprivate func checkMetadata(_ plainText: String?) {
         guard let pdfr = self.pdfReader, let _ = self.document else {
             return
-        }
-        
-        // check if there is text
-        DispatchQueue.main.async {
-            if let _ = plainText {
-                pdfr.containsRawString = true
-                self.tbMetadata.image = NSImage(named: "NSStatusAvailable")
-            } else {
-                self.tbMetadata.image = NSImage(named: "NSStatusUnavailable")
-            }
-            self.tbMetadata.isEnabled = true
         }
         
         // Associate PDF view to info element
@@ -642,57 +701,21 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             sciDoc = ScientificDocument(uri: url.path, plainTextContent: plainText, title: pdfDoc.getTitle(), authors: pdfDoc.getAuthorsAsArray(), keywords: pdfDoc.getKeywordsAsArray(), subject: pdfDoc.getSubject())
         }
         
-        pdfReader!.sciDoc = sciDoc
+        pdfr.sciDoc = sciDoc
         
-        // Operations which require a document to have a content hash
-        if let cHash = sciDoc.contentHash {
-            // tell multipeer about the contenthash related to the file we have open in this window
-            Multipeer.ourWindows[cHash] = self
-            
-            // if the relevant preference is set, fetch all summaryreadingevents which are associated to this document and display the annotations in those
-            if (UserDefaults.standard.value(forKey: PeyeConstants.prefLoadPreviousAnnotations) as! Bool) {
-                let showTime = DispatchTime.now() + 0.5  // half second later
-                DispatchQueue.global(qos: DispatchQoS.QoSClass.utility).asyncAfter(deadline: showTime) {
-                    [weak self] in
-                    DiMeFetcher.retrieveAllManualReadingRects(forSciDoc: sciDoc) {
-                        // disable button until operation is complete
-                        self?.window?.standardWindowButton(.closeButton)?.isEnabled = false
-                        $0.forEach() {
-                            self?.pdfReader?.markings.addRect($0)
-                        }
-                        self?.pdfReader?.autoAnnotate()
-                        // re enable close button once all data has been retrieved
-                        self?.window?.standardWindowButton(.closeButton)?.isEnabled = true
-                    }
-                }
+        // at the very end, check if there's text andupdate status
+        if let foundText = plainText {
+            // changing status will start tracking, if new status is trackable
+            let blockedStrings = UserDefaults.standard.value(forKey: PeyeConstants.prefStringBlockList) as! [String]
+            if foundText.containsAny(strings: blockedStrings) {
+                pdfr.status = .blocked
+            } else {
+                pdfr.status = .trackable
             }
+        } else {
+            pdfr.status = .impossible
         }
-        
-        // Download metadata if needed, and send to dime if we want this and is found
-        // Dispatch this on utility queue because crossref request blocks.
-        let showTime = DispatchTime.now() + 1  // one second later
-        DispatchQueue.global(qos: DispatchQoS.QoSClass.utility).asyncAfter(deadline: showTime) {
-            [weak self] in
-            
-            if (UserDefaults.standard.value(forKey: PeyeConstants.prefDownloadMetadata) as! Bool),
-              let json = self?.pdfReader?.document?.autoCrossref() {
-                // found crossref, use it
-                sciDoc.updateFields(fromCrossRef: json)
-            } else if let tit = self?.pdfReader?.document?.getTitle() {
-                // if not, attempt to get title from document
-                sciDoc.title = tit
-            } else if let tit = self?.pdfReader?.document?.guessTitle() {
-                // as a last resort, guess it
-                self?.pdfReader?.document?.setTitle(tit)
-                sciDoc.title = tit
-            }
-            self?.sendAndUpdateScidoc(sciDoc)
-        }
-        
-        // Send event regarding opening of file
-        sendDeskEvent()
-        
-        startedReading()
+
     }
     
     
@@ -735,14 +758,18 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     /// The regular timer is a repeating timer that regularly submits a summary event to dime
     @objc fileprivate func regularTimerFire(_ regularTimer: Timer) {
+        guard let pdfr = pdfReader, pdfr.status == .trackable else {
+            return
+        }
+        
         DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
-            if let mpdf = self.pdfReader , self.totalReadingTime >= PeyeConstants.minTotalReadTime {
+            if self.totalReadingTime >= PeyeConstants.minTotalReadTime {
                 // update id of summary event
-                let summaryEv = mpdf.makeSummaryEvent()
+                let summaryEv = pdfr.makeSummaryEvent()
                 summaryEv.readingTime = self.totalReadingTime
                 DiMePusher.sendToDiMe(summaryEv) {
                     _, id in
-                    mpdf.setSummaryId(id)
+                    pdfr.setSummaryId(id)
                 }
                 
                 // update tags
@@ -773,9 +800,14 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         // tell other peers that we are now idle
         CollaborationMessage.reportIdle.sendToAll()
         
-        // If dime is available, call the callback after the dime operation is done,
+        guard let pdfr = self.pdfReader else {
+            callback?()
+            return
+        }
+        
+        // If the document can be tracked anddime is available, call the callback after the dime operation is done,
         // otherwise call the callback right now
-        if DiMeSession.dimeAvailable {
+        if pdfr.status == .trackable && DiMeSession.dimeAvailable {
             let ww = NSWindow()
             let wvc = AppSingleton.mainStoryboard.instantiateController(withIdentifier: "WaitVC") as! WaitViewController
             ww.contentViewController = wvc
@@ -783,9 +815,9 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             self.window!.beginSheet(ww, completionHandler: nil)
             // send data to dime (if document has been edited -- annotations have been added -- or enough
             // time elapsed)
-            if let mpdf = self.pdfReader, let doc = self.document as? PeyeDocument,
+            if let doc = self.document as? PeyeDocument,
                 (doc.wereAnnotationsAdded || self.totalReadingTime >= PeyeConstants.minTotalReadTime) {
-                let summaryEv = mpdf.makeSummaryEvent()
+                let summaryEv = pdfr.makeSummaryEvent()
                 summaryEv.readingTime = self.totalReadingTime
                 DiMePusher.sendToDiMe(summaryEv) {
                     _ in
@@ -941,12 +973,16 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     /// Enable functions related to dime (e.g. tags) and refreshes scidoc when dime comes online
     @objc fileprivate func dimeConnectionChanged(_ notification: Notification) {
+        guard let pdfr = self.pdfReader else {
+            AppSingleton.log.error("Could not reference a valid pdfReader object")
+            return
+        }
         let userInfo = (notification as NSNotification).userInfo as! [String: Bool]
         let dimeAvailable = userInfo["available"]!
         
         DispatchQueue.main.async {
-            self.tbTagButton.isEnabled = dimeAvailable
-            self.tbTagItem.isEnabled = dimeAvailable
+            self.tbTagButton.isEnabled = dimeAvailable && pdfr.status == .trackable
+            self.tbTagItem.isEnabled = dimeAvailable && pdfr.status == .trackable
         }
         
         // update data from dime after a small random delay
@@ -954,9 +990,9 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             let randWait = 1 + drand48() * 0.5  // random amount between 1 and 1.5
             let showTime = DispatchTime.now() + Double(Int64(randWait * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
             DispatchQueue.global(qos: DispatchQoS.QoSClass.default).asyncAfter(deadline: showTime) {
-                if let own_sciDoc = self.pdfReader!.sciDoc, let cHash = own_sciDoc.contentHash, let dime_sciDoc = DiMeFetcher.getScientificDocument(for: SciDocConvertible.contentHash(cHash)) {
-                    self.pdfReader!.sciDoc!.id = dime_sciDoc.id!
-                    self.pdfReader!.sciDoc!.updateTags()
+                if let own_sciDoc = pdfr.sciDoc, let cHash = own_sciDoc.contentHash, let dime_sciDoc = DiMeFetcher.getScientificDocument(for: SciDocConvertible.contentHash(cHash)) {
+                    pdfr.sciDoc!.id = dime_sciDoc.id!
+                    pdfr.sciDoc!.updateTags()
                 }
             }
         }
