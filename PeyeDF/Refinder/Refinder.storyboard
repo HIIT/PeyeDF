@@ -191,13 +191,13 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <scrollView wantsLayer="YES" autohidesScrollers="YES" horizontalLineScroll="236" horizontalPageScroll="10" verticalLineScroll="236" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PiP-7z-YlQ">
-                                <rect key="frame" x="0.0" y="20" width="349" height="481"/>
+                                <rect key="frame" x="0.0" y="20" width="349" height="467"/>
                                 <clipView key="contentView" copiesOnScroll="NO" id="nxx-8l-Vpa">
-                                    <rect key="frame" x="1" y="1" width="347" height="479"/>
+                                    <rect key="frame" x="1" y="1" width="347" height="465"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="234" viewBased="YES" id="WGv-dD-r3A">
-                                            <rect key="frame" x="0.0" y="0.0" width="347" height="479"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="347" height="465"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -405,14 +405,14 @@
                                 </textFieldCell>
                             </textField>
                             <box title="Search in:" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="z9t-Pn-jFH">
-                                <rect key="frame" x="-3" y="496" width="355" height="40"/>
+                                <rect key="frame" x="-3" y="482" width="355" height="54"/>
                                 <view key="contentView" id="YTl-qi-ZcU">
-                                    <rect key="frame" x="2" y="2" width="351" height="36"/>
+                                    <rect key="frame" x="2" y="2" width="351" height="50"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <button tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="kfz-cv-khF">
-                                            <rect key="frame" x="253" y="9" width="80" height="18"/>
-                                            <buttonCell key="cell" type="radio" title="Seen text" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="CYg-0l-t7J">
+                                            <rect key="frame" x="145" y="7" width="62" height="37"/>
+                                            <buttonCell key="cell" type="radio" title="Seen text" bezelStyle="regularSquare" imagePosition="above" alignment="center" inset="2" id="CYg-0l-t7J">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
@@ -421,8 +421,8 @@
                                             </connections>
                                         </button>
                                         <button translatesAutoresizingMaskIntoConstraints="NO" id="X1X-Tc-PpR">
-                                            <rect key="frame" x="19" y="9" width="92" height="18"/>
-                                            <buttonCell key="cell" type="radio" title="Documents" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="NmQ-hu-whX">
+                                            <rect key="frame" x="19" y="7" width="74" height="37"/>
+                                            <buttonCell key="cell" type="radio" title="Documents" bezelStyle="regularSquare" imagePosition="above" alignment="center" state="on" inset="2" id="NmQ-hu-whX">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
@@ -430,16 +430,28 @@
                                                 <action selector="searchRadioPress:" target="GuY-65-HiL" id="YkF-mV-dis"/>
                                             </connections>
                                         </button>
+                                        <button tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="iI6-V7-55d">
+                                            <rect key="frame" x="234" y="7" width="99" height="37"/>
+                                            <buttonCell key="cell" type="radio" title="Document Tags" bezelStyle="regularSquare" imagePosition="above" alignment="center" inset="2" id="lVa-OH-Cu0">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="searchRadioPress:" target="GuY-65-HiL" id="qUv-iG-XnZ"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="X1X-Tc-PpR" firstAttribute="centerY" secondItem="YTl-qi-ZcU" secondAttribute="centerY" id="4rc-ko-eZF"/>
-                                        <constraint firstAttribute="trailing" secondItem="kfz-cv-khF" secondAttribute="trailing" constant="20" id="Mhy-TE-21E"/>
-                                        <constraint firstItem="kfz-cv-khF" firstAttribute="centerY" secondItem="YTl-qi-ZcU" secondAttribute="centerY" id="hDF-AL-0i7"/>
+                                        <constraint firstItem="kfz-cv-khF" firstAttribute="centerY" secondItem="YTl-qi-ZcU" secondAttribute="centerY" id="FBh-Pa-64H"/>
+                                        <constraint firstItem="X1X-Tc-PpR" firstAttribute="centerY" secondItem="YTl-qi-ZcU" secondAttribute="centerY" id="S8z-ED-04w"/>
+                                        <constraint firstItem="kfz-cv-khF" firstAttribute="centerX" secondItem="YTl-qi-ZcU" secondAttribute="centerX" id="gPp-wj-wFx"/>
                                         <constraint firstItem="X1X-Tc-PpR" firstAttribute="leading" secondItem="YTl-qi-ZcU" secondAttribute="leading" constant="20" id="nIW-Lv-iDB"/>
+                                        <constraint firstAttribute="trailing" secondItem="iI6-V7-55d" secondAttribute="trailing" constant="20" id="rAB-m7-Phi"/>
+                                        <constraint firstItem="iI6-V7-55d" firstAttribute="centerY" secondItem="YTl-qi-ZcU" secondAttribute="centerY" id="wij-TD-I0J"/>
                                     </constraints>
                                 </view>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="34" id="HPO-fn-knQ"/>
+                                    <constraint firstAttribute="height" constant="48" id="HPO-fn-knQ"/>
                                 </constraints>
                             </box>
                             <searchField wantsLayer="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="peL-R7-tE3">
@@ -485,6 +497,7 @@
                         <outlet property="reloadButton" destination="Xoc-Gj-MX2" id="lbj-QM-tug"/>
                         <outlet property="searchField" destination="peL-R7-tE3" id="E85-3y-hwv"/>
                         <outlet property="seenTextRadio" destination="kfz-cv-khF" id="omC-i1-OBs"/>
+                        <outlet property="tagsRadio" destination="iI6-V7-55d" id="85s-Rx-hve"/>
                         <segue destination="b4I-LT-AQi" kind="show" identifier="showThresholdEditor" id="pCu-7b-i2Z"/>
                     </connections>
                 </viewController>

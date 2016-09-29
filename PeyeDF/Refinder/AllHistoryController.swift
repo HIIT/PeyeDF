@@ -132,18 +132,18 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     @IBOutlet weak var searchField: NSSearchField!
     @IBOutlet weak var documentsRadio: NSButton!
     @IBOutlet weak var seenTextRadio: NSButton!
+    @IBOutlet weak var tagsRadio: NSButton!
     
     fileprivate(set) var searchIn: DiMeSearchableItem = .sciDoc { didSet {
-        switch searchIn {
-        case .sciDoc:
+        let radioButtons: [NSButton] = [documentsRadio, seenTextRadio, tagsRadio]
+        radioButtons.forEach() {
+            button in
             DispatchQueue.main.async {
-                self.documentsRadio.state = NSOnState
-                self.seenTextRadio.state = NSOffState
-            }
-        case .readingEvent:
-            DispatchQueue.main.async {
-                self.documentsRadio.state = NSOffState
-                self.seenTextRadio.state = NSOnState
+                if button.tag == self.searchIn.rawValue {
+                    button.state = NSOnState
+                } else {
+                    button.state = NSOffState
+                }
             }
         }
     } }
@@ -354,7 +354,11 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
         } else {
             AppSingleton.findPasteboard.declareTypes([NSStringPboardType], owner: nil)
             AppSingleton.findPasteboard.setString(searchField.stringValue, forType: NSStringPboardType)
-            delegate?.setSearchString(newString: searchField.stringValue)
+            if searchIn == .tag {
+                delegate?.setSearchString(newString: "#tag:" + searchField.stringValue)
+            } else {
+                delegate?.setSearchString(newString: searchField.stringValue)
+            }
             diMeFetcher?.getSummariesForSearch(string: searchField.stringValue, inData: searchIn)
         }
     }

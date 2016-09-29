@@ -38,6 +38,7 @@ enum DiMeEndpoint: String {
 enum DiMeSearchableItem: Int {
     case sciDoc
     case readingEvent
+    case tag
 }
 
 /// Can be either reading event or summary reading event. The raw value points
@@ -155,10 +156,19 @@ class DiMeFetcher {
                     self.receiver.receiveAllSummaries(nil)
                 }
                 
-            case .sciDoc:
+            // tag are found within scientific documents
+            case .sciDoc, .tag:
                 // document search: once we got the list of documents that satisfy query,
                 // use their "id" field to get all summary events that have the same id
-                let foundScidocs = DiMeFetcher.searchSciDocs(for: string)
+                let foundScidocs: [ScientificDocument]?
+                
+                if inData == .sciDoc {
+                    // Search scidocs normally
+                    foundScidocs = DiMeFetcher.searchSciDocs(for: string)
+                } else {
+                    // search for tags
+                    foundScidocs = DiMeFetcher.searchSciDocs(forTag: string)
+                }
                     
                 DispatchQueue.main.async {
                     self.fetchProgress.totalUnitCount = Int64(foundScidocs?.count ?? 0)
@@ -188,7 +198,6 @@ class DiMeFetcher {
                 } else {
                     self.receiver.receiveAllSummaries(nil)
                 }
-                    
             }
         }
     }
@@ -557,6 +566,21 @@ class DiMeFetcher {
 
         return docs.map({ScientificDocument(fromDime: $0)})
     
+    }
+    
+    /// **Synchronously** search for the given tag in scientific documents only
+    static func searchSciDocs(forTag tag: String) -> [ScientificDocument]? {
+        
+        let searchType = InformationElementQuery.scientificDocument
+        
+        let result = DiMeSession.fetch_sync(urlString: DiMeSession.dimeUrl + "/data/informationelements?tag=\(tag)&\(searchType.rawValue)")
+        
+        guard let json = result.json, let docs = json.array, docs.count > 0 else {
+            return nil
+        }
+        
+        return docs.map({ScientificDocument(fromDime: $0)})
+        
     }
     
     /// Attempts to convert any kind of ID string (see SciDocConvertible) to a URL pointing to a file on disk.
