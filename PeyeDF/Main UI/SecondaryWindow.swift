@@ -25,6 +25,8 @@
 import Foundation
 import Cocoa
 
+/// Specification for a window that can't become main neither key (stays in the
+/// "background")
 class SecondaryWindow: NSWindow {
     override var canBecomeMain: Bool { get {
         return false

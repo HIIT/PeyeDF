@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G1004" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11201"/>
+        <capability name="box content view" minToolsVersion="7.0"/>
+    </dependencies>
+    <scenes>
+        <!--Question View Controller-->
+        <scene sceneID="ghA-xR-62f">
+            <objects>
+                <viewController id="AkP-9C-mqL" customClass="QuestionViewController" customModule="PeyeDF_Questions" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="PAt-d8-246">
+                        <rect key="frame" x="0.0" y="0.0" width="1200" height="600"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="XSm-pB-vn8">
+                                <rect key="frame" x="580" y="543" width="41" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Topic:" id="6Dp-i2-ZYX">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PJ0-aO-Dcp">
+                                <rect key="frame" x="310" y="480" width="580" height="23"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="22" id="3y2-P6-ccm"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="430" id="Ay9-b9-7PQ"/>
+                                </constraints>
+                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="lorem ipsum dolor sit amet dolorem proident utilitatis magnus agris." id="9Gw-uH-Ivd">
+                                    <font key="font" size="19" name=".AppleSystemUIFont"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wab-Rc-BfL">
+                                <rect key="frame" x="283" y="383" width="63" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Question:" id="r31-T2-ypf">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TOG-2l-eb8">
+                                <rect key="frame" x="298" y="305" width="604" height="70"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="600" id="feh-Bp-1LU"/>
+                                    <constraint firstAttribute="height" constant="70" id="xZY-vG-eBH"/>
+                                </constraints>
+                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="UFY-YD-aO6">
+                                    <font key="font" metaFont="system"/>
+                                    <string key="title">lorem ipsum dolor sit amet dolorem proident utilitatis magnus agris. abutebatur architecto propter ut materia. quam quo aliquip, officii voluptatem. qui pariatur officii eos. 
+</string>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <box hidden="YES" borderType="line" title="Answers" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="3FN-lc-Y62">
+                                <rect key="frame" x="172" y="49" width="856" height="102"/>
+                                <view key="contentView" id="DFm-pX-ieO">
+                                    <rect key="frame" x="1" y="1" width="854" height="100"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <button translatesAutoresizingMaskIntoConstraints="NO" id="nqc-5K-YuA">
+                                            <rect key="frame" x="19" y="73" width="93" height="18"/>
+                                            <buttonCell key="cell" type="radio" title="Answer one" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="7Gx-cg-s1i">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <accessibility description="First answer"/>
+                                            <connections>
+                                                <action selector="answerButtonPress:" target="AkP-9C-mqL" id="9Ny-04-tEI"/>
+                                            </connections>
+                                        </button>
+                                        <button translatesAutoresizingMaskIntoConstraints="NO" id="CrB-42-hcI">
+                                            <rect key="frame" x="19" y="42" width="93" height="18"/>
+                                            <buttonCell key="cell" type="radio" title="Answer two" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="s2f-Xc-66I">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <accessibility description="Second answer"/>
+                                            <connections>
+                                                <action selector="answerButtonPress:" target="AkP-9C-mqL" id="nsU-pJ-ncD"/>
+                                            </connections>
+                                        </button>
+                                        <button translatesAutoresizingMaskIntoConstraints="NO" id="Ooq-e1-4TC">
+                                            <rect key="frame" x="19" y="11" width="102" height="18"/>
+                                            <buttonCell key="cell" type="radio" title="Answer three" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="OXR-4q-z6x">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <accessibility description="Third answer"/>
+                                            <connections>
+                                                <action selector="answerButtonPress:" target="AkP-9C-mqL" id="Vhv-PV-OgJ"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="CrB-42-hcI" firstAttribute="top" secondItem="nqc-5K-YuA" secondAttribute="bottom" constant="15" id="2r6-TJ-ctd"/>
+                                        <constraint firstItem="nqc-5K-YuA" firstAttribute="leading" secondItem="CrB-42-hcI" secondAttribute="leading" id="3a8-Qf-3lC"/>
+                                        <constraint firstItem="nqc-5K-YuA" firstAttribute="top" secondItem="DFm-pX-ieO" secondAttribute="top" constant="10" id="F7A-S6-9dX"/>
+                                        <constraint firstItem="Ooq-e1-4TC" firstAttribute="top" secondItem="CrB-42-hcI" secondAttribute="bottom" constant="15" id="Uov-RM-UFa"/>
+                                        <constraint firstItem="nqc-5K-YuA" firstAttribute="leading" secondItem="DFm-pX-ieO" secondAttribute="leading" constant="20" id="aRH-W0-PST"/>
+                                        <constraint firstItem="CrB-42-hcI" firstAttribute="leading" secondItem="Ooq-e1-4TC" secondAttribute="leading" id="eKD-Xp-k9k"/>
+                                    </constraints>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="96" id="Dd3-gw-zlI"/>
+                                    <constraint firstAttribute="width" constant="850" id="taF-qx-8TI"/>
+                                </constraints>
+                                <font key="titleFont" metaFont="system"/>
+                            </box>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zhw-6m-xb8">
+                                <rect key="frame" x="553" y="283" width="95" height="32"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="83" id="KMA-AU-bIE"/>
+                                    <constraint firstAttribute="height" constant="21" id="xNM-Ne-1jh"/>
+                                </constraints>
+                                <buttonCell key="cell" type="push" title="Continue" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="qY9-Lv-Xom">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <accessibility description="Continue"/>
+                                <connections>
+                                    <action selector="continueButtonPress:" target="AkP-9C-mqL" id="PPB-ug-Cfb"/>
+                                </connections>
+                            </button>
+                            <box borderType="line" title="Head" translatesAutoresizingMaskIntoConstraints="NO" id="D7t-uG-Ab9" customClass="eyeBox" customModule="PeyeDF_Questions" customModuleProvider="target">
+                                <rect key="frame" x="46" y="63" width="60" height="70"/>
+                                <view key="contentView" id="CEB-OH-NAb">
+                                    <rect key="frame" x="1" y="1" width="58" height="54"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="54" id="KEw-VB-xxo"/>
+                                    <constraint firstAttribute="height" constant="66" id="ZgW-KG-Ajm"/>
+                                </constraints>
+                            </box>
+                            <button hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lnL-1l-8hs">
+                                <rect key="frame" x="267" y="13" width="89" height="32"/>
+                                <buttonCell key="cell" type="push" title="Confirm" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="tXg-6f-aw5">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <accessibility description="Confirm"/>
+                                <connections>
+                                    <action selector="confirmButtonPress:" target="AkP-9C-mqL" id="Yek-rw-k0A"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="zhw-6m-xb8" firstAttribute="centerX" secondItem="PAt-d8-246" secondAttribute="centerX" id="33Q-Kh-Ys3"/>
+                            <constraint firstItem="lnL-1l-8hs" firstAttribute="top" secondItem="3FN-lc-Y62" secondAttribute="bottom" constant="12" id="92a-Ma-Xug"/>
+                            <constraint firstItem="wab-Rc-BfL" firstAttribute="top" secondItem="PJ0-aO-Dcp" secondAttribute="bottom" constant="80" id="AH0-fw-tpr"/>
+                            <constraint firstItem="XSm-pB-vn8" firstAttribute="top" secondItem="PAt-d8-246" secondAttribute="top" constant="40" id="FFi-PK-q3P"/>
+                            <constraint firstItem="XSm-pB-vn8" firstAttribute="centerX" secondItem="PAt-d8-246" secondAttribute="centerX" id="JNw-4w-okj"/>
+                            <constraint firstItem="D7t-uG-Ab9" firstAttribute="centerY" secondItem="DFm-pX-ieO" secondAttribute="centerY" id="ORT-M4-idP"/>
+                            <constraint firstItem="lnL-1l-8hs" firstAttribute="leading" secondItem="DFm-pX-ieO" secondAttribute="leading" constant="100" id="TZL-7b-Sxg"/>
+                            <constraint firstItem="zhw-6m-xb8" firstAttribute="centerY" secondItem="PAt-d8-246" secondAttribute="centerY" id="YYq-g3-yPc"/>
+                            <constraint firstAttribute="bottom" secondItem="lnL-1l-8hs" secondAttribute="bottom" constant="20" symbolic="YES" id="YuO-1c-HVd"/>
+                            <constraint firstItem="3FN-lc-Y62" firstAttribute="centerX" secondItem="PAt-d8-246" secondAttribute="centerX" id="bWn-JH-5Q5"/>
+                            <constraint firstItem="TOG-2l-eb8" firstAttribute="centerX" secondItem="PAt-d8-246" secondAttribute="centerX" id="eDx-nj-tYk"/>
+                            <constraint firstItem="TOG-2l-eb8" firstAttribute="top" secondItem="wab-Rc-BfL" secondAttribute="bottom" constant="8" id="ec4-zf-pfv"/>
+                            <constraint firstItem="wab-Rc-BfL" firstAttribute="leading" secondItem="TOG-2l-eb8" secondAttribute="leading" constant="-15" id="hFC-zs-r38"/>
+                            <constraint firstItem="PJ0-aO-Dcp" firstAttribute="top" secondItem="XSm-pB-vn8" secondAttribute="bottom" constant="40" id="rm3-jx-lGx"/>
+                            <constraint firstItem="DFm-pX-ieO" firstAttribute="leading" secondItem="D7t-uG-Ab9" secondAttribute="trailing" constant="70" id="vVQ-Ci-9aO"/>
+                            <constraint firstItem="PJ0-aO-Dcp" firstAttribute="centerX" secondItem="PAt-d8-246" secondAttribute="centerX" id="xsv-lq-AjQ"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="answer1" destination="nqc-5K-YuA" id="iNI-Ok-Btb"/>
+                        <outlet property="answer2" destination="CrB-42-hcI" id="KzP-dh-Gvl"/>
+                        <outlet property="answer3" destination="Ooq-e1-4TC" id="cNa-Qz-ba4"/>
+                        <outlet property="answerBox" destination="3FN-lc-Y62" id="jq9-sq-Ots"/>
+                        <outlet property="confirmButton" destination="lnL-1l-8hs" id="NmE-Nn-BeW"/>
+                        <outlet property="continueButton" destination="zhw-6m-xb8" id="aFk-yt-Zhg"/>
+                        <outlet property="questionHead" destination="wab-Rc-BfL" id="u8w-8y-Gq7"/>
+                        <outlet property="questionLabel" destination="TOG-2l-eb8" id="diI-Mo-oOK"/>
+                        <outlet property="topicFromItsLabel" destination="rm3-jx-lGx" id="2CB-az-lES"/>
+                        <outlet property="topicFromTop" destination="FFi-PK-q3P" id="aaS-Px-kmy"/>
+                        <outlet property="topicHead" destination="XSm-pB-vn8" id="ASw-Gi-UMB"/>
+                        <outlet property="topicLabel" destination="PJ0-aO-Dcp" id="pii-Gn-tbj"/>
+                        <outlet property="topicLabelFromQuestion" destination="AH0-fw-tpr" id="x7J-6i-Lir"/>
+                    </connections>
+                </viewController>
+                <customObject id="9u7-H9-4Zc" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1340" y="186"/>
+        </scene>
+        <!--Window Controller-->
+        <scene sceneID="2zr-IX-lyW">
+            <objects>
+                <windowController storyboardIdentifier="QuestionWindowController" showSeguePresentationStyle="single" id="bLh-Zi-wgW" sceneMemberID="viewController">
+                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" hasShadow="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="ITs-za-280" customClass="SecondaryWindow" customModule="PeyeDF_Questions" customModuleProvider="target">
+                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+                        <rect key="contentRect" x="425" y="461" width="480" height="270"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
+                    </window>
+                    <connections>
+                        <segue destination="AkP-9C-mqL" kind="relationship" relationship="window.shadowedContentViewController" id="GxZ-1T-7kr"/>
+                    </connections>
+                </windowController>
+                <customObject id="F2g-AP-M2b" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1340" y="-374"/>
+        </scene>
+    </scenes>
+</document>

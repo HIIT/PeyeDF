@@ -592,7 +592,7 @@ class PDFBase: PDFView {
     func autoAnnotate() {
         removeAllParagraphAnnotations()
         markings.flattenRectangles_relevance()
-        outputAnnotations(.high, colour: PeyeConstants.annotationColourCritical)
+        outputAnnotations(.high, colour: PeyeConstants.annotationColourCritical) // TODO: change this to markAnnotationColours[readingClass]?
         outputAnnotations(.medium, colour: PeyeConstants.annotationColourInteresting)
         outputAnnotations(.low, colour: PeyeConstants.annotationColourRead)
     }

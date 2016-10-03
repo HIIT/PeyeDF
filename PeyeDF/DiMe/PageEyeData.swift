@@ -179,7 +179,7 @@ struct PageEyeDataChunk: Dictionariable {
                         arraysToCheck[aa].remove(at: i)
                     }
                     foundInvalid = true
-                    AppSingleton.log.error("Found invalid NSNumber")
+                    AppSingleton.log.error("Found invalid Number")
                     break
                 }
             }
