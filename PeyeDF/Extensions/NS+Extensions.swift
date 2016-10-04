@@ -287,3 +287,35 @@ extension NSPasteboard {
         }
     } }
 }
+
+extension URL {
+    
+    /// Quick accessor to check if url is directory.
+    /// Passes any error to log.
+    var isDirectory: Bool { get {
+        do {
+            let resVals = try self.resourceValues(forKeys: [URLResourceKey.isDirectoryKey])
+            if let isDir = resVals.isDirectory, isDir {
+                return true
+            } else {
+                return false
+            }
+        } catch {
+            AppSingleton.log.warning("Failed to check: \(error)")
+            return false
+        }
+    } }
+    
+    /// Quick way to verify is an url exists an pass error to log.
+    ///
+    /// - returns: true if the file exists and is reachable
+    func quickVerify() -> Bool {
+        do {
+            return try self.checkResourceIsReachable()
+        } catch {
+            AppSingleton.log.warning("Failed to retrieve url: \(error)")
+            return false
+        }
+    }
+    
+}

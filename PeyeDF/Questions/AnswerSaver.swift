@@ -11,14 +11,6 @@ import Foundation
 /// Keeps track of all the answers given, their time, and saves to json
 class AnswerSaver {
     
-    /// Number of clicks in refinder overview. Static so that it can be accessed from outside.
-    /// Simply increment when a click in refinder is done (reset by the AnswerQuestion state).
-    static var refinderClicks: Int = 0
-    
-    /// Fixations in refinder overview. Static so that it can be accessed from outside.
-    /// Simply append a fixation duration when a fixation in refinder is found (reset by the AnswerQuestion state).
-    static var refinderFixations = [Int]()
-    
     var currentPaperCode: String!
     var currentPaperIndex: Int!
     var currentQuestion: Int!
@@ -52,8 +44,6 @@ class AnswerSaver {
         newVal["ttopicGroup"] = currentGroup.rawValue
         newVal["correct"] = correct
         newVal["timePassed"] = timePassed
-        newVal["refinderFixations"] = AnswerSaver.refinderFixations
-        newVal["refinderClicks"] = AnswerSaver.refinderClicks
         
         answers.append(newVal)
     }
@@ -75,6 +65,7 @@ class AnswerSaver {
         
         let homeDirectory = NSURL(string: NSHomeDirectory())!
         
+        // TODO: change this to actual dir
         let jsonFile = homeDirectory.appendingPathComponent("\(outFileName).json")!
         let fileManager = FileManager.default
         var isDirectory: ObjCBool = false

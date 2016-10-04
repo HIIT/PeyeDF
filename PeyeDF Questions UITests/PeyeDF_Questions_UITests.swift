@@ -46,30 +46,7 @@ class PeyeDF_Questions_UITests: XCTestCase {
         
         startAndAnswerAll()
     }
-    
-    
-    func testRunLoaded() {
         
-        // midas is on
-        let useMidas = false
-        
-        // participant json load
-        let app = XCUIApplication()
-        app.textFields["##"].typeText("5")
-        
-        app.checkBoxes["Pre-load"].click()
-        
-        let okButton = app.buttons["OK"]
-        okButton.click()
-        
-        // midas dismiss
-        if !useMidas {
-            okButton.click()
-        }
-        
-        startAndAnswerAll()
-    }
-    
     /// Convenience function to start and answer all questions
     func startAndAnswerAll() {
         let app = XCUIApplication()

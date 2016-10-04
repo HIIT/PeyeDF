@@ -95,28 +95,15 @@ class PrepareQuestion: QuestionState, Advanceable {
     override func didEnter(from previousState: GKState?) {
         // if we are coming from the GivePaper state, initialize
         if previousState is GivePaper {
-            self.questionLoader = QuestionLoader(fromPaper: (previousState as! GivePaper).currentPaper!)
+            self.questionLoader = QuestionLoader(fromPaper: (previousState as! GivePaper).currentPaper!, inDirectory: QuestionSingleton.questionsJsonLoc)
             let nOfTargetTopics = self.questionLoader.nOfTtopics
             let nOfQuestions = self.questionLoader.nOfQuestions
             self.questionCounts = [Int](repeating: 0, count: nOfTargetTopics)
             let totalQuestions = nOfQuestions * nOfTargetTopics
-            // if no predefined order is present, generate it
-            if QuestionSingleton.questionOrder == nil {
-                let rand = GKShuffledDistribution(lowestValue: 0, highestValue: nOfTargetTopics - 1)
-                targetTopicList = (0..<totalQuestions).map({_ in rand.nextInt()})
-            } else {
-                // otherwise, fetch it from appsingleton
-                targetTopicList = []
-                for _ in 0..<totalQuestions {
-                    let (paperNo, ttNo) = QuestionSingleton.questionOrder!.remove(at: 0)
-                    if paperNo != (previousState! as! GivePaper).currentPaper!.index {
-                        self.view.view.window!.close()
-                        AppSingleton.alertUser("Please stop and contact experimenter", infoText: "Loaded question does not match expected question")
-                        break
-                    }
-                    targetTopicList.append(ttNo)
-                }
-            }
+            
+            // randomly cycle new target topics
+            let rand = GKShuffledDistribution(lowestValue: 0, highestValue: nOfTargetTopics - 1)
+            targetTopicList = (0..<totalQuestions).map({_ in rand.nextInt()})
         }
         
         // Get the next target topic (if there's any left)
@@ -169,10 +156,6 @@ class AnswerQuestion: QuestionState {
         questionLoader = ps.questionLoader
         QuestionSingleton.answerMode()
         started = Date()
-        
-        // reset refider clicks and gazes
-        AnswerSaver.refinderClicks = 0
-        AnswerSaver.refinderFixations = []
         
     }
     

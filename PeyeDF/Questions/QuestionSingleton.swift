@@ -12,30 +12,63 @@ import Cocoa
 /// Stores information for an experimental session.
 /// The PeyeDF Questions App is expected to terminate at the end of a successful session.
 class QuestionSingleton {
-
-    static var questionWindow: NSWindowController!
-    static var papers = [Paper]() // papers will be added from input json after it is loaded
-
-    // default name of data directory
-    static let dataDirName = "Peyexperiment"
     
+    // MARK: - Constants
+    
+    static let baseUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("Peyexperiment")
+    
+    // MARK: - Folder locations
+    
+    /// Location of the JSON files that contain information about papers (questions)
+    static var questionsJsonLoc = baseUrl.appendingPathComponent("Questions")
+    
+    /// Location of the JSON files that contain information on the sequence of questions we are asking
+    static var partJsonLoc = baseUrl.appendingPathComponent("Participants")
+    
+    /// Location of the PDF documents
+    static var experimentPdfsLoc = baseUrl.appendingPathComponent("PDFs")
+    
+    // Output JSONs will be outputted here
+    static var outputJsonLoc = baseUrl.appendingPathComponent("Outputs")
+    
+    /// This enum represents a folder location (which contain experiment files).
+    /// The Int representation is used to refer to a tag in Experiment preferences.
+    enum FolderLocation: Int {
+        case inputQuestions = 1
+        case inputParticipant = 2
+        case pdfDocuments = 3
+        case output = 4
+        
+        var url: URL { get {
+            switch self {
+            case .inputQuestions:
+                return questionsJsonLoc
+            case .inputParticipant:
+                return partJsonLoc
+            case .pdfDocuments:
+                return experimentPdfsLoc
+            case .output:
+                return outputJsonLoc
+            }
+        } }
+    }
+
+    // MARK: - Window and controller references
+    
+    static var questionWindow: NSWindowController!
+    static var paperOrder = [Paper]() // papers will be added from input json after it is loaded
+
     static var theWindowController: NSWindowController? // TODO: change this to doc window
     static var _dawindow: NSWindowController? // TODO: this should be the doc's window
     static var questionController: QuestionViewController? // TODO: change this (set)
     
-    /// Participant number (defaults to 999, change it when known)
-    static var pNo = 999
+    /// Participant number (defaults to infinity, should be changed on app start)
+    static var pNo = Int.max
     
     static let questionsStoryboard = NSStoryboard(name: "Questions", bundle: nil)
     
     /// Seconds taken to read each apper
     static var timeTaken = [Double]()
-    
-    /// Whether we are in question mode
-    static var questionMode = true
-    
-    /// The order of questions (or more specifically the order of target topics) will be pre-loaded from the input file, instead of being randomly generated if we want so (otherwise will be nil)
-    static var questionOrder: [(paper: Int, ttopicNo: Int)]? = nil
     
     /// Arranges windows to receive answers
     static func answerMode() {
@@ -62,141 +95,171 @@ class QuestionSingleton {
         return questionFrame
     }
     
-    /// Prepares to start, initializes all fields
-    static func prepare() {
-        // get experiment file (must run on main thread)
-        DispatchQueue.main.async {
-            var fileURL: URL?
-            var inData: Data?
-            repeat {
-                fileURL = getInitialFileURL()
-                if fileURL != nil {
-                    inData = try! Data(contentsOf: fileURL!)
-                }
-            } while fileURL == nil || inData == nil
-            do {
-                // read json data and put in relevant places
-                let jsonData = try JSONSerialization.jsonObject(with: inData!, options: .allowFragments) as! [String: AnyObject]
-                let json = JSON(jsonData)
-                QuestionSingleton.pNo = json["pNo"].intValue
-                // first one is practice apper
-                QuestionSingleton.papers.append(Paper(fromDefault: 4, withGroup: .A))
-                // append assignments in order
-                for assignment in json["assignments"].arrayValue {
-                    let papNum = assignment["paper"].intValue
-                    let tgroup = assignment["ttopicGroup"].stringValue
-                    let newPaper = Paper(fromDefault: papNum, withGroup: TargetTopicGroup(rawValue: tgroup)!)
-                    QuestionSingleton.papers.append(newPaper)
-                }
-            } catch {
-                AppSingleton.alertUser("Can't read json", infoText: "\(error)")
-            }
+    /// Attempts to load all data needed to run the experiment.
+    ///
+    /// - returns: Returns a boolean indicating whether loaded succeeded and a list of **failed** locations. That is, if the operation
+    /// was successful, returns an empty list and true.
+    static func loadData(partNo: Int, newQuestionsPath: String, newPartPath: String, newPdfLoc: String, newOutputPath: String) -> (success: Bool, failed: [FolderLocation]) {
+        var failedLocations = [FolderLocation]()
+        
+        if !verifyQuestions(newUrl: URL(fileURLWithPath: newQuestionsPath)) {
+            failedLocations.append(.inputQuestions)
+        }
+        
+        if !verifyPDFs(newUrl: URL(fileURLWithPath: newPdfLoc)) {
+            failedLocations.append(.pdfDocuments)
         }
 
+        if !verifyOutput(newUrl: URL(fileURLWithPath: newOutputPath)) {
+            failedLocations.append(.output)
+        }
+        
+        guard let partJsonUrl = verifyParticipant(forPno: partNo, inDirectory: URL(fileURLWithPath: newPartPath)) else {
+            failedLocations.append(.inputParticipant)
+            return (false, failedLocations)
+        }
+
+
+        // finally check that loaded pNo in json corresponds to pNo we have.
+        // alert user if not, othewise load data and return true
+        do {
+            let inData = try Data(contentsOf: partJsonUrl)
+            let json = JSON(data: inData)
+            
+            guard json["pNo"].intValue == partNo else {
+                AppSingleton.alertUser("Participant number in json different than expected")
+                return (false, failedLocations)
+            }
+            
+            // create ordering
+            paperOrder = [Paper]()
+            // first one is practice paper
+            paperOrder.append(Paper(fromDefault: 4, withGroup: .A))
+            // append assignments in order
+            for assignment in json["assignments"].arrayValue {
+                let papNum = assignment["paper"].intValue
+                let tgroup = assignment["ttopicGroup"].stringValue
+                let newPaper = Paper(fromDefault: papNum, withGroup: TargetTopicGroup(rawValue: tgroup)!)
+                paperOrder.append(newPaper)
+            }
+            
+        } catch {
+            AppSingleton.alertUser("Failed to read input data")
+            return (false, failedLocations)
+        }
+        
+        if failedLocations.count == 0 {
+            return (true, failedLocations)
+        } else {
+            return (false, failedLocations)
+        }
+        
     }
     
     /// Start the question loop
     static func startQuestions() {
-        if QuestionSingleton.questionMode && _dawindow != nil {
+        if _dawindow != nil {
             _dawindow!.showWindow(self)
             questionWindow = (QuestionSingleton.questionsStoryboard.instantiateController(withIdentifier: "QuestionWindowController") as! NSWindowController)
             questionWindow.showWindow(nil)
-            // MF: comment these two below for debugging
+            // comment these two below for debugging, so you can see behind
             questionWindow.window?.level = Int(CGWindowLevelForKey(.floatingWindow))
             questionWindow.window?.level = Int(CGWindowLevelForKey(.maximumWindow))
             questionController = (questionWindow.contentViewController as! QuestionViewController)
-            questionController!.begin(withPapers: papers)
-            // copy times taken to app singleton
-            DiMeFetcher.fetchPeyeDFEvents(getSummaries: true, sessionId: nil) {
-                json in
-                guard let summaries = json?.array else {
-                    AppSingleton.alertUser("Could not find any summary event")
-                    return
-                }
-                
-                let timeTaken = summaries.map({$0["readingTime"].doubleValue})
-                
-                if timeTaken.count != 5 {
-                    AppSingleton.alertUser("Note: number of summaries is different than five")
-                }
-                QuestionSingleton.timeTaken = timeTaken
-            }
+            questionController!.begin(withPapers: paperOrder)
         }
     }
-
-    /// Asks what is the file path and subject number, and returns an URL corresponding to the
-    /// json with the relevant settings
-    static func getInitialFileURL() -> URL? {
-        
-        let viewSize: CGFloat = 600
-        let viewH: CGFloat = 100
-        let textH: CGFloat = 24
-        let textW: CGFloat = 390
-        
-        // file dir
-        let docUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        let dataUrl = docUrl.appendingPathComponent(QuestionSingleton.dataDirName)
-        
-        let msg = NSAlert()
-        msg.addButton(withTitle: "OK")      // 1st button
-        msg.addButton(withTitle: "Cancel")  // 2nd button
-        msg.messageText = "Input"
-        msg.informativeText = "Directory and participant number"
-        
-        let view = NSView(frame: NSRect(origin: NSPoint(), size: NSSize(width: viewSize, height: viewH)))
-        
-        let txt1 = NSTextField(frame: NSRect(x: 0, y: textH*3, width: textW, height: textH))
-        txt1.placeholderString = "##"
-        view.addSubview(txt1)
-        
-        let txt2 = NSTextField(frame: NSRect(x: 0, y: textH*2, width: textW, height: textH))
-        txt2.stringValue = dataUrl.absoluteString
-        view.addSubview(txt2)
-        
-        let butt = NSButton(frame: NSRect(x: 0, y: 0, width: 90, height: textH))
-        butt.setButtonType(.switch)
-        butt.state = NSOffState
-        butt.title = "Pre-load"
-        view.addSubview(butt)
-        
-        msg.accessoryView = view
-        let response: NSModalResponse = msg.runModal()
-        
-        if (response == NSAlertFirstButtonReturn) {
-            guard let pNo = Int((view.subviews[0] as! NSTextField).stringValue) else {
-                return nil
-            }
-            QuestionSingleton.pNo = pNo
-            let dir = (view.subviews[1] as! NSTextField).stringValue
-            let fileS = String(format: "P%02d", pNo)
-            let dirUrl = NSURL(fileURLWithPath: dir, isDirectory: true)
-            let fileURL = dirUrl.appendingPathComponent(fileS + ".json")
-            // set pre-load order, if we want so
-            if (view.subviews[2] as! NSButton).state == NSOnState {
-                do {
-                    let orderData = try Data(contentsOf: fileURL!)
-                    do {
-                        let inJson = try JSONSerialization.jsonObject(with: orderData, options: .allowFragments) as! [String: Any]
-                        if let orderJson = inJson["questionList"] as? [[String: Any]] {
-                            QuestionSingleton.questionOrder = [(paper: Int, ttopicNo: Int)]()
-                            orderJson.forEach() {
-                                QuestionSingleton.questionOrder?.append((paper: $0["paper"] as! Int, ttopicNo: $0["ttopicNo"] as! Int))
-                            }
-                        } else {
-                            AppSingleton.alertUser("Could not find “questionList”")
-                        }
-                    } catch {
-                        AppSingleton.alertUser("Could not convert question data from json", infoText: "\(error)")
-                    }
-                } catch {
-                    AppSingleton.alertUser("Could not load question data")
-                }
-            }
-            return fileURL
+    
+    // MARK: - Helper functions to verify all files are valid
+    
+    /// Attempts to load the questions for this participant (using the pno static var).
+    /// Sets the paperOrder static variable (and optionally the new url, if given).
+    /// Returns true if the questions were successfully loaded.
+    static func verifyQuestions(newUrl: URL? = nil) -> Bool {
+        let urlToVerify: URL
+        if newUrl == nil {
+            urlToVerify = questionsJsonLoc
         } else {
-            NSApplication.shared().terminate(self)
+            urlToVerify = newUrl!
+        }
+        
+        guard urlToVerify.quickVerify() && urlToVerify.isDirectory else {
+            return false
+        }
+        
+        for (n, _) in Paper.defaultPapers.enumerated() {
+            let paper = Paper(fromDefault: n, withGroup: .A)
+            if QuestionLoader(fromPaper: paper, inDirectory: urlToVerify) == nil {
+                return false
+            }
+        }
+        
+        questionsJsonLoc = urlToVerify
+        return true
+    }
+    
+    /// Returns an URL pointing to the questions for this participant number.
+    /// Sets the pNo static variable accordingly.
+    /// A new url can be given (inDirectory) which will override the current value.
+    /// Returns nil if the operation failed.
+    static func verifyParticipant(forPno pNo: Int, inDirectory: URL? = nil) -> URL? {
+        let urlToVerify: URL
+        if inDirectory == nil {
+            urlToVerify = partJsonLoc
+        } else {
+            urlToVerify = inDirectory!
+        }
+
+        QuestionSingleton.pNo = pNo
+        let fileString = String(format: "P%02d.json", pNo)
+        let fileUrl = urlToVerify.appendingPathComponent(fileString)
+        
+        if fileUrl.quickVerify() {
+            partJsonLoc = urlToVerify
+            return fileUrl
+        } else {
             return nil
         }
     }
     
+    /// Attempts to load the questions for this participant.
+    /// (Optionally sets the new url, if given).
+    /// Returns true if all needed pdfs can be loaded.
+    static func verifyPDFs(newUrl: URL? = nil) -> Bool {
+        let urlToVerify: URL
+        if newUrl == nil {
+            urlToVerify = experimentPdfsLoc
+        } else {
+            urlToVerify = newUrl!
+        }
+        
+        guard urlToVerify.quickVerify() && urlToVerify.isDirectory else {
+            return false
+        }
+
+        for paper in Paper.defaultPapers {
+            if urlToVerify.appendingPathComponent(paper.filename).quickVerify() == false {
+                return false
+            }
+        }
+        experimentPdfsLoc = urlToVerify
+        return true
+    }
+    
+    /// Returns true if the output folder can be accessed.
+    /// Optionally sets the new url, if given.
+    static func verifyOutput(newUrl: URL? = nil) -> Bool {
+        let urlToVerify: URL
+        if newUrl == nil {
+            urlToVerify = outputJsonLoc
+        } else {
+            urlToVerify = newUrl!
+        }
+        
+        if urlToVerify.quickVerify() && urlToVerify.isDirectory {
+            return true
+        } else {
+            return false
+        }
+    }
 }

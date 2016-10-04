@@ -65,14 +65,31 @@ class QuestionLoader {
         return json["ttopics"].arrayObject!.count
     } }
     
-    init(fromPaper paper: Paper) {
-        let questionsURL = Bundle.main.url(forResource: paper.code + "_\(paper.group)", withExtension: "json")
-        let inData = try! Data(contentsOf: questionsURL!)
-        json = JSON(data: inData)
+    /// Creates a QuestionLoader from a paper, given an url where the JSONs are located.
+    /// On fail (e.g. JSON does not exist), returns nil.
+    init?(fromPaper paper: Paper, inDirectory: URL) {
+        guard inDirectory.quickVerify() && inDirectory.isDirectory else {
+            return nil
+        }
         
-        // verify that target topic in json matches selection
-        if json["ttopic_group"].stringValue != paper.group.rawValue {
-            AppSingleton.alertUser("Question json target topic does not match selection")
+        let fileName = paper.code + "_\(paper.group)" + ".json"
+        let questionsURL = inDirectory.appendingPathComponent(fileName)
+        
+        guard questionsURL.quickVerify() else {
+            return nil
+        }
+        
+        do {
+            let inData = try Data(contentsOf: questionsURL)
+            json = JSON(data: inData)
+            
+            // verify that target topic in json matches selection
+            if json["ttopic_group"].stringValue != paper.group.rawValue {
+                AppSingleton.alertUser("Question json target topic does not match selection")
+            }
+        } catch {
+            AppSingleton.log.error("Failed to load questions: \(error)")
+            return nil
         }
     }
     

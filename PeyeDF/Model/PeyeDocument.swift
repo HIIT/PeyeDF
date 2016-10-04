@@ -26,6 +26,10 @@ import Foundation
 import Cocoa
 import Quartz
 
+enum RefuseToOpenError: Error {
+    case maxOneAllowed
+}
+
 /// Implementation of a (PDF) Document (partially?) following NSDocument's guidelines
 class PeyeDocument: NSDocument {
     
@@ -132,9 +136,15 @@ class PeyeDocument: NSDocument {
         }
     }
     
-    /// Does nothing, assumes we can only open allowed documents (PDFs) in the first place
+    /// Does nothing, assumes we can only open allowed documents (PDFs) in the first place.
+    /// In the "Questions" target, we allow only one document to be open at a time.
     override func read(from url: URL, ofType typeName: String) throws {
-        // AppSingleton.log.debug("Opening  \(url.description)")
+        #if QUESTIONS
+            if NSDocumentController.shared().documents.count > 0 {
+                AppSingleton.alertUser("Only one document at a time is allowed to be open")
+                throw RefuseToOpenError.maxOneAllowed
+            }
+        #endif
     }
     
 }
