@@ -12,11 +12,16 @@ import GameplayKit
 
 class QuestionViewController: NSViewController {
     
+    // MARK: - Instance variables and init
+    
     // Question machine. is static so it can easily be access outside.
     static var questionMachine: GKStateMachine!
     
     /// Alert button shown when eyes are lost (nil if eyes are not lost or unkown)
     var eyeAlertButton: NSButton?
+    
+    /// Reference to the current document window
+    weak var docWindowController: DocumentWindowController?
     
     let appDel = NSApplication.shared().delegate as! AppDelegate
     var givenAnswer: String = ""
@@ -55,17 +60,67 @@ class QuestionViewController: NSViewController {
         confirmButton.isEnabled = true
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(documentChanged(notification:)), name: PeyeConstants.documentChangeNotification, object: nil)
+    }
+    
+    // MARK: - Window arrangement methods
+    
+    /// Puts the document's window above the question, with a smaller question window below
+    /// returns question frame rect
+    func moveQuestionBelow() {
+        guard let winc = docWindowController, let win = winc.window, let mainS = NSScreen.main() else {
+            AppSingleton.log.error("Failed to capture window or screen references, trying again in one second")
+            DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 1) {
+                self.moveQuestionBelow()
+            }
+            return
+        }
+        
+        var reducedScreenFrame = mainS.visibleFrame
+        reducedScreenFrame.size.height -= 300
+        reducedScreenFrame.origin.y += 300
+        win.setFrame(reducedScreenFrame, display: true, animate: true)
+        
+        var questionFrame = mainS.visibleFrame
+        questionFrame.size.height = 300
+        questionFrame.size.width -= 100
+        questionFrame.origin.x += 50
+        
+        let topicDist: CGFloat = 10
+        let topicQuestDist: CGFloat = 15
+
+        NSAnimationContext.runAnimationGroup( { context in
+            
+            self.view.window!.animator().setFrame(questionFrame, display: true)
+            
+            // Customize the animation parameters.
+            context.duration = 1
+            context.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+            
+            self.topicFromTop.animator().constant = topicDist
+            self.topicFromItsLabel.animator().constant = topicDist
+            self.topicLabelFromQuestion.animator().constant = topicQuestDist
+            
+            })
+        
+    }
+    
     /// Sets itself up for a new session of questions
     /// - parameter papers: List of papers (and related target topic groups) for this participant
     func begin(withPapers papers: [Paper]) {
         QuestionViewController.questionMachine = GKStateMachine(states: [GivePaper(self, papers: papers),
+                                                  FamiliarisePaper(self),
                                                   GiveTopic(self),
                                                   AnswerQuestion(self),
                                                   QuestionsDone(self)])
         QuestionViewController.questionMachine.enter(GivePaper.self)
     }
     
-    /// Prepare user to receive new topic (Entered GiveTopic. Also initial state.)
+    /// Prepare user to read a new paper (Entered GivePaper. Also initial state.).
+    /// Covers the whole screen.
     func prepareMode() {
         guard let mainScreen = NSScreen.main() else {
             return
@@ -75,7 +130,6 @@ class QuestionViewController: NSViewController {
         
         let topicDist: CGFloat = 40
         let topicQuestDist: CGFloat = 80
-        self.confirmButton.isHidden = true
         self.answerBox.isHidden = true
         self.confirmButton.isEnabled = false
         
@@ -96,30 +150,18 @@ class QuestionViewController: NSViewController {
         })
     }
     
-    /// Receive user's answer (entered AnswerQuestion)
-    func answerMode(ownFrame: NSRect) {
-        let topicDist: CGFloat = 10
-        let topicQuestDist: CGFloat = 15
-        self.continueButton.isHidden = true
-        self.confirmButton.isEnabled = false
-        
-        NSAnimationContext.runAnimationGroup( { context in
-            
-            self.view.window!.animator().setFrame(ownFrame, display: true)
-            
-            // Customize the animation parameters.
-            context.duration = 1
-            context.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
-            
-            self.topicFromTop.animator().constant = topicDist
-            self.topicFromItsLabel.animator().constant = topicDist
-            self.topicLabelFromQuestion.animator().constant = topicQuestDist
-            
-        }, completionHandler: {
-            self.confirmButton.isHidden = false
-            self.answerBox.isHidden = false
-        })
+    /// Receive (if argument is true) user's answer.
+    /// If argument is false, hide answers.
+    func answerMode(_ show: Bool) {
+        DispatchQueue.main.async {
+            self.confirmButton.isHidden = !show
+            self.answerBox.isHidden = !show
+            self.confirmButton.isEnabled = !show
+            self.continueButton.isHidden = show
+        }
     }
+    
+    // MARK: - Message displaying methods
     
     /// Shows a generic message with title and detail (no topic / question labels)
     func showGenericMessage(_ message: String, title: String) {
@@ -151,6 +193,17 @@ class QuestionViewController: NSViewController {
             self.answer2.state = NSOffState
             self.answer3.title = shuffled[2] as! String
             self.answer3.state = NSOffState
+        }
+    }
+    
+    // MARK: - Notification callbacks
+    
+    @objc func documentChanged(notification: NSNotification) {
+        if notification.name == PeyeConstants.documentChangeNotification {
+            // associate the window variable to the last document that was opened
+            if let doc = notification.object as? NSDocument {
+                docWindowController = doc.windowControllers[0] as? DocumentWindowController
+            }
         }
     }
     

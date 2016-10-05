@@ -37,6 +37,7 @@ class QuestionState: GKState {
     init(_ associatedView: QuestionViewController) {
         view = associatedView
     }
+    
 }
 
 /// Represents the state in which we assign a paper, or report that no more papers are available.
@@ -47,7 +48,6 @@ class GivePaper: QuestionState, Advanceable {
     
     /// Creates the givepaper state with an initial set of papers to give <del>(the papers will be shuffled)</del>
     init(_ associatedView: QuestionViewController, papers: [Paper]) {
-//        self.papers = GKRandomSource.sharedRandom().arrayByShufflingObjectsInArray(papers) as! [Paper]
         self.papers = papers
         super.init(associatedView)
     }
@@ -55,7 +55,12 @@ class GivePaper: QuestionState, Advanceable {
     override func didEnter(from previousState: GKState?) {
         currentPaper = papers.count > 0 ? papers.remove(at: 0) : nil
         view.answerSaver.writeOut()
+        view.prepareMode()
         if let cp = currentPaper {
+            
+            // open document
+            ((NSApplication.shared().delegate) as? AppDelegate)?.openDocument(currentPaper!.url)
+            
             view.answerSaver.setCurrent(paperState: self)
             view.showGenericMessage("A new paper has been assigned",
                                     title: "New paper: \(cp.title)\n(\(cp.filename))")
@@ -65,8 +70,8 @@ class GivePaper: QuestionState, Advanceable {
     }
     
     func advance() {
-        if stateMachine!.enter(FamiliarisePaper.self) == false {
-            ((NSApplication.shared().delegate) as? AppDelegate)?.openDocument(currentPaper!.url)
+        // if we are out of papers, go to questions done
+        if !stateMachine!.enter(FamiliarisePaper.self) {
             stateMachine!.enter(QuestionsDone.self)
         }
     }
@@ -84,8 +89,22 @@ class GivePaper: QuestionState, Advanceable {
 /// After the allocated time is passed, automatically enters the GiveTopic phase
 class FamiliarisePaper: QuestionState {
     
+    fileprivate(set) var currentPaper: Paper!
+    
     override func didEnter(from previousState: GKState?) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+        
+        guard let ps = previousState as? GivePaper else {
+            fatalError("Entered familiarise from something different than GivePaper")
+        }
+        
+        currentPaper = ps.currentPaper!
+        
+        view.showGenericMessage("Please familiarise with the given paper. After a set amount of time, you will hear a sound and questions will be shown.", title: "Familiarisation")
+        view.continueButton.isHidden = true
+        view.moveQuestionBelow()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + PeyeConstants.familiarizeTime) {
+            NSBeep()
             self.stateMachine!.enter(GiveTopic.self)
         }
     }
@@ -109,7 +128,7 @@ class GiveTopic: QuestionState, Advanceable {
     override func didEnter(from previousState: GKState?) {
         // if we are coming from the GivePaper state, initialize
         if previousState is FamiliarisePaper {
-            self.questionLoader = QuestionLoader(fromPaper: (previousState as! GivePaper).currentPaper!, inDirectory: QuestionSingleton.questionsJsonLoc)
+            self.questionLoader = QuestionLoader(fromPaper: (previousState as! FamiliarisePaper).currentPaper, inDirectory: QuestionSingleton.questionsJsonLoc)
             nOfTargetTopics = self.questionLoader.nOfTtopics
             currentTtopic = -1
         }
@@ -118,7 +137,19 @@ class GiveTopic: QuestionState, Advanceable {
         
         if currentTtopic >= nOfTargetTopics {
             view.showGenericMessage("Paper completed", title: "No more questions for this paper.")
+            // close all open documents
+            NSDocumentController.shared().documents.forEach() {
+                if $0.windowControllers.count == 1 {
+                    ($0.windowControllers[0] as? DocumentWindowController)?.window?.close()
+                }
+            }
+        } else {
+            let topicTitle = questionLoader.getTopicTitle(tTopicNo: currentTtopic)
+            view.showGenericMessage("A new topic has been assigned.",
+                                    title: "New topic: \(topicTitle)")
         }
+        
+        view.answerMode(false)
     }
     
     func advance() {
@@ -157,7 +188,7 @@ class AnswerQuestion: QuestionState {
         let (question, answers, topicTitle) = questionLoader.getQuestion(qNo: currentQuestion, forTopic: currentTtopic)
         view.showQuestion(question, topic: topicTitle)
         view.showAnswers(answers)
-        QuestionSingleton.answerMode()
+        view.answerMode(true)
         started = Date()
         
     }
@@ -165,7 +196,9 @@ class AnswerQuestion: QuestionState {
     func answer(_ answer: String) {
         let correct = questionLoader.isCorrect(answer: answer, forQuestion: currentQuestion, tTopic: currentTtopic)
         view.answerSaver.addAnswer(correct: correct, timePassed: Date().timeIntervalSince(started))
-        stateMachine!.enter(GiveTopic.self)
+        if !stateMachine!.enter(AnswerQuestion.self) {
+            stateMachine!.enter(GiveTopic.self)
+        }
     }
     
     override func isValidNextState(_ stateClass: AnyClass) -> Bool {

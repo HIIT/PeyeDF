@@ -196,10 +196,9 @@ class ExperimentPreferencesController: NSViewController {
     @IBAction func startQuestions(_ sender: AnyObject) {
         #if QUESTIONS
         
-        self.view.window?.close()
         (sender as? NSButton)?.isEnabled = false
-        // keep button enabled only if starting questions failed
-        (sender as? NSButton)?.isEnabled = !QuestionSingleton.startQuestions()
+        self.view.window?.close()
+        QuestionSingleton.startQuestions()
         
         #endif
     }

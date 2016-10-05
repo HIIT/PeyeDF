@@ -102,6 +102,11 @@ class QuestionLoader {
         return (question, answers, topicTitle)
     }
     
+    /// Retrieves current target topic title.
+    func getTopicTitle(tTopicNo: Int) -> String {
+        return json["ttopics"][tTopicNo]["title"].stringValue
+    }
+    
     /// Tellls whether a given question is correct
     func isCorrect(answer: String, forQuestion: Int, tTopic: Int) -> Bool {
         return json["ttopics"][tTopic]["questions"][forQuestion]["answers"][0].stringValue == answer

@@ -58,8 +58,8 @@ class QuestionSingleton {
     static var questionWindow: NSWindowController!
     static var paperOrder = [Paper]() // papers will be added from input json after it is loaded
 
-    static var docWindowController: NSWindowController? // TODO: change this to doc window
-    static var questionController: QuestionViewController? // TODO: change this (set)
+    static var docWindowController: NSWindowController?
+    static var questionController: QuestionViewController?
     
     /// Participant number (defaults to infinity, should be changed on app start)
     static var pNo = Int.max
@@ -68,31 +68,6 @@ class QuestionSingleton {
     
     /// Seconds taken to read each apper
     static var timeTaken = [Double]()
-    
-    /// Arranges windows to receive answers
-    static func answerMode() {
-        let qframe = moveQuestionBelow()
-        questionController?.answerMode(ownFrame: qframe!)
-    }
-    
-    /// Puts the document's window above the question, with a smaller question window below
-    /// returns question frame rect
-    static func moveQuestionBelow() -> NSRect? {
-        guard let winc = docWindowController, let win = winc.window, let mainS = NSScreen.main() else {
-            return nil
-        }
-        
-        var reducedScreenFrame = mainS.visibleFrame
-        reducedScreenFrame.size.height -= 300
-        reducedScreenFrame.origin.y += 300
-        win.setFrame(reducedScreenFrame, display: true, animate: true)
-        
-        var questionFrame = mainS.visibleFrame
-        questionFrame.size.height = 300
-        questionFrame.size.width -= 100
-        questionFrame.origin.x += 50
-        return questionFrame
-    }
     
     /// Attempts to load all data needed to run the experiment.
     ///
@@ -156,36 +131,27 @@ class QuestionSingleton {
     }
     
     /// Start the question loop. Returns true on success.
-    static func startQuestions() -> Bool {
+    static func startQuestions() {
         
-        // make sure there are no documents currently open
-        guard NSDocumentController.shared().documents.count == 0 else {
-            AppSingleton.alertUser("There are open documents")
-            return false
+        // close all open documents
+        NSDocumentController.shared().documents.forEach() {
+            if $0.windowControllers.count == 1 {
+                ($0.windowControllers[0] as? DocumentWindowController)?.window?.close()
+            }
         }
         
         questionWindow = (QuestionSingleton.questionsStoryboard.instantiateController(withIdentifier: "QuestionWindowController") as! NSWindowController)
         questionWindow.showWindow(nil)
-        // comment these two below for debugging, so you can see behind
-        questionWindow.window?.level = Int(CGWindowLevelForKey(.floatingWindow))
-        questionWindow.window?.level = Int(CGWindowLevelForKey(.maximumWindow))
+        // put the question window always in front (unless we are debugging)
+        #if !DEBUG
+            questionWindow.window?.level = Int(CGWindowLevelForKey(.floatingWindow))
+            questionWindow.window?.level = Int(CGWindowLevelForKey(.maximumWindow))
+        #endif
         questionController = (questionWindow.contentViewController as! QuestionViewController)
         questionController!.begin(withPapers: paperOrder)
 
-        return true
     }
-    
-    // MARK: - Notification callbacks
-    
-    @objc static func documentChanged(notification: NSNotification) {
-        if notification.name == PeyeConstants.documentChangeNotification {
-            // associate the window variable to the last document that was opened
-            if let doc = notification.object as? NSDocument {
-                docWindowController = doc.windowControllers[0] as! DocumentWindowController
-            }
-        }
-    }
-    
+        
     // MARK: - Helper for input data validation
     
     /// Attempts to load the questions for this participant (using the pno static var).

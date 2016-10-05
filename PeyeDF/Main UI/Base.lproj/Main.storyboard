@@ -2300,7 +2300,7 @@
         <!--Thumbnail Controller-->
         <scene sceneID="M41-pB-2BI">
             <objects>
-                <viewController title="Thumbnail Controller" id="NDG-Mr-8zT" customClass="ThumbSideController" customModule="PeyeDF" sceneMemberID="viewController">
+                <viewController title="Thumbnail Controller" id="NDG-Mr-8zT" customClass="ThumbSideController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" horizontalHuggingPriority="240" verticalHuggingPriority="240" id="Xcj-vT-c4k">
                         <rect key="frame" x="0.0" y="0.0" width="200" height="144"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
