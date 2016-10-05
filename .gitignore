@@ -48,7 +48,16 @@ Thumbs.db
 
 # Xcode #
 #########
-build/
+UserInterfaceState.xcuserstate
+.build/
+timeline.xctimeline
+playground.xcworkspace
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+*.moved-aside
+*.xcuserstate
 *.pbxuser
 !default.pbxuser
 *.mode1v3
@@ -57,10 +66,7 @@ build/
 !default.mode2v3
 *.perspectivev3
 !default.perspectivev3
-xcuserdata
-*.xccheckout
-*.moved-aside
-DerivedData
-*.xcuserstate
-*.xctimeline
-*.xcscmblueprint
+xcuserdata/
+build/
+DerivedData/
+

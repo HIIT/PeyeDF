@@ -90,6 +90,7 @@ class ExperimentPreferencesController: NSViewController {
     
     // MARK: - "Questions" outlets and actions
     
+    
     // Note: we use IB tags to discriminate between items in the questions box
     
     /// Participant number label (tag: 10)
@@ -113,6 +114,8 @@ class ExperimentPreferencesController: NSViewController {
     
     /// The start button is enabled when everything is loaded correctly
     @IBOutlet weak var startButton: NSButton!
+    
+    #if QUESTIONS
     
     /// Return the text field corresponding to the desired location
     func fieldFor(location: QuestionSingleton.FolderLocation) -> NSTextField {
@@ -140,9 +143,13 @@ class ExperimentPreferencesController: NSViewController {
         }
     }
     
+    #endif
+    
     /// Verifies that the given location can be loaded, sets color to red-ish if location
     /// fails.
     @IBAction func verifyLocations(_ sender: AnyObject) {
+        #if QUESTIONS
+        
         guard let partNo = Int(partNoLabel.stringValue) else {
             AppSingleton.alertUser("Failed to parse participant number")
             return
@@ -179,16 +186,22 @@ class ExperimentPreferencesController: NSViewController {
                 self.dataReloadedLabel.stringValue = "Load failed"
             }
         }
+        
+        #endif
     }
     
     // MARK: - Start action
     
     /// Start the questions, loading needed files and presenting user with questions.
     @IBAction func startQuestions(_ sender: AnyObject) {
+        #if QUESTIONS
+        
         self.view.window?.close()
         (sender as? NSButton)?.isEnabled = false
         // keep button enabled only if starting questions failed
         (sender as? NSButton)?.isEnabled = !QuestionSingleton.startQuestions()
+        
+        #endif
     }
     
     // MARK: - Browse action
@@ -196,6 +209,8 @@ class ExperimentPreferencesController: NSViewController {
     /// When we browse, use the tag to identify which field we are editing.
     /// Verify locations on ok button press.
     @IBAction func browsePress(_ sender: NSButton) {
+        #if QUESTIONS
+        
         let openPanel = NSOpenPanel()
         openPanel.canChooseFiles = false
         openPanel.canChooseDirectories = true
@@ -215,6 +230,8 @@ class ExperimentPreferencesController: NSViewController {
                 }
             }
         }
+        
+        #endif
     }
     
 }
