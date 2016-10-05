@@ -53,13 +53,12 @@ class QuestionSingleton {
         } }
     }
 
-    // MARK: - Window and controller references
+    // MARK: - Experiment-related Variables
     
     static var questionWindow: NSWindowController!
     static var paperOrder = [Paper]() // papers will be added from input json after it is loaded
 
-    static var theWindowController: NSWindowController? // TODO: change this to doc window
-    static var _dawindow: NSWindowController? // TODO: this should be the doc's window
+    static var docWindowController: NSWindowController? // TODO: change this to doc window
     static var questionController: QuestionViewController? // TODO: change this (set)
     
     /// Participant number (defaults to infinity, should be changed on app start)
@@ -72,14 +71,14 @@ class QuestionSingleton {
     
     /// Arranges windows to receive answers
     static func answerMode() {
-        let qframe = refinderAboveQuestionBelow()
+        let qframe = moveQuestionBelow()
         questionController?.answerMode(ownFrame: qframe!)
     }
     
-    /// Puts the refinder above question, with a smaller question window below
+    /// Puts the document's window above the question, with a smaller question window below
     /// returns question frame rect
-    static func refinderAboveQuestionBelow() -> NSRect? {
-        guard let winc = theWindowController, let win = winc.window, let mainS = NSScreen.main() else {
+    static func moveQuestionBelow() -> NSRect? {
+        guard let winc = docWindowController, let win = winc.window, let mainS = NSScreen.main() else {
             return nil
         }
         
@@ -156,21 +155,38 @@ class QuestionSingleton {
         
     }
     
-    /// Start the question loop
-    static func startQuestions() {
-        if _dawindow != nil {
-            _dawindow!.showWindow(self)
-            questionWindow = (QuestionSingleton.questionsStoryboard.instantiateController(withIdentifier: "QuestionWindowController") as! NSWindowController)
-            questionWindow.showWindow(nil)
-            // comment these two below for debugging, so you can see behind
-            questionWindow.window?.level = Int(CGWindowLevelForKey(.floatingWindow))
-            questionWindow.window?.level = Int(CGWindowLevelForKey(.maximumWindow))
-            questionController = (questionWindow.contentViewController as! QuestionViewController)
-            questionController!.begin(withPapers: paperOrder)
+    /// Start the question loop. Returns true on success.
+    static func startQuestions() -> Bool {
+        
+        // make sure there are no documents currently open
+        guard NSDocumentController.shared().documents.count == 0 else {
+            AppSingleton.alertUser("There are open documents")
+            return false
+        }
+        
+        questionWindow = (QuestionSingleton.questionsStoryboard.instantiateController(withIdentifier: "QuestionWindowController") as! NSWindowController)
+        questionWindow.showWindow(nil)
+        // comment these two below for debugging, so you can see behind
+        questionWindow.window?.level = Int(CGWindowLevelForKey(.floatingWindow))
+        questionWindow.window?.level = Int(CGWindowLevelForKey(.maximumWindow))
+        questionController = (questionWindow.contentViewController as! QuestionViewController)
+        questionController!.begin(withPapers: paperOrder)
+
+        return true
+    }
+    
+    // MARK: - Notification callbacks
+    
+    @objc static func documentChanged(notification: NSNotification) {
+        if notification.name == PeyeConstants.documentChangeNotification {
+            // associate the window variable to the last document that was opened
+            if let doc = notification.object as? NSDocument {
+                docWindowController = doc.windowControllers[0] as! DocumentWindowController
+            }
         }
     }
     
-    // MARK: - Helper functions to verify all files are valid
+    // MARK: - Helper for input data validation
     
     /// Attempts to load the questions for this participant (using the pno static var).
     /// Sets the paperOrder static variable (and optionally the new url, if given).
@@ -187,6 +203,8 @@ class QuestionSingleton {
             return false
         }
         
+        
+        // Make sure all papers we need to open are loadable
         for (n, _) in Paper.defaultPapers.enumerated() {
             let paper = Paper(fromDefault: n, withGroup: .A)
             if QuestionLoader(fromPaper: paper, inDirectory: urlToVerify) == nil {

@@ -9,11 +9,6 @@
 import Foundation
 import GameplayKit
 
-enum QuestionError: Error {
-    /// There are 4 questions per target topic. Asking more causes this error.
-    case OutOfTopics
-}
-
 enum TargetTopicGroup: String {
     case A
     case B
@@ -23,6 +18,11 @@ enum TargetTopicGroup: String {
 class Paper: NSObject {
     override var description: String { get {
         return self.code + "_" + self.group.rawValue
+    } }
+    
+    /// Returns URL of the file on disk associated to this paper
+    var url: URL { get {
+        return QuestionSingleton.experimentPdfsLoc.appendingPathComponent(self.filename)
     } }
     
     /// Default papers

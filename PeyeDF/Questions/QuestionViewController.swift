@@ -41,16 +41,16 @@ class QuestionViewController: NSViewController {
     @IBOutlet var answer2: NSButton!
     @IBOutlet var answer3: NSButton!
     
-    @IBAction func continueButtonPress(sender: NSButton) {
+    @IBAction func continueButtonPress(_ sender: NSButton) {
         (QuestionViewController.questionMachine.currentState as? Advanceable)?.advance()
     }
     
-    @IBAction func confirmButtonPress(sender: NSButton) {
+    @IBAction func confirmButtonPress(_ sender: NSButton) {
         self.confirmButton.isEnabled = false
         (QuestionViewController.questionMachine.currentState! as! AnswerQuestion).answer(givenAnswer)
     }
     
-    @IBAction func answerButtonPress(sender: NSButton) {
+    @IBAction func answerButtonPress(_ sender: NSButtonCell) {
         givenAnswer = sender.title
         confirmButton.isEnabled = true
     }
@@ -59,14 +59,20 @@ class QuestionViewController: NSViewController {
     /// - parameter papers: List of papers (and related target topic groups) for this participant
     func begin(withPapers papers: [Paper]) {
         QuestionViewController.questionMachine = GKStateMachine(states: [GivePaper(self, papers: papers),
-                                                  PrepareQuestion(self),
+                                                  GiveTopic(self),
                                                   AnswerQuestion(self),
                                                   QuestionsDone(self)])
         QuestionViewController.questionMachine.enter(GivePaper.self)
     }
     
-    /// Prepare user to receive question (AnswerQuestion -> PrepareQuestion. Also initial state.)
-    func prepareMode(refinderFrame: NSRect) {
+    /// Prepare user to receive new topic (Entered GiveTopic. Also initial state.)
+    func prepareMode() {
+        guard let mainScreen = NSScreen.main() else {
+            return
+        }
+        
+        let screenFrame = mainScreen.visibleFrame
+        
         let topicDist: CGFloat = 40
         let topicQuestDist: CGFloat = 80
         self.confirmButton.isHidden = true
@@ -75,7 +81,7 @@ class QuestionViewController: NSViewController {
         
         NSAnimationContext.runAnimationGroup( { context in
             
-            self.view.window!.animator().setFrame(refinderFrame, display: true)
+            self.view.window!.animator().setFrame(screenFrame, display: true)
             
             // Customize the animation parameters.
             context.duration = 1
@@ -90,7 +96,7 @@ class QuestionViewController: NSViewController {
         })
     }
     
-    /// Receive user's answer (PrepareQuestion -> AnswerQuestion)
+    /// Receive user's answer (entered AnswerQuestion)
     func answerMode(ownFrame: NSRect) {
         let topicDist: CGFloat = 10
         let topicQuestDist: CGFloat = 15

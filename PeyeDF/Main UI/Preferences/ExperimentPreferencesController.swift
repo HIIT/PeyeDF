@@ -76,6 +76,8 @@ class ExperimentPreferencesController: NSViewController {
             questionBox.isHidden = false
             partNoLabel.formatter = intFormatter
             questionsBottomConstraint.isActive = true
+            
+            // load default paths
             inputQuestionsLoc.stringValue = QuestionSingleton.questionsJsonLoc.path
             inputPartLoc.stringValue = QuestionSingleton.partJsonLoc.path
             pdfLoc.stringValue = QuestionSingleton.experimentPdfsLoc.path
@@ -86,7 +88,7 @@ class ExperimentPreferencesController: NSViewController {
         #endif
     }
     
-    // MARK: - "Questions" target text fields
+    // MARK: - "Questions" outlets and actions
     
     // Note: we use IB tags to discriminate between items in the questions box
     
@@ -109,6 +111,10 @@ class ExperimentPreferencesController: NSViewController {
     /// If data reload failed it is shown red and stays there.
     @IBOutlet weak var dataReloadedLabel: NSTextField!
     
+    /// The start button is enabled when everything is loaded correctly
+    @IBOutlet weak var startButton: NSButton!
+    
+    /// Return the text field corresponding to the desired location
     func fieldFor(location: QuestionSingleton.FolderLocation) -> NSTextField {
         switch location {
         case .inputQuestions:
@@ -146,20 +152,25 @@ class ExperimentPreferencesController: NSViewController {
         
         let loadResult = QuestionSingleton.loadData(partNo: partNo, newQuestionsPath: inputQuestionsLoc.stringValue, newPartPath: inputPartLoc.stringValue, newPdfLoc: pdfLoc.stringValue, newOutputPath: outputLoc.stringValue)
         
+        // Make failed paths red
         for f in loadResult.failed {
             DispatchQueue.main.async {
                 self.fieldFor(location: f).backgroundColor = #colorLiteral(red: 0.9568627477, green: 0.6588235497, blue: 0.5450980663, alpha: 1)
             }
         }
         
+        // Enable button on success
+        DispatchQueue.main.async {
+            self.startButton.isEnabled = loadResult.success
+        }
+        
+        // On success, show black label.
+        // On fail, permanently show red label.
         if loadResult.success {
             DispatchQueue.main.async {
                 self.dataReloadedLabel.isHidden = false
                 self.dataReloadedLabel.textColor = NSColor.black
                 self.dataReloadedLabel.stringValue = "Data reloaded"
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    self.dataReloadedLabel.isHidden = true
-                }
             }
         } else {
             DispatchQueue.main.async {
@@ -170,9 +181,20 @@ class ExperimentPreferencesController: NSViewController {
         }
     }
     
+    // MARK: - Start action
+    
+    /// Start the questions, loading needed files and presenting user with questions.
+    @IBAction func startQuestions(_ sender: AnyObject) {
+        self.view.window?.close()
+        (sender as? NSButton)?.isEnabled = false
+        // keep button enabled only if starting questions failed
+        (sender as? NSButton)?.isEnabled = !QuestionSingleton.startQuestions()
+    }
     
     // MARK: - Browse action
     
+    /// When we browse, use the tag to identify which field we are editing.
+    /// Verify locations on ok button press.
     @IBAction func browsePress(_ sender: NSButton) {
         let openPanel = NSOpenPanel()
         openPanel.canChooseFiles = false

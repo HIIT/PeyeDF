@@ -770,6 +770,9 @@
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
+                                            <connections>
+                                                <action selector="startQuestions:" target="bHM-3n-NND" id="c9Z-C6-frD"/>
+                                            </connections>
                                         </button>
                                         <textField verticalHuggingPriority="750" tag="3" translatesAutoresizingMaskIntoConstraints="NO" id="A7R-2s-RcD">
                                             <rect key="frame" x="20" y="64" width="341" height="22"/>
@@ -868,6 +871,7 @@
                         <outlet property="questionsBottomConstraint" destination="4rm-ns-hNL" id="GN8-j0-O1A"/>
                         <outlet property="rightDomEyeButton" destination="Sb0-iM-7vv" id="jLB-xc-REf"/>
                         <outlet property="showJsonMenusCell" destination="ARL-jK-6gg" id="UNZ-yp-idS"/>
+                        <outlet property="startButton" destination="ZTV-gC-yQh" id="vDr-AZ-0XM"/>
                     </connections>
                 </viewController>
                 <customObject id="zi8-ON-ajb" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

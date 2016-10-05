@@ -9,7 +9,7 @@
         <!--Question View Controller-->
         <scene sceneID="ghA-xR-62f">
             <objects>
-                <viewController id="AkP-9C-mqL" customClass="QuestionViewController" customModule="PeyeDF_Questions" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="AkP-9C-mqL" customClass="QuestionViewController" customModule="PeyeDF_Questions" sceneMemberID="viewController">
                     <view key="view" id="PAt-d8-246">
                         <rect key="frame" x="0.0" y="0.0" width="1200" height="600"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -67,33 +67,33 @@
                                             <buttonCell key="cell" type="radio" title="Answer one" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="7Gx-cg-s1i">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
+                                                <connections>
+                                                    <action selector="answerButtonPress:" target="AkP-9C-mqL" id="m3H-G8-8QX"/>
+                                                </connections>
                                             </buttonCell>
                                             <accessibility description="First answer"/>
-                                            <connections>
-                                                <action selector="answerButtonPress:" target="AkP-9C-mqL" id="9Ny-04-tEI"/>
-                                            </connections>
                                         </button>
                                         <button translatesAutoresizingMaskIntoConstraints="NO" id="CrB-42-hcI">
                                             <rect key="frame" x="19" y="42" width="93" height="18"/>
                                             <buttonCell key="cell" type="radio" title="Answer two" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="s2f-Xc-66I">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
+                                                <connections>
+                                                    <action selector="answerButtonPress:" target="AkP-9C-mqL" id="6XK-m4-oaI"/>
+                                                </connections>
                                             </buttonCell>
                                             <accessibility description="Second answer"/>
-                                            <connections>
-                                                <action selector="answerButtonPress:" target="AkP-9C-mqL" id="nsU-pJ-ncD"/>
-                                            </connections>
                                         </button>
                                         <button translatesAutoresizingMaskIntoConstraints="NO" id="Ooq-e1-4TC">
                                             <rect key="frame" x="19" y="11" width="102" height="18"/>
                                             <buttonCell key="cell" type="radio" title="Answer three" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="OXR-4q-z6x">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
+                                                <connections>
+                                                    <action selector="answerButtonPress:" target="AkP-9C-mqL" id="3HG-DT-rgE"/>
+                                                </connections>
                                             </buttonCell>
                                             <accessibility description="Third answer"/>
-                                            <connections>
-                                                <action selector="answerButtonPress:" target="AkP-9C-mqL" id="Vhv-PV-OgJ"/>
-                                            </connections>
                                         </button>
                                     </subviews>
                                     <constraints>
@@ -123,7 +123,7 @@
                                 </buttonCell>
                                 <accessibility description="Continue"/>
                                 <connections>
-                                    <action selector="continueButtonPress:" target="AkP-9C-mqL" id="PPB-ug-Cfb"/>
+                                    <action selector="continueButtonPress:" target="AkP-9C-mqL" id="rOK-7u-ooX"/>
                                 </connections>
                             </button>
                             <box borderType="line" title="Head" translatesAutoresizingMaskIntoConstraints="NO" id="D7t-uG-Ab9" customClass="eyeBox" customModule="PeyeDF_Questions" customModuleProvider="target">
@@ -174,7 +174,7 @@
                         <outlet property="answer3" destination="Ooq-e1-4TC" id="cNa-Qz-ba4"/>
                         <outlet property="answerBox" destination="3FN-lc-Y62" id="jq9-sq-Ots"/>
                         <outlet property="confirmButton" destination="lnL-1l-8hs" id="NmE-Nn-BeW"/>
-                        <outlet property="continueButton" destination="zhw-6m-xb8" id="aFk-yt-Zhg"/>
+                        <outlet property="continueButton" destination="zhw-6m-xb8" id="Qkj-0T-3g5"/>
                         <outlet property="questionHead" destination="wab-Rc-BfL" id="u8w-8y-Gq7"/>
                         <outlet property="questionLabel" destination="TOG-2l-eb8" id="diI-Mo-oOK"/>
                         <outlet property="topicFromItsLabel" destination="rm3-jx-lGx" id="2CB-az-lES"/>

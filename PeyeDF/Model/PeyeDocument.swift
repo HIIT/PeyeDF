@@ -137,14 +137,7 @@ class PeyeDocument: NSDocument {
     }
     
     /// Does nothing, assumes we can only open allowed documents (PDFs) in the first place.
-    /// In the "Questions" target, we allow only one document to be open at a time.
     override func read(from url: URL, ofType typeName: String) throws {
-        #if QUESTIONS
-            if NSDocumentController.shared().documents.count > 0 {
-                AppSingleton.alertUser("Only one document at a time is allowed to be open")
-                throw RefuseToOpenError.maxOneAllowed
-            }
-        #endif
     }
     
 }

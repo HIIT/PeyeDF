@@ -288,6 +288,7 @@ class PeyeConstants {
     static let occlusionChangeNotification = Notification.Name("hiit.PeyeDF.occlusionChangeNotification")
     
     /// String identifying the notification sent when a new document is opened / switched to
+    /// Notification's object is the document.
     static let documentChangeNotification = Notification.Name("hiit.PeyeDF.documentChangeNotification")
     
     // MARK: - Static functions

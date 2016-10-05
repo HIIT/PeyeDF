@@ -30,9 +30,9 @@ class AnswerSaver {
         self.currentGroup = paperState.currentPaper!.group
     }
     
-    func setCurrent(questionState: PrepareQuestion) {
-        self.currentTopic = questionState.currentTtopic!
-        self.currentQuestion = questionState.currentQuestion!
+    func setCurrent(answerState: AnswerQuestion) {
+        self.currentTopic = answerState.currentTtopic!
+        self.currentQuestion = answerState.currentQuestion!
     }
     
     func addAnswer(correct: Bool, timePassed: Double) {

@@ -487,9 +487,9 @@
 		A9D362A01CF86196003E5DAF /* PeerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeerViewController.swift; sourceTree = "<group>"; };
 		A9D833AC1BA868520046B21F /* PageEyeData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageEyeData.swift; sourceTree = "<group>"; };
 		A9D9A8BE1C1C883D0014C1EB /* EyeRectangle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = EyeRectangle.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		A9D9AF881DA40D9700E3E95E /* QuestionState.key */ = {isa = PBXFileReference; lastKnownFileType = file; name = QuestionState.key; path = Stuff/QuestionState.key; sourceTree = SOURCE_ROOT; };
 		A9E771101B96091F0005A4B3 /* ReadingRect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadingRect.swift; sourceTree = "<group>"; };
 		A9E8F7DE1DA27E8C004FBA51 /* PeyeDF Questions.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "PeyeDF Questions.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A9E8F7DF1DA27E8D004FBA51 /* PeyeDF copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "PeyeDF copy-Info.plist"; path = "/Users/marco/git/PeyeDF/PeyeDF copy-Info.plist"; sourceTree = "<absolute>"; };
 		A9E8F7E01DA27EBD004FBA51 /* AnswerSaver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnswerSaver.swift; sourceTree = "<group>"; };
 		A9E8F7E11DA27EBD004FBA51 /* QuestionLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuestionLoader.swift; sourceTree = "<group>"; };
 		A9E8F7E21DA27EBD004FBA51 /* Questions.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Questions.storyboard; sourceTree = "<group>"; };
@@ -688,7 +688,6 @@
 				A964E0FE1CD8F23D00EE72B5 /* PeyeDFUITests */,
 				A9E8F7F21DA297A2004FBA51 /* PeyeDF Questions UITests */,
 				A91CB9451B332EDB00671868 /* Products */,
-				A9E8F7DF1DA27E8D004FBA51 /* PeyeDF copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -849,11 +848,12 @@
 			isa = PBXGroup;
 			children = (
 				A9E8F7E21DA27EBD004FBA51 /* Questions.storyboard */,
-				A9E8F7E01DA27EBD004FBA51 /* AnswerSaver.swift */,
+				A9E8F7EA1DA27EEF004FBA51 /* QuestionSingleton.swift */,
 				A9E8F7E11DA27EBD004FBA51 /* QuestionLoader.swift */,
 				A9E8F7E31DA27EBD004FBA51 /* QuestionState.swift */,
+				A9D9AF881DA40D9700E3E95E /* QuestionState.key */,
 				A9E8F7E41DA27EBD004FBA51 /* QuestionViewController.swift */,
-				A9E8F7EA1DA27EEF004FBA51 /* QuestionSingleton.swift */,
+				A9E8F7E01DA27EBD004FBA51 /* AnswerSaver.swift */,
 			);
 			name = Questions;
 			path = PeyeDF/Questions;
@@ -1714,7 +1714,7 @@
 					"CA_DEBUG_TRANSACTIONS=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = "PeyeDF copy-Info.plist";
+				INFOPLIST_FILE = PeyeDF/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_SWIFT_FLAGS = "-DDEBUG -DQUESTIONS";
@@ -1735,7 +1735,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = JYV3R5X7JQ;
-				INFOPLIST_FILE = "PeyeDF copy-Info.plist";
+				INFOPLIST_FILE = PeyeDF/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_SWIFT_FLAGS = "-DRELEASE -DQUESTIONS";
