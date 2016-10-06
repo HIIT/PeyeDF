@@ -644,6 +644,7 @@
                                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
+                                            <accessibility description="Participant number label" identifier="Participant number"/>
                                             <connections>
                                                 <action selector="verifyLocations:" target="bHM-3n-NND" id="IM6-D9-q0Y"/>
                                             </connections>
@@ -770,6 +771,7 @@
                                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
+                                            <accessibility description="Start experiment button" identifier="Start"/>
                                             <connections>
                                                 <action selector="startQuestions:" target="bHM-3n-NND" id="c9Z-C6-frD"/>
                                             </connections>

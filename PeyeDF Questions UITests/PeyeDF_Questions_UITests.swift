@@ -117,4 +117,32 @@ class PeyeDF_Questions_UITests: XCTestCase {
         
     }
     
+    
+    func test0() {
+        
+        let app = XCUIApplication()
+        
+        let menuBarsQuery = app.menuBars
+        let peyedfQuestionsMenuBarItem = menuBarsQuery.menuBarItems["PeyeDF Questions"]
+        peyedfQuestionsMenuBarItem.click()
+        menuBarsQuery.menuItems["Preferences…"].click()
+
+        let peyedfPreferencesWindow = app.windows["PeyeDF Preferences"]
+        peyedfPreferencesWindow.toolbars.buttons["Experiment"].click()
+        
+        let partTestField = peyedfPreferencesWindow.descendants(matching: .textField)["Participant number"]
+        partTestField.click()
+        partTestField.typeText("2\r")
+        
+        peyedfPreferencesWindow.descendants(matching: .button)["Start"].click()
+        
+        sleep(2)
+        
+        let continueButton = app.buttons["Continue"]
+        continueButton.click()
+        continueButton.click()
+        app.radioButtons["First answer"].click()
+        app.buttons["Confirm"].click()
+        
+    }
 }
