@@ -1,0 +1,129 @@
+{
+	"filename": "StewartEtAl2013_ClinicalPsychology.pdf",
+	"ttopic_group": "A",
+	"ttopics": [
+		{
+			"title": "Previous findings on psychological co-morbidity",
+			"questions": [
+				{
+					"question": "What disorder (not induced by interferon) is NOT mentioned as an unknown with regard to psychotropic medications?",
+					"summary": "Correlated disorders and medications",
+					"answers": [
+						"Bulimia",
+						"Depression",
+						"Anxiety"
+					]
+				},
+				{
+					"question": "What therapy was demonstrated suitable in treating depression?",
+					"summary": "Treatment therapy for depression",
+					"answers": [
+						"Cognitive Behavioural Therapy",
+						"Emotive Behaviour Therapy",
+						"Rational Emotive Therapy"
+					]
+				},
+				{
+					"question": "According to a recent systematic review, for who combining psychotherapy and pharmacotherapy is more effective?",
+					"summary": "Combining psychotherapy and pharmacotherapy",
+					"answers": [
+						"Chronic sufferers",
+						"Younger patients",
+						"Severe cases"
+					]
+				},
+				{
+					"question": "What self-help method is NOT cited in relation to other systematic reviews?",
+					"summary": "Self-help methods",
+					"answers": [
+						"Autogenic therapy",
+						"Book-based therapy",
+						"E-therapy"
+					]
+				}
+			]
+		},
+		{
+			"title": "Surveying procedure",
+			"questions": [
+				{
+					"question": "How many parts did compose the study?",
+					"summary": "Composition of study",
+					"answers": [
+						"Six parts",
+						"Five parts",
+						"Four parts"
+					]
+				},
+				{
+					"question": "What did the second section explore?",
+					"summary": "Purpose of second section of study",
+					"answers": [
+						"Acceptability of mental health support",
+						"Disease and other medical characteristics",
+						"Past history of psychological supports"
+					]
+				},
+				{
+					"question": "What scale was used for the acceptability measure?",
+					"summary": "Acceptability measurement",
+					"answers": [
+						"Likert",
+						"Thurstone",
+						"Guttman"
+					]
+				},
+				{
+					"question": "What was surveyed in the third section?",
+					"summary": "Purpose of third section of study",
+					"answers": [
+						"Past history of psychological supports",
+						"Disease and other medical characteristics",
+						"Depression and anxiety"
+					]
+				}
+			]
+		},
+		{
+			"title": "Future directions",
+			"questions": [
+				{
+					"question": "What was NOT mentioned as a limitation of the postal study?",
+					"summary": "Postal study",
+					"answers": [
+						"Response completeness",
+						"Sample size",
+						"Response rate"
+					]
+				},
+				{
+					"question": "What was eventually done with survey responses which stated that a SVR was achieved?",
+					"summary": "Responses involving SVR",
+					"answers": [
+						"They were retained",
+						"They were rejected",
+						"They were filtered"
+					]
+				},
+				{
+					"question": "Which was the third limitation of the study?",
+					"summary": "Third limitation",
+					"answers": [
+						"Inhomogeneous data",
+						"Lack of data",
+						"Outliers in the data"
+					]
+				},
+				{
+					"question": "What is NOT listed as a concern that reduced the amount of data regarding the acceptability of psychotherapy?",
+					"summary": "Data concerns",
+					"answers": [
+						"Privacy",
+						"Low mental health literacy",
+						"Length of survey"
+					]
+				}
+			]
+		}
+	]
+}

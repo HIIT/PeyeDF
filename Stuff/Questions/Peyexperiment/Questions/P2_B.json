@@ -1,0 +1,129 @@
+{
+	"filename": "StewartEtAl2013_ClinicalPsychology.pdf",
+	"ttopic_group": "B",
+	"ttopics": [
+		{
+			"title": "General overview of the impact of Chronic Hepatitis C",
+			"questions": [
+				{
+					"question": "How many Australians, roughly, are estimated to be affected by CHC?",
+					"summary": "Number of Australians affected by CHC",
+					"answers": [
+						"220 thousand",
+						"120 thousand",
+						"340 thousand"
+					]
+				},
+				{
+					"question": "How many CHC sufferers are at risk of progression to end-stage liver disease?",
+					"summary": "Risk of liver disease percentage",
+					"answers": [
+						"15 to 20 percent",
+						"20 to 25 percent",
+						"10 to 15 percent"
+					]
+				},
+				{
+					"question": "How many deaths are caused by CHC, worldwide?",
+					"summary": "Worldwide number of deaths",
+					"answers": [
+						"366 thousand",
+						"363 thousand",
+						"663 thousand"
+					]
+				},
+				{
+					"question": "How long can HCV remain undetected in blood?",
+					"summary": "HCV detection time",
+					"answers": [
+						"6 months",
+						"9 months",
+						"90 days"
+					]
+				}
+			]
+		},
+		{
+			"title": "Data collection details",
+			"questions": [
+				{
+					"question": "What was not mentioned as a means to assess the response bias?",
+					"summary": "Response bias assessment",
+					"answers": [
+						"Behavioural data",
+						"Medical data",
+						"Demographic data"
+					]
+				},
+				{
+					"question": "What method was followed to conduct the postal survey?",
+					"summary": "Postal survey method",
+					"answers": [
+						"Dillman",
+						"Groves",
+						"Lohr"
+					]
+				},
+				{
+					"question": "How long was the opt-out window?",
+					"summary": "Opt-out window length",
+					"answers": [
+						"3 weeks",
+						"6 weeks",
+						"9 weeks"
+					]
+				},
+				{
+					"question": "When did data collection end?",
+					"summary": "Data collection start and end times",
+					"answers": [
+						"April 2012",
+						"February 2012",
+						"December 2011"
+					]
+				}
+			]
+		},
+		{
+			"title": "Main findings",
+			"questions": [
+				{
+					"question": "What was related to the most important finding?",
+					"summary": "Most important finding",
+					"answers": [
+						"Formal treatment acceptability",
+						"Past psychotherapy satisfaction",
+						"Pharmacotherapy acceptability"
+					]
+				},
+				{
+					"question": "How many sessions were reported to be optimal?",
+					"summary": "Optimal number of sessions",
+					"answers": [
+						"10",
+						"15",
+						"20"
+					]
+				},
+				{
+					"question": "What was NOT mentioned as a potential barrier for CHC patients?",
+					"summary": "Potential barriers for CHC patients",
+					"answers": [
+						"Trust towards physicians",
+						"Fears regard breaches of privacy",
+						"Stigma suffered by patients"
+					]
+				},
+				{
+					"question": "Compared with psychotherapy or CBT, for which disorder where anti depressants rated more frequently helpful?",
+					"summary": "Anti depressant effectiveness ratings",
+					"answers": [
+						"Depression",
+						"Schizophrenia",
+						"Social phobia"
+					]
+				}
+			]
+		}
+	]
+}

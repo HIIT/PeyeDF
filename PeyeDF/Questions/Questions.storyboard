@@ -167,7 +167,7 @@
                             <constraint firstItem="DFm-pX-ieO" firstAttribute="leading" secondItem="D7t-uG-Ab9" secondAttribute="trailing" constant="70" id="vVQ-Ci-9aO"/>
                             <constraint firstItem="PJ0-aO-Dcp" firstAttribute="centerX" secondItem="PAt-d8-246" secondAttribute="centerX" id="xsv-lq-AjQ"/>
                         </constraints>
-                        <accessibility description="Question view" identifier="Question view"/>
+                        <accessibility description="Question view"/>
                     </view>
                     <connections>
                         <outlet property="answer1" destination="nqc-5K-YuA" id="iNI-Ok-Btb"/>

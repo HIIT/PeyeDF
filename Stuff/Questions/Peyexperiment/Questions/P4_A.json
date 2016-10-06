@@ -1,0 +1,129 @@
+{
+	"filename": "Rose2012_Placebo.pdf",
+	"ttopic_group": "A",
+	"ttopics": [
+		{
+			"title": "Previous research on placebos",
+			"questions": [
+				{
+					"question": "What is the second assumption that is cited to support the hypothesis that having a choice leads to stronger expectation effects?",
+					"summary": "Second assumption on expectation effects",
+					"answers": [
+						"People search and appraise information in a manner that confirms their prior choice",
+						"People feel less anxiety and greater confidence when they are allowed to make choices",
+						"People feel more positive about chosen rather than non-chosen options"
+					]
+				},
+				{
+					"question": "What is the third example given to explain the expected increase in placebo analgesia?",
+					"summary": "Third example to explain placebo analgesia",
+					"answers": [
+						"Choice increases feelings of confidence and decreases anxiety",
+						"Choice leads people to appraise somatic information",
+						"Positivity is enhanced for the chosen treatment"
+					]
+				},
+				{
+					"question": "What do the authors consider to be central in explaining placebo effects (according to prior research)?",
+					"summary": "Explaining effectiveness of placebos",
+					"answers": [
+						"Anxiety",
+						"Positivity",
+						"Expectation"
+					]
+				},
+				{
+					"question": "What citation is given in relation to health care treatments that employ active ingredients?",
+					"summary": "Previous research with active ingredients",
+					"answers": [
+						"Benedetti, 2008",
+						"Geers et al., 2011b",
+						"Gattellari et al., 2001"
+					]
+				}
+			]
+		},
+		{
+			"title": "Detailed description of results",
+			"questions": [
+				{
+					"question": "What is the f-value for the overall effect?",
+					"summary": "Overall effect size",
+					"answers": [
+						"8.45",
+						"6.48",
+						"3.64"
+					]
+				},
+				{
+					"question": "What p-value was obtained for the comparison between the choice and no-choice conditions?",
+					"summary": "Choice against no-choice comparison p-value",
+					"answers": [
+						"> .80",
+						"< .01",
+						"> .50"
+					]
+				},
+				{
+					"question": "What p-value was obtained in the comparison of perceived extent of choice between choice and no choice?",
+					"summary": "Perceived extent of chice p-value",
+					"answers": [
+						"< .01",
+						"> .80",
+						"> .50"
+					]
+				},
+				{
+					"question": "What method was used to analyse concurrent pain ratings?",
+					"summary": "Concurrent pain ratings analysis method",
+					"answers": [
+						"Mixed model ANCOVA",
+						"Within subjects ANCOVA",
+						"Between subjects ANOVA"
+					]
+				}
+			]
+		},
+		{
+			"title": "Issues and potential solutions",
+			"questions": [
+				{
+					"question": "Which was the main potential limitation of the study?",
+					"summary": "Main limitation",
+					"answers": [
+						"Unrepresentative population",
+						"Limited sample size",
+						"Variance in results"
+					]
+				},
+				{
+					"question": "What is a possible solution to the second limitation?",
+					"summary": "Second limitation",
+					"answers": [
+                        "Use psychophysiology",
+                        "Use an external evaluator",
+						"Change measurement scale"
+					]
+				},
+				{
+					"question": "What was given as a possible future direction regarding the third limitation?",
+					"summary": "Third limitation",
+					"answers": [
+						"Explore choice removal",
+						"Increase number of options",
+						"Change length of study"
+					]
+				},
+				{
+					"question": "What is at the centre of the fourth limitation?",
+					"summary": "Fourth limitation",
+					"answers": [
+						"Unhelpful choices",
+						"Types of pain induction",
+						"Availability of medications"
+					]
+				}
+			]
+		}
+	]
+}

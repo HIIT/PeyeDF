@@ -1,0 +1,129 @@
+{
+	"filename": "HardcastleEtAl2012_Motivational.pdf",
+	"ttopic_group": "A",
+	"ttopics": [
+		{
+			"title": "Background specific to motivational interviewing",
+			"questions": [
+				{
+					"question": "In how many studies was motivational interviewing deemed more effective in improving overall outcomes?",
+					"summary": "Effectiveness of interviewing",
+					"answers": [
+						"80%",
+						"70%",
+						"75%"
+					]
+				},
+				{
+					"question": "How many sessions (at least) were used in the 87% of studies for which an effect was found?",
+					"summary": "Number of sessions",
+					"answers": [
+						"5",
+						"4",
+						"3"
+					]
+				},
+				{
+					"question": "Which reference is given for the lack of evidence on the efficacy of motivational interviewing?",
+					"summary": "Lack of evidence reference(s)",
+					"answers": [
+						"Burke et al., 2003",
+						"Martins & McNeil, 2009",
+						"Rubak et al., 2005"
+					]
+				},
+				{
+					"question": "What is not listed as one of the three key components that support psychological needs?",
+					"summary": "Key components that support psychological needs",
+					"answers": [
+						"Temporal motivation theory",
+						"Self-determination theory",
+						"Theory of planned behavior"
+					]
+				}
+			]
+		},
+		{
+			"title": "Recruitment procedure",
+			"questions": [
+				{
+					"question": "How is insufficient physical activity defined?",
+					"summary": "Physical inactivity definition",
+					"answers": [
+						"Less than 5 x 30 min of activity per week",
+						"Less than 3 x 60 min of activity per week",
+						"Less than 3 x 30 min of activity per week"
+					]
+				},
+				{
+					"question": "What were the power (beta) an probability (alpha) settings for the main effect?",
+					"summary": "Analysis settings",
+					"answers": [
+						"Beta: .8, Alpha: .05",
+						"Beta: .6, Alpha: .05",
+						"Beta: .4, Alpha: .01"
+					]
+				},
+				{
+					"question": "Which was the study design?",
+					"summary": "Study design",
+					"answers": [
+						"2 x 2 x 2",
+						"6 x 2 x 2",
+						"4 x 2 x 2"
+					]
+				},
+				{
+					"question": "What was the maximum number of sessions that patients could decide to take?",
+					"summary": "Maximum number of sessions",
+					"answers": [
+						"12",
+						"10",
+						"14"
+					]
+				}
+			]
+		},
+		{
+			"title": "Overview of main results",
+			"questions": [
+				{
+					"question": "What was the percentage which reported an household income between 10 and 15 thousand pounds?",
+					"summary": "Reported incomes",
+					"answers": [
+						"29%",
+						"84%",
+						"70%"
+					]
+				},
+				{
+					"question": "In general, how many participants were found to be insufficiently active?",
+					"summary": "Number of inactive participants",
+					"answers": [
+						"60%",
+						"50%",
+						"40%"
+					]
+				},
+				{
+					"question": "What was the finding regarding assessment completion and sessions?",
+					"summary": "Assessment completion and sessions",
+					"answers": [
+						"Two assessments = attended more sessions",
+						"One assessment = attended more sessions",
+						"Three assessments = attended less sessions"
+					]
+				},
+				{
+					"question": "What was the average number (approximately) of sessions attended by participants?",
+					"summary": "Average number of sessions attended",
+					"answers": [
+						"2",
+						"3",
+						"4"
+					]
+				}
+			]
+		}
+	]
+}

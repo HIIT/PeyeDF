@@ -1,0 +1,129 @@
+{
+	"filename": "HardcastleEtAl2012_Motivational.pdf",
+	"ttopic_group": "B",
+	"ttopics": [
+		{
+			"title": "Background on physical activity and health",
+			"questions": [
+				{
+					"question": "What is the highest bound of the percentage representing the physically inactive population?",
+					"summary": "Physical inactivity population percentage",
+					"answers": [
+						"70%",
+						"60%",
+						"80%"
+					]
+				},
+				{
+					"question": "What are the percentages of people who were reported to meet the recommended levels of activity?",
+					"summary": "Percentage of physically active people (reported)",
+					"answers": [
+						"Men: 39%, Women: 29%",
+						"Men: 25%, Women: 33%",
+						"Men: 45%, Women: 30%"
+					]
+				},
+				{
+					"question": "What are the percentages of people who are actually active according to accelerometer data?",
+					"summary": "Percentage of physically active people (measured)",
+					"answers": [
+						"Men: 6%, Women: 4%",
+						"Men: 5%, Women: 3%",
+						"Men: 4%, Women: 3%"
+					]
+				},
+				{
+					"question": "What is the average healthcare cost at a local level?",
+					"summary": "Local healthcare costs",
+					"answers": [
+						"5 million pounds",
+						"6 million pounds",
+						"3 million pounds"
+					]
+				}
+			]
+		},
+		{
+			"title": "Method used to implement counselling interventions",
+			"questions": [
+				{
+					"question": "What model was used for the lifestyle change facilitation service?",
+					"summary": "Model employed",
+					"answers": [
+						"Transtheoretical Model",
+						"Action and Maintenance Model",
+						"Planned Behavior Model"
+					]
+				},
+				{
+					"question": "Was is NOT listed as a strategy to build autonomous motivation?",
+					"summary": "Autonomous motivation strategy",
+					"answers": [
+						"Diet planning",
+						"Agenda setting",
+						"Decisional balance"
+					]
+				},
+				{
+					"question": "How is the ‘looking over the fence’ strategy defined?",
+					"summary": "‘Looking over the fence’ strategy",
+					"answers": [
+						"Two possible futures",
+						"Strategy under uncertainty",
+						"Scenario planning"
+					]
+				},
+				{
+					"question": "What was discussed, but only in an informal way?",
+					"summary": "Item(s) informally discussed",
+					"answers": [
+						"Change plan worksheet",
+						"Realistic goal setting",
+						"Enlisting social support"
+					]
+				}
+			]
+		},
+		{
+			"title": "Detailed discussion of study aims",
+			"questions": [
+				{
+					"question": "Regarding the first aim, how is the difference between previous studies explained?",
+					"summary": "Difference between previous studies",
+					"answers": [
+						"Training of facilitators",
+						"Length of sessions",
+						"Number of participants"
+					]
+				},
+				{
+					"question": "How long was the training given to facilitators (in this study)?",
+					"summary": "Length of training",
+					"answers": [
+						"6 days",
+						"6 weeks",
+						"3 days"
+					]
+				},
+				{
+					"question": "What income did 76% of participants declare?",
+					"summary": "Declared income of participants",
+					"answers": [
+						"Less than 30 thousand pounds",
+						"Less than 25 thousand pounds",
+						"Less than 20 thousand pounds"
+					]
+				},
+				{
+					"question": "What appears to be an optimal number of hour-long sessions (in this study)?",
+					"summary": "Optimal number of sessions",
+					"answers": [
+						"4-5",
+						"2-3",
+						"5-9"
+					]
+				}
+			]
+		}
+	]
+}

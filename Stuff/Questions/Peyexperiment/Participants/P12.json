@@ -1,0 +1,284 @@
+{
+  "questionList" : [
+    {
+      "ttopicNo" : 0,
+      "paperCode" : "Practice",
+      "paper" : 4
+    },
+    {
+      "ttopicNo" : 1,
+      "paperCode" : "Practice",
+      "paper" : 4
+    },
+    {
+      "ttopicNo" : 0,
+      "paperCode" : "Practice",
+      "paper" : 4
+    },
+    {
+      "ttopicNo" : 1,
+      "paperCode" : "Practice",
+      "paper" : 4
+    },
+    {
+      "ttopicNo" : 0,
+      "paperCode" : "P3",
+      "paper" : 2
+    },
+    {
+      "ttopicNo" : 2,
+      "paperCode" : "P3",
+      "paper" : 2
+    },
+    {
+      "ttopicNo" : 1,
+      "paperCode" : "P3",
+      "paper" : 2
+    },
+    {
+      "ttopicNo" : 0,
+      "paperCode" : "P3",
+      "paper" : 2
+    },
+    {
+      "ttopicNo" : 2,
+      "paperCode" : "P3",
+      "paper" : 2
+    },
+    {
+      "ttopicNo" : 1,
+      "paperCode" : "P3",
+      "paper" : 2
+    },
+    {
+      "ttopicNo" : 2,
+      "paperCode" : "P3",
+      "paper" : 2
+    },
+    {
+      "ttopicNo" : 0,
+      "paperCode" : "P3",
+      "paper" : 2
+    },
+    {
+      "ttopicNo" : 1,
+      "paperCode" : "P3",
+      "paper" : 2
+    },
+    {
+      "ttopicNo" : 2,
+      "paperCode" : "P3",
+      "paper" : 2
+    },
+    {
+      "ttopicNo" : 0,
+      "paperCode" : "P3",
+      "paper" : 2
+    },
+    {
+      "ttopicNo" : 1,
+      "paperCode" : "P3",
+      "paper" : 2
+    },
+    {
+      "ttopicNo" : 1,
+      "paperCode" : "P2",
+      "paper" : 1
+    },
+    {
+      "ttopicNo" : 0,
+      "paperCode" : "P2",
+      "paper" : 1
+    },
+    {
+      "ttopicNo" : 2,
+      "paperCode" : "P2",
+      "paper" : 1
+    },
+    {
+      "ttopicNo" : 0,
+      "paperCode" : "P2",
+      "paper" : 1
+    },
+    {
+      "ttopicNo" : 1,
+      "paperCode" : "P2",
+      "paper" : 1
+    },
+    {
+      "ttopicNo" : 2,
+      "paperCode" : "P2",
+      "paper" : 1
+    },
+    {
+      "ttopicNo" : 1,
+      "paperCode" : "P2",
+      "paper" : 1
+    },
+    {
+      "ttopicNo" : 2,
+      "paperCode" : "P2",
+      "paper" : 1
+    },
+    {
+      "ttopicNo" : 0,
+      "paperCode" : "P2",
+      "paper" : 1
+    },
+    {
+      "ttopicNo" : 2,
+      "paperCode" : "P2",
+      "paper" : 1
+    },
+    {
+      "ttopicNo" : 0,
+      "paperCode" : "P2",
+      "paper" : 1
+    },
+    {
+      "ttopicNo" : 1,
+      "paperCode" : "P2",
+      "paper" : 1
+    },
+    {
+      "ttopicNo" : 0,
+      "paperCode" : "P1",
+      "paper" : 0
+    },
+    {
+      "ttopicNo" : 1,
+      "paperCode" : "P1",
+      "paper" : 0
+    },
+    {
+      "ttopicNo" : 2,
+      "paperCode" : "P1",
+      "paper" : 0
+    },
+    {
+      "ttopicNo" : 1,
+      "paperCode" : "P1",
+      "paper" : 0
+    },
+    {
+      "ttopicNo" : 2,
+      "paperCode" : "P1",
+      "paper" : 0
+    },
+    {
+      "ttopicNo" : 0,
+      "paperCode" : "P1",
+      "paper" : 0
+    },
+    {
+      "ttopicNo" : 1,
+      "paperCode" : "P1",
+      "paper" : 0
+    },
+    {
+      "ttopicNo" : 2,
+      "paperCode" : "P1",
+      "paper" : 0
+    },
+    {
+      "ttopicNo" : 0,
+      "paperCode" : "P1",
+      "paper" : 0
+    },
+    {
+      "ttopicNo" : 2,
+      "paperCode" : "P1",
+      "paper" : 0
+    },
+    {
+      "ttopicNo" : 1,
+      "paperCode" : "P1",
+      "paper" : 0
+    },
+    {
+      "ttopicNo" : 0,
+      "paperCode" : "P1",
+      "paper" : 0
+    },
+    {
+      "ttopicNo" : 2,
+      "paperCode" : "P4",
+      "paper" : 3
+    },
+    {
+      "ttopicNo" : 1,
+      "paperCode" : "P4",
+      "paper" : 3
+    },
+    {
+      "ttopicNo" : 0,
+      "paperCode" : "P4",
+      "paper" : 3
+    },
+    {
+      "ttopicNo" : 1,
+      "paperCode" : "P4",
+      "paper" : 3
+    },
+    {
+      "ttopicNo" : 2,
+      "paperCode" : "P4",
+      "paper" : 3
+    },
+    {
+      "ttopicNo" : 0,
+      "paperCode" : "P4",
+      "paper" : 3
+    },
+    {
+      "ttopicNo" : 1,
+      "paperCode" : "P4",
+      "paper" : 3
+    },
+    {
+      "ttopicNo" : 0,
+      "paperCode" : "P4",
+      "paper" : 3
+    },
+    {
+      "ttopicNo" : 2,
+      "paperCode" : "P4",
+      "paper" : 3
+    },
+    {
+      "ttopicNo" : 0,
+      "paperCode" : "P4",
+      "paper" : 3
+    },
+    {
+      "ttopicNo" : 2,
+      "paperCode" : "P4",
+      "paper" : 3
+    },
+    {
+      "ttopicNo" : 1,
+      "paperCode" : "P4",
+      "paper" : 3
+    }
+  ],
+  "pNo" : 12,
+  "assignments" : [
+    {
+      "paper" : 2,
+      "ttopicGroup" : "A"
+    },
+    {
+      "paper" : 1,
+      "ttopicGroup" : "A"
+    },
+    {
+      "paper" : 0,
+      "ttopicGroup" : "B"
+    },
+    {
+      "paper" : 3,
+      "ttopicGroup" : "A"
+    }
+  ],
+  "condition" : 2
+}

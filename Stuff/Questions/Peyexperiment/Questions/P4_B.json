@@ -1,0 +1,129 @@
+{
+	"filename": "Rose2012_Placebo.pdf",
+	"ttopic_group": "B",
+	"ttopics": [
+		{
+			"title": "Experiment overview",
+			"questions": [
+				{
+					"question": "What was not explored in previous research?",
+					"summary": "Previous research limitation(s)",
+					"answers": [
+						"Inactive ingredients",
+						"Role of anxiety",
+						"Pain was not induced"
+					]
+				},
+				{
+					"question": "How was pain induced?",
+					"summary": "Pain induction method",
+					"answers": [
+						"Change in temperature",
+						"Loud noise",
+						"Electrical stimulation"
+					]
+				},
+				{
+					"question": "How many options were given to participants in the choice condition?",
+					"summary": "Number of options given",
+					"answers": [
+						"2",
+						"3",
+						"4"
+					]
+				},
+				{
+					"question": "How was the inert ointment described to participants?",
+					"summary": "Ointment(s) used",
+					"answers": [
+						"Hand cleanser",
+						"Hand moisturiser",
+						"Antiperspirant gel"
+					]
+				}
+			]
+		},
+		{
+			"title": "Experimental procedure",
+			"questions": [
+				{
+					"question": "What scale was used for the pre-task survey?",
+					"summary": "Pre-task survey scale",
+					"answers": [
+						"Visual analogue scale",
+						"Guttman scale",
+						"Numbered scale (0 to 10)"
+					]
+				},
+				{
+					"question": "How was the second product described to participants?",
+					"summary": "Given product descriptions",
+					"answers": [
+						"It blocked pain receptors",
+						"It blocked thermal receptors",
+						"Contained hydrophobic coating"
+					]
+				},
+				{
+					"question": "How much time was given to participants to make their selection?",
+					"summary": "Product selection time",
+					"answers": [
+						"2 minute",
+						"1 minutes",
+						"3 minutes"
+					]
+				},
+				{
+					"question": "How much time passed between application of the gel and submerging in water?",
+					"summary": "Time before pain induction",
+					"answers": [
+						"1 minute",
+						"2 minutes",
+						"3 minutes"
+					]
+				}
+			]
+		},
+		{
+			"title": "Overall findings",
+			"questions": [
+				{
+					"question": "What was a key factor in explaining the main effect (anxiety reduction)?",
+					"summary": "Main effect factor(s)",
+					"answers": [
+						"The act of making choices",
+						"The fact of having choices",
+						"The enacting of choices"
+					]
+				},
+				{
+					"question": "What references are given to support the implication of anxiety reduction in placebo analgesia?",
+					"summary": "Placebo analgesic effects",
+					"answers": [
+						"Petrovic, Turner",
+						"Schulz, Shafir",
+						"Langer, Rodin"
+					]
+				},
+				{
+					"question": "How many mediators are proposed to be explored in future work (in addition to anxiety)?",
+					"summary": "Main effect mediators",
+					"answers": [
+						"2",
+						"3",
+						"4"
+					]
+				},
+				{
+					"question": "What is NOT suggested to be an additional mediator?",
+					"summary": "Additional mediators",
+					"answers": [
+						"Impulsiveness",
+						"Positivity",
+						"Search processing"
+					]
+				}
+			]
+		}
+	]
+}

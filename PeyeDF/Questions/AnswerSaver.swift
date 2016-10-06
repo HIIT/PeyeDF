@@ -63,32 +63,24 @@ class AnswerSaver {
         
         let outFileName = "\(pString)_\(dateString)"
         
-        let homeDirectory = NSURL(string: NSHomeDirectory())!
+        let outputDirectory = QuestionSingleton.outputJsonLoc
         
-        // TODO: change this to actual dir
-        let jsonFile = homeDirectory.appendingPathComponent("\(outFileName).json")!
+        let jsonFile = outputDirectory.appendingPathComponent("\(outFileName).json")
         let fileManager = FileManager.default
         var isDirectory: ObjCBool = false
         
         // creating a .json file in the folder
-        if !fileManager.fileExists(atPath: jsonFile.path, isDirectory: &isDirectory) {
-            let created = fileManager.createFile(atPath: jsonFile.absoluteString, contents: nil, attributes: nil)
-            if !created {
-                AppSingleton.alertUser("Coudln't create output json")
-            }
-        } else {
-            AppSingleton.alertUser("Output json already exists (!?)")
-            return
+        if fileManager.fileExists(atPath: jsonFile.path, isDirectory: &isDirectory) {
+            fatalError("Output json already exists (shouldn't happen since we use timestamps)")
         }
         
         // creating JSON out of the above array
         var jsonData: Data
         do {
             jsonData = try JSONSerialization.data(withJSONObject: outObject, options: JSONSerialization.WritingOptions.prettyPrinted)
-            let file = try FileHandle(forWritingTo: jsonFile)
-            file.write(jsonData)
+            try jsonData.write(to: jsonFile)
         } catch {
-            AppSingleton.alertUser("Failed to serialize json / write data")
+            fatalError("Failed to serialize json / write data: \(error)")
         }
         
     }

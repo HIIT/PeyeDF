@@ -1,0 +1,129 @@
+{
+	"filename": "Bener2011_asthma.pdf",
+	"ttopic_group": "A",
+	"ttopics": [
+		{
+			"title": "An overall (worldwide) view of asthma",
+			"questions": [
+				{
+					"question": "In western countries, how high can the prevalence of asthma and allergies be (among children)?",
+					"summary": "Overall asthma prevalence",
+					"answers": [
+						"1\/3",
+						"1\/4",
+						"1\/5"
+					]
+				},
+				{
+					"question": "What factor is NOT mentioned as being correlated to asthma prevalence?",
+					"summary": "Factors correlated to asthma",
+					"answers": [
+						"Immunodeficiency",
+						"Genetic variations",
+						"Allergen exposure"
+					]
+				},
+				{
+					"question": "What is NOT mentioned as a lifestyle factor disease modifier?",
+					"summary": "Lifestyle disease modifier factors",
+					"answers": [
+						"Working condition",
+						"Diet",
+						"Air pollution"
+					]
+				},
+				{
+					"question": "How many people are estimated to be exposed to dangerous level of air pollution?",
+					"summary": "Number of people affected by pollutants",
+					"answers": [
+						"600 million",
+						"200 million",
+						"900 million"
+					]
+				}
+			]
+		},
+		{
+			"title": "Findings about asthma and allergic diseases",
+			"questions": [
+				{
+					"question": "What is the most internationally accepted way of measuring asthma prevalence in children?",
+					"summary": "Most accepted method to measure asthma prevalence",
+					"answers": [
+						"Sampling using a survey",
+						"Sampling using laboratory tests",
+						"Sampling of medical history"
+					]
+				},
+				{
+					"question": "What is the relationship between prevalence of asthma, pulmonary infection and age?",
+					"summary": "Correlation between age and pulmonary infection",
+					"answers": [
+						"Asthma: decreases with age; Pulmonary infection: increases with age;",
+						"Asthma: increases with age; Pulmonary infection: increases with age;",
+						"Asthma: increases with age; Pulmonary infection: decreases with age;"
+					]
+				},
+				{
+					"question": "What are the findings on the relationship between age and sex, across all age groups?",
+					"summary": "Relationship to sex",
+					"answers": [
+						"Asthma prevalence higher in males",
+						"Asthma prevalence higher in females",
+						"No significant difference between males and females"
+					]
+				},
+				{
+					"question": "In what age group is allergic rhinitis prevalence significantly higher in boys than girls?",
+					"summary": "Relationship between rhinitis prevalence and sex",
+					"answers": [
+						"6-8",
+						"9-11",
+						"12-14"
+					]
+				}
+			]
+		},
+		{
+			"title": "Findings about asthma and absenteeism",
+			"questions": [
+				{
+					"question": "On average, what is the percentage of school days lost which is accountable to asthma?",
+					"summary": "Amount of school days lost",
+					"answers": [
+						"20%",
+						"10%",
+						"30%"
+					]
+				},
+				{
+					"question": "What is the percentage of absentees in intermediate levels for non-asthmatic children (approximately)?",
+					"summary": "Amount of absences (in general)",
+					"answers": [
+						"45%",
+						"40%",
+						"35%"
+					]
+				},
+				{
+					"question": "In which season(s) boys are more likely to be absent than girls?",
+					"summary": "Seasonal absences",
+					"answers": [
+						"Winter",
+						"Autumn",
+						"Spring \/ Summer"
+					]
+				},
+				{
+					"question": "What is the median number of days of absence in the UAE, asthmatic group?",
+					"summary": "Number of absences for asthmatics",
+					"answers": [
+						"6",
+						"5",
+						"4"
+					]
+				}
+			]
+		}
+	]
+}

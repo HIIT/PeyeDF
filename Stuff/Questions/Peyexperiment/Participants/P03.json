@@ -1,0 +1,22 @@
+{
+  "assignments" : [
+    {
+      "ttopicGroup" : "A",
+      "paper" : 3
+    },
+    {
+      "ttopicGroup" : "B",
+      "paper" : 2
+    },
+    {
+      "ttopicGroup" : "A",
+      "paper" : 1
+    },
+    {
+      "ttopicGroup" : "A",
+      "paper" : 0
+    }
+  ],
+  "condition" : 2,
+  "pNo" : 3
+}

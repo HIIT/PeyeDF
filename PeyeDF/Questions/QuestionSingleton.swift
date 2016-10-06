@@ -142,11 +142,9 @@ class QuestionSingleton {
         
         questionWindow = (QuestionSingleton.questionsStoryboard.instantiateController(withIdentifier: "QuestionWindowController") as! NSWindowController)
         questionWindow.showWindow(nil)
-        // put the question window always in front (unless we are debugging)
-        #if !DEBUG
-            questionWindow.window?.level = Int(CGWindowLevelForKey(.floatingWindow))
-            questionWindow.window?.level = Int(CGWindowLevelForKey(.maximumWindow))
-        #endif
+        // put the question window always in front
+        questionWindow.window?.level = Int(CGWindowLevelForKey(.floatingWindow))
+        questionWindow.window?.level = Int(CGWindowLevelForKey(.maximumWindow))
         questionController = (questionWindow.contentViewController as! QuestionViewController)
         questionController!.begin(withPapers: paperOrder)
 

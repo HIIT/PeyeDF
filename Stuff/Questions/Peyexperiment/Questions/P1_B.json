@@ -1,0 +1,129 @@
+{
+	"filename": "Bener2011_asthma.pdf",
+	"ttopic_group": "B",
+	"ttopics": [
+		{
+			"title": "Introductory views on asthma and Qatar",
+			"questions": [
+				{
+					"question": "What is the suggested leading factor for the increase of asthma in Qatar?",
+					"summary": "Factors correlated to asthma",
+					"answers": [
+						"Pollution exposure",
+						"Antigen underexposure",
+						"Genetic predisposition"
+					]
+				},
+				{
+					"question": "Which gas is NOT mentioned as a pollutant?",
+					"summary": "Pollutant gases",
+					"answers": [
+						"N2",
+						"O3",
+						"CO"
+					]
+				},
+				{
+					"question": "How does asthma prominently affect school children?",
+					"summary": "Effect of asthma on children",
+					"answers": [
+						"Causes absences",
+						"Decreases focus",
+						"Reduces attention levels"
+					]
+				},
+				{
+					"question": "What is approximate proportion of school days lost by students?",
+					"summary": "School days lost",
+					"answers": [
+						"1\/5",
+						"1\/3",
+						"1\/4"
+					]
+				}
+			]
+		},
+		{
+			"title": "Composition of study sample",
+			"questions": [
+				{
+					"question": "Which of the first two cross sectional studies employed most children?",
+					"summary": "Composition of study",
+					"answers": [
+						"Second",
+						"First",
+						"No notable difference (± 10 children)"
+					]
+				},
+				{
+					"question": "Which age group did the second cross sectional study investigate?",
+					"summary": "Age groups considered",
+					"answers": [
+						"6-12",
+						"6-14",
+						"6-18"
+					]
+				},
+				{
+					"question": "How was the random sampling technique described?",
+					"summary": "Random sampling technique",
+					"answers": [
+						"Multi-stage, stratified",
+						"Balanced, multi-sample",
+						"Double blind, uniform"
+					]
+				},
+				{
+					"question": "How was the cluster effect controlled for?",
+					"summary": "How the cluster effect was controlled",
+					"answers": [
+						"Selected a school for 5 districts",
+						"Selected all 21 districts",
+						"Selected 5 schools for one district"
+					]
+				}
+			]
+		},
+		{
+			"title": "Data collection and analysis",
+			"questions": [
+				{
+					"question": "How many years were covered by the three studies?",
+					"summary": "Time span covered by study",
+					"answers": [
+						"5",
+						"6",
+						"7"
+					]
+				},
+				{
+					"question": "From who was approval obtained?",
+					"summary": "Approval",
+					"answers": [
+						"Both",
+						"School principals",
+						"Parents"
+					]
+				},
+				{
+					"question": "How many questionnaire items concerned the diagnosis of asthma?",
+					"summary": "Number of questionnaire items",
+					"answers": [
+						"2",
+						"3",
+						"4"
+					]
+				},
+				{
+					"question": "What method was not used to test two or more categorical variables?",
+					"summary": "Statistical analysis method",
+					"answers": [
+						"McNemar test",
+						"Chi-square",
+						"Fisher exact test"
+					]
+				}
+			]
+		}
+	]
+}

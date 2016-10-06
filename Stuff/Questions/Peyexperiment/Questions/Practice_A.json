@@ -1,0 +1,52 @@
+{
+	"filename": "PrimackEtAl2012_Waterpipe.pdf",
+	"ttopic_group": "A",
+	"ttopics": [
+		{
+			"title": "Background",
+			"questions": [
+				{
+					"question": "How much more tar do waterpipes deliver, when compared to cigarettes?",
+					"summary": "Amount of tar delivered by waterpipes",
+					"answers": [
+						"40 times more",
+						"20 times more",
+						"50 times more"
+					]
+				},
+				{
+					"question": "How much nicotine do waterpipes deliver, when compared to cigarettes?",
+					"summary": "Nicotine levels delivered by waterpipes",
+					"answers": [
+						"200%",
+						"50%",
+						"450%"
+					]
+				}
+			]
+		},
+		{
+			"title": "Overview of obtained responses",
+			"questions": [
+				{
+					"question": "What was the completion rate for the web-based survey?",
+					"summary": "Web survey completion rate",
+					"answers": [
+						"21%",
+						"32%",
+						"13%"
+					]
+				},
+				{
+					"question": "What was the percentage of respondents who reported to currently use a waterpipe?",
+					"summary": "Percentage of current waterpipe users",
+					"answers": [
+						"8.4%",
+						"30.5%",
+						"64.1%"
+					]
+				}
+			]
+		}
+	]
+}

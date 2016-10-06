@@ -28,27 +28,9 @@ class PeyeDF_Questions_UITests: XCTestCase {
         super.tearDown()
     }
     
-    func testRunRandom() {
-        
-        // midas is on
-        let useMidas = false
-        
-        // participant json load
-        let app = XCUIApplication()
-        app.textFields["##"].typeText("5")
-        let okButton = app.buttons["OK"]
-        okButton.click()
-        
-        // midas dismiss
-        if !useMidas {
-            okButton.click()
-        }
-        
-        startAndAnswerAll()
-    }
-        
     /// Convenience function to start and answer all questions
-    func startAndAnswerAll() {
+    func testQuestionRun() {
+        
         let app = XCUIApplication()
         
         // number of papers
@@ -68,11 +50,20 @@ class PeyeDF_Questions_UITests: XCTestCase {
         
         // start question mode
         let menuBarsQuery = app.menuBars
-        let fileMenuBarItem = menuBarsQuery.menuBarItems["File"]
-        fileMenuBarItem.click()
-        menuBarsQuery.menuItems["Show refinder"].click()
-        fileMenuBarItem.click()
-        menuBarsQuery.menuItems["Start questions"].click()
+        let peyedfQuestionsMenuBarItem = menuBarsQuery.menuBarItems["PeyeDF Questions"]
+        peyedfQuestionsMenuBarItem.click()
+        menuBarsQuery.menuItems["Preferences…"].click()
+
+        let peyedfPreferencesWindow = app.windows["PeyeDF Preferences"]
+        peyedfPreferencesWindow.toolbars.buttons["Experiment"].click()
+
+        let partTestField = peyedfPreferencesWindow.descendants(matching: .textField)["Participant number"]
+        partTestField.click()
+        partTestField.typeText("2\r")
+        
+        peyedfPreferencesWindow.descendants(matching: .button)["Start"].click()
+        
+        sleep(2)
         
         let continueButton = app.buttons["Continue"]
         
@@ -81,32 +72,34 @@ class PeyeDF_Questions_UITests: XCTestCase {
         
         // answer practice
         
-        continueButton.click()
+        continueButton.click() // proceed to paper
+        
         for _ in 0..<nOfTtopics_P {
+            continueButton.click() // see answers
             for _ in 0..<nOfQuestions_P {
-                continueButton.click()
                 rndI = arc4random_uniform(UInt32(rndLabs.count))
                 let lab = rndLabs[Int(rndI)]
                 app.radioButtons[lab + " answer"].click()
                 app.buttons["Confirm"].click()
             }
         }
-        continueButton.click()
+        
+        continueButton.click() // next paper
         
         // answer "real" test
         
         for _ in 0..<nOfPapers {
-            continueButton.click()
+            continueButton.click()  // see answers
             for _ in 0..<nOfTtopics {
+                continueButton.click()
                 for _ in 0..<nOfQuestions {
-                    continueButton.click()
                     rndI = arc4random_uniform(UInt32(rndLabs.count))
                     let lab = rndLabs[Int(rndI)]
                     app.radioButtons[lab + " answer"].click()
                     app.buttons["Confirm"].click()
                 }
             }
-            continueButton.click()
+            continueButton.click()  // questions done
         }
         
         // end
@@ -117,32 +110,4 @@ class PeyeDF_Questions_UITests: XCTestCase {
         
     }
     
-    
-    func test0() {
-        
-        let app = XCUIApplication()
-        
-        let menuBarsQuery = app.menuBars
-        let peyedfQuestionsMenuBarItem = menuBarsQuery.menuBarItems["PeyeDF Questions"]
-        peyedfQuestionsMenuBarItem.click()
-        menuBarsQuery.menuItems["Preferences…"].click()
-
-        let peyedfPreferencesWindow = app.windows["PeyeDF Preferences"]
-        peyedfPreferencesWindow.toolbars.buttons["Experiment"].click()
-        
-        let partTestField = peyedfPreferencesWindow.descendants(matching: .textField)["Participant number"]
-        partTestField.click()
-        partTestField.typeText("2\r")
-        
-        peyedfPreferencesWindow.descendants(matching: .button)["Start"].click()
-        
-        sleep(2)
-        
-        let continueButton = app.buttons["Continue"]
-        continueButton.click()
-        continueButton.click()
-        app.radioButtons["First answer"].click()
-        app.buttons["Confirm"].click()
-        
-    }
 }
