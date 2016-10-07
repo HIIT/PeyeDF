@@ -84,6 +84,10 @@
 		A9B36CA91BEA2E0800A27861 /* HistoryDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B36CA81BEA2E0800A27861 /* HistoryDetailController.swift */; };
 		A9B36CAB1BEA30BF00A27861 /* PDFOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B36CAA1BEA30BF00A27861 /* PDFOverview.swift */; };
 		A9B36CB01BEA4A3A00A27861 /* PDFBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B36CAF1BEA4A3A00A27861 /* PDFBase.swift */; };
+		A9B3D57E1DA7DAA600FDD738 /* Paper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B3D57D1DA7DAA600FDD738 /* Paper.swift */; };
+		A9B3D5811DA7DAEE00FDD738 /* QuestionConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B3D5801DA7DAEE00FDD738 /* QuestionConstants.swift */; };
+		A9B3D5821DA7DAEE00FDD738 /* QuestionConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B3D5801DA7DAEE00FDD738 /* QuestionConstants.swift */; };
+		A9B3D5831DA7DBB100FDD738 /* Paper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B3D57D1DA7DAA600FDD738 /* Paper.swift */; };
 		A9C3F9DA1D9174AB00191363 /* GeneralSettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C3F9D91D9174AB00191363 /* GeneralSettingsController.swift */; };
 		A9C3F9DC1D9174D100191363 /* DiMePreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C3F9DB1D9174D100191363 /* DiMePreferencesViewController.swift */; };
 		A9C3F9DE1D9176D900191363 /* AnnotationPreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C3F9DD1D9176D900191363 /* AnnotationPreferencesViewController.swift */; };
@@ -474,6 +478,8 @@
 		A9B36CA81BEA2E0800A27861 /* HistoryDetailController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = HistoryDetailController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9B36CAA1BEA30BF00A27861 /* PDFOverview.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PDFOverview.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9B36CAF1BEA4A3A00A27861 /* PDFBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PDFBase.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		A9B3D57D1DA7DAA600FDD738 /* Paper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Paper.swift; sourceTree = "<group>"; };
+		A9B3D5801DA7DAEE00FDD738 /* QuestionConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuestionConstants.swift; sourceTree = "<group>"; };
 		A9C3F9D91D9174AB00191363 /* GeneralSettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneralSettingsController.swift; sourceTree = "<group>"; };
 		A9C3F9DB1D9174D100191363 /* DiMePreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiMePreferencesViewController.swift; sourceTree = "<group>"; };
 		A9C3F9DD1D9176D900191363 /* AnnotationPreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnotationPreferencesViewController.swift; sourceTree = "<group>"; };
@@ -848,6 +854,8 @@
 			isa = PBXGroup;
 			children = (
 				A9E8F7E21DA27EBD004FBA51 /* Questions.storyboard */,
+				A9B3D57D1DA7DAA600FDD738 /* Paper.swift */,
+				A9B3D5801DA7DAEE00FDD738 /* QuestionConstants.swift */,
 				A9E8F7EA1DA27EEF004FBA51 /* QuestionSingleton.swift */,
 				A9E8F7E11DA27EBD004FBA51 /* QuestionLoader.swift */,
 				A9E8F7E31DA27EBD004FBA51 /* QuestionState.swift */,
@@ -1394,6 +1402,7 @@
 				A9E8F7E81DA27EBD004FBA51 /* QuestionState.swift in Sources */,
 				A9E8F79C1DA27E8C004FBA51 /* Paragraphs.swift in Sources */,
 				A9E8F79D1DA27E8C004FBA51 /* AnimatedStack.swift in Sources */,
+				A9B3D57E1DA7DAA600FDD738 /* Paper.swift in Sources */,
 				A9E8F79E1DA27E8C004FBA51 /* ExperimentPreferencesController.swift in Sources */,
 				A9E8F79F1DA27E8C004FBA51 /* FocusAreas.swift in Sources */,
 				A9E8F7A01DA27E8C004FBA51 /* ThumbSideController.swift in Sources */,
@@ -1405,6 +1414,7 @@
 				A9E8F7A61DA27E8C004FBA51 /* MidasManager.swift in Sources */,
 				A9E8F7A71DA27E8C004FBA51 /* Dictionariable.swift in Sources */,
 				A9E8F7A81DA27E8C004FBA51 /* PDFSelection+Extensions.swift in Sources */,
+				A9B3D5811DA7DAEE00FDD738 /* QuestionConstants.swift in Sources */,
 				A9E8F7EB1DA27EEF004FBA51 /* QuestionSingleton.swift in Sources */,
 				A9E8F7A91DA27E8C004FBA51 /* AnnotationPreferencesViewController.swift in Sources */,
 				A9E8F7AA1DA27E8C004FBA51 /* CrossRefSession.swift in Sources */,
@@ -1451,6 +1461,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				A9E8F7F41DA297A2004FBA51 /* PeyeDF_Questions_UITests.swift in Sources */,
+				A9B3D5821DA7DAEE00FDD738 /* QuestionConstants.swift in Sources */,
+				A9B3D5831DA7DBB100FDD738 /* Paper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

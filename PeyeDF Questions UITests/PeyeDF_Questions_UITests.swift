@@ -10,6 +10,12 @@ import XCTest
 
 class PeyeDF_Questions_UITests: XCTestCase {
     
+    // length of break (seconds)
+    let breakTime: Double = QuestionConstants.breakTime + 10 // add constant for animations, etc
+    
+    // length of familiarisation time (seconds)
+    let familiariseTime: UInt32 = UInt32(QuestionConstants.familiarizeTime + 10) // add constant for animations, etc
+    
     override func setUp() {
         super.setUp()
         
@@ -30,12 +36,6 @@ class PeyeDF_Questions_UITests: XCTestCase {
     
     /// Convenience function to start and answer all questions
     func testQuestionRun() {
-        
-        // length of break (seconds)
-        let breakTime: Double = 5 * 60 + 5 // add small constant for animations, etc
-        
-        // length of familiarisation time (seconds)
-        let familiariseTime: UInt32 = 15 * 60 // add small constant for animations, etc
         
         let app = XCUIApplication()
         
@@ -62,57 +62,53 @@ class PeyeDF_Questions_UITests: XCTestCase {
 
         let peyedfPreferencesWindow = app.windows["PeyeDF Preferences"]
         peyedfPreferencesWindow.toolbars.buttons["Experiment"].click()
-
+        
+        let startButton = peyedfPreferencesWindow.descendants(matching: .button)["Start"]
+        
+        XCTAssert(startButton.isEnabled == false, "Start button should be disabled before entering participant number")
+        
         let partTestField = peyedfPreferencesWindow.descendants(matching: .textField)["Participant number"]
         partTestField.click()
         partTestField.typeText("2\r")
         
-        peyedfPreferencesWindow.descendants(matching: .button)["Start"].click()
+        startButton.click()
         
         let continueButton = app.buttons["Continue"]
         
-        let rndLabs = ["First", "Second", "Third"]
-        var rndI: UInt32 = 999
-        
         // answer practice
         
-        continueButton.click() // proceed to paper
-        
-        sleep(familiariseTime) // familiarise wait
+        continueButton.click() // proceed to familiarise
+        waitForExist(element: continueButton, timeout: TimeInterval(familiariseTime))
 
         for _ in 0..<nOfTtopics_P {
             continueButton.click() // see answers
             for _ in 0..<nOfQuestions_P {
-                rndI = arc4random_uniform(UInt32(rndLabs.count))
-                let lab = rndLabs[Int(rndI)]
-                app.radioButtons[lab + " answer"].click()
-                app.buttons["Confirm"].click()
+                giveRandomAnswer()
             }
         }
         
-        continueButton.click() // next paper
+        continueButton.click() // proceed to next paper
         
         // answer "real" test
         
         for pNo in 0..<nOfPapers {
+            
+            // handle break
             if pNo == nOfPapers / 2 {
-                let predicate = NSPredicate(format: "exists == true")
-                expectation(for: predicate, evaluatedWith: continueButton)
-                waitForExpectations(timeout: breakTime + 2)
-                continueButton.click() 
-            }
-            continueButton.click()  // see answers
-            sleep(familiariseTime) // familiarise wait
-            for _ in 0..<nOfTtopics {
+                waitForExist(element: continueButton, timeout: breakTime)
                 continueButton.click()
+            }
+            
+            continueButton.click()  // proceed to familiarise
+            waitForExist(element: continueButton, timeout: TimeInterval(familiariseTime))
+            
+            for _ in 0..<nOfTtopics {
+                continueButton.click()  // see answers
                 for _ in 0..<nOfQuestions {
-                    rndI = arc4random_uniform(UInt32(rndLabs.count))
-                    let lab = rndLabs[Int(rndI)]
-                    app.radioButtons[lab + " answer"].click()
-                    app.buttons["Confirm"].click()
+                    giveRandomAnswer()
                 }
             }
-            continueButton.click()  // questions done
+            continueButton.click()  // proceed to next paper
         }
         
         // end
@@ -120,4 +116,26 @@ class PeyeDF_Questions_UITests: XCTestCase {
         
     }
     
+    /// Answers one out of three possibilites, at random.
+    func giveRandomAnswer() {
+        let app = XCUIApplication()
+        
+        XCTAssert(app.buttons["Confirm"].isEnabled == false, "Confirm button should be disabled before receiving answer")
+        
+        let rndLabs = ["First", "Second", "Third"]
+        var rndI: UInt32 = 999
+        
+        rndI = arc4random_uniform(UInt32(rndLabs.count))
+        let lab = rndLabs[Int(rndI)]
+        app.radioButtons[lab + " answer"].click()
+        app.buttons["Confirm"].click()
+    }
+    
+    /// Wait until an element is shown
+    func waitForExist(element: XCUIElement, timeout: TimeInterval) {
+        sleep(2)  // wait a small amount before testing (e.g. for animations)
+        let predicate = NSPredicate(format: "exists == true")
+        expectation(for: predicate, evaluatedWith: element)
+        waitForExpectations(timeout: timeout)
+    }
 }

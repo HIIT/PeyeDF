@@ -1,44 +1,56 @@
 //
-//  QuestionsSingleton.swift
-//  PeyeDF
+// Copyright (c) 2015 Aalto University
 //
-//  Created by Marco Filetti on 03/10/2016.
-//  Copyright © 2016 HIIT. All rights reserved.
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation
+// files (the "Software"), to deal in the Software without
+// restriction, including without limitation the rights to use,
+// copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following
+// conditions:
 //
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
 
 import Foundation
 import Cocoa
+
+/// Convenience accessor to retrieve a Paper's url
+extension Paper {
+    /// Returns URL of the file on disk associated to this paper
+    var url: URL { get {
+        return QuestionSingleton.experimentPdfsLoc.appendingPathComponent(self.filename)
+    } }
+}
+
 
 /// Stores information for an experimental session.
 /// The PeyeDF Questions App is expected to terminate at the end of a successful session.
 class QuestionSingleton {
     
-    // MARK: - Constants
-    
-    static let baseUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("Peyexperiment")
-    
-    /// Time spent reading a paper without being shown any questions
-    static let familiarizeTime: Double = 15 * 60
-    
-    /// Seconds of break
-    static let breakTime: Double = 5 * 60
-    
-    /// Total number of papers
-    static let nOfPapers = Paper.defaultPapers.count - 1
-    
     // MARK: - Folder locations
     
     /// Location of the JSON files that contain information about papers (questions)
-    static var questionsJsonLoc = baseUrl.appendingPathComponent("Questions")
+    static var questionsJsonLoc = QuestionConstants.baseUrl.appendingPathComponent("Questions")
     
     /// Location of the JSON files that contain information on the sequence of questions we are asking
-    static var partJsonLoc = baseUrl.appendingPathComponent("Participants")
+    static var partJsonLoc = QuestionConstants.baseUrl.appendingPathComponent("Participants")
     
     /// Location of the PDF documents
-    static var experimentPdfsLoc = baseUrl.appendingPathComponent("PDFs")
+    static var experimentPdfsLoc = QuestionConstants.baseUrl.appendingPathComponent("PDFs")
     
     // Output JSONs will be outputted here
-    static var outputJsonLoc = baseUrl.appendingPathComponent("Outputs")
+    static var outputJsonLoc = QuestionConstants.baseUrl.appendingPathComponent("Outputs")
     
     /// This enum represents a folder location (which contain experiment files).
     /// The Int representation is used to refer to a tag in Experiment preferences.
