@@ -46,6 +46,15 @@ class GivePaper: QuestionState, Advanceable {
     private var papers: [Paper]
     private(set) var currentPaper: Paper?
     
+    /// Number of papers done
+    var papersDone = 0
+    
+    /// Whether the break was already completed
+    var completedBreak = false
+    
+    /// Waiting gets done here
+    let waitQueue = DispatchQueue(label: "peyedf.Questions.Waitqueue", qos: .background)
+    
     /// Creates the givepaper state with an initial set of papers to give <del>(the papers will be shuffled)</del>
     init(_ associatedView: QuestionViewController, papers: [Paper]) {
         self.papers = papers
@@ -53,9 +62,27 @@ class GivePaper: QuestionState, Advanceable {
     }
     
     override func didEnter(from previousState: GKState?) {
-        currentPaper = papers.count > 0 ? papers.remove(at: 0) : nil
-        view.answerSaver.writeOut()
-        view.prepareMode()
+        if previousState is GiveTopic {
+            papersDone += 1
+        }
+        if !(previousState is GivePaper) {
+            currentPaper = papers.count > 0 ? papers.remove(at: 0) : nil
+            view.answerSaver.writeOut()
+            // if this is time for break, show it and wait
+            if papersDone == QuestionSingleton.nOfPapers / 2 + 1 {
+                view.prepareMode(showContinue: false)
+                view.showGenericMessage("You're halfway done. Please take a break now.",
+                                        title: "Break time!")
+                view.continueButton.isHidden = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+                    // exit and call itself after break is done
+                    self.view.continueButton.isHidden = false
+                }
+                return
+            } else {
+                view.prepareMode(showContinue: true)
+            }
+        }
         if let cp = currentPaper {
             
             // open document
@@ -64,12 +91,17 @@ class GivePaper: QuestionState, Advanceable {
             view.answerSaver.setCurrent(paperState: self)
             view.showGenericMessage("A new paper has been assigned",
                                     title: "New paper: \(cp.title)\n(\(cp.filename))")
+            
         } else {
             view.showGenericMessage("All questions done", title: "No more questions, thanks for participating!")
         }
     }
     
     func advance() {
+        // if we are on break, go into itself and return
+        if stateMachine!.enter(GivePaper.self) {
+            return
+        }
         // if we are out of papers, go to questions done
         if !stateMachine!.enter(FamiliarisePaper.self) {
             stateMachine!.enter(QuestionsDone.self)
@@ -77,9 +109,15 @@ class GivePaper: QuestionState, Advanceable {
     }
     
     override func isValidNextState(_ stateClass: AnyClass) -> Bool {
-        if currentPaper != nil {
+        if !completedBreak && papersDone == QuestionSingleton.nOfPapers / 2 + 1 {
+            // We allow to re-enter in case this was a break
+            completedBreak = true
+            return stateClass is GivePaper.Type
+        } else if currentPaper != nil {
+            // if there is a next paper, familiarise with it
             return stateClass is FamiliarisePaper.Type
         } else {
+            // there are no more papers, we are done
             return stateClass is QuestionsDone.Type
         }
     }
@@ -103,7 +141,7 @@ class FamiliarisePaper: QuestionState {
         view.continueButton.isHidden = true
         view.moveQuestionBelow()
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + PeyeConstants.familiarizeTime) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + QuestionSingleton.familiarizeTime) {
             NSBeep()
             self.stateMachine!.enter(GiveTopic.self)
         }

@@ -31,6 +31,12 @@ class PeyeDF_Questions_UITests: XCTestCase {
     /// Convenience function to start and answer all questions
     func testQuestionRun() {
         
+        // length of break (seconds)
+        let breakTime: Double = 5 * 60 + 5 // add small constant for animations, etc
+        
+        // length of familiarisation time (seconds)
+        let familiariseTime: UInt32 = 15 * 60 // add small constant for animations, etc
+        
         let app = XCUIApplication()
         
         // number of papers
@@ -63,8 +69,6 @@ class PeyeDF_Questions_UITests: XCTestCase {
         
         peyedfPreferencesWindow.descendants(matching: .button)["Start"].click()
         
-        sleep(2)
-        
         let continueButton = app.buttons["Continue"]
         
         let rndLabs = ["First", "Second", "Third"]
@@ -74,6 +78,8 @@ class PeyeDF_Questions_UITests: XCTestCase {
         
         continueButton.click() // proceed to paper
         
+        sleep(familiariseTime) // familiarise wait
+
         for _ in 0..<nOfTtopics_P {
             continueButton.click() // see answers
             for _ in 0..<nOfQuestions_P {
@@ -88,8 +94,15 @@ class PeyeDF_Questions_UITests: XCTestCase {
         
         // answer "real" test
         
-        for _ in 0..<nOfPapers {
+        for pNo in 0..<nOfPapers {
+            if pNo == nOfPapers / 2 {
+                let predicate = NSPredicate(format: "exists == true")
+                expectation(for: predicate, evaluatedWith: continueButton)
+                waitForExpectations(timeout: breakTime + 2)
+                continueButton.click() 
+            }
             continueButton.click()  // see answers
+            sleep(familiariseTime) // familiarise wait
             for _ in 0..<nOfTtopics {
                 continueButton.click()
                 for _ in 0..<nOfQuestions {
@@ -104,9 +117,6 @@ class PeyeDF_Questions_UITests: XCTestCase {
         
         // end
         continueButton.click()
-        
-        // wait 10 seconds
-        sleep(10)
         
     }
     

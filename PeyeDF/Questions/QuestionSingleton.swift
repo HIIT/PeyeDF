@@ -17,6 +17,15 @@ class QuestionSingleton {
     
     static let baseUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("Peyexperiment")
     
+    /// Time spent reading a paper without being shown any questions
+    static let familiarizeTime: Double = 15 * 60
+    
+    /// Seconds of break
+    static let breakTime: Double = 5 * 60
+    
+    /// Total number of papers
+    static let nOfPapers = Paper.defaultPapers.count - 1
+    
     // MARK: - Folder locations
     
     /// Location of the JSON files that contain information about papers (questions)

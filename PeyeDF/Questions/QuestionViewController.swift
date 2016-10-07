@@ -121,7 +121,7 @@ class QuestionViewController: NSViewController {
     
     /// Prepare user to read a new paper (Entered GivePaper. Also initial state.).
     /// Covers the whole screen.
-    func prepareMode() {
+    func prepareMode(showContinue: Bool) {
         guard let mainScreen = NSScreen.main() else {
             return
         }
@@ -146,7 +146,7 @@ class QuestionViewController: NSViewController {
             self.topicLabelFromQuestion.animator().constant = topicQuestDist
             
             }, completionHandler: {
-                self.continueButton.isHidden = false
+                self.continueButton.isHidden = !showContinue
         })
     }
     

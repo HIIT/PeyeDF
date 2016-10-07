@@ -84,12 +84,7 @@ class PeyeConstants {
     
     /// Experiment show json export-import
     static let prefShowJsonMenus = "preferences.refinder.showJsonMenus"
-    
-    // MARK: - Experiment-related
-    
-    /// Time spent reading a paper without being shown any questions
-    static let familiarizeTime: Double = 2
-    
+        
     // MARK: - History-specific constants
     
     /// Amount of seconds which is required to assume that the user did read a specific document
