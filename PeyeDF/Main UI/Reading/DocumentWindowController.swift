@@ -511,6 +511,11 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     /// The user started, or resumed reading (e.g. this window became key, a scroll event
     /// finished, etc.).
     func startedReading() {
+        // do not do anything if we are closing
+        guard closeToken == 0 else {
+            return
+        }
+        
         // Tell the history manager to "start recording"
         HistoryManager.sharedManager.entry(self)
         lastStartedReading = Date()
@@ -887,6 +892,11 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     /// This method is called when the managed window wants to become main window
     @objc fileprivate func windowWantsMain(_ notification: Notification) {
+        // do not do anything if the window is closing
+        guard closeToken == 0 else {
+            return
+        }
+        
         NotificationCenter.default.post(name: PeyeConstants.documentChangeNotification, object: self.document)
         
         // Set up regular timer

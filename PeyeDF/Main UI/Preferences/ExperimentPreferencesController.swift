@@ -193,6 +193,8 @@ class ExperimentPreferencesController: NSViewController {
     // MARK: - Start action
     
     /// Start the questions, loading needed files and presenting user with questions.
+    /// - Attention: It will attempt to close all windows but if the current open document
+    ///   is the same as the first one of the experiment it will cause a freeze.
     @IBAction func startQuestions(_ sender: AnyObject) {
         #if QUESTIONS
         

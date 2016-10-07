@@ -42,6 +42,9 @@ protocol Advanceable {
 /// For a diagram, see QuestionState.key (linked in xcode)
 class QuestionState: GKState {
     
+    /// Waiting gets done here
+    static let waitQueue = DispatchQueue(label: "peyedf.Questions.Waitqueue")
+    
     /// Number of target topics for this set of questions (set when initially loading json)
     static var nOfTargetTopics = -1
     
@@ -68,9 +71,6 @@ class GivePaper: QuestionState, Advanceable {
     /// Whether the break was already completed
     var completedBreak = false
     
-    /// Waiting gets done here
-    let waitQueue = DispatchQueue(label: "peyedf.Questions.Waitqueue", qos: .background)
-    
     /// Creates the givepaper state with an initial set of papers to give <del>(the papers will be shuffled)</del>
     init(_ associatedView: QuestionViewController, papers: [Paper]) {
         self.papers = papers
@@ -90,7 +90,7 @@ class GivePaper: QuestionState, Advanceable {
                 view.showGenericMessage("You're halfway done. Please take a break now.",
                                         title: "Break time!")
                 view.continueButton.isHidden = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+                QuestionState.waitQueue.asyncAfter(deadline: .now() + QuestionConstants.breakTime) {
                     // exit and call itself after break is done
                     self.view.continueButton.isHidden = false
                 }
@@ -157,7 +157,8 @@ class FamiliarisePaper: QuestionState {
         view.continueButton.isHidden = true
         view.moveQuestionBelow()
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + QuestionConstants.familiarizeTime) {
+        let startTime = Date()
+        QuestionState.waitQueue.asyncAfter(deadline: .now() + QuestionConstants.familiarizeTime) {
             NSBeep()
             self.stateMachine!.enter(GiveTopic.self)
         }

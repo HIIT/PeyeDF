@@ -11,10 +11,10 @@ import XCTest
 class PeyeDF_Questions_UITests: XCTestCase {
     
     // length of break (seconds)
-    let breakTime: Double = QuestionConstants.breakTime + 10 // add constant for animations, etc
+    let breakTime: Double = QuestionConstants.breakTime + 60 // add constant for animations, etc
     
     // length of familiarisation time (seconds)
-    let familiariseTime: UInt32 = UInt32(QuestionConstants.familiarizeTime + 10) // add constant for animations, etc
+    let familiariseTime: UInt32 = UInt32(QuestionConstants.familiarizeTime + 60) // add constant for animations, etc
     
     override func setUp() {
         super.setUp()
@@ -133,7 +133,6 @@ class PeyeDF_Questions_UITests: XCTestCase {
     
     /// Wait until an element is shown
     func waitForExist(element: XCUIElement, timeout: TimeInterval) {
-        sleep(2)  // wait a small amount before testing (e.g. for animations)
         let predicate = NSPredicate(format: "exists == true")
         expectation(for: predicate, evaluatedWith: element)
         waitForExpectations(timeout: timeout)
