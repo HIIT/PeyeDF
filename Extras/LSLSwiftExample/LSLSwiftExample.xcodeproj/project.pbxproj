@@ -1,0 +1,331 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A926FADB1DA7900E00B857EB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A926FADA1DA7900E00B857EB /* AppDelegate.swift */; };
+		A926FADD1DA7900E00B857EB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A926FADC1DA7900E00B857EB /* ViewController.swift */; };
+		A926FADF1DA7900E00B857EB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A926FADE1DA7900E00B857EB /* Assets.xcassets */; };
+		A926FAE21DA7900E00B857EB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A926FAE01DA7900E00B857EB /* Main.storyboard */; };
+		A926FAEC1DA790BD00B857EB /* liblsl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A926FAEB1DA790BD00B857EB /* liblsl.dylib */; };
+		A926FAEF1DA79A7800B857EB /* lsl_api.cfg in CopyFiles */ = {isa = PBXBuildFile; fileRef = A926FAED1DA79A5F00B857EB /* lsl_api.cfg */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A926FAEE1DA79A6E00B857EB /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 16;
+			files = (
+				A926FAEF1DA79A7800B857EB /* lsl_api.cfg in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		A926FAD71DA7900E00B857EB /* LSLSwiftExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LSLSwiftExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A926FADA1DA7900E00B857EB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		A926FADC1DA7900E00B857EB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		A926FADE1DA7900E00B857EB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A926FAE11DA7900E00B857EB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		A926FAE31DA7900E00B857EB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A926FAE91DA7905000B857EB /* LSLSwiftExample-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LSLSwiftExample-Bridging-Header.h"; sourceTree = "<group>"; };
+		A926FAEA1DA7909E00B857EB /* lsl_c.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = lsl_c.h; sourceTree = "<group>"; };
+		A926FAEB1DA790BD00B857EB /* liblsl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = liblsl.dylib; sourceTree = "<group>"; };
+		A926FAED1DA79A5F00B857EB /* lsl_api.cfg */ = {isa = PBXFileReference; lastKnownFileType = text; path = lsl_api.cfg; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A926FAD41DA7900E00B857EB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A926FAEC1DA790BD00B857EB /* liblsl.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A926FACE1DA7900E00B857EB = {
+			isa = PBXGroup;
+			children = (
+				A926FAD91DA7900E00B857EB /* LSLSwiftExample */,
+				A926FAD81DA7900E00B857EB /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A926FAD81DA7900E00B857EB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A926FAD71DA7900E00B857EB /* LSLSwiftExample.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A926FAD91DA7900E00B857EB /* LSLSwiftExample */ = {
+			isa = PBXGroup;
+			children = (
+				A926FAEB1DA790BD00B857EB /* liblsl.dylib */,
+				A926FAED1DA79A5F00B857EB /* lsl_api.cfg */,
+				A926FAEA1DA7909E00B857EB /* lsl_c.h */,
+				A926FADA1DA7900E00B857EB /* AppDelegate.swift */,
+				A926FADC1DA7900E00B857EB /* ViewController.swift */,
+				A926FADE1DA7900E00B857EB /* Assets.xcassets */,
+				A926FAE01DA7900E00B857EB /* Main.storyboard */,
+				A926FAE31DA7900E00B857EB /* Info.plist */,
+				A926FAE91DA7905000B857EB /* LSLSwiftExample-Bridging-Header.h */,
+			);
+			path = LSLSwiftExample;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A926FAD61DA7900E00B857EB /* LSLSwiftExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A926FAE61DA7900E00B857EB /* Build configuration list for PBXNativeTarget "LSLSwiftExample" */;
+			buildPhases = (
+				A926FAEE1DA79A6E00B857EB /* CopyFiles */,
+				A926FAD31DA7900E00B857EB /* Sources */,
+				A926FAD41DA7900E00B857EB /* Frameworks */,
+				A926FAD51DA7900E00B857EB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LSLSwiftExample;
+			productName = LSLSwiftExample;
+			productReference = A926FAD71DA7900E00B857EB /* LSLSwiftExample.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A926FACF1DA7900E00B857EB /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0800;
+				LastUpgradeCheck = 0800;
+				ORGANIZATIONNAME = "Aalto University";
+				TargetAttributes = {
+					A926FAD61DA7900E00B857EB = {
+						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = JYV3R5X7JQ;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = A926FAD21DA7900E00B857EB /* Build configuration list for PBXProject "LSLSwiftExample" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A926FACE1DA7900E00B857EB;
+			productRefGroup = A926FAD81DA7900E00B857EB /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A926FAD61DA7900E00B857EB /* LSLSwiftExample */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A926FAD51DA7900E00B857EB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A926FADF1DA7900E00B857EB /* Assets.xcassets in Resources */,
+				A926FAE21DA7900E00B857EB /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A926FAD31DA7900E00B857EB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A926FADD1DA7900E00B857EB /* ViewController.swift in Sources */,
+				A926FADB1DA7900E00B857EB /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		A926FAE01DA7900E00B857EB /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A926FAE11DA7900E00B857EB /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		A926FAE41DA7900E00B857EB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OBJC_BRIDGING_HEADER = "LSLSwiftExample/LSLSwiftExample-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		A926FAE51DA7900E00B857EB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "LSLSwiftExample/LSLSwiftExample-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+			};
+			name = Release;
+		};
+		A926FAE71DA7900E00B857EB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = JYV3R5X7JQ;
+				INFOPLIST_FILE = LSLSwiftExample/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/LSLSwiftExample",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = org.aalto.LSLSwiftExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		A926FAE81DA7900E00B857EB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = JYV3R5X7JQ;
+				INFOPLIST_FILE = LSLSwiftExample/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/LSLSwiftExample",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = org.aalto.LSLSwiftExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A926FAD21DA7900E00B857EB /* Build configuration list for PBXProject "LSLSwiftExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A926FAE41DA7900E00B857EB /* Debug */,
+				A926FAE51DA7900E00B857EB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A926FAE61DA7900E00B857EB /* Build configuration list for PBXNativeTarget "LSLSwiftExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A926FAE71DA7900E00B857EB /* Debug */,
+				A926FAE81DA7900E00B857EB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A926FACF1DA7900E00B857EB /* Project object */;
+}
