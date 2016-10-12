@@ -247,7 +247,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 if let error = error {
                     infoText = error.localizedDescription
                 }
-                AppSingleton.alertUser("Error while communcating with DiMe. Dime has now been disconnected", infoText: "Message from dime:\n\(infoText)")
+                var dimeText = ""
+                if let dimeError = error as? RESTError {
+                    switch dimeError {
+                    case .dimeError(let msg):
+                        dimeText = "\nMessage from DiMe:\n\(msg)"
+                    default:
+                        dimeText = ""
+                    }
+                }
+                AppSingleton.alertUser("Error while communicating with DiMe. Dime has now been disconnected", infoText: "Error description:\n\(infoText)." + dimeText)
             }
         }
     }

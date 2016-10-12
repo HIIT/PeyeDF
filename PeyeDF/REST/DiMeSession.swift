@@ -30,7 +30,7 @@ enum RESTError: Error {
     /// We were asked to block the main thread, which is invalid.
     case waitOnMain
     /// Error otherwise undefined (check dime logs)
-    case dimeError
+    case dimeError(String)
 }
 
 /// Contains configurations for the DiMe API using the native macOS URL Loading System
@@ -185,7 +185,7 @@ class DiMeSession {
             } else {
                 if let httpResponse = response as? HTTPURLResponse {
                     if httpResponse.statusCode != 204 {
-                        returnedError = RESTError.dimeError
+                        returnedError = RESTError.dimeError("Code \(httpResponse.statusCode)")
                     }
                 } else {
                     AppSingleton.log.error("Failed to convert url response to http url response")
@@ -213,13 +213,18 @@ class DiMeSession {
                 dimeAvailable = true
                 callback?(true, nil)
             } else {
+                var returnedError: Error? = nil
                 // connection failed
                 if let error = error {
                     AppSingleton.log.error("Error while connecting to (pinging) DiMe. Error message:\n\(error)")
+                    returnedError = error
+                } else if let jsonError = json?["error"].string {
+                   AppSingleton.log.error("DiMe Connection error: \(jsonError)")
+                    returnedError = RESTError.dimeError(jsonError)
                 } else {
                     AppSingleton.log.error("Error while connecting to (pinging) DiMe. No error returned.")
                 }
-                callback?(false, error)
+                callback?(false, returnedError)
                 dimeAvailable = false
             }
         }

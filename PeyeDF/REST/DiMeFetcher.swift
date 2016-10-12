@@ -389,11 +389,11 @@ class DiMeFetcher {
         DiMeSession.fetch(urlString: reqString) {
             json, _ in
             if let json = json {
-                // assume first returned item is the one we are looking for
-                let firstResponse = json[0]
-                if let error = firstResponse["error"].string {
+                if let error = json["error"].string {
                     AppSingleton.log.error("Dime fetched json contains error:\n\(error)")
                 }
+                // assume first returned item is the one we are looking for
+                let firstResponse = json[0]
                 if let appId = firstResponse["appId"].string {
                     if appId == appId {
                         // success
@@ -426,14 +426,14 @@ class DiMeFetcher {
                 }
                 return nil
             }
-            // assume last returned item is the one we are looking for
-            let lastResponse = json[json.count - 1]
-            if let error = lastResponse["error"].string {
+            if let error = json["error"].string {
                 if reportErrors {
                     AppSingleton.log.error("Dime fetched json contains error:\n\(error)")
                 }
                 return nil
             }
+            // assume last returned item is the one we are looking for
+            let lastResponse = json[json.count - 1]
             let foundScidoc = ScientificDocument(fromDime: lastResponse)
             if foundScidoc.appId == "" || foundScidoc.contentHash == nil {
                 if reportErrors {
@@ -517,11 +517,11 @@ class DiMeFetcher {
         DiMeSession.fetch(urlString: reqString) {
             json, _ in
             if let json = json {
-                // assume first returned item is the one we are looking for
-                let firstResponse = json[0]
-                if let error = firstResponse["error"].string {
+                if let error = json["error"].string {
                     AppSingleton.log.error("Dime fetched json contains error:\n\(error)")
                 }
+                // assume first returned item is the one we are looking for
+                let firstResponse = json[0]
                 if let appId = firstResponse["appId"].string {
                     if appId == appId {
                         // success
