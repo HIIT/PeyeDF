@@ -122,9 +122,11 @@ class PeyeConstants {
     /// List of all channel names in event stream, in order
     static let midasEventChannelNames = ["eye", "startTime", "endTime", "duration", "positionX", "positionY", "marcotime"]
     
-    /// Eye fixation data which has a unix time within this range of its own exclude
-    /// unixtimes won't be sent to dime (used to reject data gathered close to paragraph
-    /// marking events
+    /// Eye fixation data which has a unixtime within this range of an `excluded
+    /// unixtime` won't be sent to DiMe. Currently, an `excluded" unixtime` refers to the user
+    /// marking text. In other words, this constant defines the minimum time difference between
+    /// a fixation and a mark text event. If that difference is less than this constant, the fixation
+    /// is discarded.
     static let excludeEyeUnixTimeMs = 1000
     
     // MARK: - Colours

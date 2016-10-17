@@ -36,8 +36,10 @@ struct PageEyeDataChunk: Dictionariable {
     let scaleFactor: Double
     let unixt: Int
     
-    /// unixtimes are not sent to dime, but are used to filter fixations
-    /// so that those recorded around a specific time are not sent to dime
+    /// "Unix" time (ms since 1/1/1970) for each fixation.
+    /// These are not stored, but are used to filter fixations
+    /// so that those collected around a specific time (e.g. when the user marks
+    /// a paragraph) are not stored, as they may be confounded by the user interacting with the app.
     var unixtimes: [Int]
     
 
@@ -135,8 +137,10 @@ struct PageEyeDataChunk: Dictionariable {
         }
     }
     
-    /// the passed unixtimes will cause eye data with a unixtime within a range of
-    /// excludeEyeUnixTimeMs of the given paramter to be removed from the current eye data
+    /// Removes all fixations that have a unixtime which is "nearby" any element
+    /// within the excludeUnixtimes parameter. "Nearby" is defied by `PeyeConstants.excludeEyeUnixTimeMs`.
+    /// Used to remove all fixations which may be confounded by the user marking text
+    /// (in other words, when the user marks text, we discard eye data).
     mutating func filterData(_ excludeUnixtimes: [Int]) {
         for i in 0 ..< excludeUnixtimes.count {
             var j = 0
