@@ -73,7 +73,7 @@ class AppSingleton {
     
     /// Convenience function to get monitor DPI
     static func getMonitorDPI() -> Int {
-        return UserDefaults.standard.value(forKey: PeyeConstants.prefMonitorDPI) as! Int
+        return UserDefaults.standard.object(forKey: PeyeConstants.prefMonitorDPI) as! Int
     }
     
     /// Gets DPI programmatically
@@ -94,20 +94,20 @@ class AppSingleton {
     
     /// Convenience function to get preferred eye
     static func getDominantEye() -> Eye {
-        let eyeRaw = UserDefaults.standard.value(forKey: PeyeConstants.prefDominantEye) as! Int
+        let eyeRaw = UserDefaults.standard.object(forKey: PeyeConstants.prefDominantEye) as! Int
         return Eye(rawValue: eyeRaw)!
     }
     
     /// Convenience function to set recently used tags
     static func updateRecentTags(_ newTag: String) {
         /// Recent tags is a list of strings in which the first string is the most recent
-        var recentTags: [String] = UserDefaults.standard.value(forKey: TagConstants.defaultsSavedTags) as! [String]
+        var recentTags: [String] = UserDefaults.standard.object(forKey: TagConstants.defaultsSavedTags) as! [String]
         if !recentTags.contains(newTag) {
             recentTags.insert(newTag, at: 0)
             if recentTags.count > TagConstants.nOfSavedTags {
                 recentTags.removeSubrange(TagConstants.nOfSavedTags..<recentTags.count)
             }
-            UserDefaults.standard.setValue(recentTags, forKey: TagConstants.defaultsSavedTags)
+            UserDefaults.standard.set(recentTags, forKey: TagConstants.defaultsSavedTags)
         }
     }
     

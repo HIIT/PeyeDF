@@ -32,10 +32,10 @@ class ExperimentPreferencesController: NSViewController {
     /// Action responding to left or right dominant eye selection
     @IBAction func dominantButtonPress(_ sender: NSButton) {
         if sender.identifier! == "leftDomEyeButton" {
-            UserDefaults.standard.setValue(Eye.left.rawValue, forKey: PeyeConstants.prefDominantEye)
+            UserDefaults.standard.set(Eye.left.rawValue, forKey: PeyeConstants.prefDominantEye)
             MidasManager.sharedInstance.setDominantEye(.left)
         } else if sender.identifier! == "rightDomEyeButton" {
-            UserDefaults.standard.setValue(Eye.right.rawValue, forKey: PeyeConstants.prefDominantEye)
+            UserDefaults.standard.set(Eye.right.rawValue, forKey: PeyeConstants.prefDominantEye)
             MidasManager.sharedInstance.setDominantEye(.right)
         } else {
             fatalError("Some unrecognized button was pressed!?")
@@ -46,7 +46,7 @@ class ExperimentPreferencesController: NSViewController {
         super.viewDidLoad()
         
         // set dominant eye button pressed accordingly to current preference
-        let rawEyePreference = UserDefaults.standard.value(forKey: PeyeConstants.prefDominantEye) as! Int
+        let rawEyePreference = UserDefaults.standard.object(forKey: PeyeConstants.prefDominantEye) as! Int
         
         let eyePreference = Eye(rawValue: rawEyePreference)
         

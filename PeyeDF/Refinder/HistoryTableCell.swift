@@ -47,7 +47,7 @@ class HistoryTableCell: NSTableCellView {
     
     func setValues(fromReadingEvent readingEvent: SummaryReadingEvent, sciDoc: ScientificDocument) {
         DispatchQueue.main.async {
-            if UserDefaults.standard.value(forKey: PeyeConstants.prefUseEyeTracker) as! Bool {
+            if UserDefaults.standard.object(forKey: PeyeConstants.prefUseEyeTracker) as! Bool {
                 self.readBar.setProgress(readingEvent.proportionRead, forClass: .low)
             } else {
                 self.readBar.setProgress(readingEvent.proportionSeen, forClass: .low)

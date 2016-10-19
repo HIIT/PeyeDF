@@ -553,7 +553,7 @@ class PDFBase: PDFView {
     /// - parameter forClass: The class of annotations to output
     /// - parameter colour: The color to use, generally defined in PeyeConstants
     func outputAnnotations(_ forClass: ReadingClass, colour: NSColor) {
-        let lineThickness: CGFloat = UserDefaults.standard.value(forKey: PeyeConstants.prefAnnotationLineThickness) as! CGFloat
+        let lineThickness: CGFloat = UserDefaults.standard.object(forKey: PeyeConstants.prefAnnotationLineThickness) as! CGFloat
         let myBord = PDFBorder()
         myBord.lineWidth = lineThickness
         

@@ -28,7 +28,7 @@ import Cocoa
 class GeneralSettingsController: NSViewController {
     
     var blockStrings: [String] = {
-        return UserDefaults.standard.value(forKey: PeyeConstants.prefStringBlockList) as! [String]
+        return UserDefaults.standard.object(forKey: PeyeConstants.prefStringBlockList) as! [String]
     }()
     
     @IBOutlet weak var downloadMetadataCell: NSButtonCell!
@@ -55,7 +55,7 @@ class GeneralSettingsController: NSViewController {
         }
         
         blockStrings[blockStringTable.selectedRow] = sender.stringValue
-        UserDefaults.standard.setValue(blockStrings, forKey: PeyeConstants.prefStringBlockList)
+        UserDefaults.standard.set(blockStrings, forKey: PeyeConstants.prefStringBlockList)
     }
     
     @IBAction func removePress(_ sender: AnyObject) {
@@ -66,7 +66,7 @@ class GeneralSettingsController: NSViewController {
         DispatchQueue.main.async {
             self.blockStringController.remove(atArrangedObjectIndex: self.blockStringTable.selectedRow)
             self.blockStringTable.reloadData()
-            UserDefaults.standard.setValue(self.blockStrings, forKey: PeyeConstants.prefStringBlockList)
+            UserDefaults.standard.set(self.blockStrings, forKey: PeyeConstants.prefStringBlockList)
         }
     }
     
@@ -79,12 +79,12 @@ class GeneralSettingsController: NSViewController {
             return
         }
         
-        UserDefaults.standard.setValue(blockStrings, forKey: PeyeConstants.prefStringBlockList)
+        UserDefaults.standard.set(blockStrings, forKey: PeyeConstants.prefStringBlockList)
         DispatchQueue.main.async {
             self.blockStringController.addObject(self.textField.stringValue)
             self.blockStringTable.reloadData()
             self.textField.stringValue = ""
-            UserDefaults.standard.setValue(self.blockStrings, forKey: PeyeConstants.prefStringBlockList)
+            UserDefaults.standard.set(self.blockStrings, forKey: PeyeConstants.prefStringBlockList)
             if self.blockStringTable.numberOfRows > 2 {
                 self.blockStringTable.scrollRowToVisible(self.blockStringTable.numberOfRows - 1)
             }

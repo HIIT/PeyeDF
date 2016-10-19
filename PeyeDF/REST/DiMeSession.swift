@@ -43,13 +43,13 @@ class DiMeSession {
     
     /// Returns dime server url
     static var dimeUrl: String = {
-        return UserDefaults.standard.value(forKey: PeyeConstants.prefDiMeServerURL) as! String
+        return UserDefaults.standard.object(forKey: PeyeConstants.prefDiMeServerURL) as! String
     }()
     
     /// Returns HTTP headers used for DiMe connection
     static var dimeHeaders: [String: String] { get {
-        let user: String = UserDefaults.standard.value(forKey: PeyeConstants.prefDiMeServerUserName) as! String
-        let password: String = UserDefaults.standard.value(forKey: PeyeConstants.prefDiMeServerPassword) as! String
+        let user: String = UserDefaults.standard.object(forKey: PeyeConstants.prefDiMeServerUserName) as! String
+        let password: String = UserDefaults.standard.object(forKey: PeyeConstants.prefDiMeServerPassword) as! String
         
         let credentialData = "\(user):\(password)".data(using: String.Encoding.utf8)!
         let base64Credentials = credentialData.base64EncodedString(options: [])

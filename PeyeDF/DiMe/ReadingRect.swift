@@ -341,7 +341,7 @@ extension ReadingRect {
             // if this is for a quick annotation, show on the left of paragraph
             // also used for machine learning
             let markRect = self.rect
-            let lineThickness = UserDefaults.standard.value(forKey: PeyeConstants.prefAnnotationLineThickness) as! CGFloat
+            let lineThickness = UserDefaults.standard.object(forKey: PeyeConstants.prefAnnotationLineThickness) as! CGFloat
             let newRect_x = markRect.origin.x - PeyeConstants.quickAnnotationDistance
             let newRect_y = markRect.origin.y
             let newRect_height = markRect.height
@@ -350,7 +350,7 @@ extension ReadingRect {
         case .manualSelection:
             // if this is for a manual selection annotation show below (underline)
             let markRect = self.rect
-            let lineThickness = UserDefaults.standard.value(forKey: PeyeConstants.prefAnnotationLineThickness) as! CGFloat
+            let lineThickness = UserDefaults.standard.object(forKey: PeyeConstants.prefAnnotationLineThickness) as! CGFloat
             let newRect_x = markRect.origin.x
             let newRect_y = markRect.origin.y - PeyeConstants.selectionAnnotationDistance
             let newRect_height = lineThickness

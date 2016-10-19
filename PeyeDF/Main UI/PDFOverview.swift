@@ -56,7 +56,7 @@ class PDFOverview: PDFBase {
     
     /// Whether we want to draw rect which were simply gazed upon (useful for debugging)
     var drawGazedRects: Bool { get {
-        return UserDefaults.standard.value(forKey: PeyeConstants.prefRefinderDrawGazedUpon) as! Bool
+        return UserDefaults.standard.object(forKey: PeyeConstants.prefRefinderDrawGazedUpon) as! Bool
     } }
     
     // MARK: - Page drawing

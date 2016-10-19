@@ -75,7 +75,7 @@ class PDFReader: PDFBase {
     
     /// Whether we want to draw debug circle
     lazy var drawDebugCirle: Bool = {
-        return UserDefaults.standard.value(forKey: PeyeConstants.prefDrawDebugCircle) as! Bool
+        return UserDefaults.standard.object(forKey: PeyeConstants.prefDrawDebugCircle) as! Bool
     }()
     
     /// Whether history tracking can be done on this document

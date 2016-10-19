@@ -463,7 +463,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             Multipeer.ourWindows[cHash] = self
             
             // if the relevant preference is set, fetch all summaryreadingevents which are associated to this document and display the annotations in those
-            if (UserDefaults.standard.value(forKey: PeyeConstants.prefLoadPreviousAnnotations) as! Bool) {
+            if (UserDefaults.standard.object(forKey: PeyeConstants.prefLoadPreviousAnnotations) as! Bool) {
                 let showTime = DispatchTime.now() + 0.5  // half second later
                 DispatchQueue.global(qos: DispatchQoS.QoSClass.utility).asyncAfter(deadline: showTime) {
                     [weak self] in
@@ -487,7 +487,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         DispatchQueue.global(qos: DispatchQoS.QoSClass.utility).asyncAfter(deadline: showTime) {
             [weak self] in
             
-            if (UserDefaults.standard.value(forKey: PeyeConstants.prefDownloadMetadata) as! Bool),
+            if (UserDefaults.standard.object(forKey: PeyeConstants.prefDownloadMetadata) as! Bool),
                 let json = pdfr.document?.autoCrossref() {
                 // found crossref, use it
                 sciDoc.updateFields(fromCrossRef: json)
@@ -632,7 +632,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         pdfReader?.autoScales = true
         
         // Set annotate on or off depending on preference
-        let enableAnnotate: Bool = UserDefaults.standard.value(forKey: PeyeConstants.prefEnableAnnotate) as! Bool
+        let enableAnnotate: Bool = UserDefaults.standard.object(forKey: PeyeConstants.prefEnableAnnotate) as! Bool
         setAnnotate(enableAnnotate)
         
         // Prepare to receive events
@@ -711,7 +711,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         // at the very end, check if there's text andupdate status
         if let foundText = plainText {
             // changing status will start tracking, if new status is trackable
-            let blockedStrings = UserDefaults.standard.value(forKey: PeyeConstants.prefStringBlockList) as! [String]
+            let blockedStrings = UserDefaults.standard.object(forKey: PeyeConstants.prefStringBlockList) as! [String]
             if foundText.containsAny(strings: blockedStrings) {
                 pdfr.status = .blocked
             } else {
@@ -908,7 +908,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         }
         
         // If the relevant preference is set, send a DesktopEvent for the current document
-        if (UserDefaults.standard.value(forKey: PeyeConstants.prefSendEventOnFocusSwitch) as! Bool) {
+        if (UserDefaults.standard.object(forKey: PeyeConstants.prefSendEventOnFocusSwitch) as! Bool) {
             sendDeskEvent()
         } else if let sciDoc = self.pdfReader?.sciDoc {
             // otherwise just send an information element for the given document if the current document

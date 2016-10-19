@@ -41,8 +41,8 @@ class Multipeer: NSObject {
         // check if a peerid is present in nsuser defaults. If yes, and it has the same display name
         // as the one set for the dime user preference, use that.
         let peer: MCPeerID
-        let name = UserDefaults.standard.value(forKey: PeyeConstants.prefDiMeServerUserName) as! String
-        if let storedPeerData = UserDefaults.standard.value(forKey: MPConstants.peerIdKey) as? Data,
+        let name = UserDefaults.standard.object(forKey: PeyeConstants.prefDiMeServerUserName) as! String
+        if let storedPeerData = UserDefaults.standard.object(forKey: MPConstants.peerIdKey) as? Data,
           let storedPeer = NSKeyedUnarchiver.unarchiveObject(with: storedPeerData) as? MCPeerID ,
           storedPeer.displayName == name {
             // we have a stored peer, and its name matches ours
@@ -53,7 +53,7 @@ class Multipeer: NSObject {
         }
         // save generated peer in user defaults
         let peerData = NSKeyedArchiver.archivedData(withRootObject: peer)
-        UserDefaults.standard.setValue(peerData, forKey: MPConstants.peerIdKey)
+        UserDefaults.standard.set(peerData, forKey: MPConstants.peerIdKey)
         UserDefaults.standard.synchronize()
         return peer
     }()

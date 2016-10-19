@@ -399,7 +399,7 @@
 		A90520AF1D89403300F3C35E /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftyJSON.swift; path = SwiftyJSON/Source/SwiftyJSON.swift; sourceTree = "<group>"; };
 		A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = XCGLogger.xcodeproj; path = XCGLogger/Sources/XCGLogger.xcodeproj; sourceTree = "<group>"; };
 		A90BA3101CB681A400E7303D /* Tags.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Tags.storyboard; sourceTree = "<group>"; };
-		A90C0AD51CEE0F22000D4B75 /* Multipeer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Multipeer.swift; sourceTree = "<group>"; };
+		A90C0AD51CEE0F22000D4B75 /* Multipeer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Multipeer.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A90D0EE21D91185D00CB7011 /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
 		A90D0F081D911A7300CB7011 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
 		A912D8A21B8B5C3A006F0657 /* DocumentInformationElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DocumentInformationElement.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -417,13 +417,13 @@
 		A91CB95D1B332EDB00671868 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A91CB95E1B332EDB00671868 /* PeyeDFTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeyeDFTests.swift; sourceTree = "<group>"; };
 		A91CB9691B332FB700671868 /* EyeFormulas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = EyeFormulas.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		A91CB96C1B332FB700671868 /* PeyeDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeyeDocument.swift; sourceTree = "<group>"; };
+		A91CB96C1B332FB700671868 /* PeyeDocument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PeyeDocument.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A91DA4771C7A395200257FF0 /* FocusAreas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = FocusAreas.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A91DC4E01C22E43700BBB612 /* SummaryReadingEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SummaryReadingEvent.swift; sourceTree = "<group>"; };
 		A92322FE1CB3E13A0060AF1C /* TagView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TagView.xib; sourceTree = "<group>"; };
 		A92323001CB3E1480060AF1C /* TagViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagViewController.swift; sourceTree = "<group>"; };
 		A92323021CB3E1560060AF1C /* AnimatedStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimatedStack.swift; sourceTree = "<group>"; };
-		A92323041CB3E1A80060AF1C /* TagFieldDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagFieldDelegate.swift; sourceTree = "<group>"; };
+		A92323041CB3E1A80060AF1C /* TagFieldDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = TagFieldDelegate.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A92323061CB3E1B70060AF1C /* TagRemoveButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagRemoveButton.swift; sourceTree = "<group>"; };
 		A9260F561BA4CD10005B1556 /* MyOverlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = MyOverlay.swift; sourceTree = "<group>"; };
 		A935F0C51B8CC5FD00587C99 /* DesktopEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DesktopEvent.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -456,7 +456,7 @@
 		A974ADD71BD169E0008AB977 /* DocumentWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DocumentWindow.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9794D8C1D0D9CE2003FBFD4 /* PDFPage+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PDFPage+Extensions.swift"; sourceTree = "<group>"; };
 		A97D2F021D9BB28C00D2536B /* DebugPreferencesController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugPreferencesController.swift; sourceTree = "<group>"; };
-		A97D2F161D9BB83000D2536B /* ExperimentPreferencesController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExperimentPreferencesController.swift; sourceTree = "<group>"; };
+		A97D2F161D9BB83000D2536B /* ExperimentPreferencesController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ExperimentPreferencesController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A97D2F2A1D9BC47700D2536B /* DiMeEraser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiMeEraser.swift; sourceTree = "<group>"; };
 		A97D46751CF4527000377BB2 /* TagConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagConstants.swift; sourceTree = "<group>"; };
 		A97D46771CF453AE00377BB2 /* MPConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MPConstants.swift; sourceTree = "<group>"; };
@@ -480,7 +480,7 @@
 		A9B36CAF1BEA4A3A00A27861 /* PDFBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PDFBase.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9B3D57D1DA7DAA600FDD738 /* Paper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Paper.swift; sourceTree = "<group>"; };
 		A9B3D5801DA7DAEE00FDD738 /* QuestionConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuestionConstants.swift; sourceTree = "<group>"; };
-		A9C3F9D91D9174AB00191363 /* GeneralSettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeneralSettingsController.swift; sourceTree = "<group>"; };
+		A9C3F9D91D9174AB00191363 /* GeneralSettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = GeneralSettingsController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9C3F9DB1D9174D100191363 /* DiMePreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiMePreferencesViewController.swift; sourceTree = "<group>"; };
 		A9C3F9DD1D9176D900191363 /* AnnotationPreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnotationPreferencesViewController.swift; sourceTree = "<group>"; };
 		A9C8F0241BC2B309007ABE1A /* Fixation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Fixation.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -494,7 +494,7 @@
 		A9D833AC1BA868520046B21F /* PageEyeData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageEyeData.swift; sourceTree = "<group>"; };
 		A9D9A8BE1C1C883D0014C1EB /* EyeRectangle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = EyeRectangle.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9D9AF881DA40D9700E3E95E /* QuestionState.key */ = {isa = PBXFileReference; lastKnownFileType = file; name = QuestionState.key; path = Extras/Questions/QuestionState.key; sourceTree = SOURCE_ROOT; };
-		A9E771101B96091F0005A4B3 /* ReadingRect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadingRect.swift; sourceTree = "<group>"; };
+		A9E771101B96091F0005A4B3 /* ReadingRect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ReadingRect.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9E8F7DE1DA27E8C004FBA51 /* PeyeDF Questions.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "PeyeDF Questions.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9E8F7E01DA27EBD004FBA51 /* AnswerSaver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnswerSaver.swift; sourceTree = "<group>"; };
 		A9E8F7E11DA27EBD004FBA51 /* QuestionLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuestionLoader.swift; sourceTree = "<group>"; };
@@ -506,7 +506,7 @@
 		A9E8F7F31DA297A2004FBA51 /* PeyeDF_Questions_UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeyeDF_Questions_UITests.swift; sourceTree = "<group>"; };
 		A9E8F7F51DA297A2004FBA51 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A9F335721B3ABC090042BFB3 /* AppSingleton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AppSingleton.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		A9F8A8971D902620002252DD /* DiMeSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiMeSession.swift; sourceTree = "<group>"; };
+		A9F8A8971D902620002252DD /* DiMeSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DiMeSession.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9F8A89B1D902AD3002252DD /* DiMePusher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiMePusher.swift; sourceTree = "<group>"; };
 		A9F8A89D1D902AE3002252DD /* DiMeFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiMeFetcher.swift; sourceTree = "<group>"; };
 		A9F9D2751CBFB58600FFAE72 /* LittleClock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LittleClock.swift; sourceTree = "<group>"; };

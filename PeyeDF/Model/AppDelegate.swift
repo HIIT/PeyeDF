@@ -84,13 +84,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         // Auto-update check
         #if !QUESTIONS
-            if UserDefaults.standard.value(forKey: PeyeConstants.prefCheckForUpdatesOnStartup) as! Bool {
+            if UserDefaults.standard.object(forKey: PeyeConstants.prefCheckForUpdatesOnStartup) as! Bool {
                 Sparkle.SUUpdater.shared().checkForUpdatesInBackground()
             }
         #endif
         
         // If we want to use midas, start the manager
-        let useMidas = UserDefaults.standard.value(forKey: PeyeConstants.prefUseMidas) as! Bool
+        let useMidas = UserDefaults.standard.object(forKey: PeyeConstants.prefUseMidas) as! Bool
         if useMidas {
             MidasManager.sharedInstance.start()
             MidasManager.sharedInstance.setFixationDelegate(HistoryManager.sharedManager)

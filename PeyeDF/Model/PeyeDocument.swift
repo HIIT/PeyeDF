@@ -34,7 +34,7 @@ enum RefuseToOpenError: Error {
 class PeyeDocument: NSDocument {
     
     override var isDocumentEdited: Bool { get {
-        if UserDefaults.standard.value(forKey: PeyeConstants.prefAskToSaveOnClose) as! Int == 0 {
+        if UserDefaults.standard.object(forKey: PeyeConstants.prefAskToSaveOnClose) as! NSNumber == 0 {
             return false
         } else {
             return super.isDocumentEdited
