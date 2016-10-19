@@ -45,7 +45,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable, NearlyEquatabl
     
     init(pageIndex: Int, origin: NSPoint, size: NSSize, readingClass: ReadingClass, classSource: ClassSource, pdfBase: PDFBase?) {
         let newUnixt = Date().unixTime
-        self.screenDistance = Double(MidasManager.sharedInstance.lastValidDistance)
+        self.screenDistance = Double(AppSingleton.userDistance)
         self.unixt = [Int]()
         self.unixt.append(newUnixt)
         
@@ -65,7 +65,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable, NearlyEquatabl
     
     init(pageIndex: Int, rect: NSRect, readingClass: ReadingClass, classSource: ClassSource, pdfBase: PDFBase?) {
         let newUnixt = Date().unixTime
-        self.screenDistance = Double(MidasManager.sharedInstance.lastValidDistance)
+        self.screenDistance = Double(AppSingleton.userDistance)
         self.unixt = [Int]()
         self.unixt.append(newUnixt)
         
@@ -84,7 +84,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable, NearlyEquatabl
     }
     
     init(pageIndex: Int, rect: NSRect, pdfBase: PDFBase?) {
-        self.screenDistance = Double(MidasManager.sharedInstance.lastValidDistance)
+        self.screenDistance = Double(AppSingleton.EyeTracker?.lastValidDistance ?? 800.0)
         let newUnixt = Date().unixTime
         self.unixt = [Int]()
         self.unixt.append(newUnixt)

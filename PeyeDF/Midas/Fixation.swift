@@ -26,7 +26,7 @@
 
 import Foundation
 
-struct SMIFixationEvent: Equatable {
+struct FixationEvent: Equatable {
     var eye: Eye
     var startTime: Int
     var endTime: Int
@@ -36,7 +36,7 @@ struct SMIFixationEvent: Equatable {
     var unixtime: Int
 }
 
-func == (lhs: SMIFixationEvent, rhs: SMIFixationEvent) -> Bool {
+func == (lhs: FixationEvent, rhs: FixationEvent) -> Bool {
     return lhs.eye == rhs.eye &&
            lhs.startTime == rhs.startTime &&
            lhs.endTime == rhs.endTime &&
@@ -50,7 +50,7 @@ func == (lhs: SMIFixationEvent, rhs: SMIFixationEvent) -> Bool {
 ///
 /// - returns: an array of fixation events and if some value was found and the last valid unix time
 ///            of the last fixation found (nil if no new values were found)
-func getTimedFixationsAfter(unixtime minUnixtime: Int, forEye eye: Eye, fromJSON json: JSON) -> (array: [SMIFixationEvent], lastUnixtime: Int)? {
+func getTimedFixationsAfter(unixtime minUnixtime: Int, forEye eye: Eye, fromJSON json: JSON) -> (array: [FixationEvent], lastUnixtime: Int)? {
     // find index to start from
     let timeArray = json[0]["return"]["startTime"]["data"].arrayObject as! [Int]
     
@@ -66,7 +66,7 @@ func getTimedFixationsAfter(unixtime minUnixtime: Int, forEye eye: Eye, fromJSON
     let allYs = json[0]["return"]["positionY"]["data"].arrayObject as! [Double]
     let allMarcotimes = json[0]["return"]["marcotime"]["data"].arrayObject as! [Int]
     
-    var retVal = [SMIFixationEvent]()
+    var retVal = [FixationEvent]()
     
     var i = 0
     var lastUnixtime: Int?
@@ -77,7 +77,7 @@ func getTimedFixationsAfter(unixtime minUnixtime: Int, forEye eye: Eye, fromJSON
                 /// marco time was unix time minus a constant
                 let unixtime = allMarcotimes[i] + 1446909066675
                 if unixtime > minUnixtime {
-                    retVal.append(SMIFixationEvent(eye: eye, startTime: allStartTimes[i], endTime: allEndTimes[i], duration: allDurations[i], positionX: allXs[i], positionY: allYs[i], unixtime: unixtime))
+                    retVal.append(FixationEvent(eye: eye, startTime: allStartTimes[i], endTime: allEndTimes[i], duration: allDurations[i], positionX: allXs[i], positionY: allYs[i], unixtime: unixtime))
                 }
                 if lastUnixtime == nil || unixtime > lastUnixtime! {
                     lastUnixtime = unixtime

@@ -34,7 +34,7 @@ func verticalFocalPoints(fromPoint point: NSPoint, zoomLevel: CGFloat, pageRect:
     let fitInRect = NSInsetRect(pageRect, defaultMargin, defaultMargin)
     
     var pointArray = [NSPoint]()
-    let points = pointSpan(zoomLevel: zoomLevel, dpi: AppSingleton.getComputedDPI()!, distancemm: MidasManager.sharedInstance.lastValidDistance)
+    let points = pointSpan(zoomLevel: zoomLevel, dpi: AppSingleton.getComputedDPI()!, distancemm: AppSingleton.EyeTracker?.lastValidDistance ?? 800)
     
     let startPoint = NSPoint(x: point.x, y: point.y + points / 2)
     let endPoint = NSPoint(x: point.x, y: point.y - points / 2)
@@ -65,7 +65,7 @@ func inchSpan(_ distancemm: CGFloat) -> CGFloat {
 
 /// Returns a rectangle representing what should be seen by the participant's fovea
 func getSeenRect(fromPoint point: NSPoint, zoomLevel: CGFloat) -> NSRect {
-    let points = pointSpan(zoomLevel: zoomLevel, dpi: AppSingleton.getComputedDPI()!, distancemm: MidasManager.sharedInstance.lastValidDistance)
+    let points = pointSpan(zoomLevel: zoomLevel, dpi: AppSingleton.getComputedDPI()!, distancemm: AppSingleton.EyeTracker?.lastValidDistance ?? 800)
     
     var newOrigin = point
     newOrigin.x -= points / 2

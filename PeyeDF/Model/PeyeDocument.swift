@@ -103,8 +103,8 @@ class PeyeDocument: NSDocument {
         let storyboard = AppSingleton.mainStoryboard
         let windowController = storyboard.instantiateController(withIdentifier: "Document Window Controller") as! DocumentWindowController
         
-        // if midas is not active, cascade window, otherwise constrain to center of screen
-        if !MidasManager.sharedInstance.midasAvailable {
+        // if eye tracker is NOT active, cascade window, otherwise constrain to center of screen
+        if !(AppSingleton.EyeTracker?.available ?? false) {
             // cascade window
             AppSingleton.nextDocWindowPos = windowController.window!.cascadeTopLeft(from: AppSingleton.nextDocWindowPos)
         } else {

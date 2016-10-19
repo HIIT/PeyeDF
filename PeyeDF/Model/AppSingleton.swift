@@ -48,10 +48,7 @@ import XCGLogger
 //}
 //
 
-/// Used to share states across the whole application, including posting history notifications to store. Contains:
-///
-/// - storyboard: the "Main" storyboard
-/// - log: XCGLogger instance to log information to console and file
+/// Used to share common instances across the whole application, including posting history notifications to the store, access to logs, storyboards, eye tracking data.
 class AppSingleton {
     
     static let mainStoryboard = NSStoryboard(name: "Main", bundle: nil)
@@ -63,6 +60,27 @@ class AppSingleton {
         
     static let log = AppSingleton.createLog()
     static fileprivate(set) var logsURL: URL?
+    
+    /// The class that provides eye tracking data
+    static let EyeTracker: EyeDataProvider? = MidasManager()
+    
+    /// Convenience getter for user's distance from screen, which defaults to 80cm
+    /// if not known
+    static var userDistance: CGFloat { get {
+        if let tracker = EyeTracker {
+            return tracker.lastValidDistance
+        } else {
+            return 800
+        }
+    } }
+    
+    /// The user's dominant eye, as set in the preferences window.
+    static var dominantEye: Eye { get {
+        let eyeRaw = UserDefaults.standard.object(forKey: PeyeConstants.prefDominantEye) as! Int
+        return Eye(rawValue: eyeRaw)!
+    } set {
+        UserDefaults.standard.set(newValue.rawValue, forKey: PeyeConstants.prefDominantEye)
+    } }
     
     /// The dimensions of the screen the application is running within.
     /// It is assumed there is only one screen when using eye tracking.
@@ -91,13 +109,7 @@ class AppSingleton {
             return Int(round(pixelWidth / inchWidth))
         }
     }
-    
-    /// Convenience function to get preferred eye
-    static func getDominantEye() -> Eye {
-        let eyeRaw = UserDefaults.standard.object(forKey: PeyeConstants.prefDominantEye) as! Int
-        return Eye(rawValue: eyeRaw)!
-    }
-    
+        
     /// Convenience function to set recently used tags
     static func updateRecentTags(_ newTag: String) {
         /// Recent tags is a list of strings in which the first string is the most recent

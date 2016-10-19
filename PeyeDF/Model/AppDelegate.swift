@@ -34,8 +34,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// Outlet for connect to dime menu item
     @IBOutlet weak var connectDime: NSMenuItem!
     
-    /// Connect midas menu item
-    @IBOutlet weak var connectMidas: NSMenuItem!
+    /// Connect eye tracker menu item
+    @IBOutlet weak var connectEyeTracker: NSMenuItem!
     
     /// Refinder window
     var refinderWindow: RefinderWindowController?
@@ -45,7 +45,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     /// PeyeDF closes itself to prevent potential leaks and allow opened PDFs to be deleted (after a given amount of time passed)
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        return Date().timeIntervalSince(launchDate) > PeyeConstants.closeAfterLaunch && !MidasManager.sharedInstance.midasAvailable && Multipeer.session.connectedPeers.count < 1
+        return Date().timeIntervalSince(launchDate) > PeyeConstants.closeAfterLaunch && !(AppSingleton.EyeTracker?.available ?? false) && Multipeer.session.connectedPeers.count < 1
     }
     
     /// Sets up custom url handler
@@ -58,7 +58,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         defaultPrefs[PeyeConstants.prefDiMeServerUserName] = "Test1"
         defaultPrefs[PeyeConstants.prefDiMeServerPassword] = "123456"
         defaultPrefs[PeyeConstants.prefStringBlockList] = [" iban ", "iban:", " visa ", " visa:", "mastercard", "american express"]
-        defaultPrefs[PeyeConstants.prefUseMidas] = 0
         defaultPrefs[PeyeConstants.prefUseEyeTracker] = 0
         defaultPrefs[PeyeConstants.prefAskToSaveOnClose] = 0
         defaultPrefs[PeyeConstants.prefEnableAnnotate] = 0
@@ -89,16 +88,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
         #endif
         
-        // If we want to use midas, start the manager
-        let useMidas = UserDefaults.standard.object(forKey: PeyeConstants.prefUseMidas) as! Bool
-        if useMidas {
-            MidasManager.sharedInstance.start()
-            MidasManager.sharedInstance.setFixationDelegate(HistoryManager.sharedManager)
+        // If we want to use eye tracker, start it
+        let useEye = UserDefaults.standard.object(forKey: PeyeConstants.prefUseEyeTracker) as! Bool
+        if useEye {
+            AppSingleton.EyeTracker?.start()
+            AppSingleton.EyeTracker?.fixationDelegate = HistoryManager.sharedManager
         }
         
-        // Dime/Midas down/up observers
+        // Dime/Eye tracker down/up observers
         NotificationCenter.default.addObserver(self, selector: #selector(dimeConnectionChanged(_:)), name: PeyeConstants.diMeConnectionNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(midasConnectionChanged(_:)), name:PeyeConstants.midasConnectionNotification, object: MidasManager.sharedInstance)
+        NotificationCenter.default.addObserver(self, selector: #selector(eyeConnectionChanged(_:)), name:PeyeConstants.eyeConnectionNotification, object: nil)
         
         // Start multipeer connectivity
         Multipeer.advertiser.start()
@@ -262,13 +261,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     /// Callback for connect to midas menu action
-    @IBAction func connectMidas(_ sender: NSMenuItem) {
-        if connectMidas.state == NSOffState {
-            MidasManager.sharedInstance.start()
-            MidasManager.sharedInstance.setFixationDelegate(HistoryManager.sharedManager)
+    @IBAction func connectEyeTracker(_ sender: NSMenuItem) {
+        if connectEyeTracker.state == NSOffState {
+            AppSingleton.EyeTracker?.start()
+            AppSingleton.EyeTracker?.fixationDelegate = HistoryManager.sharedManager
         } else {
-            MidasManager.sharedInstance.stop()
-            MidasManager.sharedInstance.unsetFixationDelegate(HistoryManager.sharedManager)
+            AppSingleton.EyeTracker?.stop()
+            AppSingleton.EyeTracker?.fixationDelegate = nil
         }
     }
     
@@ -312,10 +311,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
-        MidasManager.sharedInstance.unsetFixationDelegate(HistoryManager.sharedManager)
-        MidasManager.sharedInstance.stop()
+        AppSingleton.EyeTracker?.fixationDelegate = nil
+        AppSingleton.EyeTracker?.stop()
         NotificationCenter.default.removeObserver(self, name: PeyeConstants.diMeConnectionNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: PeyeConstants.midasConnectionNotification, object: MidasManager.sharedInstance)
+        NotificationCenter.default.removeObserver(self, name: PeyeConstants.eyeConnectionNotification, object: nil)
     }
     
     // MARK: - Callbacks
@@ -360,16 +359,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    @objc func midasConnectionChanged(_ notification: Notification) {
+    @objc func eyeConnectionChanged(_ notification: Notification) {
         let userInfo = (notification as NSNotification).userInfo as! [String: Bool]
-        let midasAvailable = userInfo["available"]!
+        let avail = userInfo["available"]!
         
-        if midasAvailable {
-            connectMidas.state = NSOnState
-            connectMidas.title = "Connected to Midas"
+        if avail {
+            connectEyeTracker.state = NSOnState
+            connectEyeTracker.title = "Connected to Eye Tracker"
         } else {
-            connectMidas.state = NSOffState
-            connectMidas.title = "Connect to Midas"
+            connectEyeTracker.state = NSOffState
+            connectEyeTracker.title = "Connect to Eye Tracker"
         }
     }
 }

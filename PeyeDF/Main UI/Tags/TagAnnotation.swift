@@ -229,6 +229,10 @@ class TagAnnotation: Equatable {
         let rectSpan = tag.rRects.reduce(NSRect()) {NSUnionRect($0, $1.rect)}
         
         var origin = NSPoint(x: -1, y: rectSpan.origin.y + rectSpan.size.height / 2)
+        
+        // put tag annotation on left or right of related text depending on whether
+        // the related text is on the left or right side of the page
+        
         if (rectSpan.minX + rectSpan.size.width / 2) > pdfPage.bounds(for: PDFDisplayBox.cropBox).width / 2 {
             origin.x = rectSpan.maxX + offset
         } else {
@@ -237,6 +241,7 @@ class TagAnnotation: Equatable {
         
         let annBounds = NSRect(origin: origin, size: size)
         let textAnnotation = PDFAnnotationFreeText(bounds: annBounds)
+        textAnnotation.bounds.origin.y -= textAnnotation.bounds.height / 4  // center text vertically in box
         textAnnotation.color = NSColor.clear
         textAnnotation.setAlignment(.center)
         textAnnotation.setFontColor(NSColor.black)

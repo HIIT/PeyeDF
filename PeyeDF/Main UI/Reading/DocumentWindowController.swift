@@ -742,9 +742,9 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         NotificationCenter.default.addObserver(self, selector: #selector(windowWantsMain(_:)), name: NSNotification.Name.NSWindowDidBecomeKey, object: self.window)
         NotificationCenter.default.addObserver(self, selector: #selector(windowOcclusionChange(_:)), name: NSNotification.Name.NSWindowDidChangeOcclusionState, object: self.window)
         
-        // Get notifications from midas manager
+        // Get notifications about user's eyes (present or not)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(eyeStateCallback(_:)), name: PeyeConstants.eyesAvailabilityNotification, object: MidasManager.sharedInstance)
+        NotificationCenter.default.addObserver(self, selector: #selector(eyeStateCallback(_:)), name: PeyeConstants.eyesAvailabilityNotification, object: nil)
         
         // Get notification from DiMe connection status
         
@@ -951,10 +951,10 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     // MARK: - Window delegate
     
     /// Ensures that the document window never gets bigger than the maximum
-    /// allowed size when midas is active and stays within its boundaries.
+    /// allowed size when eye tracker is active and stays within its boundaries.
     func windowDidResize(_ notification: Notification) {
-        // only constrain if midas is active
-        if MidasManager.sharedInstance.midasAvailable {
+        // only constrain if eye tracker is active
+        if AppSingleton.EyeTracker?.available ?? false {
             if let window = notification.object as? NSWindow, let screen = window.screen {
                 let shrankRect = DocumentWindow.getConstrainingRect(forScreen: screen)
                 let intersectedRect = shrankRect.intersection(window.frame)

@@ -30,7 +30,13 @@ import Cocoa
 class MyOverlay: NSView {
     
     /// Whether the eye overlay must be drawn
-    fileprivate(set) lazy var drawEyeCross = {return MidasManager.sharedInstance.midasAvailable && MidasManager.sharedInstance.eyesLost}()
+    fileprivate(set) lazy var drawEyeCross: Bool = {
+        if let tracker = AppSingleton.EyeTracker {
+            return tracker.available && tracker.eyesLost
+        } else {
+            return false
+        }
+    }()
     
     /// Wheter we want to draw the DiMe cross (shown if dime is unavailable)
     fileprivate(set) var drawDiMeCross = false
@@ -52,7 +58,7 @@ class MyOverlay: NSView {
         self.acceptsTouchEvents = false
         
         // observer for eye state
-        NotificationCenter.default.addObserver(self, selector: #selector(eyeStateCallback(_:)), name: PeyeConstants.eyesAvailabilityNotification, object: MidasManager.sharedInstance)
+        NotificationCenter.default.addObserver(self, selector: #selector(eyeStateCallback(_:)), name: PeyeConstants.eyesAvailabilityNotification, object: nil)
         
         // dime connection check
         if !DiMeSession.dimeAvailable {

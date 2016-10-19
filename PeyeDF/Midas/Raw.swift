@@ -22,11 +22,11 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-// Raw data from eye tracking
+// Raw data from eye tracking (used to track user's head position)
 
 import Foundation
 
-struct SMIEyePosition {
+struct RawEyePosition {
     var timestamp: Int
     var EyePositionX: Double
     var EyePositionY: Double

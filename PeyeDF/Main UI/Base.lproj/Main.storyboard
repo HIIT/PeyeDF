@@ -284,7 +284,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="E15-lK-fvD">
-                                            <rect key="frame" x="16" y="11" width="340" height="26"/>
+                                            <rect key="frame" x="16" y="11" width="340" height="25"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="336" id="dtF-MU-gHK"/>
                                             </constraints>
@@ -294,7 +294,7 @@
                                             </connections>
                                         </slider>
                                         <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uRt-4J-vlE">
-                                            <rect key="frame" x="360" y="14" width="54" height="22"/>
+                                            <rect key="frame" x="360" y="13" width="54" height="22"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="54" id="N2Q-Hu-YTx"/>
                                             </constraints>
@@ -1640,10 +1640,10 @@
                                                 <action selector="connectDime:" target="Voe-Tx-rLC" id="TMU-ol-eIp"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Connect to Midas" id="hMB-fS-WXv" userLabel="Connect Midas">
+                                        <menuItem title="Connect to Eye Tracker" id="hMB-fS-WXv" userLabel="Connect Eye">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="connectMidas:" target="Voe-Tx-rLC" id="4yp-e5-P2l"/>
+                                                <action selector="connectEyeTracker:" target="Voe-Tx-rLC" id="ki6-9M-u1K"/>
                                             </connections>
                                         </menuItem>
                                     </items>
@@ -1670,7 +1670,7 @@
                 <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="PeyeDF" customModuleProvider="target">
                     <connections>
                         <outlet property="connectDime" destination="dV0-IR-78f" id="79n-Qg-M5b"/>
-                        <outlet property="connectMidas" destination="hMB-fS-WXv" id="wik-W4-9Lc"/>
+                        <outlet property="connectEyeTracker" destination="hMB-fS-WXv" id="7uO-Qe-EYk"/>
                     </connections>
                 </customObject>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

@@ -25,7 +25,7 @@
 import Cocoa
 
 /// The eyebox is a simple view that shows the user position as detected by the eye tracker, so participants 
-/// can adjust their own position. Uses PeyeConstants.midasEyePositionNotification to track eye position.
+/// can adjust their own position. Uses PeyeConstants.eyePositionNotification to track eye position.
 class eyeBox: NSBox {
     
     let marginColour = NSColor(red: 0.29, green: 0.29, blue: 0.29, alpha: 1.0)
@@ -53,11 +53,11 @@ class eyeBox: NSBox {
     }
     
     func registerNotification() {
-        NotificationCenter.default.addObserver(self, selector: #selector(newDataReceived(_:)), name: PeyeConstants.midasEyePositionNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(newDataReceived(_:)), name: PeyeConstants.eyePositionNotification, object: nil)
     }
     
     func unregisterNotification() {
-        NotificationCenter.default.removeObserver(self, name: PeyeConstants.midasEyePositionNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: PeyeConstants.eyePositionNotification, object: nil)
     }
     
     /// Notification callback

@@ -98,6 +98,8 @@
 		A9CDFD8B1CF7424C000C4282 /* Collaboration.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A9CDFD8A1CF7424C000C4282 /* Collaboration.storyboard */; };
 		A9CDFD931CF74717000C4282 /* SessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CDFD921CF74717000C4282 /* SessionDelegate.swift */; };
 		A9CEAA801BE7793500E23964 /* Paragraphs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CEAA7F1BE7793500E23964 /* Paragraphs.swift */; };
+		A9D07F851DB7DB1A0040CAD6 /* EyeDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D07F841DB7DB1A0040CAD6 /* EyeDataProvider.swift */; };
+		A9D07F861DB7DB1A0040CAD6 /* EyeDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D07F841DB7DB1A0040CAD6 /* EyeDataProvider.swift */; };
 		A9D362A11CF86196003E5DAF /* PeerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D362A01CF86196003E5DAF /* PeerViewController.swift */; };
 		A9D833AD1BA868520046B21F /* PageEyeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D833AC1BA868520046B21F /* PageEyeData.swift */; };
 		A9D9A8BF1C1C883D0014C1EB /* EyeRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9D9A8BE1C1C883D0014C1EB /* EyeRectangle.swift */; };
@@ -202,6 +204,8 @@
 		A9E8F7E91DA27EBD004FBA51 /* QuestionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E8F7E41DA27EBD004FBA51 /* QuestionViewController.swift */; };
 		A9E8F7EB1DA27EEF004FBA51 /* QuestionSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E8F7EA1DA27EEF004FBA51 /* QuestionSingleton.swift */; };
 		A9E8F7F41DA297A2004FBA51 /* PeyeDF_Questions_UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E8F7F31DA297A2004FBA51 /* PeyeDF_Questions_UITests.swift */; };
+		A9ECD0801DB80911009EAC42 /* MidasSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9ECD07F1DB80911009EAC42 /* MidasSession.swift */; };
+		A9ECD0811DB80911009EAC42 /* MidasSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9ECD07F1DB80911009EAC42 /* MidasSession.swift */; };
 		A9F335731B3ABC090042BFB3 /* AppSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F335721B3ABC090042BFB3 /* AppSingleton.swift */; };
 		A9F8A8981D902620002252DD /* DiMeSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F8A8971D902620002252DD /* DiMeSession.swift */; };
 		A9F8A89C1D902AD3002252DD /* DiMePusher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F8A89B1D902AD3002252DD /* DiMePusher.swift */; };
@@ -490,6 +494,7 @@
 		A9CDFD8A1CF7424C000C4282 /* Collaboration.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Collaboration.storyboard; sourceTree = "<group>"; };
 		A9CDFD921CF74717000C4282 /* SessionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionDelegate.swift; sourceTree = "<group>"; };
 		A9CEAA7F1BE7793500E23964 /* Paragraphs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Paragraphs.swift; sourceTree = "<group>"; };
+		A9D07F841DB7DB1A0040CAD6 /* EyeDataProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EyeDataProvider.swift; sourceTree = "<group>"; };
 		A9D362A01CF86196003E5DAF /* PeerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeerViewController.swift; sourceTree = "<group>"; };
 		A9D833AC1BA868520046B21F /* PageEyeData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageEyeData.swift; sourceTree = "<group>"; };
 		A9D9A8BE1C1C883D0014C1EB /* EyeRectangle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = EyeRectangle.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -505,6 +510,7 @@
 		A9E8F7F11DA297A2004FBA51 /* PeyeDF Questions UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "PeyeDF Questions UITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9E8F7F31DA297A2004FBA51 /* PeyeDF_Questions_UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeyeDF_Questions_UITests.swift; sourceTree = "<group>"; };
 		A9E8F7F51DA297A2004FBA51 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A9ECD07F1DB80911009EAC42 /* MidasSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MidasSession.swift; sourceTree = "<group>"; };
 		A9F335721B3ABC090042BFB3 /* AppSingleton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AppSingleton.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9F8A8971D902620002252DD /* DiMeSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DiMeSession.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9F8A89B1D902AD3002252DD /* DiMePusher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiMePusher.swift; sourceTree = "<group>"; };
@@ -589,8 +595,9 @@
 				A91CB9491B332EDB00671868 /* AppDelegate.swift */,
 				A9F335721B3ABC090042BFB3 /* AppSingleton.swift */,
 				A93C53DB1B8DCEFB00179C72 /* HistoryManager.swift */,
-				A9038F7A1B8F634200A7D183 /* Dictionariable.swift */,
+				A9D07F841DB7DB1A0040CAD6 /* EyeDataProvider.swift */,
 				A9677F911BA806F700DC48CC /* MidasManager.swift */,
+				A9038F7A1B8F634200A7D183 /* Dictionariable.swift */,
 				A91CB96C1B332FB700671868 /* PeyeDocument.swift */,
 				A9CEAA7F1BE7793500E23964 /* Paragraphs.swift */,
 				A91DA4771C7A395200257FF0 /* FocusAreas.swift */,
@@ -884,6 +891,7 @@
 				A9F8A89D1D902AE3002252DD /* DiMeFetcher.swift */,
 				A9F8A89B1D902AD3002252DD /* DiMePusher.swift */,
 				A97D2F2A1D9BC47700D2536B /* DiMeEraser.swift */,
+				A9ECD07F1DB80911009EAC42 /* MidasSession.swift */,
 			);
 			name = REST;
 			path = PeyeDF/REST;
@@ -1299,6 +1307,7 @@
 				A91DA4781C7A395200257FF0 /* FocusAreas.swift in Sources */,
 				A95A8CF81B94407D0093119E /* ThumbSideController.swift in Sources */,
 				A9CDB2E91B3AC49800347398 /* PeyeConstants.swift in Sources */,
+				A9D07F851DB7DB1A0040CAD6 /* EyeDataProvider.swift in Sources */,
 				A92323051CB3E1A80060AF1C /* TagFieldDelegate.swift in Sources */,
 				A95A8CF41B94407D0093119E /* DocumentWindowController.swift in Sources */,
 				A9F335731B3ABC090042BFB3 /* AppSingleton.swift in Sources */,
@@ -1309,6 +1318,7 @@
 				A9C3F9DE1D9176D900191363 /* AnnotationPreferencesViewController.swift in Sources */,
 				A989F79E1D903FF8003C902D /* CrossRefSession.swift in Sources */,
 				A9C3F9DC1D9174D100191363 /* DiMePreferencesViewController.swift in Sources */,
+				A9ECD0801DB80911009EAC42 /* MidasSession.swift in Sources */,
 				A9D362A11CF86196003E5DAF /* PeerViewController.swift in Sources */,
 				A91AFB731C1DC9A60025D1F6 /* ThresholdEditor.swift in Sources */,
 				A957950D1BD66A600083525C /* ScientificDocument.swift in Sources */,
@@ -1364,7 +1374,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9D07F861DB7DB1A0040CAD6 /* EyeDataProvider.swift in Sources */,
 				A9E8F77A1DA27E8C004FBA51 /* PDFPage+Extensions.swift in Sources */,
+				A9ECD0811DB80911009EAC42 /* MidasSession.swift in Sources */,
 				A9E8F77B1DA27E8C004FBA51 /* MyOverlay.swift in Sources */,
 				A9E8F77C1DA27E8C004FBA51 /* SummaryReadingEvent.swift in Sources */,
 				A9E8F77D1DA27E8C004FBA51 /* PDFOverview.swift in Sources */,
@@ -1609,6 +1621,7 @@
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = JYV3R5X7JQ;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"CA_DEBUG_TRANSACTIONS=1",
 					"$(inherited)",
@@ -1631,6 +1644,7 @@
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = JYV3R5X7JQ;
 				INFOPLIST_FILE = PeyeDF/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = fi.aalto.org.PeyeDF;

@@ -1,10 +1,26 @@
 //
-//  ExperimentPreferencesController.swift
-//  PeyeDF
+// Copyright (c) 2015 Aalto University
 //
-//  Created by Marco Filetti on 28/09/2016.
-//  Copyright © 2016 HIIT. All rights reserved.
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation
+// files (the "Software"), to deal in the Software without
+// restriction, including without limitation the rights to use,
+// copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following
+// conditions:
 //
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
 
 import Cocoa
 
@@ -32,11 +48,9 @@ class ExperimentPreferencesController: NSViewController {
     /// Action responding to left or right dominant eye selection
     @IBAction func dominantButtonPress(_ sender: NSButton) {
         if sender.identifier! == "leftDomEyeButton" {
-            UserDefaults.standard.set(Eye.left.rawValue, forKey: PeyeConstants.prefDominantEye)
-            MidasManager.sharedInstance.setDominantEye(.left)
+            AppSingleton.dominantEye = .left
         } else if sender.identifier! == "rightDomEyeButton" {
-            UserDefaults.standard.set(Eye.right.rawValue, forKey: PeyeConstants.prefDominantEye)
-            MidasManager.sharedInstance.setDominantEye(.right)
+            AppSingleton.dominantEye = .right
         } else {
             fatalError("Some unrecognized button was pressed!?")
         }
@@ -45,12 +59,7 @@ class ExperimentPreferencesController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // set dominant eye button pressed accordingly to current preference
-        let rawEyePreference = UserDefaults.standard.object(forKey: PeyeConstants.prefDominantEye) as! Int
-        
-        let eyePreference = Eye(rawValue: rawEyePreference)
-        
-        if eyePreference == .left {
+        if AppSingleton.dominantEye == .left {
             leftDomEyeButton.state = NSOnState
         } else {
             rightDomEyeButton.state = NSOnState

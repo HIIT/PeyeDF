@@ -85,9 +85,9 @@ class HistoryManager: FixationDataDelegate {
     func entry(_ documentWindow: DocumentWindowController) {
         if let window = documentWindow.window, let _ = documentWindow.pdfReader?.sciDoc {
             if window.isMainWindow {
-                // if we are tracking eyes (using midas), make sure eyes are available before starting
-                if MidasManager.sharedInstance.midasAvailable {
-                    if !MidasManager.sharedInstance.eyesLost {
+                // if we are tracking eyes, make sure eyes are available before starting
+                if AppSingleton.EyeTracker?.available ?? false {
+                    if !(AppSingleton.EyeTracker?.eyesLost ?? true) {
                         preparation(documentWindow)
                     }
                 } else {
@@ -111,7 +111,7 @@ class HistoryManager: FixationDataDelegate {
     
     // MARK: - Protocol implementation
     
-    func receiveNewFixationData(_ newData: [SMIFixationEvent]) {
+    func receiveNewFixationData(_ newData: [FixationEvent]) {
         if let eyeReceiver = currentEyeReceiver {
             // translate all fixations to page points, and insert to corresponding data in the main dictionary
             for fixEv in newData {

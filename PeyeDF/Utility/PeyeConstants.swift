@@ -48,10 +48,7 @@ class PeyeConstants {
     
     /// Use eye tracker on start
     static let prefUseEyeTracker = "eye.useTracker"
-    
-    /// Use midas on start
-    static let prefUseMidas = "midas.use"
-    
+        
     /// Check for updates on startup
     static let prefCheckForUpdatesOnStartup = "updates.checkOnStartup"
     
@@ -107,21 +104,7 @@ class PeyeConstants {
     
     /// Page area is multiplied by this constant, to reduce total area size (to remove margins, etc)
     static let pageAreaMultiplier = 0.125
-    
-    // MARK: - Midas
-    
-    /// Name of the midas node containing raw (gaze) data
-    static let midasRawNodeName = "raw_eyestream"
-    
-    /// Name of the midas node containing event data
-    static let midasEventNodeName = "event_eyestream"
-    
-    /// List of all channel names in raw stream, in order
-    static let midasRawChannelNames = ["timestamp", "leftGazeX", "leftGazeY", "leftDiam", "leftEyePositionX", "leftEyePositionY", "leftEyePositionZ", "rightGazeX", "rightGazeY", "rightDiam", "rightEyePositionX", "rightEyePositionY", "rightEyePositionZ"]
-    
-    /// List of all channel names in event stream, in order
-    static let midasEventChannelNames = ["eye", "startTime", "endTime", "duration", "positionX", "positionY", "marcotime"]
-    
+        
     /// Eye fixation data which has a unixtime within this range of an `excluded
     /// unixtime` won't be sent to DiMe. Currently, an `excluded" unixtime` refers to the user
     /// marking text. In other words, this constant defines the minimum time difference between
@@ -254,12 +237,12 @@ class PeyeConstants {
     /// - "available": Boolean, true if dime went up, false if down
     static let diMeConnectionNotification = Notification.Name("hiit.PeyeDF.diMeConnectionChange")
     
-    /// String notifying that Midas' connection status changed
+    /// String notifying that the eye tracker connection status changed
     ///
     /// **UserInfo dictionary fields**:
     ///
-    /// - "available": Boolean, true if midas went up, false if down
-    static let midasConnectionNotification = Notification.Name("hiit.PeyeDF.midasConnectionChanged")
+    /// - "available": Boolean, true if eye tracker went up, false if down
+    static let eyeConnectionNotification = Notification.Name("hiit.PeyeDF.eyeConnectionChanged")
     
     /// String notifying that eyes were lost/seen
     ///
@@ -268,14 +251,14 @@ class PeyeConstants {
     /// - "available": Boolean, true if eyes can be seen, false if they were lost
     static let eyesAvailabilityNotification = Notification.Name("hiit.PeyeDF.eyesAvailabilityNotification")
     
-    /// String identifying the notification sent when a new raw sample (for eye position) is received from midas.
+    /// String identifying the notification sent when a new raw sample (for eye position) is received from the eye tracker.
     /// The sample regarding the last (most recent) event is sent
     ///
     /// **UserInfo dictionary fields**:
     /// - "xpos": last seen position, x
     /// - "ypos": last seen position, y (in SMI coordinate system, which is different from OS X)
     /// - "zpos": last seen position, z (distance from camera)
-    static let midasEyePositionNotification = Notification.Name("hiit.PeyeDF.midasEyePosition")
+    static let eyePositionNotification = Notification.Name("hiit.PeyeDF.eyePosition")
     
     /// String idenfitying the notification sent when a user manually marks a paragraph
     ///
@@ -300,16 +283,6 @@ class PeyeConstants {
         dateFormatter.dateFormat = PeyeConstants.diMeDateFormat
         return dateFormatter
     }
-}
-
-/// Midas raw channel numbers
-public enum midasRawChanNumbers: Int {
-    case timestamp = 0, leftGazeX, leftGazeY, leftDiam, leftEyePositionX, leftEyePositionY, leftEyePositionZ, rightGazeX, rightGazeY, rightDiam, rightEyePositionX, rightEyePositionY, rightEyePositionZ
-}
-
-/// Midas event channel numbers
-public enum midasEventChanNumber: Int {
-    case eye = 0, startTime, endTime, duration, positionX, positionY, marcotime
 }
 
 /// Eye (left or right). Using same coding as SMI_LSL data streaming.
