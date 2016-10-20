@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G1004" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16B2553a" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11201"/>
         <plugIn identifier="com.apple.pdfkit.ibplugin" version="11201"/>
@@ -284,7 +284,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="E15-lK-fvD">
-                                            <rect key="frame" x="16" y="11" width="340" height="25"/>
+                                            <rect key="frame" x="16" y="12" width="340" height="24"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="336" id="dtF-MU-gHK"/>
                                             </constraints>
@@ -294,7 +294,7 @@
                                             </connections>
                                         </slider>
                                         <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uRt-4J-vlE">
-                                            <rect key="frame" x="360" y="13" width="54" height="22"/>
+                                            <rect key="frame" x="360" y="14" width="54" height="22"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="54" id="N2Q-Hu-YTx"/>
                                             </constraints>
@@ -351,13 +351,13 @@
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="UC7-V4-Wrp" secondAttribute="trailing" constant="20" id="37I-KI-kOd"/>
+                            <constraint firstItem="lGv-gP-N9u" firstAttribute="leading" secondItem="Rzz-8T-XGf" secondAttribute="leading" constant="20" id="4Tn-8I-7Cr"/>
                             <constraint firstItem="wEK-ud-1k4" firstAttribute="top" secondItem="Yfd-O9-RLA" secondAttribute="bottom" constant="6" symbolic="YES" id="Fqf-pC-xnw"/>
                             <constraint firstItem="lGv-gP-N9u" firstAttribute="top" secondItem="wEK-ud-1k4" secondAttribute="bottom" constant="6" symbolic="YES" id="Qsn-Lt-oDP"/>
                             <constraint firstItem="UC7-V4-Wrp" firstAttribute="leading" secondItem="Rzz-8T-XGf" secondAttribute="leading" constant="20" id="YUe-8v-oO6"/>
                             <constraint firstItem="Yfd-O9-RLA" firstAttribute="top" secondItem="Rzz-8T-XGf" secondAttribute="top" constant="20" symbolic="YES" id="ctA-Zf-BeA"/>
                             <constraint firstAttribute="bottom" secondItem="UC7-V4-Wrp" secondAttribute="bottom" constant="20" symbolic="YES" id="s3R-7G-5O8"/>
                             <constraint firstItem="wEK-ud-1k4" firstAttribute="leading" secondItem="Rzz-8T-XGf" secondAttribute="leading" constant="20" id="tia-5i-vYA"/>
-                            <constraint firstItem="lGv-gP-N9u" firstAttribute="leading" secondItem="UC7-V4-Wrp" secondAttribute="trailing" constant="-422" id="vZI-zn-bsP"/>
                             <constraint firstItem="wEK-ud-1k4" firstAttribute="leading" secondItem="Yfd-O9-RLA" secondAttribute="leading" id="vcT-rj-dVO"/>
                         </constraints>
                     </view>
