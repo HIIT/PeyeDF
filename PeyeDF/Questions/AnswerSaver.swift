@@ -72,7 +72,7 @@ class AnswerSaver {
         outObject["timeTaken"] = QuestionSingleton.timeTaken
         outObject["answers"] = answers
         
-        let dateFormat = "d'-'MM'-'d'_'HH'.'mm'.'ss"  // date format for output file
+        let dateFormat = "d'-'MM'-'Y'_'HH'.'mm'.'ss"  // date format for output file
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = dateFormat
         let dateString = dateFormatter.string(from: Date())
