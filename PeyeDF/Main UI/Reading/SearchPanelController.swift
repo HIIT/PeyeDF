@@ -288,12 +288,24 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
             
             // normal search
             if exact {
-                pdfReader!.document!.beginFindString(theString, withOptions: Int(NSString.CompareOptions.caseInsensitive.rawValue))
+                if #available(OSX 10.12, *) {
+                    pdfReader!.document!.findString(theString, withOptions: Int(NSString.CompareOptions.caseInsensitive.rawValue))
+                } else {
+                    pdfReader!.document!.beginFindString(theString, withOptions: Int(NSString.CompareOptions.caseInsensitive.rawValue))
+                }
             } else {
                 guard let searchS = theString.split(" ") else {
                     return
                 }
-                pdfReader!.document!.beginFind(searchS, withOptions: Int(NSString.CompareOptions.caseInsensitive.rawValue))
+                // temporary (?) fix for bug in Sierra
+                if #available(OSX 10.12, *) {
+                    searchS.forEach() {
+                        pdfReader!.document!.findString($0, withOptions: Int(NSString.CompareOptions.caseInsensitive.rawValue))
+                    }
+                } else {
+                    pdfReader!.document!.beginFind(searchS, withOptions: Int(NSString.CompareOptions.caseInsensitive.rawValue))
+                }
+                
             }
         }
         
