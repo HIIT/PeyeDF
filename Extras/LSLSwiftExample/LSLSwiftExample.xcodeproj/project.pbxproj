@@ -13,6 +13,7 @@
 		A926FAE21DA7900E00B857EB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A926FAE01DA7900E00B857EB /* Main.storyboard */; };
 		A926FAEC1DA790BD00B857EB /* liblsl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A926FAEB1DA790BD00B857EB /* liblsl.dylib */; };
 		A926FAEF1DA79A7800B857EB /* lsl_api.cfg in CopyFiles */ = {isa = PBXBuildFile; fileRef = A926FAED1DA79A5F00B857EB /* lsl_api.cfg */; };
+		A9BFDAC41DC8FE9E00F6DD92 /* LSLXMLParserDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BFDAC31DC8FE9E00F6DD92 /* LSLXMLParserDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -39,6 +40,7 @@
 		A926FAEA1DA7909E00B857EB /* lsl_c.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = lsl_c.h; sourceTree = "<group>"; };
 		A926FAEB1DA790BD00B857EB /* liblsl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = liblsl.dylib; sourceTree = "<group>"; };
 		A926FAED1DA79A5F00B857EB /* lsl_api.cfg */ = {isa = PBXFileReference; lastKnownFileType = text; path = lsl_api.cfg; sourceTree = "<group>"; };
+		A9BFDAC31DC8FE9E00F6DD92 /* LSLXMLParserDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LSLXMLParserDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +83,7 @@
 				A926FAE01DA7900E00B857EB /* Main.storyboard */,
 				A926FAE31DA7900E00B857EB /* Info.plist */,
 				A926FAE91DA7905000B857EB /* LSLSwiftExample-Bridging-Header.h */,
+				A9BFDAC31DC8FE9E00F6DD92 /* LSLXMLParserDelegate.swift */,
 			);
 			path = LSLSwiftExample;
 			sourceTree = "<group>";
@@ -113,7 +116,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0800;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = "Aalto University";
 				TargetAttributes = {
 					A926FAD61DA7900E00B857EB = {
@@ -158,6 +161,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9BFDAC41DC8FE9E00F6DD92 /* LSLXMLParserDelegate.swift in Sources */,
 				A926FADD1DA7900E00B857EB /* ViewController.swift in Sources */,
 				A926FADB1DA7900E00B857EB /* AppDelegate.swift in Sources */,
 			);
@@ -195,6 +199,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -245,6 +250,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -324,6 +330,7 @@
 				A926FAE81DA7900E00B857EB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
