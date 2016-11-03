@@ -26,26 +26,41 @@
 
 import Foundation
 
-struct RawEyePosition {
+struct RawEyePosition: FloatDictInitializable {
     var timestamp: Int
     var EyePositionX: Double
     var EyePositionY: Double
     var EyePositionZ: Double  // eye distance from screen in mm
     
     /// Creates a new eye position, using the last available element in the json (from MIDAS)
-//    init(fromLastInMidasJSON json: JSON, dominantEye: Eye) {
-//        timestamp = json[0]["return"]["timestamp"]["data"].arrayValue.last!.intValue
-//        var eyeString: String
-//        switch dominantEye {
-//        case .left:
-//            eyeString = "left"
-//        case .right:
-//            eyeString = "right"
-//        }
-//        EyePositionX = json[0]["return"]["\(eyeString)EyePositionX"]["data"].arrayValue.last!.doubleValue
-//        EyePositionY = json[0]["return"]["\(eyeString)EyePositionY"]["data"].arrayValue.last!.doubleValue
-//        EyePositionZ = json[0]["return"]["\(eyeString)EyePositionZ"]["data"].arrayValue.last!.doubleValue
-//    }
+    init(fromLastInMidasJSON json: JSON, dominantEye: Eye) {
+        timestamp = json[0]["return"]["timestamp"]["data"].arrayValue.last!.intValue
+        var eyeString: String
+        switch dominantEye {
+        case .left:
+            eyeString = "left"
+        case .right:
+            eyeString = "right"
+        }
+        EyePositionX = json[0]["return"]["\(eyeString)EyePositionX"]["data"].arrayValue.last!.doubleValue
+        EyePositionY = json[0]["return"]["\(eyeString)EyePositionY"]["data"].arrayValue.last!.doubleValue
+        EyePositionZ = json[0]["return"]["\(eyeString)EyePositionZ"]["data"].arrayValue.last!.doubleValue
+    }
+    
+    init(floatDict dict: [String: Float]) {
+        let eyeString: String
+        switch AppSingleton.dominantEye {
+        case .left:
+            eyeString = "left"
+        case .right:
+            eyeString = "right"
+        }
+        
+        self.timestamp = Int(dict["timestamp"]!)
+        self.EyePositionX = Double(dict["\(eyeString)EyePositionX"]!)
+        self.EyePositionY = Double(dict["\(eyeString)EyePositionY"]!)
+        self.EyePositionZ = Double(dict["\(eyeString)EyePositionZ"]!)
+    }
     
     /// Returns true if this eye position is actually missing (eyes closed, or unseen)
     func zeroed() -> Bool {

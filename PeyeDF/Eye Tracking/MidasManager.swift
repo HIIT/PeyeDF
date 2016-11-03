@@ -128,7 +128,7 @@ class MidasManager: EyeDataProvider {
                 self.midasAvailable = success
                 self.eyeConnectionChange(available: success)
                 
-                if success {
+                if !success {
                     AppSingleton.alertUser("Midas is down", infoText: "Initial connection to midas failed")
                 } else if self.fetchTimer == nil {
                     MidasManager.sharedQueue.async {
@@ -202,7 +202,7 @@ class MidasManager: EyeDataProvider {
             if json[0]["return"]["timestamp"]["data"].arrayValue.count > 0 {
                 
                 // send last raw eye position
-                let lastPos = RawEyePosition(fromLastInJSON: json, dominantEye: AppSingleton.dominantEye)
+                let lastPos = RawEyePosition(fromLastInMidasJSON: json, dominantEye: AppSingleton.dominantEye)
                 sendLastRaw(lastPos)
                 
                 // check if the entry buffer is all zeros (i.e. eye lost for 1 whole second, assuming a buffer length of 1)
@@ -216,7 +216,7 @@ class MidasManager: EyeDataProvider {
         case .fixations:
             // fetch fixations which arrived after last recorded fixation and after the user started reading, whichever comes latest
             let minUnixTime = max(lastFixationUnixtime, HistoryManager.sharedManager.readingUnixTime)
-            if let (newFixations, lut) = getTimedFixationsAfter(unixtime: minUnixTime, forEye: AppSingleton.dominantEye, fromJSON: json) {
+            if let (newFixations, lut) = getTimedFixationsAfter(fromMidasJSON: json, unixtime: minUnixTime, forEye: AppSingleton.dominantEye) {
                 // only send fixations if user is reading
                 if HistoryManager.sharedManager.userIsReading {
                     fixationDelegate?.receiveNewFixationData(newFixations)

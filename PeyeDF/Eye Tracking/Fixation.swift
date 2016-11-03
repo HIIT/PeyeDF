@@ -26,7 +26,7 @@
 
 import Foundation
 
-struct FixationEvent: Equatable {
+struct FixationEvent: Equatable, FloatDictInitializable {
     var eye: Eye
     var startTime: Int
     var endTime: Int
@@ -34,6 +34,28 @@ struct FixationEvent: Equatable {
     var positionX: Double
     var positionY: Double
     var unixtime: Int
+    
+    /// Trivial initializer
+    init(eye: Eye, startTime: Int, endTime: Int, duration: Int, positionX: Double, positionY: Double, unixtime: Int) {
+        self.eye = eye
+        self.startTime = startTime
+        self.endTime = endTime
+        self.duration = duration
+        self.positionX = positionX
+        self.positionY = positionY
+        self.unixtime = unixtime
+    }
+    
+    init(floatDict dict: [String: Float]) {
+        self.eye = Eye(rawValue: Int(dict["eye"]!))!
+        self.startTime = Int(dict["startTime"]!)
+        self.duration = Int(dict["duration"]!)
+        self.endTime = Int(dict["endTime"]!)
+        self.positionX = Double(dict["positionX"]!)
+        self.positionY = Double(dict["positionY"]!)
+        self.unixtime = Int(dict["marcotime"]!) + 1446909066675
+    }
+
 }
 
 func == (lhs: FixationEvent, rhs: FixationEvent) -> Bool {
@@ -46,11 +68,11 @@ func == (lhs: FixationEvent, rhs: FixationEvent) -> Bool {
            lhs.unixtime == rhs.unixtime
 }
 
-/// Returns an array of fixations for the given eye **which have duration > 0**, using the given json
+/// Returns an array of fixations for the given eye **which have duration > 0**, using the given json (from MIDAS)
 ///
 /// - returns: an array of fixation events and if some value was found and the last valid unix time
 ///            of the last fixation found (nil if no new values were found)
-func getTimedFixationsAfter(unixtime minUnixtime: Int, forEye eye: Eye, fromJSON json: JSON) -> (array: [FixationEvent], lastUnixtime: Int)? {
+func getTimedFixationsAfter(fromMidasJSON json: JSON, unixtime minUnixtime: Int, forEye eye: Eye) -> (array: [FixationEvent], lastUnixtime: Int)? {
     // find index to start from
     let timeArray = json[0]["return"]["startTime"]["data"].arrayObject as! [Int]
     

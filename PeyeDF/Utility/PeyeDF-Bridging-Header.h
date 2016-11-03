@@ -26,5 +26,6 @@
 #define PeyeDF_PeyeDF_Bridging_Header_h
 
 #import <CommonCrypto/CommonDigest.h>
+#import "lsl_c.h"
 
 #endif

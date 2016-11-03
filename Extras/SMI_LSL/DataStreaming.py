@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------
 #
-# (c) Copyright 1997-2013, SensoMotoric Instruments GmbH
+# (c) Copyright 1997-2013, SensoMotoric Instruments GmbH, Alto University
 # 
 # Permission  is  hereby granted,  free  of  charge,  to any  person  or
 # organization  obtaining  a  copy  of  the  software  and  accompanying
@@ -30,6 +30,10 @@
 # THE SOFTWARE.
 #
 # -----------------------------------------------------------------------
+
+# REQUIRES PYTHON 2
+# This script fetches data from the same machine in which iViewX is running.
+# All packets received from iViewX are passed on to Lab Streaming Layer.
 
 from iViewXAPI import  *            #iViewX library
 from iViewXAPIReturnCodes import * 
