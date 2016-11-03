@@ -529,10 +529,12 @@ class PDFBase: PDFView {
     /// - parameter onPage: Index starting from 0 on which the rect is
     /// - returns: A string if it was possible to generate it, nil if not
     func stringForRect(_ rect: NSRect, onPage: Int) -> String? {
-        if containsPlainText {
-            let page = document!.page(at: onPage)
-            let selection = page!.selection(for: rect)
-            return selection!.string
+        if containsPlainText, let document = document {
+            if let page = document.page(at: onPage), let selection = page.selection(for: rect) {
+                return selection.string
+            } else {
+                return nil
+            }
         } else {
             return nil
         }

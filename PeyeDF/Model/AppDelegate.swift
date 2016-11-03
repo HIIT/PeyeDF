@@ -107,7 +107,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Dime/Eye tracker down/up observers
         NotificationCenter.default.addObserver(self, selector: #selector(dimeConnectionChanged(_:)), name: PeyeConstants.diMeConnectionNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(eyeConnectionChanged(_:)), name:PeyeConstants.eyeConnectionNotification, object: nil)
-        
+                
         // Start multipeer connectivity
         Multipeer.advertiser.start()
     }

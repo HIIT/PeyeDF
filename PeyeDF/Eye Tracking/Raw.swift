@@ -32,6 +32,19 @@ struct RawEyePosition: FloatDictInitializable {
     var EyePositionY: Double
     var EyePositionZ: Double  // eye distance from screen in mm
     
+    /// Returns all zeroes (for example to indicate eyes lost)
+    static let zero: RawEyePosition = {
+        return RawEyePosition(timestamp: 0, EyePositionX: 0, EyePositionY: 0, EyePositionZ: 0)
+    }()
+    
+    /// Trivial initializer
+    init(timestamp: Int, EyePositionX: Double, EyePositionY: Double, EyePositionZ: Double) {
+        self.timestamp = timestamp
+        self.EyePositionX = EyePositionX
+        self.EyePositionY = EyePositionY
+        self.EyePositionZ = EyePositionZ
+    }
+    
     /// Creates a new eye position, using the last available element in the json (from MIDAS)
     init(fromLastInMidasJSON json: JSON, dominantEye: Eye) {
         timestamp = json[0]["return"]["timestamp"]["data"].arrayValue.last!.intValue

@@ -63,10 +63,12 @@ class eyeBox: NSBox {
     /// Notification callback
     func newDataReceived(_ notification: Notification) {
         let userInfo = (notification as NSNotification).userInfo!
-        dist = userInfo["zpos"] as! CGFloat
-        xdelta = userInfo["xpos"] as! CGFloat
-        ydelta = (userInfo["ypos"] as! CGFloat)
-        self.needsDisplay = true
+        DispatchQueue.main.async {
+            self.dist = CGFloat(userInfo["zpos"] as! Double)
+            self.xdelta = CGFloat(userInfo["xpos"] as! Double)
+            self.ydelta = CGFloat(userInfo["ypos"] as! Double)
+            self.needsDisplay = true
+        }
     }
 
     /// Draws itself depending on last received position
@@ -75,31 +77,36 @@ class eyeBox: NSBox {
         // circle max size when dist == maxdist has the radius of half the side size of inner box
         
         super.draw(dirtyRect)
-
+        
         let innerPathSize: CGFloat = frame.width - boxMargin * 2
         let innerPath = NSBezierPath(rect: NSRect(origin: NSPoint(x: boxMargin, y: boxMargin), size: NSSize(width: innerPathSize, height: innerPathSize)))
         
         innerPath.lineWidth = 1
         innerPath.lineJoinStyle = .roundLineJoinStyle
         
-        // 1 is mapped to circleMinSize
-        // maxProp is mapped to innerpathsize
-        let circleSize = translate(dist, leftMin: maxDist, leftMax: minDist, rightMin: circleMinSize, rightMax: innerPathSize / 2)
+        // only draw circle if all positions are != 0
         
-        
-        
-        if dist > minDist {
-            let circX = getDDelta(xdelta, maxDelta: maxXdelta, maxPos: innerPathSize / 2)
-            let circY = getDDelta(ydelta, maxDelta: maxYdelta, maxPos: innerPathSize / 2)
-            let centerPoint: CGFloat = frame.width / 2 // center point in the box x and y are the same
-            let circleOrigin = NSPoint(x: centerPoint + circX, y: centerPoint + circY)
-            let origin = NSPoint(x: circleOrigin.x - circleSize / 2, y: circleOrigin.y - circleSize / 2)
-            let circlePath = NSBezierPath(ovalIn: NSRect(origin: origin, size: NSSize(width: circleSize, height: circleSize)))
-            circlePath.stroke()
+        if self.dist != 0 && self.xdelta != 0  && self.ydelta != 0 {
+            
+            // 1 is mapped to circleMinSize
+            // maxProp is mapped to innerpathsize
+            let circleSize = translate(dist, leftMin: maxDist, leftMax: minDist, rightMin: circleMinSize, rightMax: innerPathSize / 2)
+            
+            if dist > minDist {
+                let circX = getDDelta(xdelta, maxDelta: maxXdelta, maxPos: innerPathSize / 2)
+                let circY = getDDelta(ydelta, maxDelta: maxYdelta, maxPos: innerPathSize / 2)
+                let centerPoint: CGFloat = frame.width / 2 // center point in the box x and y are the same
+                let circleOrigin = NSPoint(x: centerPoint + circX, y: centerPoint + circY)
+                let origin = NSPoint(x: circleOrigin.x - circleSize / 2, y: circleOrigin.y - circleSize / 2)
+                let circlePath = NSBezierPath(ovalIn: NSRect(origin: origin, size: NSSize(width: circleSize, height: circleSize)))
+                circlePath.stroke()
+            }
+            
         }
         
         marginColour.set()
         innerPath.stroke()
+            
     }
     
     /// Translates a raw position (x and/or y) into box position

@@ -64,6 +64,7 @@ class LSLManager: EyeDataProvider {
             available = true
         } else {
             AppSingleton.log.error("Failed to initialize both LSL streams")
+            AppSingleton.alertUser("Failed to initialize Lab Streaming Layer")
             eyeConnectionChange(available: false)
             available = false
         }
@@ -92,6 +93,7 @@ class LSLManager: EyeDataProvider {
     
     init() {
         
+        // Raw data (used for head position and whether eyes are present)
         let rawDataCallback: (Double, RawEyePosition?) -> Void = {
             _, rawPosition in
             
@@ -102,22 +104,25 @@ class LSLManager: EyeDataProvider {
                 // change eye status
                 if !self.eyesLost && self.eyesLastSeen.addingTimeInterval(self.kEyesMaxLostDuration).compare(Date()) == .orderedAscending {
                     self.eyesLost = true
+                    self.sendLastRaw(RawEyePosition.zero)
                 }
                 return
             }
             
             // check that this timestamp is later than the latest received timestamp before proceeding
             guard self.lastRawTimestamp < rawPosition.timestamp else {
+                AppSingleton.log.warning("RAW DUPLICATE") // TODO: remove this
                 return
             }
+            self.lastRawTimestamp = rawPosition.timestamp
             
             self.eyesLost = false
             
             self.sendLastRaw(rawPosition)
-            self.lastRawTimestamp = rawPosition.timestamp
             self.eyesLastSeen = Date()
         }
         
+        // Fixation data (used to determine what the user is reading)
         let fixationDataCallback: (Double, FixationEvent?) -> Void = {
             _, fixationEvent in
             
@@ -128,11 +133,12 @@ class LSLManager: EyeDataProvider {
             // check that this fixation start is bigger than the latest received fixation
             // start before proceeding
             guard self.lastFixationStart < fixationEvent.startTime else {
+                AppSingleton.log.warning("FIXATION DUPLICATE") // TODO: remove this
                 return
             }
+            self.lastFixationStart = fixationEvent.startTime
             
             self.fixationDelegate?.receiveNewFixationData([fixationEvent])
-            self.lastFixationStart = fixationEvent.startTime
         }
         
         rawStream = LSLFetcher<RawEyePosition>(name: "SMI_Raw", dataCallback: rawDataCallback)

@@ -98,7 +98,8 @@ class LSLFetcher<EyeDataType: FloatDictInitializable> {
         let found = lsl_resolve_byprop(&inf, 1, UnsafeMutablePointer<Int8>(mutating: ("name" as NSString).utf8String), UnsafeMutablePointer<Int8>(mutating: streamName.utf8String), 1, timeout)
         
         guard found == 1, let streamInfo = inf else {
-            Swift.print("Failed to find stream")  // TODO: change to log
+            AppSingleton.log.error("Failed to find LSL stream: \(self.streamName)")
+            active = false
             return false
         }
         
@@ -127,7 +128,8 @@ class LSLFetcher<EyeDataType: FloatDictInitializable> {
         lsl_open_stream(inlet, timeout, &errcode)
         
         guard errcode == 0 else {
-            Swift.print("Failed to open LSL stream. Code: \(errcode)")  // TODO: change to log / display message
+            AppSingleton.log.error("Failed to open LSL stream: \(self.streamName). Code: \(errcode)")
+            active = false
             return false
         }
         
