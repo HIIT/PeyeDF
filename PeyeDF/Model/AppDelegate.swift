@@ -45,7 +45,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     /// PeyeDF closes itself to prevent potential leaks and allow opened PDFs to be deleted (after a given amount of time passed)
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        return Date().timeIntervalSince(launchDate) > PeyeConstants.closeAfterLaunch && !(AppSingleton.EyeTracker?.available ?? false) && Multipeer.session.connectedPeers.count < 1
+        return Date().timeIntervalSince(launchDate) > PeyeConstants.closeAfterLaunch && !(AppSingleton.eyeTracker?.available ?? false) && Multipeer.session.connectedPeers.count < 1
     }
     
     /// Sets up custom url handler
@@ -59,6 +59,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         defaultPrefs[PeyeConstants.prefDiMeServerPassword] = "123456"
         defaultPrefs[PeyeConstants.prefStringBlockList] = [" iban ", "iban:", " visa ", " visa:", "mastercard", "american express"]
         defaultPrefs[PeyeConstants.prefUseEyeTracker] = 0
+        defaultPrefs[PeyeConstants.prefUseMidas] = 0
+        defaultPrefs[PeyeConstants.prefUseLSL] = 0
         defaultPrefs[PeyeConstants.prefAskToSaveOnClose] = 0
         defaultPrefs[PeyeConstants.prefEnableAnnotate] = 0
         defaultPrefs[PeyeConstants.prefDownloadMetadata] = 1
@@ -91,8 +93,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // If we want to use eye tracker, start it
         let useEye = UserDefaults.standard.object(forKey: PeyeConstants.prefUseEyeTracker) as! Bool
         if useEye {
-            AppSingleton.EyeTracker?.start()
-            AppSingleton.EyeTracker?.fixationDelegate = HistoryManager.sharedManager
+            // check whether we want to use midas or lsl
+            if UserDefaults.standard.object(forKey: PeyeConstants.prefUseMidas) as! Bool {
+                AppSingleton.eyeTracker = MidasManager()
+            } else {
+                // if no midas, assume lsl
+                AppSingleton.eyeTracker = LSLManager()
+            }
+            AppSingleton.eyeTracker?.start()
+            AppSingleton.eyeTracker?.fixationDelegate = HistoryManager.sharedManager
         }
         
         // Dime/Eye tracker down/up observers
@@ -263,11 +272,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// Callback for connect to midas menu action
     @IBAction func connectEyeTracker(_ sender: NSMenuItem) {
         if connectEyeTracker.state == NSOffState {
-            AppSingleton.EyeTracker?.start()
-            AppSingleton.EyeTracker?.fixationDelegate = HistoryManager.sharedManager
+            AppSingleton.eyeTracker?.start()
+            AppSingleton.eyeTracker?.fixationDelegate = HistoryManager.sharedManager
         } else {
-            AppSingleton.EyeTracker?.stop()
-            AppSingleton.EyeTracker?.fixationDelegate = nil
+            AppSingleton.eyeTracker?.stop()
+            AppSingleton.eyeTracker?.fixationDelegate = nil
         }
     }
     
@@ -311,8 +320,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
-        AppSingleton.EyeTracker?.fixationDelegate = nil
-        AppSingleton.EyeTracker?.stop()
+        AppSingleton.eyeTracker?.fixationDelegate = nil
+        AppSingleton.eyeTracker?.stop()
         NotificationCenter.default.removeObserver(self, name: PeyeConstants.diMeConnectionNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: PeyeConstants.eyeConnectionNotification, object: nil)
     }

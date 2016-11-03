@@ -104,7 +104,7 @@ class PeyeDocument: NSDocument {
         let windowController = storyboard.instantiateController(withIdentifier: "Document Window Controller") as! DocumentWindowController
         
         // if eye tracker is NOT active, cascade window, otherwise constrain to center of screen
-        if !(AppSingleton.EyeTracker?.available ?? false) {
+        if !(AppSingleton.eyeTracker?.available ?? false) {
             // cascade window
             AppSingleton.nextDocWindowPos = windowController.window!.cascadeTopLeft(from: AppSingleton.nextDocWindowPos)
         } else {

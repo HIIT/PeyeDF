@@ -86,8 +86,8 @@ class HistoryManager: FixationDataDelegate {
         if let window = documentWindow.window, let _ = documentWindow.pdfReader?.sciDoc {
             if window.isMainWindow {
                 // if we are tracking eyes, make sure eyes are available before starting
-                if AppSingleton.EyeTracker?.available ?? false {
-                    if !(AppSingleton.EyeTracker?.eyesLost ?? true) {
+                if AppSingleton.eyeTracker?.available ?? false {
+                    if !(AppSingleton.eyeTracker?.eyesLost ?? true) {
                         preparation(documentWindow)
                     }
                 } else {

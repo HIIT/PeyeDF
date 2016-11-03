@@ -84,7 +84,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable, NearlyEquatabl
     }
     
     init(pageIndex: Int, rect: NSRect, pdfBase: PDFBase?) {
-        self.screenDistance = Double(AppSingleton.EyeTracker?.lastValidDistance ?? 800.0)
+        self.screenDistance = Double(AppSingleton.eyeTracker?.lastValidDistance ?? 800.0)
         let newUnixt = Date().unixTime
         self.unixt = [Int]()
         self.unixt.append(newUnixt)

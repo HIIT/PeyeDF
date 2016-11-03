@@ -46,8 +46,14 @@ class PeyeConstants {
     /// Dominant eye
     static let prefDominantEye = "eye.dominant"
     
-    /// Use eye tracker on start
+    /// Use (any) eye tracker on start
     static let prefUseEyeTracker = "eye.useTracker"
+    
+    /// Use midas as eye tracker on start
+    static let prefUseMidas = "eye.useMidas"
+    
+    /// Use LSL as eye tracker on start
+    static let prefUseLSL = "eye.useLSL"
         
     /// Check for updates on startup
     static let prefCheckForUpdatesOnStartup = "updates.checkOnStartup"

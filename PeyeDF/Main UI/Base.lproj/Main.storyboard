@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16B2553a" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16C32f" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11201"/>
-        <plugIn identifier="com.apple.pdfkit.ibplugin" version="11201"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11542"/>
+        <plugIn identifier="com.apple.pdfkit.ibplugin" version="11542"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="box content view" minToolsVersion="7.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Preferences Window-->
@@ -495,16 +496,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="451" height="472"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <button translatesAutoresizingMaskIntoConstraints="NO" id="Iiy-iz-0VN">
-                                <rect key="frame" x="18" y="399" width="223" height="18"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="14" id="RWa-eo-GuO"/>
-                                </constraints>
-                                <buttonCell key="cell" type="check" title="Use eye tracker (requires restart)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="Bb6-6d-9YX">
-                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                            </button>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Fcv-fJ-S98">
                                 <rect key="frame" x="18" y="306" width="76" height="17"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Monitor DPI" id="sCg-RY-hSV">
@@ -839,29 +830,56 @@
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="180" id="Fiv-jI-iIJ"/>
                                 </constraints>
                             </box>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="LiC-qa-DVE">
+                                <rect key="frame" x="18" y="407" width="213" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Use eye tracker (requires restart): " id="afV-eF-nb9">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="k2y-p9-6BV">
+                                <rect key="frame" x="235" y="401" width="74" height="26"/>
+                                <popUpButtonCell key="cell" type="push" title="Off" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="om9-vK-t1Z" id="1Pw-7o-rfP">
+                                    <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="menu"/>
+                                    <menu key="menu" id="l3r-Ag-gVL">
+                                        <items>
+                                            <menuItem title="Off" state="on" id="om9-vK-t1Z"/>
+                                            <menuItem title="LSL" id="K9f-XW-Cg1"/>
+                                            <menuItem title="Midas" id="M8d-TS-GMn"/>
+                                        </items>
+                                    </menu>
+                                </popUpButtonCell>
+                                <connections>
+                                    <action selector="eyeTrackerSelection:" target="bHM-3n-NND" id="VhE-xb-fRb"/>
+                                </connections>
+                            </popUpButton>
                         </subviews>
                         <constraints>
                             <constraint firstItem="T3S-oz-d7h" firstAttribute="top" secondItem="9oH-vu-xuj" secondAttribute="top" constant="20" symbolic="YES" id="0bj-N5-tWZ"/>
                             <constraint firstItem="ytI-Iw-v9h" firstAttribute="leading" secondItem="Fcv-fJ-S98" secondAttribute="trailing" constant="15" id="2cW-Tc-1bo"/>
+                            <constraint firstItem="k2y-p9-6BV" firstAttribute="leading" secondItem="LiC-qa-DVE" secondAttribute="trailing" constant="8" id="3ZF-6u-mvt"/>
                             <constraint firstAttribute="trailing" secondItem="tbf-Mm-3jn" secondAttribute="trailing" constant="20" id="3bX-DP-CKx"/>
+                            <constraint firstItem="W6i-Y4-YAl" firstAttribute="top" secondItem="LiC-qa-DVE" secondAttribute="bottom" constant="14" id="4eP-6D-UBb"/>
                             <constraint firstAttribute="bottom" secondItem="tbf-Mm-3jn" secondAttribute="bottom" constant="20" symbolic="YES" id="4rm-ns-hNL"/>
-                            <constraint firstItem="Iiy-iz-0VN" firstAttribute="top" secondItem="T3S-oz-d7h" secondAttribute="bottom" multiplier="1.5" constant="6" symbolic="YES" id="67Z-rL-TqZ"/>
+                            <constraint firstItem="LiC-qa-DVE" firstAttribute="top" secondItem="T3S-oz-d7h" secondAttribute="bottom" constant="14" id="7Fe-SB-MQH"/>
                             <constraint firstAttribute="bottom" secondItem="ytI-Iw-v9h" secondAttribute="bottom" priority="750" constant="20" symbolic="YES" id="Bqw-Os-8RP"/>
                             <constraint firstItem="tbf-Mm-3jn" firstAttribute="leading" secondItem="9oH-vu-xuj" secondAttribute="leading" constant="20" id="Ds6-Dn-JVA"/>
-                            <constraint firstItem="W6i-Y4-YAl" firstAttribute="top" secondItem="Iiy-iz-0VN" secondAttribute="bottom" constant="8" symbolic="YES" id="QyQ-iX-TZT"/>
-                            <constraint firstItem="Iiy-iz-0VN" firstAttribute="leading" secondItem="9oH-vu-xuj" secondAttribute="leading" constant="20" symbolic="YES" id="R7S-NZ-1eg"/>
-                            <constraint firstItem="W6i-Y4-YAl" firstAttribute="leading" secondItem="Iiy-iz-0VN" secondAttribute="leading" id="ZXR-on-uY0"/>
                             <constraint firstItem="T3S-oz-d7h" firstAttribute="leading" secondItem="9oH-vu-xuj" secondAttribute="leading" constant="20" symbolic="YES" id="ZkD-gk-gkW"/>
+                            <constraint firstItem="W6i-Y4-YAl" firstAttribute="leading" secondItem="9oH-vu-xuj" secondAttribute="leading" constant="20" id="d3t-fJ-jVW"/>
                             <constraint firstItem="Fcv-fJ-S98" firstAttribute="centerY" secondItem="ytI-Iw-v9h" secondAttribute="centerY" constant="-0.5" id="fFR-XE-Dm0"/>
+                            <constraint firstItem="LiC-qa-DVE" firstAttribute="leading" secondItem="9oH-vu-xuj" secondAttribute="leading" constant="20" id="kOd-Ar-bGH"/>
                             <constraint firstItem="Fcv-fJ-S98" firstAttribute="leading" secondItem="W6i-Y4-YAl" secondAttribute="leading" id="oxf-1W-iYK"/>
                             <constraint firstItem="Fcv-fJ-S98" firstAttribute="top" secondItem="W6i-Y4-YAl" secondAttribute="bottom" constant="8" symbolic="YES" id="vWl-PY-1wi"/>
                             <constraint firstItem="0Jg-D8-z6d" firstAttribute="top" secondItem="Fcv-fJ-S98" secondAttribute="bottom" constant="26" id="vm8-7E-Hin"/>
+                            <constraint firstItem="LiC-qa-DVE" firstAttribute="baseline" secondItem="k2y-p9-6BV" secondAttribute="baseline" id="xge-f3-9rd"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="dataReloadedLabel" destination="sFB-fl-ZWW" id="jkc-eQ-mJL"/>
                         <outlet property="dpiField" destination="ytI-Iw-v9h" id="yqt-8P-ESx"/>
-                        <outlet property="eyeTrackerCell" destination="Bb6-6d-9YX" id="Pra-vt-c5s"/>
+                        <outlet property="eyeTrackerPopUp" destination="k2y-p9-6BV" id="eX1-So-JX2"/>
                         <outlet property="inputPartLoc" destination="iBq-YR-PYk" id="1ah-L7-bD5"/>
                         <outlet property="inputQuestionsLoc" destination="BZ4-SR-CLd" id="fBK-Ag-DZS"/>
                         <outlet property="leftDomEyeButton" destination="dqr-WX-3sW" id="eBZ-se-dhC"/>
@@ -878,7 +896,7 @@
                 </viewController>
                 <customObject id="zi8-ON-ajb" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1006" y="-1564"/>
+            <point key="canvasLocation" x="1005.5" y="-1564"/>
         </scene>
         <!--Debug-->
         <scene sceneID="2Oi-5q-qjT">

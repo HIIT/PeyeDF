@@ -100,11 +100,20 @@ class LSLManager: EyeDataProvider {
                 
                 // if eyes are currently indicated as available, but too much time has passed,
                 // change eye status
+                if !self.eyesLost && self.eyesLastSeen.addingTimeInterval(self.kEyesMaxLostDuration).compare(Date()) == .orderedAscending {
+                    self.eyesLost = true
+                }
                 return
             }
             
             // check that this timestamp is later than the latest received timestamp before proceeding
+            guard self.lastRawTimestamp < rawPosition.timestamp else {
+                return
+            }
             
+            self.eyesLost = false
+            
+            self.sendLastRaw(rawPosition)
             self.lastRawTimestamp = rawPosition.timestamp
             self.eyesLastSeen = Date()
         }
@@ -118,8 +127,11 @@ class LSLManager: EyeDataProvider {
             
             // check that this fixation start is bigger than the latest received fixation
             // start before proceeding
+            guard self.lastFixationStart < fixationEvent.startTime else {
+                return
+            }
             
-            
+            self.fixationDelegate?.receiveNewFixationData([fixationEvent])
             self.lastFixationStart = fixationEvent.startTime
         }
         

@@ -31,7 +31,7 @@ class MyOverlay: NSView {
     
     /// Whether the eye overlay must be drawn
     fileprivate(set) lazy var drawEyeCross: Bool = {
-        if let tracker = AppSingleton.EyeTracker {
+        if let tracker = AppSingleton.eyeTracker {
             return tracker.available && tracker.eyesLost
         } else {
             return false

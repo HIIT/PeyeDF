@@ -954,7 +954,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     /// allowed size when eye tracker is active and stays within its boundaries.
     func windowDidResize(_ notification: Notification) {
         // only constrain if eye tracker is active
-        if AppSingleton.EyeTracker?.available ?? false {
+        if AppSingleton.eyeTracker?.available ?? false {
             if let window = notification.object as? NSWindow, let screen = window.screen {
                 let shrankRect = DocumentWindow.getConstrainingRect(forScreen: screen)
                 let intersectedRect = shrankRect.intersection(window.frame)

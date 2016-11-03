@@ -61,13 +61,13 @@ class AppSingleton {
     static let log = AppSingleton.createLog()
     static fileprivate(set) var logsURL: URL?
     
-    /// The class that provides eye tracking data
-    static let EyeTracker: EyeDataProvider? = MidasManager()
+    /// The class that provides eye tracking data (set by app delegate on start)
+    static var eyeTracker: EyeDataProvider? = nil
     
     /// Convenience getter for user's distance from screen, which defaults to 80cm
     /// if not known
     static var userDistance: CGFloat { get {
-        if let tracker = EyeTracker {
+        if let tracker = eyeTracker {
             return tracker.lastValidDistance
         } else {
             return 800

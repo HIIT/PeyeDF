@@ -36,11 +36,11 @@ class ExperimentPreferencesController: NSViewController {
     
     @IBOutlet weak var showJsonMenusCell: NSButtonCell!
     
+    @IBOutlet weak var eyeTrackerPopUp: NSPopUpButton!
     @IBOutlet weak var leftDomEyeButton: NSButton!
     @IBOutlet weak var rightDomEyeButton: NSButton!
     
     @IBOutlet weak var dpiField: NSTextField!  // is second item when questions are off
-    @IBOutlet weak var eyeTrackerCell: NSButtonCell!
 
     /// Hidden if we are not in the Questions target
     @IBOutlet weak var questionBox: NSBox!
@@ -56,8 +56,41 @@ class ExperimentPreferencesController: NSViewController {
         }
     }
     
+    @IBAction func eyeTrackerSelection(_ sender: NSPopUpButton) {
+        // Possible states are "Off", "LSL", and "Midas"
+        switch sender.selectedItem!.title {
+        case "Off":
+            UserDefaults.standard.set(0, forKey: PeyeConstants.prefUseEyeTracker)
+            UserDefaults.standard.set(0, forKey: PeyeConstants.prefUseMidas)
+            UserDefaults.standard.set(0, forKey: PeyeConstants.prefUseLSL)
+        case "Midas":
+            UserDefaults.standard.set(1, forKey: PeyeConstants.prefUseEyeTracker)
+            UserDefaults.standard.set(1, forKey: PeyeConstants.prefUseMidas)
+            UserDefaults.standard.set(0, forKey: PeyeConstants.prefUseLSL)
+        case "LSL":
+            UserDefaults.standard.set(1, forKey: PeyeConstants.prefUseEyeTracker)
+            UserDefaults.standard.set(0, forKey: PeyeConstants.prefUseMidas)
+            UserDefaults.standard.set(1, forKey: PeyeConstants.prefUseLSL)
+        default:
+            AppSingleton.log.error("Invalid eye tracker selected")
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // set eye tracker popup to corresponding system
+        // first is off, second is lsl, third is midas
+        if UserDefaults.standard.object(forKey: PeyeConstants.prefUseEyeTracker) as! Bool {
+            if UserDefaults.standard.object(forKey: PeyeConstants.prefUseMidas) as! Bool {
+                eyeTrackerPopUp.select(eyeTrackerPopUp.menu!.items[2])  // midas
+            } else {
+                // assume LSL
+                eyeTrackerPopUp.select(eyeTrackerPopUp.menu!.items[1])  // LSL
+            }
+        } else {
+            eyeTrackerPopUp.select(eyeTrackerPopUp.menu!.items[0])  // off
+        }
         
         if AppSingleton.dominantEye == .left {
             leftDomEyeButton.state = NSOnState
@@ -77,7 +110,6 @@ class ExperimentPreferencesController: NSViewController {
         showJsonMenusCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefShowJsonMenus, options: options)
 
         dpiField.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefMonitorDPI, options: options)
-        eyeTrackerCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefUseEyeTracker, options: options)
         
         // MARK: - "Questions" target
         
