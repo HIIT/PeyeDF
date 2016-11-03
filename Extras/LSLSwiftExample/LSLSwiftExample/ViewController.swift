@@ -34,13 +34,13 @@ class ViewController: NSViewController {
             // Spend 3 seconds trying to fill a buffer of size 1024
 //            let found = lsl_resolve_all(&inf, 1024, 3)
 //            let found = lsl_resolve_byprop(&inf, 1, UnsafeMutablePointer<Int8>(mutating: ("name" as NSString).utf8String), UnsafeMutablePointer<Int8>(mutating: ("SMI_Event" as NSString).utf8String), 1, 3)
-            let found = lsl_resolve_byprop(&inf, 1, UnsafeMutablePointer<Int8>(mutating: ("name" as NSString).utf8String), UnsafeMutablePointer<Int8>(mutating: ("SMI_Event" as NSString).utf8String), 1, 3)
+            let found = lsl_resolve_byprop(&inf, 1, UnsafeMutablePointer<Int8>(mutating: ("name" as NSString).utf8String), UnsafeMutablePointer<Int8>(mutating: ("SMI_Event" as NSString).utf8String), 1, 5)
             Swift.print(found)
             
             if inf != nil {
                 
-                // With a buffer of 6 minutes of data, fill inlet
-                let inlet = lsl_create_inlet(inf, 360, LSL_NO_PREFERENCE, 1)
+                // With a buffer of 1 minute of data, fill inlet
+                let inlet = lsl_create_inlet(inf, 60, LSL_NO_PREFERENCE, 1)
                 
                 // Retrieve full information from stream (required)
                 let fullinfo = lsl_get_fullinfo(inlet, LSL_FOREVER, nil)
@@ -64,7 +64,7 @@ class ViewController: NSViewController {
                 }
                 DispatchQueue.global(qos: .background).async {
                     let channelIndex = parsDelegate.channelIndexes["positionX"]!
-                    for _ in 0..<10000000 {
+                    while true {
                         var buf: [Float] = [0, 0, 0, 0, 0, 0]
                         let timestamp = lsl_pull_sample_f(ii, &buf, Int32(buf.count), 5, &errcode)
                         Swift.print("x pos is \(buf[channelIndex])")
