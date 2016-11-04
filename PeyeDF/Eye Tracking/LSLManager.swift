@@ -109,9 +109,9 @@ class LSLManager: EyeDataProvider {
                 return
             }
             
-            // check that this timestamp is later than the latest received timestamp before proceeding
+            // check that this timestamp is later than the latest received timestamp before proceeding.
+            // (to avoid dispatching duplicate samples, which happen using the SMI Python API).
             guard self.lastRawTimestamp < rawPosition.timestamp else {
-                AppSingleton.log.warning("RAW DUPLICATE") // TODO: remove this
                 return
             }
             self.lastRawTimestamp = rawPosition.timestamp
@@ -131,9 +131,9 @@ class LSLManager: EyeDataProvider {
             }
             
             // check that this fixation start is bigger than the latest received fixation
-            // start before proceeding
+            // start before proceeding.
+            // (to avoid dispatching duplicate samples, which happen using the SMI Python API).
             guard self.lastFixationStart < fixationEvent.startTime else {
-                AppSingleton.log.warning("FIXATION DUPLICATE") // TODO: remove this
                 return
             }
             self.lastFixationStart = fixationEvent.startTime
