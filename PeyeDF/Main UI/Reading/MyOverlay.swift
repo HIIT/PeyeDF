@@ -31,10 +31,21 @@ class MyOverlay: NSView {
     
     let dimeCross = CALayer()
     let eyeCross = CALayer()
+    var ourFix: CALayer?
+    var theirFix: CALayer?
+    let fixSize: CGFloat = 16
+    let fixOpacity: Float = 0.6
     
     override var wantsUpdateLayer: Bool { get {
         return true
     } }
+    
+    var drawDebugCirle: Bool = {
+        return UserDefaults.standard.object(forKey: PeyeConstants.prefDrawDebugCircle) as! Bool
+    }()
+    
+    let ourFixationColor: CGColor = #colorLiteral(red: 0.9372549057, green: 0.3490196168, blue: 0.1921568662, alpha: 1).cgColor
+    let theirFixationColor: CGColor = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1).cgColor
     
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
@@ -50,18 +61,39 @@ class MyOverlay: NSView {
     func completeInit() {
         self.wantsLayer = true
         self.layer?.backgroundColor = NSColor.clear.cgColor
+        
         dimeCross.backgroundColor = CGColor.black
         dimeCross.opacity = 0.5
         self.layer?.addSublayer(dimeCross)
+        
         eyeCross.backgroundColor = CGColor.black
         eyeCross.opacity = 0.5
         eyeCross.isHidden = true
         self.layer?.addSublayer(eyeCross)
+        
+        if drawDebugCirle {
+            let circle = CGPath(ellipseIn: CGRect(x: 0, y: 0, width: fixSize, height: fixSize), transform: nil)
+            
+            let ourLayer = CAShapeLayer()
+            ourLayer.path = circle
+            ourLayer.fillColor = ourFixationColor
+            ourLayer.opacity = fixOpacity
+            self.layer?.addSublayer(ourLayer)
+            ourFix = ourLayer
+            
+            let theirLayer = CAShapeLayer()
+            theirLayer.path = circle
+            theirLayer.fillColor = theirFixationColor
+            theirLayer.opacity = fixOpacity
+            self.layer?.addSublayer(theirLayer)
+            theirFix = theirLayer
+        }
+        
         self.layerContentsRedrawPolicy = NSViewLayerContentsRedrawPolicy.onSetNeedsDisplay
     }
     
     /// All events will be redirected to this view
-    weak var otherView: NSView?
+    weak var readerView: NSView?
     
     /// Reject first respnder status
     override var acceptsFirstResponder: Bool { return false }
@@ -70,7 +102,7 @@ class MyOverlay: NSView {
     override func viewDidMoveToWindow() {
         
         // basic setup
-        if otherView == nil {
+        if readerView == nil {
             let exception = NSException(name: NSExceptionName(rawValue: "otherView is not set"), reason: "Can't redirect events behind circleOVerlay", userInfo: nil)
             exception.raise()
         }
@@ -106,13 +138,15 @@ class MyOverlay: NSView {
     @objc fileprivate func eyeStateCallback(_ notification: Notification) {
         let uInfo = (notification as NSNotification).userInfo as! [String: AnyObject]
         let avail = uInfo["available"] as! Bool
-        eyeCross.isHidden = avail
-        self.needsDisplay = true
+        DispatchQueue.main.async {
+            self.eyeCross.isHidden = avail
+            self.needsDisplay = true
+        }
     }
     
     /// Redirect all events to otherView
     override func hitTest(_ aPoint: NSPoint) -> NSView? {
-        return otherView!.hitTest(aPoint)
+        return readerView!.hitTest(aPoint)
     }
     
     // MARK: - Drawing functions
@@ -122,6 +156,19 @@ class MyOverlay: NSView {
         drawEyeCross(inFrame: NSRect(origin: CGPoint(), size: self.frame.size))
         drawDiMeCross(inFrame: NSRect(origin: CGPoint(), size: self.frame.size))
         
+    }
+    
+    func moveFix(toPoint: CGPoint, isTheirs: Bool = false) {
+        let cx = toPoint.x - fixSize / 2
+        let cy = toPoint.y - fixSize / 2
+        let newPoint = CGPoint(x: cx, y: cy)
+        DispatchQueue.main.async {
+            if !isTheirs {
+                self.ourFix?.position = newPoint
+            } else {
+                self.theirFix?.position = newPoint
+            }
+        }
     }
     
     /// Drawing function for eye cross

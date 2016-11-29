@@ -45,8 +45,10 @@ class PDFSideController: NSViewController, ClickRecognizerDelegate, NSGestureRec
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        overlay.otherView = pdfReader  // tell circleOverlay to be transparent
+        overlay.readerView = pdfReader  // tell Overlay to be transparent
         doubleClickRecognizer.delegate = self  // to prevent immediate double click recognition
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(fixationReceived(notification:)), name: PeyeConstants.fixationWithinDocNotification, object: pdfReader)
     }
     
     /// Target for the gesture recognizer used to detect double clicks
@@ -70,7 +72,7 @@ class PDFSideController: NSViewController, ClickRecognizerDelegate, NSGestureRec
         return doubleClickRecognizer.isEnabled && tripleClickRecognizer.isEnabled
     }
     
-    // MARK: Delegation
+    // MARK: - Delegation
     
     /// Overriding this method to prevent double clicks from registering immediately
     func gestureRecognizer(_ gestureRecognizer: NSGestureRecognizer, shouldRequireFailureOf otherGestureRecognizer: NSGestureRecognizer) -> Bool {
@@ -79,6 +81,18 @@ class PDFSideController: NSViewController, ClickRecognizerDelegate, NSGestureRec
         } else {
             return false
         }
+    }
+    
+    // MARK: - Notification callbacks
+    @objc func fixationReceived(notification: NSNotification) {
+        guard notification.name == PeyeConstants.fixationWithinDocNotification, let uInfo = notification.userInfo else {
+            return
+        }
+        
+        let xpos = uInfo["xpos"] as! CGFloat
+        let ypos = uInfo["ypos"] as! CGFloat
+        let point = CGPoint(x: xpos, y: ypos)
+        overlay.moveFix(toPoint: point)
     }
 }
 

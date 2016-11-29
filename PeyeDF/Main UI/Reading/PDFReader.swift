@@ -229,37 +229,7 @@ class PDFReader: PDFBase {
         markings.addRect(newRect)
         HistoryManager.sharedManager.addReadingRect(newRect)
     }
-    
-    // MARK: - Page drawing override
-    
-    /// To draw extra stuff on page
-    override func draw(_ page: PDFPage) {
-    	// Let PDFView do most of the hard work.
-        super.draw(page)
-       
-        if drawDebugCirle {
-        	// Save.
-            NSGraphicsContext.saveGraphicsState()
-    	
-            // Draw.
-            if let circlePosition = circlePosition {
-                // Draw what you need
-                let circleRect = NSRect(origin: circlePosition, size: circleSize)
-        	
-                let borderColor = NSColor(red: 0.9, green: 0.0, blue: 0.0, alpha: 0.8)
-                borderColor.set()
-                
-                let circlePath: NSBezierPath = NSBezierPath(ovalIn: circleRect)
-                circlePath.lineWidth = 3.0
-                circlePath.stroke()
-            }
-            
-        	// Restore.
-        	NSGraphicsContext.restoreGraphicsState()
-        }
-    }
-    
-    
+        
     // MARK: - Markings and Annotations
     
     /// Marks the given selection with a predefined importance
@@ -435,22 +405,9 @@ class PDFReader: PDFBase {
         }
         let pointOnPage = self.convert(pointInView, to: page!)
         
-        // start debug- circle
-        if drawDebugCirle && visiblePages() != nil {
-            for visiblePage in visiblePages()! {
-                if let oldPosition = circlePosition {
-                    let oldPageRect = NSRect(origin: oldPosition, size: circleSize)
-                    let screenRect = convert(oldPageRect, from: visiblePage)
-                    setNeedsDisplay(screenRect.addTo(scaleFactor))
-                }
-                
-                circlePosition = pointOnPage
-                var screenRect = NSRect(origin: circlePosition!, size: circleSize)
-                screenRect = convert(screenRect, from: visiblePage)
-                setNeedsDisplay(screenRect.addTo(scaleFactor))
-            }
+        if drawDebugCirle {
+            NotificationCenter.default.post(name: PeyeConstants.fixationWithinDocNotification, object: self, userInfo: ["xpos": pointInView.x, "ypos": pointInView.y])
         }
-        // End debug - circle
         
         // create rect for gazed-at paragraph. Note: this will store rects that will later be sent
         // in a summary event. This is different from eye rectangles created by each fixation and

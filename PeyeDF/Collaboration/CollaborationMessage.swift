@@ -34,6 +34,7 @@ import MultipeerConnectivity
 // addReadingTag:<ReadingTag description>  (a peer added this tag to the currently tracked document)
 // removeReadingTag:<ReadingTag description>  (a peer added this tag to the currently tracked document)
 // readAreas:<FocusAreas description>  (a peer read a numbers of areas, separated by ; - normally areas are rects)
+// markRects:<JSON Raw String>  (a peer marked some readingrects)
 
 enum MessagePrefix: String {
     case reportIdle
@@ -45,6 +46,7 @@ enum MessagePrefix: String {
     case addReadingTag
     case removeReadingTag
     case readAreas
+    case markRects
 }
 
 enum CollaborationMessage {
@@ -75,6 +77,9 @@ enum CollaborationMessage {
     
     /// Notifies peers that we read a number of areas
     case readAreas([FocusArea])
+    
+    /// Notifies peers that we marked a number of rects
+    case markRects([ReadingRect])
     
     /// Creates a started reading message using the current scidoc.
     /// - Attention: No message will be created if the scidoc is nil or does not have an associated contenthash.
@@ -169,6 +174,11 @@ enum CollaborationMessage {
             }
             self = .readAreas(parsedAreas)
             
+        case .markRects:
+            
+            let json = JSON.parse(suffix)
+            AppSingleton.log.debug("Received json count: \(json.count)")
+            self = .markRects(json.array!.flatMap({ReadingRect(fromJson: $0)}))
         }
     }
     
@@ -193,6 +203,8 @@ enum CollaborationMessage {
             return MessagePrefix.removeReadingTag.rawValue
         case .readAreas:
             return MessagePrefix.readAreas.rawValue
+        case .markRects:
+            return MessagePrefix.markRects.rawValue
         }
     }
     
@@ -217,6 +229,16 @@ enum CollaborationMessage {
             return self.prefix() + ":" + tag.description
         case .readAreas(let areas):
             return self.prefix() + ":" + areas.map({$0.description}).joined(separator: ";")
+        case .markRects(let rects):
+            var outDict = [[String: Any]]()
+            for rect in rects {
+                var newRect = rect
+                newRect.plainTextContent = nil
+                outDict.append(newRect.getDict())
+            }
+            let jsonData = try! JSONSerialization.data(withJSONObject: outDict, options: [])
+            let jsonString = String(data: jsonData, encoding: .utf8)!
+            return self.prefix() + ":" + jsonString
         }
     }
     

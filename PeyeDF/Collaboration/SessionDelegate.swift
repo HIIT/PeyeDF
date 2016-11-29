@@ -144,6 +144,30 @@ import MultipeerConnectivity
                     AppSingleton.log.error("Displaying read areas other than rects is not implemented")
                 }
             }
+            
+        case .markRects(let rects):
+            // check that we are tracking this peer, and we have a window open for the given peer's content hash
+            guard let cHash = Multipeer.peerController.getCurrentContentHash(forPeer: peerID) else {
+                return
+            }
+            
+            guard let win = Multipeer.ourWindows[cHash], let pdfReader = win.pdfReader else {
+                return
+            }
+            
+            // TODO: fix this, it is a duplicate of line 364 in PDFReader
+            let previousState = PDFMarkingsState(oldState: pdfReader.markings.getAll(forSources: [.click, .manualSelection]))
+            
+            previousState.lastRects = rects
+            pdfReader.undoManager?.registerUndo(withTarget: self, selector: #selector(pdfReader.undoMarkAndAnnotate(_:)), object: previousState)
+            pdfReader.undoManager?.setActionName(NSLocalizedString("actions.annotate", value: "Selection Mark Text", comment: "Some text was marked via clicking / undoing"))
+            
+            rects.forEach({
+                pdfReader.markings.addRect($0)
+                HistoryManager.sharedManager.addReadingRect($0)
+            })
+            pdfReader.autoAnnotate()
+            
         }
     }
     

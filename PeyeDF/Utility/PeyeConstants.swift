@@ -261,10 +261,19 @@ class PeyeConstants {
     /// The sample regarding the last (most recent) event is sent
     ///
     /// **UserInfo dictionary fields**:
-    /// - "xpos": last seen position, x
-    /// - "ypos": last seen position, y (in SMI coordinate system, which is different from OS X)
-    /// - "zpos": last seen position, z (distance from camera)
+    /// - "xpos": last seen position, x (Double)
+    /// - "ypos": last seen position, y (Double; in SMI coordinate system, which is different from OS X)
+    /// - "zpos": last seen position, z (Double; distance from camera)
     static let eyePositionNotification = Notification.Name("hiit.PeyeDF.eyePosition")
+    
+    /// String identifying the notification sent when a fixation is detected within a given document.
+    /// The sample regarding the fixation.
+    /// The sender of this notification is the pdfReader that receives the fixation
+    ///
+    /// **UserInfo dictionary fields**:
+    /// - "xpos": horizontal position (CGFloat)
+    /// - "ypos": vertical position (CGFloat)
+    static let fixationWithinDocNotification = Notification.Name("hiit.PeyeDF.fixationWithinDocument")
     
     /// String idenfitying the notification sent when a user manually marks a paragraph
     ///

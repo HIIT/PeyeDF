@@ -60,7 +60,7 @@ class AppSingleton {
         
     static let log = AppSingleton.createLog()
     static fileprivate(set) var logsURL: URL?
-    
+        
     /// The class that provides eye tracking data (set by app delegate on start)
     static var eyeTracker: EyeDataProvider? = nil
     

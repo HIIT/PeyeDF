@@ -917,11 +917,11 @@
                                 </buttonCell>
                             </button>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="S1W-xx-0w2">
-                                <rect key="frame" x="18" y="171" width="300" height="18"/>
+                                <rect key="frame" x="18" y="171" width="329" height="18"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="14" id="B6H-4d-R2y"/>
                                 </constraints>
-                                <buttonCell key="cell" type="check" title="Draw debug circle on fixated-at point on page" bezelStyle="regularSquare" imagePosition="left" inset="2" id="qEt-ZY-ZQF">
+                                <buttonCell key="cell" type="check" title="Display fixation locations (applies to new windows)" bezelStyle="regularSquare" imagePosition="left" inset="2" id="qEt-ZY-ZQF">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>

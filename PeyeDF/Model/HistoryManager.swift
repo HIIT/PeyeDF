@@ -112,7 +112,9 @@ class HistoryManager: FixationDataDelegate {
     // MARK: - Protocol implementation
     
     func receiveNewFixationData(_ newData: [FixationEvent]) {
+        
         if let eyeReceiver = currentEyeReceiver {
+            
             // translate all fixations to page points, and insert to corresponding data in the main dictionary
             for fixEv in newData {
                 
@@ -154,6 +156,7 @@ class HistoryManager: FixationDataDelegate {
                 }
             }
         }
+
     }
     
     // MARK: - Internal functions
@@ -168,7 +171,9 @@ class HistoryManager: FixationDataDelegate {
         
         timerQueue.sync {
             self.entryTimer = Timer(timeInterval: PeyeConstants.minReadTime, target: self, selector: #selector(self.entryTimerFire(_:)), userInfo: documentWindow, repeats: false)
-            RunLoop.current.add(self.entryTimer!, forMode: RunLoopMode.commonModes)
+            DispatchQueue.main.async {
+                RunLoop.current.add(self.entryTimer!, forMode: RunLoopMode.commonModes)
+            }
         }
     }
     
@@ -216,16 +221,16 @@ class HistoryManager: FixationDataDelegate {
         // cancel previous entry timer, if any
         if let timer = self.entryTimer {
             timerQueue.sync {
-                    timer.invalidate()
-               }
-            self.entryTimer = nil
+                timer.invalidate()
+                self.entryTimer = nil
+           }
         }
         // cancel previous exit timer, if any
         if let timer = self.exitTimer {
             timerQueue.sync {
-                    timer.invalidate()
-               }
-            self.exitTimer = nil
+                timer.invalidate()
+                self.exitTimer = nil
+           }
         }
         // if there's something to send, send it
         if let cre = self.currentReadingEvent {
