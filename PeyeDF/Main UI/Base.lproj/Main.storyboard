@@ -2355,7 +2355,7 @@
         <scene sceneID="hIz-AP-VOD">
             <objects>
                 <viewController title="PDFReader Controller" storyboardIdentifier="MyPDFController" id="XfG-lQ-9wD" userLabel="PDFSideController" customClass="PDFSideController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" wantsLayer="YES" horizontalCompressionResistancePriority="740" verticalCompressionResistancePriority="740" id="m2S-Jp-Qdl">
+                    <view key="view" horizontalCompressionResistancePriority="740" verticalCompressionResistancePriority="740" id="m2S-Jp-Qdl">
                         <rect key="frame" x="0.0" y="0.0" width="632" height="629"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -2378,7 +2378,7 @@
                                     </clickGestureRecognizer>
                                 </gestureRecognizers>
                             </pdfView>
-                            <customView wantsLayer="YES" alphaValue="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="lWC-Pn-r7j" userLabel="Overlay" customClass="MyOverlay" customModule="PeyeDF" customModuleProvider="target">
+                            <customView translatesAutoresizingMaskIntoConstraints="NO" id="lWC-Pn-r7j" userLabel="Overlay" customClass="MyOverlay" customModule="PeyeDF" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="632" height="629"/>
                             </customView>
                         </subviews>

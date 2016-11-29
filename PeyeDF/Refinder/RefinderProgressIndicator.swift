@@ -95,7 +95,6 @@ class RefinderProgressIndicator: NSView {
     
     /// Overriden to readjust its own size
     override func updateLayer() {
-        super.updateLayer()
         
         // use rounded rect and subtract a little to fit corners in view
         var rect = self.bounds.addTo(-1.5)

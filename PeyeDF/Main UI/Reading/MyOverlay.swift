@@ -29,17 +29,36 @@ import Cocoa
 /// Made to sends events to the view behind it (otherView).
 class MyOverlay: NSView {
     
-    /// Whether the eye overlay must be drawn
-    fileprivate(set) lazy var drawEyeCross: Bool = {
-        if let tracker = AppSingleton.eyeTracker {
-            return tracker.available && tracker.eyesLost
-        } else {
-            return false
-        }
-    }()
+    let dimeCross = CALayer()
+    let eyeCross = CALayer()
     
-    /// Wheter we want to draw the DiMe cross (shown if dime is unavailable)
-    fileprivate(set) var drawDiMeCross = false
+    override var wantsUpdateLayer: Bool { get {
+        return true
+    } }
+    
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        completeInit()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        completeInit()
+    }
+    
+    /// Convenience function to complete initialization
+    func completeInit() {
+        self.wantsLayer = true
+        self.layer?.backgroundColor = NSColor.clear.cgColor
+        dimeCross.backgroundColor = CGColor.black
+        dimeCross.opacity = 0.5
+        self.layer?.addSublayer(dimeCross)
+        eyeCross.backgroundColor = CGColor.black
+        eyeCross.opacity = 0.5
+        eyeCross.isHidden = true
+        self.layer?.addSublayer(eyeCross)
+        self.layerContentsRedrawPolicy = NSViewLayerContentsRedrawPolicy.onSetNeedsDisplay
+    }
     
     /// All events will be redirected to this view
     weak var otherView: NSView?
@@ -65,40 +84,30 @@ class MyOverlay: NSView {
             DiMeSession.dimeConnect() {
                 success, _ in
                 
+                // if failed, show dime cross then hide after a few seconds
                 if !success {
                     DispatchQueue.main.async() {
-                        self.drawDiMeCross = true
+                        self.dimeCross.isHidden = false
                         self.needsDisplay = true
                     }
                     
                     DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 3.0) {
-                        CATransaction.begin()
-                        let animateAlpha = CABasicAnimation(keyPath: "opacity")
-                        animateAlpha.duration = 2.0
-                        animateAlpha.fromValue = 0.5
-                        animateAlpha.toValue = 0.0
-                        // callback when done
-                        CATransaction.setCompletionBlock() {
-                            DispatchQueue.main.async() {
-                                self.drawDiMeCross = false
-                                self.needsDisplay = true
-                                self.layer?.opacity = 0.5
-                            }
+                        DispatchQueue.main.async() {
+                            self.dimeCross.isHidden = true
+                            self.needsDisplay = true
                         }
-                        self.layer!.add(animateAlpha, forKey: "animate alpha")
-                        CATransaction.commit()
                     }
                 }
             }
         }
     }
     
-    /// Callback for eye status change (show overlay accordingly)
+    /// Callback for eye status change (show eye cross overlay accordingly)
     @objc fileprivate func eyeStateCallback(_ notification: Notification) {
         let uInfo = (notification as NSNotification).userInfo as! [String: AnyObject]
         let avail = uInfo["available"] as! Bool
-        drawEyeCross = !avail
-        self.setNeedsDisplay(NSRect(origin: NSPoint(), size: self.frame.size))
+        eyeCross.isHidden = avail
+        self.needsDisplay = true
     }
     
     /// Redirect all events to otherView
@@ -108,76 +117,63 @@ class MyOverlay: NSView {
     
     // MARK: - Drawing functions
     
-    override func draw(_ dirtyRect: NSRect) {
-        if drawDiMeCross {
-            drawDiMeCrossIn(frame2: NSRect(origin: CGPoint(), size: self.frame.size))
-        } else if drawEyeCross {
-            drawEyeCrossIn(frame2: NSRect(origin: CGPoint(), size: frame.size))
-        }
+    override func updateLayer() {
+        
+        drawEyeCross(inFrame: NSRect(origin: CGPoint(), size: self.frame.size))
+        drawDiMeCross(inFrame: NSRect(origin: CGPoint(), size: self.frame.size))
+        
     }
     
     /// Drawing function for eye cross
-    func drawEyeCrossIn(frame2: NSRect = NSMakeRect(73, 77, 743, 726)) {
-        let myAlpha: CGFloat = 1.0
-        
-        //// Color Declarations
-        let fillColor = NSColor(calibratedRed: 0, green: 0, blue: 0, alpha: myAlpha)
-        let fillColor2 = NSColor(calibratedRed: 1, green: 1, blue: 1, alpha: myAlpha)
-        let strokeColor = NSColor(calibratedRed: 1, green: 1, blue: 1, alpha: myAlpha)
+    func drawEyeCross(inFrame frame2: NSRect = NSMakeRect(73, 77, 743, 726)) {
+        eyeCross.sublayers = []
         
         //// Subframes
         let frame = NSMakeRect(frame2.minX + floor((frame2.width - 621) * 0.52985 + 0.5), frame2.minY + floor((frame2.height - 616) * 0.50000 + 0.5), 621, 616)
         let eyeCrossGroup: NSRect = NSMakeRect(frame.minX + 29.65, frame.minY + 30.1, frame.width - 64.2, frame.height - 57.2)
         
-        //// Rectangle Drawing
-        let rectanglePath = NSBezierPath(rect: NSMakeRect(frame2.minX, frame2.minY, frame2.width, frame2.height))
-        fillColor.setFill()
-        rectanglePath.fill()
-        
         //// Eye cross Group
-        //// Bezier Drawing
-        let bezierPath = NSBezierPath()
-        bezierPath.move(to: NSMakePoint(eyeCrossGroup.minX + 0.92803 * eyeCrossGroup.width, eyeCrossGroup.minY + 0.49999 * eyeCrossGroup.height))
-        bezierPath.curve(to: NSMakePoint(eyeCrossGroup.minX + 0.07018 * eyeCrossGroup.width, eyeCrossGroup.minY + 0.50146 * eyeCrossGroup.height), controlPoint1: NSMakePoint(eyeCrossGroup.minX + 0.66679 * eyeCrossGroup.width, eyeCrossGroup.minY + 0.68105 * eyeCrossGroup.height), controlPoint2: NSMakePoint(eyeCrossGroup.minX + 0.35539 * eyeCrossGroup.width, eyeCrossGroup.minY + 0.67679 * eyeCrossGroup.height))
-        bezierPath.curve(to: NSMakePoint(eyeCrossGroup.minX + 0.92803 * eyeCrossGroup.width, eyeCrossGroup.minY + 0.50077 * eyeCrossGroup.height), controlPoint1: NSMakePoint(eyeCrossGroup.minX + 0.35539 * eyeCrossGroup.width, eyeCrossGroup.minY + 0.32613 * eyeCrossGroup.height), controlPoint2: NSMakePoint(eyeCrossGroup.minX + 0.66679 * eyeCrossGroup.width, eyeCrossGroup.minY + 0.31971 * eyeCrossGroup.height))
-        fillColor2.setFill()
-        bezierPath.fill()
         
-        //// Oval Drawing
-        let ovalPath = NSBezierPath(ovalIn: NSMakeRect(eyeCrossGroup.minX + floor(eyeCrossGroup.width * 0.45564 - 0.2) + 0.7, eyeCrossGroup.minY + floor(eyeCrossGroup.height * 0.45580 - 0.2) + 0.7, floor(eyeCrossGroup.width * 0.54256 + 0.4) - floor(eyeCrossGroup.width * 0.45564 - 0.2) - 0.6, floor(eyeCrossGroup.height * 0.54599 + 0.4) - floor(eyeCrossGroup.height * 0.45580 - 0.2) - 0.6))
-        fillColor.setFill()
-        ovalPath.fill()
-        
-        //// Bezier 3 Drawing
+        //// Bezier 3 Drawing (cross)
         let bezier3Path = NSBezierPath()
         bezier3Path.move(to: NSMakePoint(eyeCrossGroup.minX + 1.00000 * eyeCrossGroup.width, eyeCrossGroup.minY + 0.50000 * eyeCrossGroup.height))
         bezier3Path.curve(to: NSMakePoint(eyeCrossGroup.minX + 0.50000 * eyeCrossGroup.width, eyeCrossGroup.minY + 0.00000 * eyeCrossGroup.height), controlPoint1: NSMakePoint(eyeCrossGroup.minX + 1.00000 * eyeCrossGroup.width, eyeCrossGroup.minY + 0.22386 * eyeCrossGroup.height), controlPoint2: NSMakePoint(eyeCrossGroup.minX + 0.77614 * eyeCrossGroup.width, eyeCrossGroup.minY + 0.00000 * eyeCrossGroup.height))
         bezier3Path.curve(to: NSMakePoint(eyeCrossGroup.minX + 0.00000 * eyeCrossGroup.width, eyeCrossGroup.minY + 0.50000 * eyeCrossGroup.height), controlPoint1: NSMakePoint(eyeCrossGroup.minX + 0.22386 * eyeCrossGroup.width, eyeCrossGroup.minY + 0.00000 * eyeCrossGroup.height), controlPoint2: NSMakePoint(eyeCrossGroup.minX + 0.00000 * eyeCrossGroup.width, eyeCrossGroup.minY + 0.22386 * eyeCrossGroup.height))
         bezier3Path.curve(to: NSMakePoint(eyeCrossGroup.minX + 0.50000 * eyeCrossGroup.width, eyeCrossGroup.minY + 1.00000 * eyeCrossGroup.height), controlPoint1: NSMakePoint(eyeCrossGroup.minX + 0.00000 * eyeCrossGroup.width, eyeCrossGroup.minY + 0.77614 * eyeCrossGroup.height), controlPoint2: NSMakePoint(eyeCrossGroup.minX + 0.22386 * eyeCrossGroup.width, eyeCrossGroup.minY + 1.00000 * eyeCrossGroup.height))
         bezier3Path.curve(to: NSMakePoint(eyeCrossGroup.minX + 1.00000 * eyeCrossGroup.width, eyeCrossGroup.minY + 0.50000 * eyeCrossGroup.height), controlPoint1: NSMakePoint(eyeCrossGroup.minX + 0.77614 * eyeCrossGroup.width, eyeCrossGroup.minY + 1.00000 * eyeCrossGroup.height), controlPoint2: NSMakePoint(eyeCrossGroup.minX + 1.00000 * eyeCrossGroup.width, eyeCrossGroup.minY + 0.77614 * eyeCrossGroup.height))
-        bezier3Path.close()
         bezier3Path.move(to: NSMakePoint(eyeCrossGroup.minX + 0.15220 * eyeCrossGroup.width, eyeCrossGroup.minY + 0.85579 * eyeCrossGroup.height))
         bezier3Path.line(to: NSMakePoint(eyeCrossGroup.minX + 0.84586 * eyeCrossGroup.width, eyeCrossGroup.minY + 0.15281 * eyeCrossGroup.height))
-        strokeColor.setStroke()
-        bezier3Path.lineWidth = 15
-        bezier3Path.stroke()
+        bezier3Path.close()
+        
+        let bezier3Layer = CAShapeLayer()
+        bezier3Layer.path = bezier3Path.cgPath
+        bezier3Layer.strokeColor = NSColor.white.cgColor
+        bezier3Layer.backgroundColor = NSColor.white.cgColor
+        bezier3Layer.lineWidth = 15
+        eyeCross.addSublayer(bezier3Layer)
+        
+        //// Bezier Drawing (eye bulb)
+        let bezierPath = NSBezierPath()
+        bezierPath.move(to: NSMakePoint(eyeCrossGroup.minX + 0.92803 * eyeCrossGroup.width, eyeCrossGroup.minY + 0.49999 * eyeCrossGroup.height))
+        bezierPath.curve(to: NSMakePoint(eyeCrossGroup.minX + 0.07018 * eyeCrossGroup.width, eyeCrossGroup.minY + 0.50146 * eyeCrossGroup.height), controlPoint1: NSMakePoint(eyeCrossGroup.minX + 0.66679 * eyeCrossGroup.width, eyeCrossGroup.minY + 0.68105 * eyeCrossGroup.height), controlPoint2: NSMakePoint(eyeCrossGroup.minX + 0.35539 * eyeCrossGroup.width, eyeCrossGroup.minY + 0.67679 * eyeCrossGroup.height))
+        bezierPath.curve(to: NSMakePoint(eyeCrossGroup.minX + 0.92803 * eyeCrossGroup.width, eyeCrossGroup.minY + 0.50077 * eyeCrossGroup.height), controlPoint1: NSMakePoint(eyeCrossGroup.minX + 0.35539 * eyeCrossGroup.width, eyeCrossGroup.minY + 0.32613 * eyeCrossGroup.height), controlPoint2: NSMakePoint(eyeCrossGroup.minX + 0.66679 * eyeCrossGroup.width, eyeCrossGroup.minY + 0.31971 * eyeCrossGroup.height))
+        
+        eyeCross.addSublayer(layerFrom(bezier: bezierPath, fillColor: NSColor.white))
+        
+        //// Oval Drawing
+        let ovalPath = NSBezierPath(ovalIn: NSMakeRect(eyeCrossGroup.minX + floor(eyeCrossGroup.width * 0.45564 - 0.2) + 0.7, eyeCrossGroup.minY + floor(eyeCrossGroup.height * 0.45580 - 0.2) + 0.7, floor(eyeCrossGroup.width * 0.54256 + 0.4) - floor(eyeCrossGroup.width * 0.45564 - 0.2) - 0.6, floor(eyeCrossGroup.height * 0.54599 + 0.4) - floor(eyeCrossGroup.height * 0.45580 - 0.2) - 0.6))
+        ovalPath.close()
+        
+        eyeCross.addSublayer(layerFrom(bezier: ovalPath, fillColor: NSColor.black))
+        
     }
 
-    func drawDiMeCrossIn(frame2: NSRect = NSMakeRect(73, 89, 755, 714)) {
-        let myAlpha: CGFloat = 1.0
+    func drawDiMeCross(inFrame frame2: NSRect = NSMakeRect(73, 89, 755, 714)) {
         
-        //// Color Declarations
-        let fillColor = NSColor(calibratedRed: 0, green: 0, blue: 0, alpha: myAlpha)
-        let fillColor2 = NSColor(calibratedRed: 1, green: 1, blue: 1, alpha: myAlpha)
-        let strokeColor = NSColor(calibratedRed: 1, green: 1, blue: 1, alpha: myAlpha)
-
+        dimeCross.sublayers = []
+        
         //// Subframes
         let frame = NSMakeRect(frame2.minX + floor((frame2.width - 621) * 0.52985 + 0.5), frame2.minY + floor((frame2.height - 616) * 0.50000 + 0.5), 621, 616)
-
-        //// Rectangle Drawing
-        let rectanglePath = NSBezierPath(rect: NSMakeRect(frame2.minX, frame2.minY, frame2.width, frame2.height))
-        fillColor.setFill()
-        rectanglePath.fill()
 
         //// Cross Drawing
         let crossPath = NSBezierPath()
@@ -189,20 +185,21 @@ class MyOverlay: NSView {
         crossPath.close()
         crossPath.move(to: NSMakePoint(frame.minX + 114.4, frame.maxY - 107.68))
         crossPath.line(to: NSMakePoint(frame.minX + 500.62, frame.maxY - 500.51))
-        strokeColor.setStroke()
-        crossPath.lineWidth = 15
-        crossPath.stroke()
+        
+        let crossLayer = CAShapeLayer()
+        crossLayer.path = crossPath.cgPath
+        crossLayer.strokeColor = NSColor.white.cgColor
+        crossLayer.lineWidth = 15
+        dimeCross.addSublayer(crossLayer)
 
         //// Untitled Group
         //// Rectangle 2 Drawing
         let rectangle2Path = NSBezierPath(rect: NSMakeRect(frame.minX + 381.5, frame.minY + frame.height - 346.25, 19.9, 19.9))
-        fillColor2.setFill()
-        rectangle2Path.fill()
+        dimeCross.addSublayer(layerFrom(bezier: rectangle2Path, fillColor: NSColor.white))
 
         //// Rectangle 3 Drawing
         let rectangle3Path = NSBezierPath(rect: NSMakeRect(frame.minX + 381.5, frame.minY + frame.height - 304.75, 19.9, 18.9))
-        fillColor2.setFill()
-        rectangle3Path.fill()
+        dimeCross.addSublayer(layerFrom(bezier: rectangle3Path, fillColor: NSColor.white))
 
         //// Bezier Drawing
         let bezierPath = NSBezierPath()
@@ -216,8 +213,8 @@ class MyOverlay: NSView {
         bezierPath.curve(to: NSMakePoint(frame.minX + 378.32, frame.maxY - 413.18), controlPoint1: NSMakePoint(frame.minX + 364.7, frame.maxY - 405.75), controlPoint2: NSMakePoint(frame.minX + 373.75, frame.maxY - 408.59))
         bezierPath.curve(to: NSMakePoint(frame.minX + 385.72, frame.maxY - 433.87), controlPoint1: NSMakePoint(frame.minX + 382.89, frame.maxY - 417.78), controlPoint2: NSMakePoint(frame.minX + 385.72, frame.maxY - 426.86))
         bezierPath.close()
-        fillColor2.setFill()
-        bezierPath.fill()
+
+        dimeCross.addSublayer(layerFrom(bezier: bezierPath, fillColor: NSColor.white))
 
         //// Bezier 2 Drawing
         let bezier2Path = NSBezierPath()
@@ -231,8 +228,8 @@ class MyOverlay: NSView {
         bezier2Path.curve(to: NSMakePoint(frame.minX + 303.53, frame.maxY - 409.38), controlPoint1: NSMakePoint(frame.minX + 290.31, frame.maxY - 402.69), controlPoint2: NSMakePoint(frame.minX + 299.41, frame.maxY - 405.24))
         bezier2Path.curve(to: NSMakePoint(frame.minX + 310.19, frame.maxY - 428.96), controlPoint1: NSMakePoint(frame.minX + 307.64, frame.maxY - 413.51), controlPoint2: NSMakePoint(frame.minX + 310.19, frame.maxY - 422.65))
         bezier2Path.close()
-        fillColor2.setFill()
-        bezier2Path.fill()
+
+        dimeCross.addSublayer(layerFrom(bezier: bezier2Path, fillColor: NSColor.white))
 
         //// Bezier 3 Drawing
         let bezier3Path = NSBezierPath()
@@ -246,8 +243,8 @@ class MyOverlay: NSView {
         bezier3Path.curve(to: NSMakePoint(frame.minX + 238.5, frame.maxY - 378.86), controlPoint1: NSMakePoint(frame.minX + 225.69, frame.maxY - 372.91), controlPoint2: NSMakePoint(frame.minX + 234.84, frame.maxY - 375.18))
         bezier3Path.curve(to: NSMakePoint(frame.minX + 244.42, frame.maxY - 397.32), controlPoint1: NSMakePoint(frame.minX + 242.16, frame.maxY - 382.53), controlPoint2: NSMakePoint(frame.minX + 244.42, frame.maxY - 391.72))
         bezier3Path.close()
-        fillColor2.setFill()
-        bezier3Path.fill()
+        
+        dimeCross.addSublayer(layerFrom(bezier: bezier3Path, fillColor: NSColor.white))
 
         //// Bezier 4 Drawing
         let bezier4Path = NSBezierPath()
@@ -261,8 +258,8 @@ class MyOverlay: NSView {
         bezier4Path.curve(to: NSMakePoint(frame.minX + 193, frame.maxY - 326.01), controlPoint1: NSMakePoint(frame.minX + 180.6, frame.maxY - 320.8), controlPoint2: NSMakePoint(frame.minX + 189.8, frame.maxY - 322.79))
         bezier4Path.curve(to: NSMakePoint(frame.minX + 198.18, frame.maxY - 343.37), controlPoint1: NSMakePoint(frame.minX + 196.2, frame.maxY - 329.22), controlPoint2: NSMakePoint(frame.minX + 198.18, frame.maxY - 338.46))
         bezier4Path.close()
-        fillColor2.setFill()
-        bezier4Path.fill()
+        
+        dimeCross.addSublayer(layerFrom(bezier: bezier4Path, fillColor: NSColor.white))
 
         //// Bezier 5 Drawing
         let bezier5Path = NSBezierPath()
@@ -276,8 +273,8 @@ class MyOverlay: NSView {
         bezier5Path.curve(to: NSMakePoint(frame.minX + 184.8, frame.maxY - 263.27), controlPoint1: NSMakePoint(frame.minX + 172.81, frame.maxY - 258.8), controlPoint2: NSMakePoint(frame.minX + 182.06, frame.maxY - 260.51))
         bezier5Path.curve(to: NSMakePoint(frame.minX + 189.24, frame.maxY - 279.52), controlPoint1: NSMakePoint(frame.minX + 187.54, frame.maxY - 266.02), controlPoint2: NSMakePoint(frame.minX + 189.24, frame.maxY - 275.31))
         bezier5Path.close()
-        fillColor2.setFill()
-        bezier5Path.fill()
+        
+        dimeCross.addSublayer(layerFrom(bezier: bezier5Path, fillColor: NSColor.white))
 
         //// Bezier 6 Drawing
         let bezier6Path = NSBezierPath()
@@ -291,8 +288,8 @@ class MyOverlay: NSView {
         bezier6Path.curve(to: NSMakePoint(frame.minX + 203.12, frame.maxY - 207.12), controlPoint1: NSMakePoint(frame.minX + 191.54, frame.maxY - 203.41), controlPoint2: NSMakePoint(frame.minX + 200.84, frame.maxY - 204.83))
         bezier6Path.curve(to: NSMakePoint(frame.minX + 206.82, frame.maxY - 222.26), controlPoint1: NSMakePoint(frame.minX + 205.41, frame.maxY - 209.42), controlPoint2: NSMakePoint(frame.minX + 206.82, frame.maxY - 218.76))
         bezier6Path.close()
-        fillColor2.setFill()
-        bezier6Path.fill()
+        
+        dimeCross.addSublayer(layerFrom(bezier: bezier6Path, fillColor: NSColor.white))
 
         //// Bezier 7 Drawing
         let bezier7Path = NSBezierPath()
@@ -306,8 +303,8 @@ class MyOverlay: NSView {
         bezier7Path.curve(to: NSMakePoint(frame.minX + 244.89, frame.maxY - 168.06), controlPoint1: NSMakePoint(frame.minX + 233.72, frame.maxY - 165.09), controlPoint2: NSMakePoint(frame.minX + 243.06, frame.maxY - 166.22))
         bezier7Path.curve(to: NSMakePoint(frame.minX + 247.85, frame.maxY - 182.09), controlPoint1: NSMakePoint(frame.minX + 246.72, frame.maxY - 169.9), controlPoint2: NSMakePoint(frame.minX + 247.85, frame.maxY - 179.29))
         bezier7Path.close()
-        fillColor2.setFill()
-        bezier7Path.fill()
+        
+        dimeCross.addSublayer(layerFrom(bezier: bezier7Path, fillColor: NSColor.white))
 
         //// Bezier 8 Drawing
         let bezier8Path = NSBezierPath()
@@ -321,8 +318,8 @@ class MyOverlay: NSView {
         bezier8Path.curve(to: NSMakePoint(frame.minX + 295.2, frame.maxY - 156.86), controlPoint1: NSMakePoint(frame.minX + 284.42, frame.maxY - 154.63), controlPoint2: NSMakePoint(frame.minX + 293.82, frame.maxY - 155.48))
         bezier8Path.curve(to: NSMakePoint(frame.minX + 297.42, frame.maxY - 169.78), controlPoint1: NSMakePoint(frame.minX + 296.57, frame.maxY - 158.24), controlPoint2: NSMakePoint(frame.minX + 297.42, frame.maxY - 167.68))
         bezier8Path.close()
-        fillColor2.setFill()
-        bezier8Path.fill()
+        
+        dimeCross.addSublayer(layerFrom(bezier: bezier8Path, fillColor: NSColor.white))
 
         //// Bezier 9 Drawing
         let bezier9Path = NSBezierPath()
@@ -336,8 +333,8 @@ class MyOverlay: NSView {
         bezier9Path.curve(to: NSMakePoint(frame.minX + 343.11, frame.maxY - 170.28), controlPoint1: NSMakePoint(frame.minX + 332.74, frame.maxY - 168.79), controlPoint2: NSMakePoint(frame.minX + 342.19, frame.maxY - 169.36))
         bezier9Path.curve(to: NSMakePoint(frame.minX + 344.59, frame.maxY - 182.09), controlPoint1: NSMakePoint(frame.minX + 344.02, frame.maxY - 171.2), controlPoint2: NSMakePoint(frame.minX + 344.59, frame.maxY - 180.69))
         bezier9Path.close()
-        fillColor2.setFill()
-        bezier9Path.fill()
+        
+        dimeCross.addSublayer(layerFrom(bezier: bezier9Path, fillColor: NSColor.white))
 
         //// Bezier 10 Drawing
         let bezier10Path = NSBezierPath()
@@ -351,18 +348,24 @@ class MyOverlay: NSView {
         bezier10Path.curve(to: NSMakePoint(frame.minX + 376.86, frame.maxY - 202.72), controlPoint1: NSMakePoint(frame.minX + 366.9, frame.maxY - 201.97), controlPoint2: NSMakePoint(frame.minX + 376.4, frame.maxY - 202.26))
         bezier10Path.curve(to: NSMakePoint(frame.minX + 377.6, frame.maxY - 213.42), controlPoint1: NSMakePoint(frame.minX + 377.31, frame.maxY - 203.18), controlPoint2: NSMakePoint(frame.minX + 377.6, frame.maxY - 212.72))
         bezier10Path.close()
-        fillColor2.setFill()
-        bezier10Path.fill()
+        
+        dimeCross.addSublayer(layerFrom(bezier: bezier10Path, fillColor: NSColor.white))
 
         //// Rectangle 4 Drawing
         let rectangle4Path = NSBezierPath(rect: NSMakeRect(frame.minX + 372.25, frame.minY + frame.height - 264.75, 17.9, 19.9))
-        fillColor2.setFill()
-        rectangle4Path.fill()
+        dimeCross.addSublayer(layerFrom(bezier: rectangle4Path, fillColor: NSColor.white))
 
         //// Oval Drawing
         let ovalPath = NSBezierPath(ovalIn: NSMakeRect(frame.minX + 402.15, frame.minY + frame.height - 443.8, 63.4, 63.4))
-        fillColor2.setFill()
-        ovalPath.fill()
+        dimeCross.addSublayer(layerFrom(bezier: ovalPath, fillColor: NSColor.white))
+        
     }
 
+    /// Helper function to create a filled layer from a bezier
+    private func layerFrom(bezier: NSBezierPath, fillColor: NSColor) -> CALayer {
+        let layer = CAShapeLayer()
+        layer.path = bezier.cgPath
+        layer.fillColor = fillColor.cgColor
+        return layer
+    }
 }

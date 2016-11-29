@@ -1,9 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G1004" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16C32f" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11201"/>
-        <plugIn identifier="com.apple.pdfkit.ibplugin" version="11201"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11542"/>
+        <plugIn identifier="com.apple.pdfkit.ibplugin" version="11542"/>
         <capability name="box content view" minToolsVersion="7.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Window Controller-->
@@ -100,21 +101,21 @@
                                 </connections>
                             </button>
                             <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hcN-4x-pg0">
-                                <rect key="frame" x="98" y="109" width="272" height="21"/>
+                                <rect key="frame" x="98" y="110" width="272" height="19"/>
                                 <sliderCell key="cell" continuous="YES" state="on" alignment="left" maxValue="1" tickMarkPosition="above" sliderType="linear" id="mDB-9B-1rY"/>
                                 <connections>
                                     <action selector="takeDoubleValueFrom:" target="3Sf-9b-tBT" id="5XD-9h-Vb7"/>
                                 </connections>
                             </slider>
                             <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gqN-Ax-dEb">
-                                <rect key="frame" x="98" y="84" width="272" height="21"/>
+                                <rect key="frame" x="98" y="85" width="272" height="19"/>
                                 <sliderCell key="cell" continuous="YES" state="on" alignment="left" maxValue="1" doubleValue="0.29999999999999999" tickMarkPosition="above" sliderType="linear" id="MA0-BU-0ye"/>
                                 <connections>
                                     <action selector="takeDoubleValueFrom:" target="jIp-kn-DY7" id="UKG-R4-ByH"/>
                                 </connections>
                             </slider>
                             <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="MEO-AZ-WOP">
-                                <rect key="frame" x="98" y="59" width="273" height="21"/>
+                                <rect key="frame" x="98" y="60" width="273" height="19"/>
                                 <sliderCell key="cell" continuous="YES" state="on" alignment="left" maxValue="1" doubleValue="0.80000000000000004" tickMarkPosition="above" sliderType="linear" id="hNx-3t-LYQ"/>
                                 <connections>
                                     <action selector="takeDoubleValueFrom:" target="mOl-UH-jLg" id="u6Z-Nl-oDC"/>
