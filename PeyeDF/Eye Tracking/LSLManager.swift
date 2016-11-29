@@ -89,6 +89,12 @@ class LSLManager: EyeDataProvider {
     /// Last time that eyes were detected
     private var eyesLastSeen = Date.distantPast
     
+    /// Last time that we sent a raw position sample
+    private var lastSentRaw = Date.distantPast
+    
+    /// Minimum amount of time to leave between raw sample sending
+    private var kMinRawInterval: TimeInterval = 1/60  // 60 Hz
+    
     // MARK: - Initialization and callback definition
     
     init() {
@@ -103,8 +109,8 @@ class LSLManager: EyeDataProvider {
                 // if eyes are currently indicated as available, but too much time has passed,
                 // change eye status
                 if !self.eyesLost && self.eyesLastSeen.addingTimeInterval(self.kEyesMaxLostDuration).compare(Date()) == .orderedAscending {
-                    self.eyesLost = true
-                    self.sendLastRaw(RawEyePosition.zero)
+                        self.eyesLost = true
+                        self.sendLastRaw(RawEyePosition.zero)
                 }
                 return
             }
@@ -118,7 +124,13 @@ class LSLManager: EyeDataProvider {
             
             self.eyesLost = false
             
-            self.sendLastRaw(rawPosition)
+            // send last raw position only if enough time has passed since last sent time
+            let now = Date()
+            if self.lastSentRaw.addingTimeInterval(self.kMinRawInterval).compare(now) == .orderedAscending {
+                self.sendLastRaw(rawPosition)
+                self.lastSentRaw = now
+            }
+
             self.eyesLastSeen = Date()
         }
         
