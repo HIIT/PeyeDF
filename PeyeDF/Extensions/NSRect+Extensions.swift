@@ -54,6 +54,12 @@ extension NSRect {
         return self.size.height * self.size.width
     } }
     
+    public var centre: CGPoint { get {
+        let cx = self.origin.x + self.size.width / 2
+        let cy = self.origin.y + self.size.height / 2
+        return CGPoint(x: cx, y: cy)
+    } }
+    
     /// Creates a rect from a string specifying 'x,y,w,h'
     /// - returns: nil if conversion failed
     init?(string: String) {

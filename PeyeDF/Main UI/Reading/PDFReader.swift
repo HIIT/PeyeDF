@@ -126,7 +126,7 @@ class PDFReader: PDFBase {
     } }
     
     /// Delegate for clicks gesture recognizer
-    var clickDelegate: ClickRecognizerDelegate?
+    var readerDelegate: PDFReaderDelegate?
     
     // MARK: - Right click menu
     
@@ -368,7 +368,7 @@ class PDFReader: PDFBase {
     /// Enabled / disables auto annotation by click
     func setClickAnnotationTo(_ enabled: Bool) {
         self.clickAnnotationEnabled = enabled
-        self.clickDelegate?.setRecognizersTo(enabled)
+        self.readerDelegate?.setRecognizersTo(enabled)
     }
     
     // MARK: - Setters
@@ -405,9 +405,7 @@ class PDFReader: PDFBase {
         }
         let pointOnPage = self.convert(pointInView, to: page!)
         
-        if drawDebugCirle {
-            NotificationCenter.default.post(name: PeyeConstants.fixationWithinDocNotification, object: self, userInfo: ["xpos": pointInView.x, "ypos": pointInView.y])
-        }
+        let pageIndex = self.document!.index(for: page!)
         
         // create rect for gazed-at paragraph. Note: this will store rects that will later be sent
         // in a summary event. This is different from eye rectangles created by each fixation and
@@ -418,9 +416,19 @@ class PDFReader: PDFBase {
                 let newRect = ReadingRect(pageIndex: self.document!.index(for: page!), rect: seenRect, readingClass: .paragraph, classSource: .smi, pdfBase: self)
                 markings.addRect(newRect)
             }
+            
+            // draw our circle if needed
+            if drawDebugCirle {
+                NotificationCenter.default.post(name: PeyeConstants.fixationWithinDocNotification, object: self, userInfo: ["xpos": pointInView.x, "ypos": pointInView.y])
+            }
+
+            // if we are being tracked, send fixation to peers
+            if Multipeer.trackers.count > 0 {
+                let message = CollaborationMessage.fixation(FocusArea(forPoint: pointOnPage, onPage: pageIndex))
+                message.sendTo(Multipeer.trackers.map({$0}))
+            }
         }
         
-        let pageIndex = self.document!.index(for: page!)
         return (x: Double(pointOnPage.x), y: Double(pointOnPage.y), pageIndex: pageIndex)
     }
     

@@ -64,6 +64,7 @@ class MyOverlay: NSView {
         
         dimeCross.backgroundColor = CGColor.black
         dimeCross.opacity = 0.5
+        dimeCross.isHidden = true
         self.layer?.addSublayer(dimeCross)
         
         eyeCross.backgroundColor = CGColor.black
@@ -131,6 +132,11 @@ class MyOverlay: NSView {
                     }
                 }
             }
+        } else {
+            DispatchQueue.main.async {
+                self.dimeCross.isHidden = true
+                self.needsDisplay = true
+            }
         }
     }
     
@@ -158,15 +164,30 @@ class MyOverlay: NSView {
         
     }
     
+    /// Move fixation indicator to a new point
     func moveFix(toPoint: CGPoint, isTheirs: Bool = false) {
-        let cx = toPoint.x - fixSize / 2
-        let cy = toPoint.y - fixSize / 2
-        let newPoint = CGPoint(x: cx, y: cy)
-        DispatchQueue.main.async {
-            if !isTheirs {
-                self.ourFix?.position = newPoint
-            } else {
-                self.theirFix?.position = newPoint
+        if drawDebugCirle {
+            let cx = toPoint.x - fixSize / 2
+            let cy = toPoint.y - fixSize / 2
+            let newPoint = CGPoint(x: cx, y: cy)
+            DispatchQueue.main.async {
+                if !isTheirs {
+                    self.ourFix?.isHidden = false
+                    self.ourFix?.position = newPoint
+                } else {
+                    self.theirFix?.isHidden = false
+                    self.theirFix?.position = newPoint
+                }
+            }
+        }
+    }
+    
+    /// Hide fixation indicators
+    func clearFixations() {
+        if drawDebugCirle {
+            DispatchQueue.main.async {
+                self.ourFix?.isHidden = true
+                self.theirFix?.isHidden = true
             }
         }
     }

@@ -30,6 +30,9 @@ class Multipeer: NSObject {
     
     // MARK: - Useful globals
     
+    /// List of peer IDs that are tracking us. US are being tracked by THEM.
+    static var trackers = Set<MCPeerID>()
+    
     /// Shared instance used to implement MCBrowserViewControllerDelegate
     static let sharedInstance = Multipeer()
     
@@ -100,6 +103,7 @@ class Multipeer: NSObject {
     
     // MARK: - Reading / Tracking
     
+    /// List of THEM which are being tracked by US.
     /// The hash of the peer being tracked and the associated content hash (document).
     /// This value is central to tracking since every time we receive a CollaborationMessage
     /// we check what we are tracking so that the view is tracked accordingly.

@@ -30,11 +30,12 @@ import MultipeerConnectivity
 // requestFile:contentHash
 // readingDocument:filename::contentHash::title  (where title can be empty)
 // reportIdle:
-// scrollTo:<FocusArea description>  (a peer scrolled to some area - normally a point)
+// scrollTo:<FocusArea(.point) description>  (a peer scrolled to some area)
 // addReadingTag:<ReadingTag description>  (a peer added this tag to the currently tracked document)
 // removeReadingTag:<ReadingTag description>  (a peer added this tag to the currently tracked document)
 // readAreas:<FocusAreas description>  (a peer read a numbers of areas, separated by ; - normally areas are rects)
 // markRects:<JSON Raw String>  (a peer marked some readingrects)
+// fixation:<FocusArea(.point) description>  (new fixation received from peer)
 
 enum MessagePrefix: String {
     case reportIdle
@@ -47,6 +48,7 @@ enum MessagePrefix: String {
     case removeReadingTag
     case readAreas
     case markRects
+    case fixation
 }
 
 enum CollaborationMessage {
@@ -80,6 +82,9 @@ enum CollaborationMessage {
     
     /// Notifies peers that we marked a number of rects
     case markRects([ReadingRect])
+    
+    /// Notifies that a new fixation was received from eye tracker
+    case fixation(FocusArea)
     
     /// Creates a started reading message using the current scidoc.
     /// - Attention: No message will be created if the scidoc is nil or does not have an associated contenthash.
@@ -179,7 +184,17 @@ enum CollaborationMessage {
             let json = JSON.parse(suffix)
             AppSingleton.log.debug("Received json count: \(json.count)")
             self = .markRects(json.array!.flatMap({ReadingRect(fromJson: $0)}))
+        
+        case .fixation:
+        
+            guard let area = FocusArea(fromString: suffix) else {
+                AppSingleton.log.error("Failed to parse fixation string")
+                return nil
+            }
+        
+            self = .fixation(area)
         }
+        
     }
     
     /// Gets the string that identifies a message, for this collaboration message (does not include `:`).
@@ -205,6 +220,8 @@ enum CollaborationMessage {
             return MessagePrefix.readAreas.rawValue
         case .markRects:
             return MessagePrefix.markRects.rawValue
+        case .fixation:
+            return MessagePrefix.fixation.rawValue
         }
     }
     
@@ -239,6 +256,8 @@ enum CollaborationMessage {
             let jsonData = try! JSONSerialization.data(withJSONObject: outDict, options: [])
             let jsonString = String(data: jsonData, encoding: .utf8)!
             return self.prefix() + ":" + jsonString
+        case .fixation(let area):
+            return self.prefix() + ":" + area.description
         }
     }
     

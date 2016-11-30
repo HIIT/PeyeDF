@@ -24,18 +24,25 @@
 
 import Cocoa
 
-/// Protocol for allowing / disallowing double and triple click recognizers
-protocol ClickRecognizerDelegate: class {
+/// Protocol for allowing / disallowing double and triple click recognizers and
+/// display of peer (not own) fixations
+protocol PDFReaderDelegate: class {
     
     /// Set the enabled state of the recognizer to the given value
     func setRecognizersTo(_ enabled: Bool)
     
     /// Check if recognizers are enabled
     func getRecognizersState() -> Bool
+    
+    /// Receive a peer fixation and animate accordingly
+    func displayPeerFixation(pointInView: CGPoint)
+    
+    /// Clear fixation indicators
+    func clearFixations()
 }
 
 /// Controller for the PDF-side Document split view
-class PDFSideController: NSViewController, ClickRecognizerDelegate, NSGestureRecognizerDelegate {
+class PDFSideController: NSViewController, PDFReaderDelegate, NSGestureRecognizerDelegate {
     
     @IBOutlet weak var pdfReader: PDFReader!
     @IBOutlet weak var overlay: MyOverlay!
@@ -61,6 +68,8 @@ class PDFSideController: NSViewController, ClickRecognizerDelegate, NSGestureRec
         pdfReader.quickMarkAndAnnotate(sender.location(in: pdfReader), importance: ReadingClass.high)
     }
     
+    // MARK: - Protocol implementation
+    
     /// Set the enabled state of the recognizer to the given value
     func setRecognizersTo(_ enabled: Bool) {
         doubleClickRecognizer.isEnabled = enabled
@@ -70,6 +79,16 @@ class PDFSideController: NSViewController, ClickRecognizerDelegate, NSGestureRec
     /// Check if recognizers are enabled
     func getRecognizersState() -> Bool {
         return doubleClickRecognizer.isEnabled && tripleClickRecognizer.isEnabled
+    }
+    
+    /// Receive peer fixation and animate accordingly
+    func displayPeerFixation(pointInView: CGPoint) {
+        overlay.moveFix(toPoint: pointInView, isTheirs: true)
+    }
+    
+    /// Clear fixation indicators
+    func clearFixations() {
+        overlay.clearFixations()
     }
     
     // MARK: - Delegation

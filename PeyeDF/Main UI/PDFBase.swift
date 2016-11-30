@@ -599,6 +599,41 @@ class PDFBase: PDFView {
         outputAnnotations(.low, colour: PeyeConstants.annotationColourRead)
     }
     
+    /// Returns a point in view coordinates from a Focus Area (if a rect is given, returns point corresponding to centre).
+    /// Returns nil if the given point is not currently visible.
+    func pointInView(fromArea area: FocusArea) -> CGPoint? {
+
+        // check that the point is visible, otherwise return nil
+        guard getVisiblePageNums().contains(area.pageIndex),
+              let doc = document,
+              let page = doc.page(at: area.pageIndex) else {
+            return nil
+        }
+        
+        let _point: CGPoint?
+        
+        switch area.type {
+        case .page:
+            AppSingleton.log.error("Tried to convert a page area to view coordinates. Not supported.")
+            _point = nil
+        case .point(let pt):
+            _point = pt
+        case .rect(let rect):
+            _point = rect.centre
+        }
+        
+        guard let point = _point else {
+            return nil
+        }
+        
+        let pointInView = convert(point, from: page)
+        if NSPointInRect(pointInView, self.bounds) {
+            return pointInView
+        } else {
+            return nil
+        }
+    }
+    
     // MARK: - Convenience functions
     
     /// Adds the given annotation on the given page and refreshes display

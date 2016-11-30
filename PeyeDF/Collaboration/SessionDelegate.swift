@@ -42,6 +42,12 @@ import MultipeerConnectivity
             sendStatus(peerID)
             
         case .trackingChange(let newState):
+            // update global
+            if newState {
+                Multipeer.trackers.insert(peerID)
+            } else {
+                Multipeer.trackers.remove(peerID)
+            }
             // if the peer that started tracking us is the one we are tracking, stop tracking that peer
             if let pHash = Multipeer.tracked.peer , pHash == peerID.hash {
                 Multipeer.tracked.peer = nil
@@ -168,6 +174,19 @@ import MultipeerConnectivity
             })
             pdfReader.autoAnnotate()
             
+        case .fixation(let area):
+            // check that we are tracking this peer, and we have a window open for the given peers' content hash
+            guard let pHash = Multipeer.tracked.peer, let cHash = Multipeer.tracked.cHash , pHash == peerID.hash else {
+                return
+            }
+            
+            guard let win = Multipeer.ourWindows[cHash],
+                  let point = win.pdfReader?.pointInView(fromArea: area) else {
+                return
+            }
+            
+            win.readerDelegate?.displayPeerFixation(pointInView: point)
+
         }
     }
     

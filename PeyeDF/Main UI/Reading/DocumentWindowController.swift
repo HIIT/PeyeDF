@@ -70,7 +70,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     var metadataWindowController: MetadataWindowController?
     
-    weak var clickDelegate: ClickRecognizerDelegate?
+    weak var readerDelegate: PDFReaderDelegate?
     
     // MARK: - Tagging
     
@@ -421,7 +421,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     // MARK: - Annotations
     
     @IBAction func toggleAnnotate(_ sender: AnyObject?) {
-        if let delegate = clickDelegate {
+        if let delegate = readerDelegate {
             if delegate.getRecognizersState() {
                 setAnnotate(false)
             } else {
@@ -432,7 +432,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     /// Set the annotate function to on (true) or off (false)
     func setAnnotate(_ toState: Bool) {
-        if let annotateTB = tbAnnotate, let delegate = clickDelegate {
+        if let annotateTB = tbAnnotate, let delegate = readerDelegate {
             if toState {
                 delegate.setRecognizersTo(true)
                 annotateTB.image = NSImage(named: PeyeConstants.annotateButton_DOWN)
@@ -622,7 +622,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         pdfReader = docSplitController?.myPDFSideController?.pdfReader
         
         // Reference for click gesture recognizers
-        clickDelegate = docSplitController?.myPDFSideController
+        readerDelegate = docSplitController?.myPDFSideController
         
         // Set reference to main split controller
         self.mainSplitController = self.contentViewController as? MainSplitController
@@ -869,14 +869,23 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     @objc fileprivate func zoomChanged(_ notification: Notification) {
         startedReading()
+        if pdfReader?.drawDebugCirle ?? false {
+            readerDelegate?.clearFixations()
+        }
     }
     
     @objc fileprivate func frameChanged(_ notification: Notification) {
         startedReading()
+        if pdfReader?.drawDebugCirle ?? false {
+            readerDelegate?.clearFixations()
+        }
     }
     
     @objc fileprivate func scrollingChanged(_ notification: Notification) {
         startedReading()
+        if pdfReader?.drawDebugCirle ?? false {
+            readerDelegate?.clearFixations()
+        }
     }
     
     // MARK: - Notification callbacks from window
