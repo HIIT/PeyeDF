@@ -161,18 +161,7 @@ import MultipeerConnectivity
                 return
             }
             
-            // TODO: fix this, it is a duplicate of line 364 in PDFReader
-            let previousState = PDFMarkingsState(oldState: pdfReader.markings.getAll(forSources: [.click, .manualSelection]))
-            
-            previousState.lastRects = rects
-            pdfReader.undoManager?.registerUndo(withTarget: self, selector: #selector(pdfReader.undoMarkAndAnnotate(_:)), object: previousState)
-            pdfReader.undoManager?.setActionName(NSLocalizedString("actions.annotate", value: "Selection Mark Text", comment: "Some text was marked via clicking / undoing"))
-            
-            rects.forEach({
-                pdfReader.markings.addRect($0)
-                HistoryManager.sharedManager.addReadingRect($0)
-            })
-            pdfReader.autoAnnotate()
+            pdfReader.selectionMarkAndAnnotate(rects)
             
         case .fixation(let area):
             // check that we are tracking this peer, and we have a window open for the given peers' content hash
@@ -199,6 +188,20 @@ import MultipeerConnectivity
             
             DispatchQueue.main.async {
                 pdfReader.undoManager?.undo()
+            }
+            
+        case .redo:
+            // check that we are tracking this peer, and we have a window open for the given peers' content hash
+            guard let pHash = Multipeer.tracked.peer, let cHash = Multipeer.tracked.cHash , pHash == peerID.hash else {
+                return
+            }
+            
+            guard let win = Multipeer.ourWindows[cHash], let pdfReader = win.pdfReader else {
+                return
+            }
+            
+            DispatchQueue.main.async {
+                pdfReader.undoManager?.redo()
             }
             
         }

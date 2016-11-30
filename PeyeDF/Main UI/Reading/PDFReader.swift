@@ -248,7 +248,9 @@ class PDFReader: PDFBase {
             exception.raise()
         }
         
-        selectionMarkAndAnnotate(importance: importance)
+        if let markRects = ReadingRect.makeReadingRects(fromSelectionIn: self, importance: importance) {
+            selectionMarkAndAnnotate(markRects)
+        }
     }
     
     /// This method is called (so far) only by the undo manager.
@@ -327,13 +329,12 @@ class PDFReader: PDFBase {
     /// Create a set of markings for the current selection (which can span multiple lines).
     /// Sends a notification that the marking was done.
     /// Does not do anything if nothing is currently selected.
-    func selectionMarkAndAnnotate(importance: ReadingClass) {
+    func selectionMarkAndAnnotate(_ markRects: [ReadingRect]) {
         guard status == .trackable else {
             return
         }
         
-        guard let markRects = ReadingRect.makeReadingRects(fromSelectionIn: self, importance: importance),
-                  markRects.count > 0 else {
+        guard markRects.count > 0 else {
             return
         }
         

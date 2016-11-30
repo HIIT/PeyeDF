@@ -750,6 +750,9 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         
         NotificationCenter.default.addObserver(self, selector: #selector(dimeConnectionChanged(_:)), name: PeyeConstants.diMeConnectionNotification, object: nil)
         
+        // Get redo notifications to be sent to peers
+        NotificationCenter.default.addObserver(self, selector: #selector(didRedo(_:)), name: Notification.Name.NSUndoManagerDidRedoChange, object: self.pdfReader!)
+        
         // Set up regular timer
         DocumentWindowController.timerQueue.sync {
             if self.regularTimer == nil {
@@ -889,6 +892,13 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     }
     
     // MARK: - Notification callbacks from window
+    
+    @objc fileprivate func didRedo(_ notification: Notification) {
+        // if someone is tracking us, tell them to redo
+        if Multipeer.trackers.count > 0 {
+            CollaborationMessage.redo.sendTo(Multipeer.trackers.map({$0}))
+        }
+    }
     
     @objc fileprivate func windowMoved(_ notification: Notification) {
         startedReading()
