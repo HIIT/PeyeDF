@@ -182,17 +182,21 @@ class PDFReader: PDFBase {
                     
                     // if there are no tags here, propagate event
                     if !showTags(mouseInView.origin) {
+                        super.mouseUp(with: theEvent)
+                        
                         // MF: TODO: remove this once debugging is complete
                         #if DEBUG
-                        let activePage = self.page(for: mouseInView.origin, nearest: true)
-                        let pointOnPage = self.convert(mouseInView.origin, to: activePage!)
-                        if let rect = pointToParagraphRect(pointOnPage, forPage: activePage!),
-                           let doc = self.document {
-                            let area = FocusArea(forRect: rect, onPage: doc.index(for: activePage!))
-                            if let cHash = sciDoc?.contentHash {
-                                Multipeer.overviewControllers[cHash]?.pdfOverview.addAreaForLocal(area)
+                        if AppSingleton.eyeTracker == nil {
+                            let activePage = self.page(for: mouseInView.origin, nearest: true)
+                            let pointOnPage = self.convert(mouseInView.origin, to: activePage!)
+                            if let rect = pointToParagraphRect(pointOnPage, forPage: activePage!),
+                               let doc = self.document {
+                                let area = FocusArea(forRect: rect, onPage: doc.index(for: activePage!))
+                                if let cHash = sciDoc?.contentHash {
+                                    Multipeer.overviewControllers[cHash]?.pdfOverview.addAreaForLocal(area)
+                                }
+                                CollaborationMessage.readAreas([area]).sendToAll()
                             }
-                            CollaborationMessage.readAreas([area]).sendToAll()
                         }
                         #endif
                     }
@@ -200,7 +204,6 @@ class PDFReader: PDFBase {
             }
         }
         
-        super.mouseUp(with: theEvent)
     }
     
     /// SciDoc tags changed
@@ -252,6 +255,11 @@ class PDFReader: PDFBase {
     /// It sets the state of markings to the specified object (markingState) and
     /// refreshes the view (so that the change can be seen appearing / disappearing immediately).
     @objc func undoMarkAndAnnotate(_ previousState: PDFMarkingsState) {
+        
+        // if someone is tracking us, tell them to undo
+        if Multipeer.trackers.count > 0 {
+            CollaborationMessage.undo.sendTo(Multipeer.trackers.map({$0}))
+        }
         
         // store previous state before making any modification
         let evenPreviousState = PDFMarkingsState(oldState: markings.getAll(forSources: [.click, .manualSelection]))
@@ -327,6 +335,12 @@ class PDFReader: PDFBase {
         guard let markRects = ReadingRect.makeReadingRects(fromSelectionIn: self, importance: importance),
                   markRects.count > 0 else {
             return
+        }
+        
+        // if there's someone tracking us, send them the markings
+        if Multipeer.trackers.count > 0 {
+            let message = CollaborationMessage.markRects(markRects)
+            message.sendTo(Multipeer.trackers.map({$0}))
         }
         
         // prepare a marking state to store this operation
@@ -413,8 +427,21 @@ class PDFReader: PDFBase {
         // (preferred method to fetch eye tracking data).
         if fromEye {
             if let seenRect = pointToParagraphRect(pointOnPage, forPage: page!) {
-                let newRect = ReadingRect(pageIndex: self.document!.index(for: page!), rect: seenRect, readingClass: .paragraph, classSource: .smi, pdfBase: self)
+                
+                let pageIndex = self.document!.index(for: page!)
+                
+                let newRect = ReadingRect(pageIndex: pageIndex, rect: seenRect, readingClass: .paragraph, classSource: .smi, pdfBase: self)
                 markings.addRect(newRect)
+                
+                // if we are connected to someone, sent read area to peers
+                if Multipeer.session.connectedPeers.count > 0 {
+                    let area = FocusArea(forRect: seenRect, onPage: pageIndex)
+                    CollaborationMessage.readAreas([area]).sendToAll()
+                    // show our read area in peer overview controller
+                    if let cHash = sciDoc?.contentHash {
+                        Multipeer.overviewControllers[cHash]?.pdfOverview.addAreaForLocal(area)
+                    }
+                }
             }
             
             // draw our circle if needed
@@ -422,7 +449,7 @@ class PDFReader: PDFBase {
                 NotificationCenter.default.post(name: PeyeConstants.fixationWithinDocNotification, object: self, userInfo: ["xpos": pointInView.x, "ypos": pointInView.y])
             }
 
-            // if we are being tracked, send fixation to peers
+            // if we are being tracked, send fixation to peer(s)
             if Multipeer.trackers.count > 0 {
                 let message = CollaborationMessage.fixation(FocusArea(forPoint: pointOnPage, onPage: pageIndex))
                 message.sendTo(Multipeer.trackers.map({$0}))

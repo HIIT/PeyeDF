@@ -36,6 +36,7 @@ import MultipeerConnectivity
 // readAreas:<FocusAreas description>  (a peer read a numbers of areas, separated by ; - normally areas are rects)
 // markRects:<JSON Raw String>  (a peer marked some readingrects)
 // fixation:<FocusArea(.point) description>  (new fixation received from peer)
+// undo:  (undo last marking)
 
 enum MessagePrefix: String {
     case reportIdle
@@ -49,6 +50,7 @@ enum MessagePrefix: String {
     case readAreas
     case markRects
     case fixation
+    case undo
 }
 
 enum CollaborationMessage {
@@ -85,6 +87,9 @@ enum CollaborationMessage {
     
     /// Notifies that a new fixation was received from eye tracker
     case fixation(FocusArea)
+    
+    /// Notifies that we pressed undo or ⌘-Z
+    case undo
     
     /// Creates a started reading message using the current scidoc.
     /// - Attention: No message will be created if the scidoc is nil or does not have an associated contenthash.
@@ -182,7 +187,6 @@ enum CollaborationMessage {
         case .markRects:
             
             let json = JSON.parse(suffix)
-            AppSingleton.log.debug("Received json count: \(json.count)")
             self = .markRects(json.array!.flatMap({ReadingRect(fromJson: $0)}))
         
         case .fixation:
@@ -193,6 +197,10 @@ enum CollaborationMessage {
             }
         
             self = .fixation(area)
+            
+        case .undo:
+            self = .undo
+            
         }
         
     }
@@ -222,6 +230,8 @@ enum CollaborationMessage {
             return MessagePrefix.markRects.rawValue
         case .fixation:
             return MessagePrefix.fixation.rawValue
+        case .undo:
+            return MessagePrefix.undo.rawValue
         }
     }
     
@@ -258,6 +268,8 @@ enum CollaborationMessage {
             return self.prefix() + ":" + jsonString
         case .fixation(let area):
             return self.prefix() + ":" + area.description
+        case .undo:
+            return self.prefix() + ":"
         }
     }
     

@@ -187,6 +187,18 @@ import MultipeerConnectivity
             
             win.readerDelegate?.displayPeerFixation(pointInView: point)
 
+        case .undo:
+            // check that we are tracking this peer, and we have a window open for the given peers' content hash
+            guard let pHash = Multipeer.tracked.peer, let cHash = Multipeer.tracked.cHash , pHash == peerID.hash else {
+                return
+            }
+            
+            guard let win = Multipeer.ourWindows[cHash] else {
+                    return
+            }
+            
+            win.undoManager?.undo()
+            
         }
     }
     
