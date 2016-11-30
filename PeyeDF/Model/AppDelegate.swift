@@ -73,9 +73,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         UserDefaults.standard.register(defaults: defaultPrefs)
         UserDefaults.standard.synchronize()
         
-        // Attempt dime connection (required even if we don't use dime, because this sets up historymanager shared object)
-        DiMeSession.dimeConnect()  // will automatically detect if dime is down
-        
         // Set up handler for custom url types (peyedf://)
         NSAppleEventManager.shared().setEventHandler(self, andSelector: #selector(handleURL(_:)), forEventClass: UInt32(kInternetEventClass), andEventID: UInt32(kAEGetURL))
     }
@@ -89,6 +86,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 Sparkle.SUUpdater.shared().checkForUpdatesInBackground()
             }
         #endif
+        
+        // Dime/Eye tracker down/up observers
+        NotificationCenter.default.addObserver(self, selector: #selector(dimeConnectionChanged(_:)), name: PeyeConstants.diMeConnectionNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(eyeConnectionChanged(_:)), name:PeyeConstants.eyeConnectionNotification, object: nil)
+        
+        // Attempt dime connection (required even if we don't use dime, because this sets up historymanager shared object)
+        DiMeSession.dimeConnect()  // will automatically detect if dime is down
         
         // If we want to use eye tracker, start it
         let useEye = UserDefaults.standard.object(forKey: PeyeConstants.prefUseEyeTracker) as! Bool
@@ -104,10 +108,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             AppSingleton.eyeTracker?.fixationDelegate = HistoryManager.sharedManager
         }
         
-        // Dime/Eye tracker down/up observers
-        NotificationCenter.default.addObserver(self, selector: #selector(dimeConnectionChanged(_:)), name: PeyeConstants.diMeConnectionNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(eyeConnectionChanged(_:)), name:PeyeConstants.eyeConnectionNotification, object: nil)
-                
         // Start multipeer connectivity
         Multipeer.advertiser.start()
     }
@@ -356,15 +356,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func dimeConnectionChanged(_ notification: Notification) {
         let userInfo = (notification as NSNotification).userInfo as! [String: Bool]
         let dimeAvailable = userInfo["available"]!
-        
-        if dimeAvailable {
-            connectDime.state = NSOnState
-            connectDime.isEnabled = false
-            connectDime.title = "Connected to DiMe"
-        } else {
-            connectDime.state = NSOffState
-            connectDime.isEnabled = true
-            connectDime.title = "Connect to DiMe"
+        DispatchQueue.main.async {
+            if dimeAvailable {
+                self.connectDime.state = NSOnState
+                self.connectDime.isEnabled = false
+                self.connectDime.title = "Connected to DiMe"
+            } else {
+                self.connectDime.state = NSOffState
+                self.connectDime.isEnabled = true
+                self.connectDime.title = "Connect to DiMe"
+            }
         }
     }
     

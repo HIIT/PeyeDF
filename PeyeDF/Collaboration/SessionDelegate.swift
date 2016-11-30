@@ -193,11 +193,13 @@ import MultipeerConnectivity
                 return
             }
             
-            guard let win = Multipeer.ourWindows[cHash] else {
+            guard let win = Multipeer.ourWindows[cHash], let pdfReader = win.pdfReader else {
                     return
             }
             
-            win.undoManager?.undo()
+            DispatchQueue.main.async {
+                pdfReader.undoManager?.undo()
+            }
             
         }
     }
