@@ -260,7 +260,9 @@ class PDFReader: PDFBase {
         
         // if someone is tracking us, tell them to undo
         if Multipeer.trackers.count > 0 {
-            CollaborationMessage.undo.sendTo(Multipeer.trackers.map({$0}))
+            if !(undoManager?.isRedoing ?? false) {
+                CollaborationMessage.undo.sendTo(Multipeer.trackers.map({$0}))
+            }
         }
         
         // store previous state before making any modification

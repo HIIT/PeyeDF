@@ -751,7 +751,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         NotificationCenter.default.addObserver(self, selector: #selector(dimeConnectionChanged(_:)), name: PeyeConstants.diMeConnectionNotification, object: nil)
         
         // Get redo notifications to be sent to peers
-        NotificationCenter.default.addObserver(self, selector: #selector(didRedo(_:)), name: Notification.Name.NSUndoManagerDidRedoChange, object: self.pdfReader!)
+        NotificationCenter.default.addObserver(self, selector: #selector(didRedo(_:)), name: Notification.Name.NSUndoManagerDidRedoChange, object: self.pdfReader!.undoManager!)
         
         // Set up regular timer
         DocumentWindowController.timerQueue.sync {
