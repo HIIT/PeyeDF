@@ -56,7 +56,8 @@ class DocumentWindow: NSWindow {
     /// If an eye tracker is being used, contrains the window to cover
     override func constrainFrameRect(_ frameRect: NSRect, to screen: NSScreen?) -> NSRect {
         if let screen = screen {
-            if AppSingleton.eyeTracker?.available ?? false {
+            // if eye tracker is available and relevant preference is true
+            if (AppSingleton.eyeTracker?.available ?? false) && AppSingleton.constrainMaxWindowSize {
                 let shrankScreenRect = DocumentWindow.getConstrainingRect(forScreen: screen)
                 // intersect the computed shrank screen with the desired new rect, and return that
                 return frameRect.intersection(shrankScreenRect)

@@ -74,6 +74,11 @@ class AppSingleton {
         }
     } }
     
+    /// Convenience getter to know wheter we want to constrain max window size when eye tracker is on
+    static var constrainMaxWindowSize: Bool { get {
+        return UserDefaults.standard.object(forKey: PeyeConstants.prefConstrainWindowMaxSize) as! Bool
+    } }
+    
     /// The user's dominant eye, as set in the preferences window.
     static var dominantEye: Eye { get {
         let eyeRaw = UserDefaults.standard.object(forKey: PeyeConstants.prefDominantEye) as! Int

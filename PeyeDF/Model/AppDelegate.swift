@@ -62,6 +62,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         defaultPrefs[PeyeConstants.prefUseMidas] = 0
         defaultPrefs[PeyeConstants.prefUseLSL] = 0
         defaultPrefs[PeyeConstants.prefAskToSaveOnClose] = 0
+        defaultPrefs[PeyeConstants.prefConstrainWindowMaxSize] = 0 
         defaultPrefs[PeyeConstants.prefEnableAnnotate] = 0
         defaultPrefs[PeyeConstants.prefDownloadMetadata] = 1
         defaultPrefs[PeyeConstants.prefLoadPreviousAnnotations] = 1

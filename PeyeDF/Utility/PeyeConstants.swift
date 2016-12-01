@@ -37,6 +37,9 @@ class PeyeConstants {
     /// If we want to be asked to save pdf document edits (new annotations) on window close
     static let prefAskToSaveOnClose = "documentWindow.askToSaveOnClose"
     
+    /// If we want to constrain maximum window size when eye tracking is on
+    static let prefConstrainWindowMaxSize = "documentWindow.constrain_maxSize_eye"
+    
     /// Whether we want "annotate" to be enabled by default
     static let prefEnableAnnotate = "annotate.defaultOn"
     

@@ -27,6 +27,7 @@ import Cocoa
 class DebugPreferencesController: NSViewController {
 
     @IBOutlet weak var drawDebugCircleCheckCell: NSButtonCell!
+    @IBOutlet weak var constrainMaxSizeCell: NSButtonCell!
     @IBOutlet weak var refinderDrawGazedCheckCell: NSButtonCell!
     
     @IBOutlet weak var orphanedDeleteProgressBar: NSProgressIndicator!
@@ -39,6 +40,7 @@ class DebugPreferencesController: NSViewController {
         let options: [String: AnyObject] = ["NSContinuouslyUpdatesValue": true as AnyObject]
         
         refinderDrawGazedCheckCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefRefinderDrawGazedUpon, options: options)
+        constrainMaxSizeCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefConstrainWindowMaxSize, options: options)
         drawDebugCircleCheckCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefDrawDebugCircle, options: options)
     }
     
