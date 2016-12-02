@@ -143,9 +143,25 @@ class PDFOverview: PDFBase {
                 }
             }
             
+            if markings.circles.count > 0 {
+                // Save.
+                NSGraphicsContext.saveGraphicsState()
+                
+                // Draw.
+                for circle in markings.circles {
+                    let col = PeyeConstants.colourPeerRead  // TODO: fix this hardcoded colour
+                    let circlePath: NSBezierPath = NSBezierPath(ovalIn: NSRect(circle: circle))
+                    col.setFill()
+                    circlePath.fill()
+                }
+                
+                // Restore.
+                NSGraphicsContext.restoreGraphicsState()
+            }
+            
             // draw found search queries
             let rectsToDraw = markings.get(ofClass: .foundString, forPage: pageIndex)
-            if rectsToDraw.count > 0{
+            if rectsToDraw.count > 0 {
             	// Save.
                 NSGraphicsContext.saveGraphicsState()
         	

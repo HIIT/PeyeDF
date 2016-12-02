@@ -80,6 +80,14 @@ extension NSRect {
         }
     }
     
+    /// Creates a rect that encases the given circle
+    init(circle: Circle) {
+        let x = circle.centre.x - circle.radius
+        let y = circle.centre.y - circle.radius
+        self.origin = NSPoint(x: x, y: y)
+        self.size = NSSize(width: circle.radius * 2, height: circle.radius * 2)
+    }
+    
     /// Subtracts another rectangle **from** this rectangle. That is,
     /// returns this rectangle as a (possibly disjoint) array. Only one element
     /// is returned in the array if the lhs was not entirely enclosed by this element.

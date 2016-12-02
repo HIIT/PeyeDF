@@ -32,6 +32,9 @@ struct PDFMarkings {
     /// All rectangles (markings) for the given document.
     fileprivate var allRects = [ReadingRect]()
     
+    /// All circles for the given document.
+    var circles = [Circle]()
+    
     /// Reference to PDFBase is used to get text within reading rects and scaleFactors
     unowned let pdfBase: PDFBase
     
@@ -505,4 +508,5 @@ public enum ClassSource: Int {
     case localPeer = 6
     case networkPeer = 7
     case manualSelection = 8 // Selected by dragging and then setting importance
+    case anyPeer = 9
 }

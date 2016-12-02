@@ -125,7 +125,7 @@ import MultipeerConnectivity
             
             sciDoc.subtractTag(tag)
             
-        case .readAreas(let areas):
+        case .seenAreas(let areas):
             // check that we are tracking this peer, and we have a window open for the given peer's content hash
             guard let cHash = Multipeer.peerController.getCurrentContentHash(forPeer: peerID) else {
                 return
@@ -137,7 +137,7 @@ import MultipeerConnectivity
             
             // add each area to the overview
             areas.forEach() {
-                Multipeer.overviewControllers[cHash]?.pdfOverview.addAreaForPeer($0)
+                Multipeer.overviewControllers[cHash]?.pdfOverview.addArea($0, fromSource: .networkPeer)
             }
             
             // display the last area directly on the pdf

@@ -33,7 +33,7 @@ import MultipeerConnectivity
 // scrollTo:<FocusArea(.point) description>  (a peer scrolled to some area)
 // addReadingTag:<ReadingTag description>  (a peer added this tag to the currently tracked document)
 // removeReadingTag:<ReadingTag description>  (a peer added this tag to the currently tracked document)
-// readAreas:<FocusAreas description>  (a peer read a numbers of areas, separated by ; - normally areas are rects)
+// seenAreas:<FocusAreas description>  (a peer just saw or read 1 or more)
 // markRects:<JSON Raw String>  (a peer marked some readingrects)
 // fixation:<FocusArea(.point) description>  (new fixation received from peer)
 // undo:  (undo last marking)
@@ -48,7 +48,7 @@ enum MessagePrefix: String {
     case scrollTo
     case addReadingTag
     case removeReadingTag
-    case readAreas
+    case seenAreas
     case markRects
     case fixation
     case undo
@@ -81,8 +81,8 @@ enum CollaborationMessage {
     /// Notifies peers that we removed a tag
     case removeReadingTag(ReadingTag)
     
-    /// Notifies peers that we read a number of areas
-    case readAreas([FocusArea])
+    /// Notifies peers that we just seen (read) a number of areas
+    case seenAreas([FocusArea])
     
     /// Notifies peers that we marked a number of rects
     case markRects([ReadingRect])
@@ -179,7 +179,7 @@ enum CollaborationMessage {
             
             self = .removeReadingTag(tag)
             
-        case .readAreas:
+        case .seenAreas:
             
             let inputAreas = suffix.components(separatedBy: ";")
             let parsedAreas = inputAreas.flatMap({FocusArea(fromString: $0)})
@@ -187,7 +187,7 @@ enum CollaborationMessage {
                 AppSingleton.log.error("Failed to find any areas in input")
                 return nil
             }
-            self = .readAreas(parsedAreas)
+            self = .seenAreas(parsedAreas)
             
         case .markRects:
             
@@ -231,8 +231,8 @@ enum CollaborationMessage {
             return MessagePrefix.addReadingTag.rawValue
         case .removeReadingTag:
             return MessagePrefix.removeReadingTag.rawValue
-        case .readAreas:
-            return MessagePrefix.readAreas.rawValue
+        case .seenAreas:
+            return MessagePrefix.seenAreas.rawValue
         case .markRects:
             return MessagePrefix.markRects.rawValue
         case .fixation:
@@ -263,7 +263,7 @@ enum CollaborationMessage {
             return self.prefix() + ":" + tag.description
         case .removeReadingTag(let tag):
             return self.prefix() + ":" + tag.description
-        case .readAreas(let areas):
+        case .seenAreas(let areas):
             return self.prefix() + ":" + areas.map({$0.description}).joined(separator: ";")
         case .markRects(let rects):
             var outDict = [[String: Any]]()

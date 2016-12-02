@@ -31,7 +31,12 @@ struct Circle: CustomStringConvertible {
     let centre: CGPoint
     let radius: CGFloat
     
-    /// Creates a circle from a point and a radius 'x,y,r'.
+    init(x: CGFloat, y: CGFloat, r: CGFloat) {
+        self.centre = CGPoint(x: x, y: y)
+        self.radius = r
+    }
+    
+    /// Creates a circle from a point and a radius using the string 'x,y,r'.
     init?(string: String) {
         if let spl = string.split(","), spl.count == 3 {
             let nf = NumberFormatter()

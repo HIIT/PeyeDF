@@ -193,9 +193,9 @@ class PDFReader: PDFBase {
                                let doc = self.document {
                                 let area = FocusArea(forRect: rect, onPage: doc.index(for: activePage!))
                                 if let cHash = sciDoc?.contentHash {
-                                    Multipeer.overviewControllers[cHash]?.pdfOverview.addAreaForLocal(area)
+                                    Multipeer.overviewControllers[cHash]?.pdfOverview.addArea(area, fromSource: .localPeer)
                                 }
-                                CollaborationMessage.readAreas([area]).sendToAll()
+                                CollaborationMessage.seenAreas([area]).sendToAll()
                             }
                         }
                         #endif
@@ -436,15 +436,6 @@ class PDFReader: PDFBase {
                 let newRect = ReadingRect(pageIndex: pageIndex, rect: seenRect, readingClass: .paragraph, classSource: .smi, pdfBase: self)
                 markings.addRect(newRect)
                 
-                // if we are connected to someone, sent read area to peers
-                if Multipeer.session.connectedPeers.count > 0 {
-                    let area = FocusArea(forRect: seenRect, onPage: pageIndex)
-                    CollaborationMessage.readAreas([area]).sendToAll()
-                    // show our read area in peer overview controller
-                    if let cHash = sciDoc?.contentHash {
-                        Multipeer.overviewControllers[cHash]?.pdfOverview.addAreaForLocal(area)
-                    }
-                }
             }
             
             // draw our circle if needed
@@ -462,8 +453,8 @@ class PDFReader: PDFBase {
         return (x: Double(pointOnPage.x), y: Double(pointOnPage.y), pageIndex: pageIndex)
     }
     
-    /// Creates a SMI rect using the triple returned from screenToPage, corresponding to the paragraph contained within 3 degrees of visual angle of the given fixation. As of PeyeDF 0.4+, this is the preferred method to send SMI paragraphs to dime.
-    func getSMIRect(_ triple: (x: Double, y: Double, pageIndex: Int)) -> ReadingRect? {
+    /// Creates a reading rect using the triple returned from screenToPage, corresponding to the paragraph contained within 3 degrees of visual angle of the given fixation. As of PeyeDF 0.4+, this is the preferred method to send reading rects to dime.
+    func getReadingRect(_ triple: (x: Double, y: Double, pageIndex: Int)) -> ReadingRect? {
         let pointOnPage = NSPoint(x: triple.x, y: triple.y)
         let pdfPage = document!.page(at: triple.pageIndex)
         if let sr = pointToParagraphRect(pointOnPage, forPage: pdfPage!) {

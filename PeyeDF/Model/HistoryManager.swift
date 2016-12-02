@@ -137,20 +137,33 @@ class HistoryManager: FixationDataDelegate {
                             }
                             
                             // create rect for retrieved fixation
-                            if let smiRect = eyeReceiver.getSMIRect(triple) {
+                            if let rRect = eyeReceiver.getReadingRect(triple) {
                                 
-                                if let cHash = self.currentEyeReceiver?.sciDoc?.contentHash {
-                                    let area = FocusArea(forRect: smiRect.rect, onPage: smiRect.pageIndex as Int)
-                                    Multipeer.overviewControllers[cHash]?.pdfOverview?.addAreaForLocal(area)
+                                // if we are connected to someone, sent read area to peers and add to our overview
+                                if Multipeer.session.connectedPeers.count > 0,
+                                  let cHash = self.currentEyeReceiver?.sciDoc?.contentHash {
+                                    let area = FocusArea(forRect: rRect.rect, onPage: rRect.pageIndex as Int)
+                                    CollaborationMessage.seenAreas([area]).sendToAll()
+                                    Multipeer.overviewControllers[cHash]?.pdfOverview?.addArea(area, fromSource: .localPeer)
                                 }
                                 
-                                self.currentSMIMarks?.addRect(smiRect)
-                                #if DEBUG
-                                    if self.currentSMIMarks == nil {
-                                        AppSingleton.log.debug("Nil smi marks")
-                                    }
-                                #endif
+                                self.currentSMIMarks?.addRect(rRect)
+                            
+                            } // no rect (text) was found, send a circle to peers
+                              else if let zoomLevel = self.currentEyeReceiver?.scaleFactor {
+                                
+                                let radius = pointSpan(zoomLevel: zoomLevel, dpi: AppSingleton.getComputedDPI()!, distancemm: AppSingleton.eyeTracker?.lastValidDistance ?? 800)
+                                let circle = Circle(x: CGFloat(triple.x), y: CGFloat(triple.y), r: radius)
+                                let area = FocusArea(forCircle: circle, onPage: triple.pageIndex)
+                                
+                                // send found area to peers
+                                if Multipeer.session.connectedPeers.count > 0,
+                                    let cHash = self.currentEyeReceiver?.sciDoc?.contentHash {
+                                    CollaborationMessage.seenAreas([area]).sendToAll()
+                                    Multipeer.overviewControllers[cHash]?.pdfOverview?.addArea(area, fromSource: .localPeer)
+                                }
                             }
+                            
                         }
                     }
                 }
