@@ -599,7 +599,7 @@ class PDFBase: PDFView {
         outputAnnotations(.low, colour: PeyeConstants.annotationColourRead)
     }
     
-    /// Returns a point in view coordinates from a Focus Area (if a rect is given, returns point corresponding to centre).
+    /// Returns a point in view coordinates from a Focus Area (if a rect or circle is given, returns point corresponding to centre).
     /// Returns nil if the given point is not currently visible.
     func pointInView(fromArea area: FocusArea) -> CGPoint? {
 
@@ -620,6 +620,8 @@ class PDFBase: PDFView {
             _point = pt
         case .rect(let rect):
             _point = rect.centre
+        case .circle(let circle):
+            _point = circle.centre
         }
         
         guard let point = _point else {

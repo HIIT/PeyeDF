@@ -26,6 +26,34 @@ import Foundation
 import Cocoa
 import Quartz
 
+/// A perfectly round circle, with a centre and a radius
+struct Circle: CustomStringConvertible {
+    let centre: CGPoint
+    let radius: CGFloat
+    
+    /// Creates a circle from a point and a radius 'x,y,r'.
+    init?(string: String) {
+        if let spl = string.split(","), spl.count == 3 {
+            let nf = NumberFormatter()
+            nf.localizesFormat = false  // to be locale-independent
+            if let x = nf.number(from: spl[0]) as? CGFloat,
+                let y = nf.number(from: spl[1]) as? CGFloat,
+                let r = nf.number(from: spl[2]) as? CGFloat {
+                self.centre = CGPoint(x: x, y: y)
+                self.radius = r
+            } else {
+                return nil
+            }
+        } else {
+            return nil
+        }
+    }
+    
+    var description: String { get {
+        return centre.description + ",\(radius)"
+    } }
+}
+
 /// Enum representing something we can focus on, such as a point on a document (to
 /// refer to a heading or bookmark) or a rect (to refer to a block of text).
 enum FocusAreaType: CustomStringConvertible {
@@ -33,6 +61,7 @@ enum FocusAreaType: CustomStringConvertible {
     /** - For page: '' (empty)
         - For point: 'x,y'
         - For rect: 'x,y,w,h'
+        - For circle: 'x,y,r'
     */
     var description: String { get {
         switch self {
@@ -42,12 +71,15 @@ enum FocusAreaType: CustomStringConvertible {
             return r.description
         case .point(let p):
             return p.description
+        case .circle(let c):
+            return c.description
         }
     } }
     
     case page
     case rect(NSRect)
     case point(NSPoint)
+    case circle(Circle)
     
     /// Creates itself from nsurlcomponents. If both a rect and point are found,
     /// rect takes precedence.
@@ -61,18 +93,22 @@ enum FocusAreaType: CustomStringConvertible {
             self = .rect(r)
         } else if let sp = params["point"]?.withoutChars(["(", ")"]), let p = NSPoint(string: sp) {
             self = .point(p)
+        } else if let sp = params["circle"]?.withoutChars(["(", ")"]), let c = Circle(string: sp) {
+            self = .circle(c)
         } else {
             self = .page
         }
     }
     
-    /// Creates itself from a string in the format x,y or x,y,w,h (same format as
+    /// Creates itself from a string in the format x,y or x,y,w,h or x,y,r (same format as
     /// description, empty String returns .page).
     init?(fromString string: String) {
         if let r = NSRect(string: string) {
             self = .rect(r)
         } else if let p = NSPoint(string: string) {
             self = .point(p)
+        } else if let c = Circle(string: string) {
+            self = .circle(c)
         } else if string.isEmpty {
             self = .page
         } else {
@@ -96,6 +132,7 @@ struct FocusArea: CustomStringConvertible {
      - For page: p (where p is page number)
      - For point: p:x,y
      - For rect: p:x,y,w,h
+     - For circle: p:x,y,r
      */
     var description: String { get {
         switch self.type {
@@ -105,6 +142,8 @@ struct FocusArea: CustomStringConvertible {
             return "\(self.pageIndex):\(p.description)"
         case .rect(let r):
             return "\(self.pageIndex):\(r.description)"
+        case .circle(let c):
+            return "\(self.pageIndex):\(c.description)"
         }
     } }
     
@@ -121,12 +160,17 @@ struct FocusArea: CustomStringConvertible {
         self.pageIndex = onPage
     }
     
+    init(forCircle: Circle, onPage: Int) {
+        self.type = .circle(forCircle)
+        self.pageIndex = onPage
+    }
+    
     init(forPage: Int) {
         self.pageIndex = forPage
         self.type = .page
     }
     
-    /// Fails if page is missing is below 0, or did not contain a type
+    /// Fails if page is missing is below 0, or did not contain a type.
     init?(fromURLComponents comps: URLComponents) {
         guard let params = comps.parameterDictionary, let pageS = params["page"], let pageIndex = Int(pageS) , pageIndex >= 0 else {
             AppSingleton.log.warning("Could not parse string: \(comps.string)")
@@ -196,7 +240,8 @@ extension PDFBase {
     
     /// Focuses on a rect / point on a given page (if the points are within the page,
     /// and the page exists).
-    /// When focusing on a point, adds a half the frame size to y to "center" the desired point in the view.
+    /// When focusing on a point (or circle centre), adds a half the frame size to y to "center" the desired point in the view.
+    ///
     /// - Parameter f: The area on which we want to focus
     /// - Parameter delay: Apply a delay for user feedback (a small amount by default)
     /// - Parameter offset: If true, when focusing on a point, slightly offset the
@@ -231,6 +276,24 @@ extension PDFBase {
             case let .point(p):
                 guard NSPointInRect(p, pageRect) else {
                    AppSingleton.log.warning("Attempted to focus on a point outside bounds")
+                    return
+                }
+                
+                // Get tiny rect of selected position
+                var pointRect = NSRect(origin: p, size: NSSize())
+                
+                if offset {
+                    pointRect.origin.y += self.frame.size.height * FocusArea.kPointFocusDistanceMult
+                }
+                
+                self.go(to: pointRect, on: pdfpage)
+                
+            case let .circle(c):
+            
+                let p = c.centre
+                
+                guard NSPointInRect(p, pageRect) else {
+                    AppSingleton.log.warning("Attempted to focus on a point outside bounds")
                     return
                 }
                 
