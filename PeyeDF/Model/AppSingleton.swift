@@ -101,18 +101,17 @@ class AppSingleton {
     
     /// Gets DPI programmatically
     static func getComputedDPI() -> Int? {
-        if NSScreen.screens()?.count ?? 0 > 1 {
-            AppSingleton.alertUser("Can't get dpi", infoText: "Using multiple monitors is not supported yet.")
+        guard let screens = NSScreen.screens() else {
+            AppSingleton.alertUser("Can't get find displayes", infoText: "Please try restarting the app.")
             return nil
-        } else {
-            let screen = NSScreen.main()
-            let id = CGMainDisplayID()
-            let mmSize = CGDisplayScreenSize(id)
-
-            let pixelWidth = screen!.frame.width  //we could do * screen!.backingScaleFactor but OS X normalizes DPI
-            let inchWidth = cmToInch(mmSize.width / 10)
-            return Int(round(pixelWidth / inchWidth))
         }
+        let screen = screens[0]
+        let id = CGMainDisplayID()
+        let mmSize = CGDisplayScreenSize(id)
+
+        let pixelWidth = screen.frame.width  //we could do * screen!.backingScaleFactor but OS X normalizes DPI
+        let inchWidth = cmToInch(mmSize.width / 10)
+        return Int(round(pixelWidth / inchWidth))
     }
         
     /// Convenience function to set recently used tags
