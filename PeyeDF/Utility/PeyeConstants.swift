@@ -170,6 +170,9 @@ class PeyeConstants {
     /// Minimum number of fixations for data to be exported
     static let minNOfFixations = 3
     
+    /// Tag value for clear highlight menu item
+    static let annotateMenuClearHighlightTag = UInt(16564)
+    
     // MARK: - Other globals
     
     /// The application will auto close when the last window is closed

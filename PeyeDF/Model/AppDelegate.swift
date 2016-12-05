@@ -143,7 +143,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     /// Convenience function to open a file using a given local url and optionally 
     /// a search string (to initiate a query) and focus area (to highlight a specific area).
-    func openDocument(_ fileURL: URL, searchString: String? = nil, focusArea: FocusArea? = nil, previousSessionId: String? = nil) {
+    ///
+    /// - Parameters:
+    ///   - fileURL: URL of file to open
+    ///   - searchString: If not nil, search for this string once document is open
+    ///   - focusArea: If not nil, focus on this once doument is open
+    ///   - previousSessionId: If not nil, associate this session to the session associated to the newly opened document
+    ///   - urlRects: If not empty, highlight these rects on the given page indices
+    func openDocument(_ fileURL: URL, searchString: String? = nil, focusArea: FocusArea? = nil, previousSessionId: String? = nil, urlRects: [(rect: NSRect, page: Int)] = []) {
         DispatchQueue.main.async {
             NSDocumentController.shared().openDocument(withContentsOf: fileURL, display: true) {
                 document, _, _ in
@@ -161,6 +168,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 if let previousSessionId = previousSessionId {
                     vc.pdfReader?.previousSessionId = previousSessionId
                 }
+                if urlRects.count > 0 {
+                    vc.pdfReader?.urlRects = urlRects
+                }
             }
         }
     }
@@ -168,6 +178,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// A url sent for opening (using host "reader") is sent here.
     func openComponents(_ comps: URLComponents) {
 
+        guard comps.path != "", comps.path.skipPrefix(1) != "" else {
+            return
+        }
+        
         let query: String? = comps.parameterDictionary?["search"]
         let previousSessionId: String? = comps.parameterDictionary?["previousSessionId"]
         var focusArea: FocusArea?
@@ -175,10 +189,34 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if comps.parameterDictionary?["page"] != nil {
             focusArea = FocusArea(fromURLComponents: comps)
         }
-        
-        guard comps.path != "", comps.path.skipPrefix(1) != "" else {
-            return
+        // start markRects parsing
+        var urlRects: [(rect: NSRect, page: Int)] = []
+        // attempt to create a series of markRects
+        // the format is one or more of (x,y,width,height,pagenumber)
+        // between square brackets
+        if let urlRectsString = comps.parameterDictionary?["markRects"] {
+            if urlRectsString.characters.first == "[" && urlRectsString.characters.last == "]" {
+                let comps = urlRectsString.components(separatedBy: ["[","]","(",")"])
+                // we should have something like this now:
+                // ["", "", "10,20,30,40,4", "", "1,2,3,4,5", "", ""]
+                for comp in comps {
+                    if comp.characters.count >= 9 {
+                        let inner = comp.components(separatedBy: ",")
+                        if inner.count == 5 {
+                            if let x = Double(inner[0]),
+                               let y = Double(inner[1]),
+                               let width = Double(inner[2]),
+                               let height = Double(inner[3]),
+                               let pageIndex = Int(inner[4]) {
+                                let rect = NSRect(x: x, y: y, width: width, height: height)
+                                urlRects.append((rect: rect, page: pageIndex))
+                            }
+                        }
+                    }
+                }
+            }
         }
+        // end markRects parsing
 
         DispatchQueue.global(qos: .userInitiated).async {
             
@@ -187,7 +225,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             var failed = false
             do {
                 if try possibleURL.checkResourceIsReachable() {
-                    self.openDocument(possibleURL, searchString: query, focusArea: focusArea, previousSessionId: previousSessionId)
+                    self.openDocument(possibleURL, searchString: query, focusArea: focusArea, previousSessionId: previousSessionId, urlRects: urlRects)
                 } else {
                     failed = true
                 }
@@ -210,7 +248,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 }
                 if let sciDoc = foundSciDoc {
                     let url = URL(fileURLWithPath: sciDoc.uri)
-                    self.openDocument(url, searchString: query, focusArea: focusArea, previousSessionId: previousSessionId)
+                    self.openDocument(url, searchString: query, focusArea: focusArea, previousSessionId: previousSessionId, urlRects: urlRects)
                 }
             }
 

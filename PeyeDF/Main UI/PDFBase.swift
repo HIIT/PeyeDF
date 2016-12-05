@@ -30,6 +30,14 @@ import Quartz
 /// support custom "markings" and their writing to annotation
 class PDFBase: PDFView {
     
+    /// Set true once underlying document has been loaded
+    var documentLoaded = false { didSet {
+        if documentLoaded && mustLoadUrlRects {
+            mustLoadUrlRects = false
+            drawUrlRects()  // draw any rect from URL scheme markRects API
+        }
+    } }
+    
     /// Whether we are searching (set this to false to stop search)
     var searching = false
     
@@ -176,6 +184,52 @@ class PDFBase: PDFView {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         markings = PDFMarkings(pdfBase: self)
+    }
+    
+    // MARK: - Showing markRects using URL scheme
+    
+    /// Set to true if we need to display some rects as
+    /// soon as the document is loaded.
+    var mustLoadUrlRects = false
+    
+    /// The markRects url scheme parameter sets this value
+    var urlRects = [(rect: NSRect, page: Int)]() { didSet {
+        if documentLoaded {
+            drawUrlRects()
+        } else {
+            mustLoadUrlRects = true
+        }
+    } }
+    
+    /// All annotations that correspond to urlRects
+    var urlRectsAnnotations = [PDFAnnotationSquare]()
+    
+    /// Draw all annotations corresponding to markRects
+    func drawUrlRects() {
+        // remove all old annotations, if any
+        for oldAnnotation in urlRectsAnnotations {
+            removeAnnotation(oldAnnotation, onPage: oldAnnotation.page!)
+        }
+        
+        urlRectsAnnotations = []
+        
+        // create new annotations for each urlRect
+        for (rect, pageIndex) in urlRects {
+            guard let page = self.document?.getPage(atIndex: pageIndex) else {
+                continue
+            }
+            
+            let annotation = PDFAnnotationSquare(bounds: rect)
+            let color = PeyeConstants.colourFoundStrings.withAlphaComponent(0.35)
+            annotation.setInteriorColor(color)
+            annotation.color = NSColor.clear
+            addAnnotation(annotation, onPage: page)
+            urlRectsAnnotations.append(annotation)
+        }
+    }
+    
+    @IBAction func clearHighlights(_ sender: AnyObject?) {
+        urlRects = []
     }
     
     // MARK: - Drawing

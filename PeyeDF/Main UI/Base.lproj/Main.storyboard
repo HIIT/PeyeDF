@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="15G1108" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16C32f" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11542"/>
         <plugIn identifier="com.apple.pdfkit.ibplugin" version="11542"/>
@@ -285,7 +285,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="E15-lK-fvD">
-                                            <rect key="frame" x="16" y="11" width="340" height="26"/>
+                                            <rect key="frame" x="16" y="12" width="340" height="24"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="336" id="dtF-MU-gHK"/>
                                             </constraints>
@@ -1345,6 +1345,12 @@
                                         <menuItem title="Mark as Critical" tag="40" keyEquivalent="2" id="SWh-Cs-cEE">
                                             <connections>
                                                 <action selector="selectionMarkWithSender:" target="Ady-hI-5gd" id="B0g-6Y-TRU"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="iWP-Xd-R4A"/>
+                                        <menuItem title="Clear highlights" tag="16564" keyEquivalent="k" id="TAw-q6-Jmx">
+                                            <connections>
+                                                <action selector="clearHighlights:" target="Ady-hI-5gd" id="E1c-pY-SK0"/>
                                             </connections>
                                         </menuItem>
                                     </items>

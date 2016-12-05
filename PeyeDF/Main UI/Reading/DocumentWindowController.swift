@@ -365,6 +365,9 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         case TagConstants.tagMenuTag:
             return DiMeSession.dimeAvailable
             
+        case PeyeConstants.annotateMenuClearHighlightTag:
+            return pdfReader?.documentLoaded ?? false
+            
         default:
             // in any other case, we check the action instead of tag
             if let action = menuItem.action {
@@ -666,6 +669,10 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             
             // Asynchronously fetch text and other metadata from document
             processDocument()
+            
+            // Set flag indicating document loading is complete
+            pdfReader!.documentLoaded = true
+            
         }
         
     }
