@@ -227,11 +227,7 @@ class PDFBase: PDFView {
             urlRectsAnnotations.append(annotation)
         }
     }
-    
-    @IBAction func clearHighlights(_ sender: AnyObject?) {
-        urlRects = []
-    }
-    
+        
     // MARK: - Drawing
     
     /**

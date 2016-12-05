@@ -366,7 +366,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             return DiMeSession.dimeAvailable
             
         case PeyeConstants.annotateMenuClearHighlightTag:
-            return pdfReader?.documentLoaded ?? false
+            return (pdfReader?.documentLoaded ?? false) && (pdfReader?.urlRects.count ?? 0) != 0
             
         default:
             // in any other case, we check the action instead of tag
@@ -422,7 +422,11 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     }
     
     // MARK: - Annotations
-    
+
+    @IBAction func clearHighlights(_ sender: AnyObject?) {
+        pdfReader?.urlRects = []
+    }
+
     @IBAction func toggleAnnotate(_ sender: AnyObject?) {
         if let delegate = readerDelegate {
             if delegate.getRecognizersState() {
