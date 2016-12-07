@@ -186,7 +186,10 @@ class HistoryManager: FixationDataDelegate {
         timerQueue.sync {
             self.entryTimer = Timer(timeInterval: PeyeConstants.minReadTime, target: self, selector: #selector(self.entryTimerFire(_:)), userInfo: documentWindow, repeats: false)
             DispatchQueue.main.async {
-                RunLoop.current.add(self.entryTimer!, forMode: RunLoopMode.commonModes)
+                [weak self] in
+                if let timer = self?.entryTimer {
+                    RunLoop.current.add(timer, forMode: RunLoopMode.commonModes)
+                }
             }
         }
     }
