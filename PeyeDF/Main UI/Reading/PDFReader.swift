@@ -197,18 +197,18 @@ class PDFReader: PDFBase {
                                     Multipeer.overviewControllers[cHash]?.pdfOverview.addArea(area, fromSource: .localPeer)
                                 }
                                 CollaborationMessage.seenAreas([area]).sendToAll()
-                            }
-                        } else if let triple = screenToPage(mouseRect.origin, fromEye: false) {
-                            // send circle
-                            let diameter = pointSpan(zoomLevel: scaleFactor, dpi: AppSingleton.getComputedDPI()!, distancemm: AppSingleton.eyeTracker?.lastValidDistance ?? 800)
-                            let circle = Circle(x: CGFloat(triple.x), y: CGFloat(triple.y), r: diameter / 2)
-                            let area = FocusArea(forCircle: circle, onPage: triple.pageIndex)
-                            
-                            // send found area to peers
-                            if Multipeer.session.connectedPeers.count > 0,
-                                let cHash = sciDoc?.contentHash {
-                                CollaborationMessage.seenAreas([area]).sendToAll()
-                                Multipeer.overviewControllers[cHash]?.pdfOverview?.addArea(area, fromSource: .localPeer)
+                            } else if let triple = screenToPage(mouseRect.origin, fromEye: false) {
+                                // send circle
+                                let diameter = pointSpan(zoomLevel: scaleFactor, dpi: AppSingleton.getComputedDPI()!, distancemm: AppSingleton.eyeTracker?.lastValidDistance ?? 800)
+                                let circle = Circle(x: CGFloat(triple.x), y: CGFloat(triple.y), r: diameter / 2)
+                                let area = FocusArea(forCircle: circle, onPage: triple.pageIndex)
+                                
+                                // send found area to peers
+                                if Multipeer.session.connectedPeers.count > 0,
+                                    let cHash = sciDoc?.contentHash {
+                                    CollaborationMessage.seenAreas([area]).sendToAll()
+                                    Multipeer.overviewControllers[cHash]?.pdfOverview?.addArea(area, fromSource: .localPeer)
+                                }
                             }
                         }
                         #endif

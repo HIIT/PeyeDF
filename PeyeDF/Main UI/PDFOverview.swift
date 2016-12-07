@@ -148,8 +148,13 @@ class PDFOverview: PDFBase {
                 NSGraphicsContext.saveGraphicsState()
                 
                 // Draw.
-                for circle in markings.circles {
-                    let col = PeyeConstants.colourPeerRead  // TODO: fix this hardcoded colour
+                for (circle, source) in markings.circles {
+                    let col: NSColor
+                    if source == .localPeer {
+                        col = markAnnotationColours[ReadingClass.medium]!
+                    } else {
+                        col = PeyeConstants.colourPeerRead
+                    }
                     let circlePath: NSBezierPath = NSBezierPath(ovalIn: NSRect(circle: circle))
                     col.setFill()
                     circlePath.fill()

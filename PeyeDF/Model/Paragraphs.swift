@@ -33,7 +33,7 @@ struct PDFMarkings {
     fileprivate var allRects = [ReadingRect]()
     
     /// All circles for the given document.
-    var circles = [Circle]()
+    var circles = [(Circle, ClassSource)]()
     
     /// Reference to PDFBase is used to get text within reading rects and scaleFactors
     unowned let pdfBase: PDFBase
