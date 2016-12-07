@@ -143,11 +143,10 @@ import MultipeerConnectivity
             // display the last area directly on the pdf
             if let area = areas.last {
                 switch area.type {
-                case .rect(let rect):
-                    let highlightRect = (pageIndex: area.pageIndex, rect: rect)
-                    pdfReader.highlightRect = highlightRect
+                case .rect, .circle:
+                    pdfReader.highlight = area
                 default:
-                    AppSingleton.log.error("Displaying read areas other than rects is not implemented")
+                    AppSingleton.log.error("Displaying read areas other than rects or circles is not implemented")
                 }
             }
             

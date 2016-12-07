@@ -126,6 +126,19 @@ enum FocusAreaType: CustomStringConvertible {
 /// Represents a focus area, with a type and page.
 struct FocusArea: CustomStringConvertible {
     
+    /// Returns a rect that encloses the corresponding area.
+    /// Returns a non-nil value only the area corresponds to a rect or a circle.
+    var enclosingRect: NSRect? { get {
+        switch  self.type {
+        case .rect(let r):
+            return r
+        case .circle(let c):
+            return NSRect(circle: c)
+        default:
+            return nil
+        }
+    } }
+    
     /// When focusing on a point on a given page, the height
     /// of the frame will be multiplied by this factor and added
     /// to the point (so that the actual point will be slightly below

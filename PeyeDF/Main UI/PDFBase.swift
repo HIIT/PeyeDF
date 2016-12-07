@@ -66,24 +66,15 @@ class PDFBase: PDFView {
                 .high: PeyeConstants.annotationColourCritical]
     } }
     
-    /// This rect (in page coordinates) on this page index will be "highlighted"
-    var highlightRect: (pageIndex: Int, rect: NSRect)? = nil { didSet {
-        // Changing this value will cause a display refresh (if old if different than current value).
-        if let (newPageI, newRect) = highlightRect {
-            // refresh new and old if different, or just new if old was nil
-            if let (oldPageI, oldRect) = oldValue {
-                if oldPageI != newPageI || oldRect != newRect {
-                    refreshPage(atIndex: oldPageI, rect: oldRect)
-                    refreshPage(atIndex: newPageI, rect: newRect)
-                }
-            } else {
-                refreshPage(atIndex: newPageI, rect: newRect)
-            }
-        } else {
-            // new value is nil, refresh old if present
-            if let (oldPageI, oldRect) = oldValue {
-                refreshPage(atIndex: oldPageI, rect: oldRect)
-            }
+    /// This area index will be highlighted using the constants highlightColour.
+    /// If can either be a rect or a circle.
+    var highlight: FocusArea? = nil { didSet {
+        // Changing this value will cause a display refresh.
+        if let oldRect = oldValue?.enclosingRect {
+            refreshPage(atIndex: oldValue!.pageIndex, rect: oldRect)
+        }
+        if let newRect = highlight?.enclosingRect {
+            refreshPage(atIndex: highlight!.pageIndex, rect: newRect)
         }
     } }
    
@@ -275,19 +266,32 @@ class PDFBase: PDFView {
         let pointDiff = offSetToCropBox(page)
         
         // if the highlight rect is present on the current page, draw it
-        if let (pageIndex, rect) = highlightRect , document!.index(for: page) == pageIndex {
+        if let area = highlight , document!.index(for: page) == area.pageIndex {
             
-            // Save.
-            NSGraphicsContext.saveGraphicsState()
+            let highlightPath: NSBezierPath?
             
-            let rectCol = PeyeConstants.highlightRectColour
-            let adjRect = rect.offset(byPoint: pointDiff)
-            let rectPath: NSBezierPath = NSBezierPath(rect: adjRect)
-            rectCol.setFill()
-            rectPath.fill()
+            switch area.type {
+            case .rect(let r):
+                let rect = r.offset(byPoint: pointDiff)
+                highlightPath = NSBezierPath(rect: rect)
+            case .circle(let c):
+                let rect = NSRect(circle: c).offset(byPoint: pointDiff)
+                highlightPath = NSBezierPath(ovalIn: rect)
+            default:
+                highlightPath = nil
+            }
             
-            // Restore.
-            NSGraphicsContext.restoreGraphicsState()
+            if let path = highlightPath {
+                // Save.
+                NSGraphicsContext.saveGraphicsState()
+                
+                let col = PeyeConstants.highlightColour
+                col.setFill()
+                path.fill()
+                
+                // Restore.
+                NSGraphicsContext.restoreGraphicsState()
+            }
         }
     }
     

@@ -136,7 +136,8 @@ class HistoryManager: FixationDataDelegate {
                                 self.currentEyeData[triple.pageIndex] = PageEyeDataChunk(Xs: [triple.x], Ys: [triple.y], startTimes: [fixEv.startTime], endTimes: [fixEv.endTime], durations: [fixEv.duration], unixtimes: [fixEv.unixtime], pageIndex: triple.pageIndex, scaleFactor: Double(eyeReceiver.getScaleFactor()))
                             }
                             
-                            // create rect for retrieved fixation
+                            // create rect for retrieved fixation, send to peers (if any)
+                            // and store in SMIMarks
                             if let rRect = eyeReceiver.getReadingRect(triple) {
                                 
                                 // if we are connected to someone, sent read area to peers and add to our overview
@@ -152,8 +153,8 @@ class HistoryManager: FixationDataDelegate {
                             } // no rect (text) was found, send a circle to peers
                               else if let zoomLevel = self.currentEyeReceiver?.scaleFactor {
                                 
-                                let radius = pointSpan(zoomLevel: zoomLevel, dpi: AppSingleton.getComputedDPI()!, distancemm: AppSingleton.eyeTracker?.lastValidDistance ?? 800)
-                                let circle = Circle(x: CGFloat(triple.x), y: CGFloat(triple.y), r: radius)
+                                let diameter = pointSpan(zoomLevel: zoomLevel, dpi: AppSingleton.getComputedDPI()!, distancemm: AppSingleton.eyeTracker?.lastValidDistance ?? 800)
+                                let circle = Circle(x: CGFloat(triple.x), y: CGFloat(triple.y), r: diameter / 2)
                                 let area = FocusArea(forCircle: circle, onPage: triple.pageIndex)
                                 
                                 // send found area to peers

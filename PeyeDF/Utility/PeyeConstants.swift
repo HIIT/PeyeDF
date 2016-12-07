@@ -151,7 +151,7 @@ class PeyeConstants {
     static let smiColours: [ReadingClass: NSColor] = [.paragraph: colourParagraph]
     
     /// Colour for highlighted rect (PDFBase.highlightRect)
-    static let highlightRectColour = #colorLiteral(red: 0.7882352941, green: 0.9882352941, blue: 0.8196078431, alpha: 0.25)
+    static let highlightColour = #colorLiteral(red: 0.7882352941, green: 0.9882352941, blue: 0.8196078431, alpha: 0.25)
     
     // MARK: - Annotations
     
