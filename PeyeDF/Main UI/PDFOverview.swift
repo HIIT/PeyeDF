@@ -66,10 +66,12 @@ class PDFOverview: PDFBase {
     	// Let PDFView do most of the hard work.
         super.draw(page)
         
+        guard let document = self.document else { return }
+        
         // get difference between media and crop box
         let pointDiff = offSetToCropBox(page)
         
-        let pageIndex = self.document!.index(for: page)
+        let pageIndex = document.index(for: page)
         
         // draw gray mask if this page is not the highlight page
         if pageIndex != highlightPage {
@@ -118,7 +120,7 @@ class PDFOverview: PDFBase {
             // cycle through annotation classes
             let cycleClasses = [ReadingClass.low, ReadingClass.medium, ReadingClass.high]
             
-            let pageIndex = self.document!.index(for: page)
+            let pageIndex = document.index(for: page)
             for rc in cycleClasses {
                 let rectsToDraw = markings.get(ofClass: rc, forPage: pageIndex)
                 if rectsToDraw.count > 0 {
@@ -148,7 +150,7 @@ class PDFOverview: PDFBase {
                 NSGraphicsContext.saveGraphicsState()
                 
                 // Draw.
-                for (circle, source) in markings.circles {
+                for (circle, pageIndex, source) in markings.circles where document.index(for: page) == pageIndex {
                     let col: NSColor
                     if source == .localPeer {
                         col = markAnnotationColours[ReadingClass.medium]!

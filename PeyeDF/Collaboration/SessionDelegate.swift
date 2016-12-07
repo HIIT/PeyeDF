@@ -70,6 +70,10 @@ import MultipeerConnectivity
             Multipeer.peerController.setPaperDetails(peerID, fname: fname, cHash: cHash, title: title)
             // create an overview controller to collaborate on this document (if needed)
             Multipeer.makeOverviewController(forContentHash: cHash)
+            // if the tracked content hash is different than this one, stop tracking
+            if let trackedHash = Multipeer.tracked.cHash, trackedHash != cHash {
+                Multipeer.tracked.cHash = nil
+            }
             
         case .requestFile(let cHash):
             // we received a request for current file, send it to sender.

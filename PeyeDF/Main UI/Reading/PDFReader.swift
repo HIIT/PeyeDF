@@ -200,7 +200,7 @@ class PDFReader: PDFBase {
                             } else if let triple = screenToPage(mouseRect.origin, fromEye: false) {
                                 // send circle
                                 let diameter = pointSpan(zoomLevel: scaleFactor, dpi: AppSingleton.getComputedDPI()!, distancemm: AppSingleton.eyeTracker?.lastValidDistance ?? 800)
-                                let circle = Circle(x: CGFloat(triple.x), y: CGFloat(triple.y), r: diameter / 2)
+                                let circle = Circle(x: CGFloat(triple.x), y: CGFloat(triple.y), r: diameter / 4)
                                 let area = FocusArea(forCircle: circle, onPage: triple.pageIndex)
                                 
                                 // send found area to peers
@@ -270,6 +270,7 @@ class PDFReader: PDFBase {
     /// It sets the state of markings to the specified object (markingState) and
     /// refreshes the view (so that the change can be seen appearing / disappearing immediately).
     @objc func undoMarkAndAnnotate(_ previousState: PDFMarkingsState) {
+        guard let document = self.document else { return }
         
         // if someone is tracking us, tell them to undo
         if Multipeer.trackers.count > 0 {
@@ -292,7 +293,7 @@ class PDFReader: PDFBase {
             previousState.lastRects.forEach() {
                 rRect in
                 DispatchQueue.main.async {
-                    self.setNeedsDisplay(self.convert(rRect.annotationRect, from: self.document!.page(at: rRect.pageIndex)!))
+                    self.setNeedsDisplay(self.convert(rRect.annotationRect, from: document.page(at: rRect.pageIndex)!))
                 }
             }
             // save last modified rects in state for redo
@@ -417,6 +418,8 @@ class PDFReader: PDFBase {
     /// - parameter fromEye: if this is being done because of eye tracking (so gaze points are stored)
     /// - returns: A triple containing x, y in page coordinates, and the index of the page in which gaze fell
     func screenToPage(_ pointOnScreen: NSPoint, fromEye: Bool) -> (x: Double, y: Double, pageIndex: Int)? {
+        guard let document = self.document else { return nil }
+        
         let tinySize = NSSize(width: 1, height: 1)
         let tinyRect = NSRect(origin: pointOnScreen, size: tinySize)
         
@@ -435,7 +438,7 @@ class PDFReader: PDFBase {
         }
         let pointOnPage = self.convert(pointInView, to: page!)
         
-        let pageIndex = self.document!.index(for: page!)
+        let pageIndex = document.index(for: page!)
         
         // create rect for gazed-at paragraph. Note: this will store rects that will later be sent
         // in a summary event. This is different from eye rectangles created by each fixation and
@@ -444,7 +447,7 @@ class PDFReader: PDFBase {
         if fromEye {
             if let seenRect = pointToParagraphRect(pointOnPage, forPage: page!) {
                 
-                let pageIndex = self.document!.index(for: page!)
+                let pageIndex = document.index(for: page!)
                 
                 let newRect = ReadingRect(pageIndex: pageIndex, rect: seenRect, readingClass: .paragraph, classSource: .smi, pdfBase: self)
                 markings.addRect(newRect)
@@ -568,10 +571,10 @@ class PDFReader: PDFBase {
             return nil
         }
         
-        guard let visiblePages = self.visiblePages() else {
+        guard let visiblePages = self.visiblePages(), let document = self.document else {
             return nil
         }
-        let generatedSelection = PDFSelection(document: self.document!)
+        let generatedSelection = PDFSelection(document: document)
         
         for visiblePage in visiblePages {
             
@@ -597,14 +600,14 @@ class PDFReader: PDFBase {
     
     /// Debug function to test "seen text"
     func selectVisibleText(_ sender: AnyObject?) {
-        guard status == .trackable else {
+        guard status == .trackable, let document = self.document else {
             return
         }
             
         guard let visiblePages = self.visiblePages() else {
             return
         }
-        let generatedSelection = PDFSelection(document: self.document!)
+        let generatedSelection = PDFSelection(document: document)
         
         for visiblePage in visiblePages {
             

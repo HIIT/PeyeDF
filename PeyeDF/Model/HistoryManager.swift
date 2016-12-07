@@ -154,7 +154,7 @@ class HistoryManager: FixationDataDelegate {
                               else if let zoomLevel = self.currentEyeReceiver?.scaleFactor {
                                 
                                 let diameter = pointSpan(zoomLevel: zoomLevel, dpi: AppSingleton.getComputedDPI()!, distancemm: AppSingleton.eyeTracker?.lastValidDistance ?? 800)
-                                let circle = Circle(x: CGFloat(triple.x), y: CGFloat(triple.y), r: diameter / 2)
+                                let circle = Circle(x: CGFloat(triple.x), y: CGFloat(triple.y), r: diameter / 4.0)
                                 let area = FocusArea(forCircle: circle, onPage: triple.pageIndex)
                                 
                                 // send found area to peers

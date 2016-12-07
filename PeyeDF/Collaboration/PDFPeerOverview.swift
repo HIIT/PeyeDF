@@ -57,7 +57,7 @@ class PDFPeerOverview: PDFOverview {
                 }
             }
         case .circle(let circle):
-            markings.circles.append((circle, source))
+            markings.circles.append((circle, area.pageIndex, source))
             DispatchQueue.main.async {
                 [weak self] in
                 let rect = NSRect(circle: circle)

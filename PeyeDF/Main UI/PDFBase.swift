@@ -426,6 +426,8 @@ class PDFBase: PDFView {
             return
         }
         
+        guard let document = self.document else { return }
+        
         // find which group of annotations corresponds to this tag.
         // if none are related, create a new group of annotations.
         // if there is a relationship, add this tag without creating new annotations.
@@ -434,7 +436,7 @@ class PDFBase: PDFView {
         if previous.count == 0 {
             // since no tags already exist which relate to this block of text, split them
             // split Tags, map each returned collection to a new reading tag
-            let splitTags = tag.rRects.splitOnBigSteps(self.document!.areFar).map({ReadingTag(withRects: $0, withText: tag.text)})
+            let splitTags = tag.rRects.splitOnBigSteps(document.areFar).map({ReadingTag(withRects: $0, withText: tag.text)})
             // if split count is more than 1, call this method recursively, otherwise create a new tag annotation for the new tag
             if splitTags.count > 1 {
                 splitTags.forEach({appendTagAnnotation(forTag: $0)})
@@ -479,11 +481,13 @@ class PDFBase: PDFView {
     
     /// Returns all rects and page indices covered by this selection, line by line
     func getLineRects(_ sel: PDFSelection) -> ([NSRect], [Int]) {
+        guard let document = self.document else { return ([], []) }
+        
         var rects = [NSRect]()
         var idxs = [Int]()
         for subSel in (sel.selectionsByLine() ) {
             for p in subSel.pages {
-                let pageIndex = self.document!.index(for: p)
+                let pageIndex = document.index(for: p)
                 let rect = subSel.bounds(for: p)
                 rects.append(rect)
                 idxs.append(pageIndex)
@@ -609,6 +613,8 @@ class PDFBase: PDFView {
     /// - parameter forClass: The class of annotations to output
     /// - parameter colour: The color to use, generally defined in PeyeConstants
     func outputAnnotations(_ forClass: ReadingClass, colour: NSColor) {
+        guard let document = self.document else { return }
+        
         let lineThickness: CGFloat = UserDefaults.standard.object(forKey: PeyeConstants.prefAnnotationLineThickness) as! CGFloat
         let myBord = PDFBorder()
         myBord.lineWidth = lineThickness
@@ -619,7 +625,7 @@ class PDFBase: PDFView {
             annotation.color = colour
             annotation.border = myBord
             
-            let pdfPage = self.document!.page(at: rect.pageIndex)
+            let pdfPage = document.page(at: rect.pageIndex)
             
             addAnnotation(annotation, onPage: pdfPage!)
             
@@ -728,6 +734,8 @@ class PDFBase: PDFView {
     /// - returns: A rectangle corresponding to the point, nil if there is no paragraph
     internal func pointToParagraphRect(_ pagePoint: NSPoint, forPage activePage: PDFPage) -> NSRect? {
         
+        guard let document = self.document else { return nil }
+        
         let pageRect = getPageRect(activePage)
         let maxH = pageRect.size.width - 5.0  // maximum horizontal size for line
         let maxV = pageRect.size.height / 3.0  // maximum vertical size for line
@@ -792,7 +800,7 @@ class PDFBase: PDFView {
         // reject selections which are too big
         let filteredSelections = selections.filter({$0.bounds(for: activePage).size.withinMaxTolerance(medianSize, tolerance: PeyeConstants.lineAutoSelectionTolerance)})
         
-        var pdfSel = PDFSelection(document: self.document!)
+        var pdfSel = PDFSelection(document: document)
         for selection in filteredSelections {
             pdfSel.add(selection)
         }
@@ -835,7 +843,7 @@ class PDFBase: PDFView {
                 }
                 
                 // generate new selection not taking into account excluded parts
-                pdfSel = PDFSelection(document: self.document!)
+                pdfSel = PDFSelection(document: document)
                 for i in lineStartIndex...lineEndIndex {
                     pdfSel.add(selLines[i])
                 }
