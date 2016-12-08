@@ -162,7 +162,7 @@ class Multipeer: NSObject {
         overviewControllers[cHash] = newController
         
         DispatchQueue.main.async {
-            let win = SecondaryWindow(contentViewController: newController)
+            let win = NSWindow(contentViewController: newController)
             win.isReleasedWhenClosed = false
             win.orderFront(Multipeer.sharedInstance)
             newController.win = win  // create strong ref to keep window in memory

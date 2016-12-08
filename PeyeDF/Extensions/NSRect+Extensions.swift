@@ -55,10 +55,37 @@ extension NSRect {
     } }
     
     public var centre: CGPoint { get {
-        let cx = self.origin.x + self.size.width / 2
-        let cy = self.origin.y + self.size.height / 2
+        let cx = self.midX
+        let cy = self.midY
         return CGPoint(x: cx, y: cy)
     } }
+    
+    /// Returns x and y constrained to this rect's borders.
+    /// For example, if y is below rect, return bottomost point,
+    /// if x is outside the left side, return leftmost point of rect, etc.
+    func intersectWith(point: NSPoint) -> NSPoint {
+        let x: CGFloat
+        if point.x < self.minX {
+            // if point is outside right border, return rightmost
+            x = self.minX
+            // same for left
+        } else if point.x > self.maxX {
+            x = self.maxX
+        } else {
+            x = point.x
+        }
+        let y: CGFloat
+        if point.y < self.minY {
+            // if point is below rect, return bottommost point
+            y = self.minY
+        } else if point.y > self.maxY {
+            // if point is above rect, return topmost moint
+            y = self.maxY
+        } else {
+            y = point.y
+        }
+        return NSPoint(x: x, y: y)
+    }
     
     /// Creates a rect from a string specifying 'x,y,w,h'
     /// - returns: nil if conversion failed

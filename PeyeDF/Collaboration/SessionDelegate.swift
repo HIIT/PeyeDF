@@ -101,7 +101,7 @@ import MultipeerConnectivity
                 return
             }
             
-            win.pdfReader?.focusOn(area, delay: 0, offset: false)
+            win.pdfReader?.focusOn(area, delay: 0)
             
         case .addReadingTag(let tag):
             

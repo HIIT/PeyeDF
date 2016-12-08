@@ -138,13 +138,7 @@ struct FocusArea: CustomStringConvertible {
             return nil
         }
     } }
-    
-    /// When focusing on a point on a given page, the height
-    /// of the frame will be multiplied by this factor and added
-    /// to the point (so that the actual point will be slightly below
-    /// the view's upper boundary)
-    static let kPointFocusDistanceMult: CGFloat = 0.2
-    
+        
     /**
      Format:
      - For page: p (where p is page number)
@@ -234,37 +228,30 @@ extension PDFBase {
         return FocusArea(forPoint: pagePoint, onPage: pageIndex)
     }
     
-    /// Gets the point currently shown on the top left.
+    /// Gets the point currently shown on the centre (left margin).
     func getCurrentPoint() -> FocusArea? {
         guard self.visiblePages() != nil else {
             return nil
         }
-        let rects = getVisibleRects()
-        let pages = getVisiblePageNums()
-        guard rects.count > 0 && pages.count > 0 && rects.count == pages.count else {
+        
+        let midPoint = NSPoint(x: self.bounds.width / 2, y: self.bounds.height / 2)
+        guard let page = self.page(for: midPoint, nearest: true), let pageIndex = document?.index(for: page) else {
             return nil
         }
-        var newY = rects[0].origin.y + rects[0].size.height
-        // check that we don't go outside top boundary. If so, get point at 10 points below top
-        if let pageRect = document?.page(at: pages[0])?.bounds(for: .cropBox) {
-            if newY > pageRect.size.height {
-                newY = pageRect.size.height - 10
-            }
-        }
-        var newPoint = rects[0].origin
-        newPoint.y = newY
-        return FocusArea(forPoint: newPoint, onPage: pages[0])
+        
+        let pagePoint = convert(midPoint, to: page)
+        let pageRect = page.bounds(for: .cropBox)
+        return FocusArea(forPoint: pageRect.intersectWith(point: pagePoint), onPage: pageIndex)
     }
     
     /// Focuses on a rect / point on a given page (if the points are within the page,
     /// and the page exists).
-    /// When focusing on a point (or circle centre), adds a half the frame size to y to "center" the desired point in the view.
+    /// When focusing on a point (or circle centre), scrolls only vertically so that the point is that
+    /// at the vertical centre of the page.
     ///
     /// - Parameter f: The area on which we want to focus
     /// - Parameter delay: Apply a delay for user feedback (a small amount by default)
-    /// - Parameter offset: If true, when focusing on a point, slightly offset the
-    ///    point so that there is some more page shown above the point.
-    func focusOn(_ f: FocusArea, delay: Double = 0.5, offset: Bool = true) {
+    func focusOn(_ f: FocusArea, delay: Double = 0.5) {
         guard let document = self.document, f.pageIndex < document.pageCount else {
            AppSingleton.log.warning("Attempted to focus on a non-existing page")
             return
@@ -292,36 +279,25 @@ extension PDFBase {
                 self.setCurrentSelection(sel, animate: true)
                 
             case let .point(p):
-                guard NSPointInRect(p, pageRect) else {
-                   AppSingleton.log.warning("Attempted to focus on a point outside bounds")
-                    return
-                }
                 
-                // Get tiny rect of selected position
-                var pointRect = NSRect(origin: p, size: NSSize())
+                let viewOnPage = self.convert(self.bounds, to: pdfpage)
+                let focusPoint = NSPoint(x: 0, y: p.y + viewOnPage.size.height / 2)
                 
-                if offset {
-                    pointRect.origin.y += self.frame.size.height * FocusArea.kPointFocusDistanceMult
-                }
+                // Get tiny rect of position
+                let pointRect = NSRect(origin: pageRect.intersectWith(point: focusPoint), size: NSSize())
                 
                 self.go(to: pointRect, on: pdfpage)
                 
             case let .circle(c):
-            
-                let p = c.centre
                 
-                guard NSPointInRect(p, pageRect) else {
-                    AppSingleton.log.warning("Attempted to focus on a point outside bounds")
-                    return
-                }
+                let viewOnPage = self.convert(self.bounds, to: pdfpage)
+                var focusPoint = NSPoint(x: 0, y: c.centre.y + viewOnPage.size.height / 2)
                 
-                // Get tiny rect of selected position
-                var pointRect = NSRect(origin: p, size: NSSize())
+                focusPoint = pageRect.intersectWith(point: focusPoint)
                 
-                if offset {
-                    pointRect.origin.y += self.frame.size.height * FocusArea.kPointFocusDistanceMult
-                }
-                
+                // Get tiny rect of position
+                let pointRect = NSRect(origin: pageRect.intersectWith(point: focusPoint), size: NSSize())
+                                
                 self.go(to: pointRect, on: pdfpage)
                 
             case .page:
