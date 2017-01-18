@@ -56,10 +56,10 @@ func pointSpan(zoomLevel: CGFloat, dpi: Int, distancemm: CGFloat) -> CGFloat {
 }
 
 /// Returns how many inches should be covered by the participant's fovea at the given distance in
-/// millimetres
+/// millimetres (at most, liberal estimate)
 func inchSpan(_ distancemm: CGFloat) -> CGFloat {
     let inchFromScreen: CGFloat = mmToInch(distancemm)
-    let defaultAngle: CGFloat = degToRad(3)  // fovea's covered angle
+    let defaultAngle: CGFloat = degToRad(3)  // fovea's covered angle ~3 degrees (liberal estimate, a more conservative estimate would be 1 degree)
     return 2 * inchFromScreen * tan(defaultAngle/2)
 }
 
