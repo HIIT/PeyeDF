@@ -43,6 +43,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// When the application launched
     let launchDate = Date()
     
+    let ZMQman = ZMQManager()
+    
     /// PeyeDF closes itself to prevent potential leaks and allow opened PDFs to be deleted (after a given amount of time passed)
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         return Date().timeIntervalSince(launchDate) > PeyeConstants.closeAfterLaunch && !(AppSingleton.eyeTracker?.available ?? false) && Multipeer.session.connectedPeers.count < 1
@@ -61,6 +63,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         defaultPrefs[PeyeConstants.prefUseEyeTracker] = 0
         defaultPrefs[PeyeConstants.prefUseMidas] = 0
         defaultPrefs[PeyeConstants.prefUseLSL] = 0
+        defaultPrefs[PeyeConstants.prefUseZMQ] = 0
         defaultPrefs[PeyeConstants.prefAskToSaveOnClose] = 0
         defaultPrefs[PeyeConstants.prefConstrainWindowMaxSize] = 0 
         defaultPrefs[PeyeConstants.prefEnableAnnotate] = 0
@@ -101,9 +104,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             // check whether we want to use midas or lsl
             if UserDefaults.standard.object(forKey: PeyeConstants.prefUseMidas) as! Bool {
                 AppSingleton.eyeTracker = MidasManager()
-            } else {
-                // if no midas, assume lsl
+            } else if UserDefaults.standard.object(forKey: PeyeConstants.prefUseLSL) as! Bool {
                 AppSingleton.eyeTracker = LSLManager()
+            } else if UserDefaults.standard.object(forKey: PeyeConstants.prefUseZMQ) as! Bool {
+                AppSingleton.eyeTracker = ZMQManager()
             }
             AppSingleton.eyeTracker?.start()
             AppSingleton.eyeTracker?.fixationDelegate = HistoryManager.sharedManager
@@ -111,6 +115,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         // Start multipeer connectivity
         Multipeer.advertiser.start()
+        
+        ZMQman.start()
     }
     
     // MARK: - Opening

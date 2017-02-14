@@ -18,7 +18,7 @@
 		A910FC1F1DCB7C4C003BCA66 /* liblsl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A910FC1E1DCB7C4C003BCA66 /* liblsl.dylib */; };
 		A910FC201DCB7C6D003BCA66 /* liblsl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A910FC1E1DCB7C4C003BCA66 /* liblsl.dylib */; };
 		A910FC221DCB7CB8003BCA66 /* liblsl.dylib in Copy LSL dylib */ = {isa = PBXBuildFile; fileRef = A910FC1E1DCB7C4C003BCA66 /* liblsl.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		A910FC241DCB7CD1003BCA66 /* liblsl.dylib in Copy LSL dylib */ = {isa = PBXBuildFile; fileRef = A910FC1E1DCB7C4C003BCA66 /* liblsl.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		A910FC241DCB7CD1003BCA66 /* liblsl.dylib in Copy manually compiled dylibs */ = {isa = PBXBuildFile; fileRef = A910FC1E1DCB7C4C003BCA66 /* liblsl.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		A910FC271DCB81C1003BCA66 /* LSLFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A910FC251DCB81C1003BCA66 /* LSLFetcher.swift */; };
 		A910FC281DCB81C1003BCA66 /* LSLFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A910FC251DCB81C1003BCA66 /* LSLFetcher.swift */; };
 		A910FC291DCB81C1003BCA66 /* LSLXMLParserDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A910FC261DCB81C1003BCA66 /* LSLXMLParserDelegate.swift */; };
@@ -44,6 +44,22 @@
 		A92323051CB3E1A80060AF1C /* TagFieldDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92323041CB3E1A80060AF1C /* TagFieldDelegate.swift */; };
 		A92323071CB3E1B70060AF1C /* TagRemoveButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92323061CB3E1B70060AF1C /* TagRemoveButton.swift */; };
 		A9260F571BA4CD10005B1556 /* MyOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9260F561BA4CD10005B1556 /* MyOverlay.swift */; };
+		A933C04C1E522EB100CE94CF /* ConvenienceInitializers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C0461E522EB100CE94CF /* ConvenienceInitializers.swift */; };
+		A933C04D1E522EB100CE94CF /* ConvenienceProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C0471E522EB100CE94CF /* ConvenienceProperties.swift */; };
+		A933C04E1E522EB100CE94CF /* LiteralConvertibles.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C0481E522EB100CE94CF /* LiteralConvertibles.swift */; };
+		A933C04F1E522EB100CE94CF /* MessagePack.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C0491E522EB100CE94CF /* MessagePack.swift */; };
+		A933C0501E522EB100CE94CF /* Pack.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C04A1E522EB100CE94CF /* Pack.swift */; };
+		A933C0511E522EB100CE94CF /* Unpack.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C04B1E522EB100CE94CF /* Unpack.swift */; };
+		A933C06A1E522F4800CE94CF /* Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C0631E522F4800CE94CF /* Context.swift */; };
+		A933C06B1E522F4800CE94CF /* CURVE.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C0641E522F4800CE94CF /* CURVE.swift */; };
+		A933C06C1E522F4800CE94CF /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C0651E522F4800CE94CF /* Error.swift */; };
+		A933C06D1E522F4800CE94CF /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C0661E522F4800CE94CF /* Message.swift */; };
+		A933C06E1E522F4800CE94CF /* Poller.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C0671E522F4800CE94CF /* Poller.swift */; };
+		A933C06F1E522F4800CE94CF /* Proxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C0681E522F4800CE94CF /* Proxy.swift */; };
+		A933C0701E522F4800CE94CF /* Socket.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C0691E522F4800CE94CF /* Socket.swift */; };
+		A933C0731E52301600CE94CF /* libzmq.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A933C0721E52301600CE94CF /* libzmq.5.dylib */; };
+		A933C0741E52303800CE94CF /* libzmq.5.dylib in Copy manually compiled dylibs */ = {isa = PBXBuildFile; fileRef = A933C0721E52301600CE94CF /* libzmq.5.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		A933C0781E5252CE00CE94CF /* ZMQManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C0771E5252CE00CE94CF /* ZMQManager.swift */; };
 		A935F0C61B8CC5FD00587C99 /* DesktopEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A935F0C51B8CC5FD00587C99 /* DesktopEvent.swift */; };
 		A93C53DC1B8DCEFB00179C72 /* HistoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93C53DB1B8DCEFB00179C72 /* HistoryManager.swift */; };
 		A948C0ED1CF734D000625FF4 /* CollaborationMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948C0EC1CF734D000625FF4 /* CollaborationMessage.swift */; };
@@ -392,15 +408,16 @@
 			name = "Copy LSL dylib";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A910FC231DCB7CC4003BCA66 /* Copy LSL dylib */ = {
+		A910FC231DCB7CC4003BCA66 /* Copy manually compiled dylibs */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				A910FC241DCB7CD1003BCA66 /* liblsl.dylib in Copy LSL dylib */,
+				A910FC241DCB7CD1003BCA66 /* liblsl.dylib in Copy manually compiled dylibs */,
+				A933C0741E52303800CE94CF /* libzmq.5.dylib in Copy manually compiled dylibs */,
 			);
-			name = "Copy LSL dylib";
+			name = "Copy manually compiled dylibs";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		A95FE9941B8B3F7D0010E813 /* Embed Frameworks */ = {
@@ -467,6 +484,22 @@
 		A92323041CB3E1A80060AF1C /* TagFieldDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = TagFieldDelegate.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A92323061CB3E1B70060AF1C /* TagRemoveButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagRemoveButton.swift; sourceTree = "<group>"; };
 		A9260F561BA4CD10005B1556 /* MyOverlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = MyOverlay.swift; sourceTree = "<group>"; };
+		A933C0461E522EB100CE94CF /* ConvenienceInitializers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvenienceInitializers.swift; sourceTree = "<group>"; };
+		A933C0471E522EB100CE94CF /* ConvenienceProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvenienceProperties.swift; sourceTree = "<group>"; };
+		A933C0481E522EB100CE94CF /* LiteralConvertibles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiteralConvertibles.swift; sourceTree = "<group>"; };
+		A933C0491E522EB100CE94CF /* MessagePack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagePack.swift; sourceTree = "<group>"; };
+		A933C04A1E522EB100CE94CF /* Pack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pack.swift; sourceTree = "<group>"; };
+		A933C04B1E522EB100CE94CF /* Unpack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Unpack.swift; sourceTree = "<group>"; };
+		A933C0631E522F4800CE94CF /* Context.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Context.swift; sourceTree = "<group>"; };
+		A933C0641E522F4800CE94CF /* CURVE.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CURVE.swift; sourceTree = "<group>"; };
+		A933C0651E522F4800CE94CF /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
+		A933C0661E522F4800CE94CF /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		A933C0671E522F4800CE94CF /* Poller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Poller.swift; sourceTree = "<group>"; };
+		A933C0681E522F4800CE94CF /* Proxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Proxy.swift; sourceTree = "<group>"; };
+		A933C0691E522F4800CE94CF /* Socket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Socket.swift; sourceTree = "<group>"; };
+		A933C0711E522FC600CE94CF /* zmq.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = zmq.h; sourceTree = "<group>"; };
+		A933C0721E52301600CE94CF /* libzmq.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libzmq.5.dylib; sourceTree = "<group>"; };
+		A933C0771E5252CE00CE94CF /* ZMQManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZMQManager.swift; sourceTree = "<group>"; };
 		A935F0C51B8CC5FD00587C99 /* DesktopEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = DesktopEvent.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A93C53DB1B8DCEFB00179C72 /* HistoryManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = HistoryManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A948C0EC1CF734D000625FF4 /* CollaborationMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollaborationMessage.swift; sourceTree = "<group>"; };
@@ -560,6 +593,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A933C0731E52301600CE94CF /* libzmq.5.dylib in Frameworks */,
 				A910FC1F1DCB7C4C003BCA66 /* liblsl.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -646,6 +680,8 @@
 		A90520A71D89400B00F3C35E /* Dependencies */ = {
 			isa = PBXGroup;
 			children = (
+				A933C0621E522F2200CE94CF /* ZeroMQ */,
+				A933C0451E522EB100CE94CF /* MessagePack */,
 				A910FC1C1DCB7C06003BCA66 /* LSL */,
 				A90D0EE21D91185D00CB7011 /* Sparkle.xcodeproj */,
 				A90520AF1D89403300F3C35E /* SwiftyJSON.swift */,
@@ -814,6 +850,37 @@
 			path = Tags;
 			sourceTree = "<group>";
 		};
+		A933C0451E522EB100CE94CF /* MessagePack */ = {
+			isa = PBXGroup;
+			children = (
+				A933C0461E522EB100CE94CF /* ConvenienceInitializers.swift */,
+				A933C0471E522EB100CE94CF /* ConvenienceProperties.swift */,
+				A933C0481E522EB100CE94CF /* LiteralConvertibles.swift */,
+				A933C0491E522EB100CE94CF /* MessagePack.swift */,
+				A933C04A1E522EB100CE94CF /* Pack.swift */,
+				A933C04B1E522EB100CE94CF /* Unpack.swift */,
+			);
+			name = MessagePack;
+			path = MessagePack.swift/Sources/MessagePack;
+			sourceTree = "<group>";
+		};
+		A933C0621E522F2200CE94CF /* ZeroMQ */ = {
+			isa = PBXGroup;
+			children = (
+				A933C0631E522F4800CE94CF /* Context.swift */,
+				A933C0641E522F4800CE94CF /* CURVE.swift */,
+				A933C0651E522F4800CE94CF /* Error.swift */,
+				A933C0661E522F4800CE94CF /* Message.swift */,
+				A933C0671E522F4800CE94CF /* Poller.swift */,
+				A933C0681E522F4800CE94CF /* Proxy.swift */,
+				A933C0691E522F4800CE94CF /* Socket.swift */,
+				A933C0711E522FC600CE94CF /* zmq.h */,
+				A933C0721E52301600CE94CF /* libzmq.5.dylib */,
+			);
+			name = ZeroMQ;
+			path = PeyeDF/ZeroMQ;
+			sourceTree = SOURCE_ROOT;
+		};
 		A957950F1BD69B650083525C /* Refinder */ = {
 			isa = PBXGroup;
 			children = (
@@ -872,6 +939,7 @@
 			children = (
 				A9677F911BA806F700DC48CC /* MidasManager.swift */,
 				A910FC2B1DCB8439003BCA66 /* LSLManager.swift */,
+				A933C0771E5252CE00CE94CF /* ZMQManager.swift */,
 				A9D07F841DB7DB1A0040CAD6 /* EyeDataProvider.swift */,
 				A9C8F0261BC2B31A007ABE1A /* Raw.swift */,
 				A9C8F0241BC2B309007ABE1A /* Fixation.swift */,
@@ -957,7 +1025,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A91CB9621B332EDB00671868 /* Build configuration list for PBXNativeTarget "PeyeDF" */;
 			buildPhases = (
-				A910FC231DCB7CC4003BCA66 /* Copy LSL dylib */,
+				A910FC231DCB7CC4003BCA66 /* Copy manually compiled dylibs */,
 				A91CB9401B332EDB00671868 /* Sources */,
 				A91CB9411B332EDB00671868 /* Frameworks */,
 				A91CB9421B332EDB00671868 /* Resources */,
@@ -1322,8 +1390,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A933C04D1E522EB100CE94CF /* ConvenienceProperties.swift in Sources */,
 				A9794D8D1D0D9CE2003FBFD4 /* PDFPage+Extensions.swift in Sources */,
 				A9260F571BA4CD10005B1556 /* MyOverlay.swift in Sources */,
+				A933C06A1E522F4800CE94CF /* Context.swift in Sources */,
+				A933C06D1E522F4800CE94CF /* Message.swift in Sources */,
 				A91DC4E11C22E43800BBB612 /* SummaryReadingEvent.swift in Sources */,
 				A9B36CAB1BEA30BF00A27861 /* PDFOverview.swift in Sources */,
 				A935F0C61B8CC5FD00587C99 /* DesktopEvent.swift in Sources */,
@@ -1331,10 +1402,13 @@
 				A974ADD81BD169E0008AB977 /* DocumentWindow.swift in Sources */,
 				A91CB96F1B332FB700671868 /* EyeFormulas.swift in Sources */,
 				A9D833AD1BA868520046B21F /* PageEyeData.swift in Sources */,
+				A933C0701E522F4800CE94CF /* Socket.swift in Sources */,
+				A933C06B1E522F4800CE94CF /* CURVE.swift in Sources */,
 				A912D8A41B8B5C3A006F0657 /* DocumentInformationElement.swift in Sources */,
 				A97D46781CF453AE00377BB2 /* MPConstants.swift in Sources */,
 				A9A23CDA1C771AF4008B61C4 /* NS+Extensions.swift in Sources */,
 				A90C0AD61CEE0F22000D4B75 /* Multipeer.swift in Sources */,
+				A933C06C1E522F4800CE94CF /* Error.swift in Sources */,
 				A91CB9721B332FB700671868 /* PeyeDocument.swift in Sources */,
 				A95A8CF51B94407D0093119E /* PDFReader.swift in Sources */,
 				A97D46761CF4527000377BB2 /* TagConstants.swift in Sources */,
@@ -1346,12 +1420,16 @@
 				A92323071CB3E1B70060AF1C /* TagRemoveButton.swift in Sources */,
 				A95A8CF61B94407D0093119E /* PDFSideController.swift in Sources */,
 				A95A290C1CFD9EEA00BB4741 /* DiMePusher+tags.swift in Sources */,
+				A933C0511E522EB100CE94CF /* Unpack.swift in Sources */,
 				A910FC271DCB81C1003BCA66 /* LSLFetcher.swift in Sources */,
 				A957951B1BD6A35F0083525C /* HistoryTableCell.swift in Sources */,
+				A933C04E1E522EB100CE94CF /* LiteralConvertibles.swift in Sources */,
 				A9E771111B96091F0005A4B3 /* ReadingRect.swift in Sources */,
 				A93C53DC1B8DCEFB00179C72 /* HistoryManager.swift in Sources */,
+				A933C06E1E522F4800CE94CF /* Poller.swift in Sources */,
 				A97D467D1CF4570900377BB2 /* AllPeersController.swift in Sources */,
 				A96731B21CCA64DA001A5C9F /* Tags.swift in Sources */,
+				A933C04F1E522EB100CE94CF /* MessagePack.swift in Sources */,
 				A954F8C91D1DA318003A23F1 /* PeerOverviewController.swift in Sources */,
 				A97D2F2B1D9BC47700D2536B /* DiMeEraser.swift in Sources */,
 				A91CB94A1B332EDB00671868 /* AppDelegate.swift in Sources */,
@@ -1359,6 +1437,7 @@
 				A913A9251BA1B047008BA10D /* MainSplitController.swift in Sources */,
 				A9CEAA801BE7793500E23964 /* Paragraphs.swift in Sources */,
 				A92323031CB3E1560060AF1C /* AnimatedStack.swift in Sources */,
+				A933C0501E522EB100CE94CF /* Pack.swift in Sources */,
 				A97D2F181D9BB83000D2536B /* ExperimentPreferencesController.swift in Sources */,
 				A91DA4781C7A395200257FF0 /* FocusAreas.swift in Sources */,
 				A95A8CF81B94407D0093119E /* ThumbSideController.swift in Sources */,
@@ -1368,6 +1447,7 @@
 				A95A8CF41B94407D0093119E /* DocumentWindowController.swift in Sources */,
 				A9F335731B3ABC090042BFB3 /* AppSingleton.swift in Sources */,
 				A918F8101BC2D71500345448 /* eyeBox.swift in Sources */,
+				A933C0781E5252CE00CE94CF /* ZMQManager.swift in Sources */,
 				A9677F921BA806F700DC48CC /* MidasManager.swift in Sources */,
 				A9038F7B1B8F634200A7D183 /* Dictionariable.swift in Sources */,
 				A972BC9B1C7CC0B40076BEF0 /* PDFSelection+Extensions.swift in Sources */,
@@ -1385,11 +1465,13 @@
 				A92323011CB3E1480060AF1C /* TagViewController.swift in Sources */,
 				A9038F761B8F5EE500A7D183 /* Event.swift in Sources */,
 				A9D9A8BF1C1C883D0014C1EB /* EyeRectangle.swift in Sources */,
+				A933C06F1E522F4800CE94CF /* Proxy.swift in Sources */,
 				A9F8A89C1D902AD3002252DD /* DiMePusher.swift in Sources */,
 				A9A23CD61C771A82008B61C4 /* String+Extensions.swift in Sources */,
 				A913A9201BA1A93B008BA10D /* SearchPanelController.swift in Sources */,
 				A9A2DFCC1BC427D2006C07FD /* MetadataViewController.swift in Sources */,
 				A9A23CD41C771A5D008B61C4 /* NSDate+Extensions.swift in Sources */,
+				A933C04C1E522EB100CE94CF /* ConvenienceInitializers.swift in Sources */,
 				A9F9D2761CBFB58700FFAE72 /* LittleClock.swift in Sources */,
 				A9B36CA31BEA0FE300A27861 /* RefinderProgressIndicator.swift in Sources */,
 				A97D2F031D9BB28C00D2536B /* DebugPreferencesController.swift in Sources */,
@@ -1697,6 +1779,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/PeyeDF/LSL",
+					"$(PROJECT_DIR)/PeyeDF/ZeroMQ",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = fi.aalto.org.PeyeDF;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1720,6 +1803,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/PeyeDF/LSL",
+					"$(PROJECT_DIR)/PeyeDF/ZeroMQ",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = fi.aalto.org.PeyeDF;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -63,14 +63,22 @@ class ExperimentPreferencesController: NSViewController {
             UserDefaults.standard.set(0, forKey: PeyeConstants.prefUseEyeTracker)
             UserDefaults.standard.set(0, forKey: PeyeConstants.prefUseMidas)
             UserDefaults.standard.set(0, forKey: PeyeConstants.prefUseLSL)
+            UserDefaults.standard.set(0, forKey: PeyeConstants.prefUseZMQ)
         case "Midas":
             UserDefaults.standard.set(1, forKey: PeyeConstants.prefUseEyeTracker)
             UserDefaults.standard.set(1, forKey: PeyeConstants.prefUseMidas)
             UserDefaults.standard.set(0, forKey: PeyeConstants.prefUseLSL)
+            UserDefaults.standard.set(0, forKey: PeyeConstants.prefUseZMQ)
         case "LSL":
             UserDefaults.standard.set(1, forKey: PeyeConstants.prefUseEyeTracker)
             UserDefaults.standard.set(0, forKey: PeyeConstants.prefUseMidas)
             UserDefaults.standard.set(1, forKey: PeyeConstants.prefUseLSL)
+            UserDefaults.standard.set(0, forKey: PeyeConstants.prefUseZMQ)
+        case "ZeroMQ":
+            UserDefaults.standard.set(1, forKey: PeyeConstants.prefUseEyeTracker)
+            UserDefaults.standard.set(0, forKey: PeyeConstants.prefUseMidas)
+            UserDefaults.standard.set(0, forKey: PeyeConstants.prefUseLSL)
+            UserDefaults.standard.set(1, forKey: PeyeConstants.prefUseZMQ)
         default:
             AppSingleton.log.error("Invalid eye tracker selected")
         }

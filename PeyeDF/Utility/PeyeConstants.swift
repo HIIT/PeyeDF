@@ -57,6 +57,9 @@ class PeyeConstants {
     
     /// Use LSL as eye tracker on start
     static let prefUseLSL = "eye.useLSL"
+    
+    /// Use ZeroMQ as eye tracker on start
+    static let prefUseZMQ = "eye.useZMQ"
         
     /// Check for updates on startup
     static let prefCheckForUpdatesOnStartup = "updates.checkOnStartup"

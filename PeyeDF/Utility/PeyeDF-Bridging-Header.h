@@ -27,5 +27,6 @@
 
 #import <CommonCrypto/CommonDigest.h>
 #import "lsl_c.h"
+#import "zmq.h"
 
 #endif

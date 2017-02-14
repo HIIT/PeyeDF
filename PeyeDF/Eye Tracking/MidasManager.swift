@@ -103,6 +103,7 @@ class MidasManager: EyeDataProvider {
     
     /// Whether eyes were lost for at least kEyesMaxLostDuration
     fileprivate(set) var eyesLost: Bool = true
+    
     /// Fixation data delegate, to which fixation data will be sent
     var fixationDelegate: FixationDataDelegate?
     
