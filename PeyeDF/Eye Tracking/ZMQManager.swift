@@ -56,10 +56,10 @@ class ZMQManager: EyeDataProvider {
     
     /// Screen size represented by markers
     
-    let minX: Double = 22
-    let maxX: Double = 1635
+    let minX: Double = 24
+    let maxX: Double = 1660
     let minY: Double = 20
-    let maxY: Double = 985
+    let maxY: Double = 1006
     
     func start() {
         
@@ -106,11 +106,13 @@ class ZMQManager: EyeDataProvider {
 //                        print("Pack array descr: \(packArray.description)")
                         let dict = packArray[0].dictionaryValue!
                         
-                        guard let arrayval = dict[MessagePackValue.string("gaze_on_srf")]?.arrayValue, arrayval.count > 0 else {
+                        guard let arrayval = dict[MessagePackValue.string("fixations_on_srf")]?.arrayValue, arrayval.count > 0 else {
                             continue
                         }
                         
                         let val = arrayval[0]
+//                        print("desc: \(val)")
+                        print("count: \(arrayval.count)")
                         let pos = val[MessagePackValue.string("norm_pos")]!.arrayValue!
 //                        print("pos x:\(pos[0].doubleValue!) y:\(pos[1].doubleValue!)")
                         // invert y since it seems similar to osx
@@ -119,7 +121,7 @@ class ZMQManager: EyeDataProvider {
                         let sx = translate(pos[0].doubleValue!, leftMin: 0, leftMax: 1, rightMin: self.minX, rightMax: self.maxX)
                         let sy = translate(newY, leftMin: 0, leftMax: 1, rightMin: self.minY, rightMax: self.maxY)
                         let fix = FixationEvent(eye: .right, startTime: -1, endTime: -1, duration: -1, positionX: sx, positionY: sy, unixtime: -1)
-                        print("sent: \(sx),\(sy)")
+//                        print("sent: \(sx),\(sy)")
                         self.fixationDelegate?.receiveNewFixationData([fix])
                     }
                     

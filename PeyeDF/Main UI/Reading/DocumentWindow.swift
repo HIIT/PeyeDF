@@ -31,7 +31,7 @@ class DocumentWindow: NSWindow {
     /// how much of the whole screen should be covered, at most,
     /// so that eye tracker accuracy is maximised (so that
     /// window does not cover corners or margins).
-    static let kScreenCoverProportion: CGFloat = 6/7
+    static let kScreenCoverProportion: [CGFloat] = [5/6, 5/7]
     
     /// returns the rectangle in which the window should be contrained
     static func getConstrainingRect(forScreen screen: NSScreen) -> NSRect {
@@ -40,13 +40,13 @@ class DocumentWindow: NSWindow {
         
         // push origin right by the desired amount and shrink width by twice that
         let hpoints = screen.frame.width / screen.backingScaleFactor
-        let horizontalOffset = hpoints - hpoints * kScreenCoverProportion
+        let horizontalOffset = hpoints - hpoints * kScreenCoverProportion[0]
         shrankScreenRect.origin.x += horizontalOffset
         shrankScreenRect.size.width -= horizontalOffset * 2
         
         // push origin up by etc etc (same as above)
         let vpoints = screen.frame.height / screen.backingScaleFactor
-        let verticalOffset = vpoints - vpoints * kScreenCoverProportion
+        let verticalOffset = vpoints - vpoints * kScreenCoverProportion[1]
         shrankScreenRect.origin.y += verticalOffset
         shrankScreenRect.size.height -= verticalOffset * 2
         
