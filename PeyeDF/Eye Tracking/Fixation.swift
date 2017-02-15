@@ -22,21 +22,27 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-/// Events in SMI terminology include fixations
-
 import Foundation
 
+/// Represents a fixation detected by an eye tracker.
+/// Origin of fixation events is on top left of screen.
 struct FixationEvent: Equatable, FloatDictInitializable {
     var eye: Eye
     var startTime: Int
     var endTime: Int
+    /// Duration of fixation in nanoseconds.
     var duration: Int
+    /// Position of fixation, in pixels. Origin on left.
     var positionX: Double
+    /// Position of fixation, in pixels. Origin on top.
     var positionY: Double
+    /// Pupil size (if known)
+    var pupilSize: Double?
+    /// Unix time representing when this fixation was captured
     var unixtime: Int
     
     /// Trivial initializer
-    init(eye: Eye, startTime: Int, endTime: Int, duration: Int, positionX: Double, positionY: Double, unixtime: Int) {
+    init(eye: Eye, startTime: Int, endTime: Int, duration: Int, positionX: Double, positionY: Double, unixtime: Int, pupilSize: Double? = nil) {
         self.eye = eye
         self.startTime = startTime
         self.endTime = endTime
@@ -44,8 +50,10 @@ struct FixationEvent: Equatable, FloatDictInitializable {
         self.positionX = positionX
         self.positionY = positionY
         self.unixtime = unixtime
+        self.pupilSize = pupilSize
     }
     
+    /// Initializes from a dict (for LSL interfaces)
     init(floatDict dict: [String: Float]) {
         self.eye = Eye(rawValue: Int(dict["eye"]!))!
         self.startTime = Int(dict["startTime"]!)
@@ -58,6 +66,7 @@ struct FixationEvent: Equatable, FloatDictInitializable {
 
 }
 
+/// Two fixations are the same if all their properties are equal (except for pupil sizes)
 func == (lhs: FixationEvent, rhs: FixationEvent) -> Bool {
     return lhs.eye == rhs.eye &&
            lhs.startTime == rhs.startTime &&

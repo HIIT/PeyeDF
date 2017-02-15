@@ -43,8 +43,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// When the application launched
     let launchDate = Date()
     
-    let ZMQman = ZMQManager()
-    
     /// PeyeDF closes itself to prevent potential leaks and allow opened PDFs to be deleted (after a given amount of time passed)
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         return Date().timeIntervalSince(launchDate) > PeyeConstants.closeAfterLaunch && !(AppSingleton.eyeTracker?.available ?? false) && Multipeer.session.connectedPeers.count < 1
@@ -116,7 +114,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Start multipeer connectivity
         Multipeer.advertiser.start()
         
-        ZMQman.start()
     }
     
     // MARK: - Opening

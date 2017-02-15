@@ -43,19 +43,7 @@ struct PageEyeDataChunk: Dictionariable {
     var unixtimes: [Int]
     
 
-    init(Xs: [Double], Ys: [Double], startTimes: [Int], endTimes: [Int], durations: [Int], unixtimes: [Int], pageIndex: Int, scaleFactor: Double) {
-        self.Xs = Xs
-        self.Ys = Ys
-        self.startTimes = startTimes
-        self.endTimes = endTimes
-        self.durations = durations
-        self.pageIndex = pageIndex
-        self.unixtimes = unixtimes
-        self.scaleFactor = scaleFactor
-        self.unixt = Date().unixTime
-    }
-    
-    init(Xs: [Double], Ys: [Double], Ps: [Double], startTimes: [Int], endTimes: [Int], durations: [Int], unixtimes: [Int], pageIndex: Int, scaleFactor: Double) {
+    init(Xs: [Double], Ys: [Double], startTimes: [Int], endTimes: [Int], durations: [Int], unixtimes: [Int], pageIndex: Int, scaleFactor: Double, Ps: [Double]? = nil) {
         self.Xs = Xs
         self.Ys = Ys
         self.Ps = Ps
@@ -84,38 +72,24 @@ struct PageEyeDataChunk: Dictionariable {
         self.unixtimes = [Int]()
     }
     
-    mutating func appendEvent(_ x: Double, y: Double, startTime: Int, endTime: Int, duration: Int, unixtime: Int) {
+    mutating func appendEvent(_ x: Double, y: Double, startTime: Int, endTime: Int, duration: Int, unixtime: Int, p: Double? = nil) {
         self.Xs.append(x)
         self.Ys.append(y)
+        if let pupSize = p {
+            self.Ps!.append(pupSize)
+        }
         self.startTimes.append(startTime)
         self.endTimes.append(endTime)
         self.durations.append(duration)
         self.unixtimes.append(unixtime)
     }
     
-    mutating func appendEvent(_ x: Double, y: Double, p: Double, startTime: Int, endTime: Int, duration: Int, unixtime: Int) {
-        self.Xs.append(x)
-        self.Ys.append(y)
-        self.Ps!.append(p)
-        self.startTimes.append(startTime)
-        self.endTimes.append(endTime)
-        self.durations.append(duration)
-        self.unixtimes.append(unixtime)
-    }
-    
-    mutating func appendData(_ Xs: [Double], Ys: [Double], startTimes: [Int], endTimes: [Int], durations: [Int], unixtimes: [Int]) {
+    mutating func appendData(_ Xs: [Double], Ys: [Double], startTimes: [Int], endTimes: [Int], durations: [Int], unixtimes: [Int], Ps: [Double]? = nil) {
         self.Xs.append(contentsOf: Xs)
         self.Ys.append(contentsOf: Ys)
-        self.startTimes.append(contentsOf: startTimes)
-        self.endTimes.append(contentsOf: endTimes)
-        self.durations.append(contentsOf: durations)
-        self.unixtimes.append(contentsOf: unixtimes)
-    }
-    
-    mutating func appendData(_ Xs: [Double], Ys: [Double], Ps: [Double], startTimes: [Int], endTimes: [Int], durations: [Int], unixtimes: [Int]) {
-        self.Xs.append(contentsOf: Xs)
-        self.Ys.append(contentsOf: Ys)
-        self.Ps!.append(contentsOf: Ps)
+        if let pupilSizes = Ps {
+            self.Ps!.append(contentsOf: pupilSizes)
+        }
         self.startTimes.append(contentsOf: startTimes)
         self.endTimes.append(contentsOf: endTimes)
         self.durations.append(contentsOf: durations)

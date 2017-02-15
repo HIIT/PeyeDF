@@ -114,6 +114,7 @@
 		A9B3D5811DA7DAEE00FDD738 /* QuestionConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B3D5801DA7DAEE00FDD738 /* QuestionConstants.swift */; };
 		A9B3D5821DA7DAEE00FDD738 /* QuestionConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B3D5801DA7DAEE00FDD738 /* QuestionConstants.swift */; };
 		A9B3D5831DA7DBB100FDD738 /* Paper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B3D57D1DA7DAA600FDD738 /* Paper.swift */; };
+		A9C06A421E54B9E5000476BD /* MessagePack+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C06A411E54B9E5000476BD /* MessagePack+Extensions.swift */; };
 		A9C3F9DA1D9174AB00191363 /* GeneralSettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C3F9D91D9174AB00191363 /* GeneralSettingsController.swift */; };
 		A9C3F9DC1D9174D100191363 /* DiMePreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C3F9DB1D9174D100191363 /* DiMePreferencesViewController.swift */; };
 		A9C3F9DE1D9176D900191363 /* AnnotationPreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C3F9DD1D9176D900191363 /* AnnotationPreferencesViewController.swift */; };
@@ -554,6 +555,7 @@
 		A9B36CAF1BEA4A3A00A27861 /* PDFBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PDFBase.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9B3D57D1DA7DAA600FDD738 /* Paper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Paper.swift; sourceTree = "<group>"; };
 		A9B3D5801DA7DAEE00FDD738 /* QuestionConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuestionConstants.swift; sourceTree = "<group>"; };
+		A9C06A411E54B9E5000476BD /* MessagePack+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MessagePack+Extensions.swift"; path = "PeyeDF/Extensions/MessagePack+Extensions.swift"; sourceTree = SOURCE_ROOT; };
 		A9C3F9D91D9174AB00191363 /* GeneralSettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = GeneralSettingsController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9C3F9DB1D9174D100191363 /* DiMePreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiMePreferencesViewController.swift; sourceTree = "<group>"; };
 		A9C3F9DD1D9176D900191363 /* AnnotationPreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnotationPreferencesViewController.swift; sourceTree = "<group>"; };
@@ -859,6 +861,7 @@
 				A933C0491E522EB100CE94CF /* MessagePack.swift */,
 				A933C04A1E522EB100CE94CF /* Pack.swift */,
 				A933C04B1E522EB100CE94CF /* Unpack.swift */,
+				A9C06A411E54B9E5000476BD /* MessagePack+Extensions.swift */,
 			);
 			name = MessagePack;
 			path = MessagePack.swift/Sources/MessagePack;
@@ -1454,6 +1457,7 @@
 				A9C3F9DE1D9176D900191363 /* AnnotationPreferencesViewController.swift in Sources */,
 				A989F79E1D903FF8003C902D /* CrossRefSession.swift in Sources */,
 				A9C3F9DC1D9174D100191363 /* DiMePreferencesViewController.swift in Sources */,
+				A9C06A421E54B9E5000476BD /* MessagePack+Extensions.swift in Sources */,
 				A9ECD0801DB80911009EAC42 /* MidasSession.swift in Sources */,
 				A910FC291DCB81C1003BCA66 /* LSLXMLParserDelegate.swift in Sources */,
 				A9D362A11CF86196003E5DAF /* PeerViewController.swift in Sources */,

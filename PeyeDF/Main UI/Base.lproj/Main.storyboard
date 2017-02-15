@@ -515,14 +515,14 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <box borderType="line" title="Dominant Eye" translatesAutoresizingMaskIntoConstraints="NO" id="W6i-Y4-YAl">
-                                <rect key="frame" x="17" y="327" width="234" height="66"/>
+                            <box borderType="line" title="Dominant Eye (data from the other eye will be ignored)" translatesAutoresizingMaskIntoConstraints="NO" id="W6i-Y4-YAl">
+                                <rect key="frame" x="17" y="327" width="356" height="66"/>
                                 <view key="contentView" id="mdM-MO-IrL">
-                                    <rect key="frame" x="1" y="1" width="232" height="47"/>
+                                    <rect key="frame" x="1" y="1" width="354" height="47"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <button identifier="rightDomEyeButton" translatesAutoresizingMaskIntoConstraints="NO" id="Sb0-iM-7vv">
-                                            <rect key="frame" x="116" y="14" width="54" height="18"/>
+                                            <rect key="frame" x="202" y="14" width="54" height="18"/>
                                             <buttonCell key="cell" type="radio" title="Right" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="M02-EK-VEa">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
@@ -532,7 +532,7 @@
                                             </connections>
                                         </button>
                                         <button identifier="leftDomEyeButton" translatesAutoresizingMaskIntoConstraints="NO" id="dqr-WX-3sW">
-                                            <rect key="frame" x="47" y="14" width="46" height="18"/>
+                                            <rect key="frame" x="99" y="14" width="46" height="18"/>
                                             <buttonCell key="cell" type="radio" title="Left" bezelStyle="regularSquare" imagePosition="right" alignment="left" inset="2" id="g07-JB-rgF">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
@@ -544,14 +544,14 @@
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="Sb0-iM-7vv" firstAttribute="centerY" secondItem="dqr-WX-3sW" secondAttribute="centerY" id="8dp-uh-zpN"/>
-                                        <constraint firstItem="dqr-WX-3sW" firstAttribute="leading" secondItem="mdM-MO-IrL" secondAttribute="leading" constant="48" id="HGD-Kd-2Pk"/>
-                                        <constraint firstItem="Sb0-iM-7vv" firstAttribute="leading" secondItem="dqr-WX-3sW" secondAttribute="trailing" constant="26" id="qyx-8F-LUk"/>
+                                        <constraint firstItem="dqr-WX-3sW" firstAttribute="leading" secondItem="mdM-MO-IrL" secondAttribute="leading" constant="100" id="HGD-Kd-2Pk"/>
+                                        <constraint firstAttribute="trailing" secondItem="Sb0-iM-7vv" secondAttribute="trailing" constant="100" id="KkS-6l-VRD"/>
                                     </constraints>
                                 </view>
                                 <constraints>
                                     <constraint firstItem="dqr-WX-3sW" firstAttribute="top" secondItem="W6i-Y4-YAl" secondAttribute="top" constant="34" id="8q3-kR-DTw"/>
                                     <constraint firstAttribute="height" constant="62" id="N2r-Sb-dg7"/>
-                                    <constraint firstAttribute="width" constant="228" id="qQm-5s-52s"/>
+                                    <constraint firstAttribute="width" constant="350" id="qQm-5s-52s"/>
                                 </constraints>
                                 <font key="titleFont" metaFont="system"/>
                             </box>
