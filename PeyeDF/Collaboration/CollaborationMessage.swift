@@ -191,7 +191,7 @@ enum CollaborationMessage {
             
         case .markRects:
             
-            let json = JSON.parse(suffix)
+            let json = JSON(parseJSON: suffix)
             self = .markRects(json.array!.flatMap({ReadingRect(fromJson: $0)}))
         
         case .fixation:
