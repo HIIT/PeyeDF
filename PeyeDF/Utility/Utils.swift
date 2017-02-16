@@ -193,3 +193,29 @@ public func sizeForText(_ str: String, font: NSFont) -> CGSize {
     
     return AS.boundingRect(with: CGSize(width: 200, height: 400), options: NSStringDrawingOptions.usesDeviceMetrics).addTo(2.5).size
 }
+
+/// Given a value and an input range, return a value in the output range
+public func translate(_ value: Double, leftMin: Double, leftMax: Double, rightMin: Double, rightMax: Double) -> Double {
+    // Figure out how 'wide' each range is
+    let leftSpan = leftMax - leftMin
+    let rightSpan = rightMax - rightMin
+    
+    // Convert the left range into a 0-1 range (float)
+    let valueScaled = (value - leftMin) / leftSpan
+    
+    // Convert the 0-1 range into a value in the right range.
+    return rightMin + (valueScaled * rightSpan)
+}
+
+/// Given a value and an input range, return a value in the output range
+public func translate(_ value: CGFloat, leftMin: CGFloat, leftMax: CGFloat, rightMin: CGFloat, rightMax: CGFloat) -> CGFloat {
+    // Figure out how 'wide' each range is
+    let leftSpan = leftMax - leftMin
+    let rightSpan = rightMax - rightMin
+    
+    // Convert the left range into a 0-1 range (float)
+    let valueScaled = (value - leftMin) / leftSpan
+    
+    // Convert the 0-1 range into a value in the right range.
+    return rightMin + (valueScaled * rightSpan)
+}

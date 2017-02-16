@@ -905,8 +905,8 @@
         <scene sceneID="2Oi-5q-qjT">
             <objects>
                 <viewController title="Debug" id="maC-f0-zrE" customClass="DebugPreferencesController" customModule="PeyeDF" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" misplaced="YES" id="e5v-jH-hY8">
-                        <rect key="frame" x="0.0" y="0.0" width="485" height="227"/>
+                    <view key="view" id="e5v-jH-hY8">
+                        <rect key="frame" x="0.0" y="0.0" width="485" height="234"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="GFc-xH-ekV">
@@ -1680,7 +1680,7 @@
                                                 <action selector="connectDime:" target="Voe-Tx-rLC" id="TMU-ol-eIp"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Connect to Eye Tracker" id="hMB-fS-WXv" userLabel="Connect Eye">
+                                        <menuItem title="Not connected to Eye Tracker" enabled="NO" id="hMB-fS-WXv" userLabel="Connect Eye">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="connectEyeTracker:" target="Voe-Tx-rLC" id="ki6-9M-u1K"/>

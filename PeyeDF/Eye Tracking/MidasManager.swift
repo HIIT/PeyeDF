@@ -69,10 +69,7 @@ class MidasManager: EyeDataProvider {
     
     /// Length of buffer in seconds
     fileprivate let kBufferLength: Int = 1
-    
-    /// If eyes are lost for this whole period (seconds) an eye lost notification is sent
-    let kEyesMaxLostDuration: TimeInterval = 7.0
-    
+        
     /// How often a request is made to midas (seconds)
     fileprivate let kFetchInterval: TimeInterval = 0.500
     
@@ -101,7 +98,7 @@ class MidasManager: EyeDataProvider {
     /// Earliest time that eyes were lost (if they were lost)
     fileprivate var eyesLastSeen: Date?
     
-    /// Whether eyes were lost for at least kEyesMaxLostDuration
+    /// Whether eyes were lost for at least PeyeConstants.eyesMaxLostDuration
     fileprivate(set) var eyesLost: Bool = true
     
     /// Fixation data delegate, to which fixation data will be sent
@@ -271,7 +268,7 @@ class MidasManager: EyeDataProvider {
         } else if !self.eyesLost && !eyesFound {
             // check when eyes were lost before (if so) if period exceeds constant, send notification
             if let prevLostDate = self.eyesLastSeen {
-                let shiftedDate = prevLostDate.addingTimeInterval(kEyesMaxLostDuration)
+                let shiftedDate = prevLostDate.addingTimeInterval(PeyeConstants.eyesMaxLostDuration)
                 // if the current date comes after the shifted date, send notification
                 if Date().compare(shiftedDate) == ComparisonResult.orderedDescending {
                     self.eyesLost = true

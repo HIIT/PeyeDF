@@ -420,7 +420,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             connectEyeTracker.title = "Connected to Eye Tracker"
         } else {
             connectEyeTracker.state = NSOffState
-            connectEyeTracker.title = "Connect to Eye Tracker"
+            connectEyeTracker.title = "Not connected to Eye Tracker"
         }
     }
 }

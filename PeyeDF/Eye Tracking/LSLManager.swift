@@ -27,12 +27,7 @@ import Foundation
 /// The LSLManager provides eye tracking data using LabStreamingLayer.
 /// It is responsible for creating the LSL streams (using LSLFetcher instances) and checking that data is correctly formed.
 class LSLManager: EyeDataProvider {
-    
-    // MARK: - Constants
-    
-    /// If eyes are lost for this whole period (seconds) an eye lost notification is sent
-    let kEyesMaxLostDuration: TimeInterval = 7.0
-    
+        
     // MARK: - EyeDataProvider fields
     
     /// Returns true if all LSL streams were successfully activated
@@ -108,7 +103,7 @@ class LSLManager: EyeDataProvider {
                 
                 // if eyes are currently indicated as available, but too much time has passed,
                 // change eye status
-                if !self.eyesLost && self.eyesLastSeen.addingTimeInterval(self.kEyesMaxLostDuration).compare(Date()) == .orderedAscending {
+                if !self.eyesLost && self.eyesLastSeen.addingTimeInterval(PeyeConstants.eyesMaxLostDuration).compare(Date()) == .orderedAscending {
                         self.eyesLost = true
                         self.sendLastRaw(RawEyePosition.zero)
                 }

@@ -116,13 +116,6 @@ class PeyeConstants {
     
     /// Page area is multiplied by this constant, to reduce total area size (to remove margins, etc)
     static let pageAreaMultiplier = 0.125
-        
-    /// Eye fixation data which has a unixtime within this range of an `excluded
-    /// unixtime` won't be sent to DiMe. Currently, an `excluded" unixtime` refers to the user
-    /// marking text. In other words, this constant defines the minimum time difference between
-    /// a fixation and a mark text event. If that difference is less than this constant, the fixation
-    /// is discarded.
-    static let excludeEyeUnixTimeMs = 1000
     
     // MARK: - Colours
     
@@ -168,13 +161,23 @@ class PeyeConstants {
     /// Space between the "selection mark" (text) rectangles and their underline
     static let selectionAnnotationDistance: CGFloat = 1
     
-    // MARK: - Eye Analysis
+    // MARK: - Eye Tracking
     
     /// Minimum number of fixations for data to be exported
     static let minNOfFixations = 3
     
     /// Tag value for clear highlight menu item
     static let annotateMenuClearHighlightTag = UInt(16564)
+    
+    /// Eye fixation data which has a unixtime within this range of an `excluded
+    /// unixtime` won't be sent to DiMe. Currently, an `excluded" unixtime` refers to the user
+    /// marking text. In other words, this constant defines the minimum time difference between
+    /// a fixation and a mark text event. If that difference is less than this constant, the fixation
+    /// is discarded.
+    static let excludeEyeUnixTimeMs = 1000
+    
+    /// If eyes are lost for this whole period (seconds) an eye lost notification is sent
+    static let eyesMaxLostDuration: TimeInterval = 7.0
     
     // MARK: - Other globals
     
