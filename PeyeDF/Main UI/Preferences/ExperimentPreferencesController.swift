@@ -92,9 +92,12 @@ class ExperimentPreferencesController: NSViewController {
         if UserDefaults.standard.object(forKey: PeyeConstants.prefUseEyeTracker) as! Bool {
             if UserDefaults.standard.object(forKey: PeyeConstants.prefUseMidas) as! Bool {
                 eyeTrackerPopUp.select(eyeTrackerPopUp.menu!.items[2])  // midas
-            } else {
-                // assume LSL
+            } else if UserDefaults.standard.object(forKey: PeyeConstants.prefUseLSL) as! Bool {
+                // LSL
                 eyeTrackerPopUp.select(eyeTrackerPopUp.menu!.items[1])  // LSL
+            } else if UserDefaults.standard.object(forKey: PeyeConstants.prefUseZMQ) as! Bool {
+                // ZeroMQ
+                eyeTrackerPopUp.select(eyeTrackerPopUp.menu!.items[3])  // ZeroMQ
             }
         } else {
             eyeTrackerPopUp.select(eyeTrackerPopUp.menu!.items[0])  // off
