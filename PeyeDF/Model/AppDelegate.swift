@@ -58,10 +58,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         defaultPrefs[PeyeConstants.prefDiMeServerUserName] = "Test1"
         defaultPrefs[PeyeConstants.prefDiMeServerPassword] = "123456"
         defaultPrefs[PeyeConstants.prefStringBlockList] = [" iban ", "iban:", " visa ", " visa:", "mastercard", "american express"]
-        defaultPrefs[PeyeConstants.prefUseEyeTracker] = 0
-        defaultPrefs[PeyeConstants.prefUseMidas] = 0
-        defaultPrefs[PeyeConstants.prefUseLSL] = 0
-        defaultPrefs[PeyeConstants.prefUseZMQ] = 0
+        defaultPrefs[PeyeConstants.prefEyeTrackerType] = 0
         defaultPrefs[PeyeConstants.prefAskToSaveOnClose] = 0
         defaultPrefs[PeyeConstants.prefConstrainWindowMaxSize] = 0 
         defaultPrefs[PeyeConstants.prefEnableAnnotate] = 0
@@ -96,19 +93,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Attempt dime connection (required even if we don't use dime, because this sets up historymanager shared object)
         DiMeSession.dimeConnect()  // will automatically detect if dime is down
         
-        // If we want to use eye tracker, start it
-        let useEye = UserDefaults.standard.object(forKey: PeyeConstants.prefUseEyeTracker) as! Bool
-        if useEye {
-            // check whether we want to use midas or lsl
-            if UserDefaults.standard.object(forKey: PeyeConstants.prefUseMidas) as! Bool {
-                AppSingleton.eyeTracker = MidasManager()
-            } else if UserDefaults.standard.object(forKey: PeyeConstants.prefUseLSL) as! Bool {
-                AppSingleton.eyeTracker = LSLManager()
-            } else if UserDefaults.standard.object(forKey: PeyeConstants.prefUseZMQ) as! Bool {
-                AppSingleton.eyeTracker = ZMQManager()
+        // If we want to use eye tracker, create it and associate us to it
+        let eyeTrackerPref = UserDefaults.standard.object(forKey: PeyeConstants.prefEyeTrackerType) as! Int
+        if let eyeTrackerType = EyeDataProviderType(rawValue: eyeTrackerPref) {
+            if let eyeTracker = eyeTrackerType.associatedTracker {
+                AppSingleton.eyeTracker = eyeTracker
             }
-            AppSingleton.eyeTracker?.start()
-            AppSingleton.eyeTracker?.fixationDelegate = HistoryManager.sharedManager
+        } else {
+            AppSingleton.log.error("Failed to find a corresponding eye data provider type enum for Int: \(eyeTrackerPref)")
         }
         
         // Start multipeer connectivity

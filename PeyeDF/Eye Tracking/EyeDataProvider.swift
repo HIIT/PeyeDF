@@ -31,6 +31,48 @@ protocol FixationDataDelegate: class {
     func receiveNewFixationData(_ newData: [FixationEvent])
 }
 
+/// This enum lists all implemented data providers (so that they can be chosen and stored in preferences
+enum EyeDataProviderType: Int, CustomStringConvertible {
+    
+    /// Total number of eye trackers we implement (including `Off`)
+    static let count = 4
+    
+    var description: String { get {
+        switch self {
+        case .none:
+            return "Off"
+        case .lsl:
+            return "LSL"
+        case .midas:
+            return "Midas"
+        case .zeromq:
+            return "ZeroMQ"
+        }
+    } }
+    
+    /// Return an eye tracker corresponding to what this instance represents.
+    /// Created a new instance of the given tracker (make sure to not call this method without having
+    /// deinitialized the previous instance).
+    var associatedTracker: EyeDataProvider? {
+        switch self {
+        case .none:
+            return nil
+        case .lsl:
+            return LSLManager()
+        case .midas:
+            return MidasManager()
+        case .zeromq:
+            return ZMQManager()
+        }
+    }
+    
+    case none
+    case lsl
+    case midas
+    case zeromq
+    
+}
+
 /// The EyeDataProvider protocol is used to generalise support for any eye tracker. For example, the MidasManager implements this protocol by frequently polling Midas to retrieve the lasest chunk of data in a buffer.
 /// It is a class protocol since normally it would be implemented by a singleton.
 /// The EyeDataProvider is also responsible for sending a `PeyeConstants.midasEyePositionNotification` Notification which should contain the latest RawEyePosition as part of its userInfo dictionary (see the sendLastRaw(_) method).

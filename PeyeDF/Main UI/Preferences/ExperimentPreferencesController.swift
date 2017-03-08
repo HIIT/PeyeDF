@@ -56,51 +56,38 @@ class ExperimentPreferencesController: NSViewController {
         }
     }
     
-    @IBAction func eyeTrackerSelection(_ sender: NSPopUpButton) {
-        // Possible states are "Off", "LSL", and "Midas"
-        switch sender.selectedItem!.title {
-        case "Off":
-            UserDefaults.standard.set(0, forKey: PeyeConstants.prefUseEyeTracker)
-            UserDefaults.standard.set(0, forKey: PeyeConstants.prefUseMidas)
-            UserDefaults.standard.set(0, forKey: PeyeConstants.prefUseLSL)
-            UserDefaults.standard.set(0, forKey: PeyeConstants.prefUseZMQ)
-        case "Midas":
-            UserDefaults.standard.set(1, forKey: PeyeConstants.prefUseEyeTracker)
-            UserDefaults.standard.set(1, forKey: PeyeConstants.prefUseMidas)
-            UserDefaults.standard.set(0, forKey: PeyeConstants.prefUseLSL)
-            UserDefaults.standard.set(0, forKey: PeyeConstants.prefUseZMQ)
-        case "LSL":
-            UserDefaults.standard.set(1, forKey: PeyeConstants.prefUseEyeTracker)
-            UserDefaults.standard.set(0, forKey: PeyeConstants.prefUseMidas)
-            UserDefaults.standard.set(1, forKey: PeyeConstants.prefUseLSL)
-            UserDefaults.standard.set(0, forKey: PeyeConstants.prefUseZMQ)
-        case "ZeroMQ":
-            UserDefaults.standard.set(1, forKey: PeyeConstants.prefUseEyeTracker)
-            UserDefaults.standard.set(0, forKey: PeyeConstants.prefUseMidas)
-            UserDefaults.standard.set(0, forKey: PeyeConstants.prefUseLSL)
-            UserDefaults.standard.set(1, forKey: PeyeConstants.prefUseZMQ)
-        default:
-            AppSingleton.log.error("Invalid eye tracker selected")
+    @IBAction func eyeTrackerSelection(_ sender: NSMenuItem) {
+        guard let selectedTrackerType = EyeDataProviderType(rawValue: sender.tag) else {
+            AppSingleton.log.error("Invalid eye tracker selected. Check EyeDataProviderType and sender menu tag.")
+            return
         }
+        
+        let oldTrackerPref = UserDefaults.standard.object(forKey: PeyeConstants.prefEyeTrackerType) as! Int
+        
+        if oldTrackerPref != sender.tag {
+            UserDefaults.standard.set(sender.tag, forKey: PeyeConstants.prefEyeTrackerType)
+            AppSingleton.eyeTracker = selectedTrackerType.associatedTracker
+        }
+        
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // set eye tracker popup to corresponding system
-        // first is off, second is lsl, third is midas
-        if UserDefaults.standard.object(forKey: PeyeConstants.prefUseEyeTracker) as! Bool {
-            if UserDefaults.standard.object(forKey: PeyeConstants.prefUseMidas) as! Bool {
-                eyeTrackerPopUp.select(eyeTrackerPopUp.menu!.items[2])  // midas
-            } else if UserDefaults.standard.object(forKey: PeyeConstants.prefUseLSL) as! Bool {
-                // LSL
-                eyeTrackerPopUp.select(eyeTrackerPopUp.menu!.items[1])  // LSL
-            } else if UserDefaults.standard.object(forKey: PeyeConstants.prefUseZMQ) as! Bool {
-                // ZeroMQ
-                eyeTrackerPopUp.select(eyeTrackerPopUp.menu!.items[3])  // ZeroMQ
-            }
+        // create eye tracker selection menu items using the EyeDataProviderType enum
+        // and setting the corresponding rawValue to the created item's tag
+        for i in 0..<EyeDataProviderType.count {
+            let tracker = EyeDataProviderType(rawValue: i)!
+            let menuItem = NSMenuItem(title: tracker.description, action: #selector(self.eyeTrackerSelection(_:)), keyEquivalent: "")
+            menuItem.tag = i
+            eyeTrackerPopUp.menu!.addItem(menuItem)
+        }
+        
+        // select correct menu item
+        if let storedTrackerPref = UserDefaults.standard.object(forKey: PeyeConstants.prefEyeTrackerType) as? Int {
+            eyeTrackerPopUp.select(eyeTrackerPopUp.itemArray[storedTrackerPref])
         } else {
-            eyeTrackerPopUp.select(eyeTrackerPopUp.menu!.items[0])  // off
+            AppSingleton.log.error("Failed to load saved eye tracker from preferences")
         }
         
         if AppSingleton.dominantEye == .left {

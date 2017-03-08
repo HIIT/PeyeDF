@@ -61,8 +61,15 @@ class AppSingleton {
     static let log = AppSingleton.createLog()
     static fileprivate(set) var logsURL: URL?
         
-    /// The class that provides eye tracking data (set by app delegate on start)
-    static var eyeTracker: EyeDataProvider? = nil
+    /// The class that provides eye tracking data (set by app delegate on start).
+    /// Changing this value causes the eye tracker to start.
+    static var eyeTracker: EyeDataProvider? = nil { willSet {
+        eyeTracker?.stop()
+        eyeTracker?.fixationDelegate = nil
+    } didSet {
+        eyeTracker?.start()
+        eyeTracker?.fixationDelegate = HistoryManager.sharedManager
+    } }
     
     /// Offset for eye tracker correction
     static var eyeOffset: [CGFloat] = [0, 0]

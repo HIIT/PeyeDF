@@ -831,35 +831,23 @@
                                 </constraints>
                             </box>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="LiC-qa-DVE">
-                                <rect key="frame" x="18" y="452" width="213" height="17"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Use eye tracker (requires restart): " id="afV-eF-nb9">
+                                <rect key="frame" x="18" y="452" width="107" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Use eye tracker: " id="afV-eF-nb9">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
                             <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="k2y-p9-6BV">
-                                <rect key="frame" x="235" y="446" width="94" height="26"/>
+                                <rect key="frame" x="129" y="445" width="94" height="26"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="89" id="O3l-JT-rob"/>
                                 </constraints>
-                                <popUpButtonCell key="cell" type="push" title="Off" bezelStyle="rounded" alignment="left" state="on" borderStyle="borderAndBezel" imageScaling="axesIndependently" inset="2" selectedItem="om9-vK-t1Z" id="1Pw-7o-rfP">
+                                <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" borderStyle="borderAndBezel" imageScaling="axesIndependently" inset="2" id="1Pw-7o-rfP" userLabel="EyeDataProviderType list">
                                     <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                    <menu key="menu" id="l3r-Ag-gVL">
-                                        <items>
-                                            <menuItem title="Off" state="on" id="om9-vK-t1Z"/>
-                                            <menuItem title="LSL" id="K9f-XW-Cg1"/>
-                                            <menuItem title="Midas" id="M8d-TS-GMn"/>
-                                            <menuItem title="ZeroMQ" id="dWh-Xc-OG6">
-                                                <modifierMask key="keyEquivalentModifierMask"/>
-                                            </menuItem>
-                                        </items>
-                                    </menu>
+                                    <font key="font" metaFont="menu"/>
+                                    <menu key="menu" id="l3r-Ag-gVL"/>
                                 </popUpButtonCell>
-                                <connections>
-                                    <action selector="eyeTrackerSelection:" target="bHM-3n-NND" id="VhE-xb-fRb"/>
-                                </connections>
                             </popUpButton>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Bci-dk-u5j">
                                 <rect key="frame" x="14" y="414" width="318" height="32"/>
@@ -1948,7 +1936,8 @@
                                 <rect key="frame" x="54" y="235" width="486" height="28"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" id="ksn-bO-wVg">
                                     <font key="font" metaFont="smallSystem"/>
-                                    <string key="title">Press enter to confirm changes after editing a field. Note: you must re-save the original document in order to embed this information in the file.</string>
+                                    <string key="title">Press enter to confirm changes after editing a field.
+Note: you must re-save the original document in order to embed this information in the file.</string>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
