@@ -145,7 +145,7 @@ class LSLManager: EyeDataProvider {
             }
             self.lastFixationStart = fixationEvent.startTime
             
-            self.fixationDelegate?.receiveNewFixationData([fixationEvent])
+            self.sendFixations([fixationEvent])
         }
         
         rawStream = LSLFetcher<RawEyePosition>(name: "SMI_Raw", dataCallback: rawDataCallback)

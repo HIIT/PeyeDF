@@ -27,12 +27,13 @@ import Foundation
 /// The FixationDataDelegate receives fixation data (calibrated) from the EyeDataProvider
 protocol FixationDataDelegate: class {
     
+    /// Receives new fixations. This is called automatically by `EyeDataProvider` adopters (assuming they correctly call `sendFixations`).
     func receiveNewFixationData(_ newData: [FixationEvent])
 }
 
-/// The EyeDataProvider protocol is used to generalise support for receiving data from any eye tracker. For example, the MidasManager implements this protocol by frequently polling Midas to retrieve the lasest chunk of data in a buffer.
+/// The EyeDataProvider protocol is used to generalise support for any eye tracker. For example, the MidasManager implements this protocol by frequently polling Midas to retrieve the lasest chunk of data in a buffer.
 /// It is a class protocol since normally it would be implemented by a singleton.
-/// The EyeDataProvider is also responsible for sending a PeyeConstants.midasEyePositionNotification Notification which should contain the latest RawEyePosition as part of its userInfo dictionary (see the sendLastRaw(_) method).
+/// The EyeDataProvider is also responsible for sending a `PeyeConstants.midasEyePositionNotification` Notification which should contain the latest RawEyePosition as part of its userInfo dictionary (see the sendLastRaw(_) method).
 protocol EyeDataProvider: class {
     
     /// The delegate to which fixation data will be sent
@@ -57,9 +58,24 @@ protocol EyeDataProvider: class {
 
 extension EyeDataProvider {
     
-    /// `EyeDataProvider`s should call this method as soon as they receive the a raw eye position (which is used to update user's head position).
+    /// `EyeDataProvider`s should call this method as soon as they receive a raw eye position (which is used to update user's head position).
     func sendLastRaw(_ lastPos: RawEyePosition) {
         NotificationCenter.default.post(name: PeyeConstants.eyePositionNotification, object: self, userInfo: lastPos.asDict())
+    }
+    
+    /// `EyeDataProvider`s should call this as soon as they receive new fixations
+    func sendFixations(_ newData: [FixationEvent]) {
+        // if there's an offset, apply it to the newly sent data
+        if AppSingleton.eyeOffset != [0, 0] {
+            var adjustedData = newData
+            for i in 0..<adjustedData.count {
+                adjustedData[i].positionX += Double(AppSingleton.eyeOffset[0])
+                adjustedData[i].positionY += Double(AppSingleton.eyeOffset[1])
+            }
+            fixationDelegate?.receiveNewFixationData(adjustedData)
+        } else {
+            fixationDelegate?.receiveNewFixationData(newData)
+        }
     }
     
     /// This method should be called as soon as the state of the user's eye changes from found to lost, or vice-versa

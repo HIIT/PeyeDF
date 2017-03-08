@@ -106,6 +106,8 @@
 		A9A2DFC61BC427BE006C07FD /* MetadataWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A2DFC51BC427BE006C07FD /* MetadataWindowController.swift */; };
 		A9A2DFCC1BC427D2006C07FD /* MetadataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A2DFCB1BC427D2006C07FD /* MetadataViewController.swift */; };
 		A9A793541CD35E1F00E14CCF /* NearlyEquatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A793531CD35E1F00E14CCF /* NearlyEquatable.swift */; };
+		A9AA38411E6EBC7800FFAA33 /* OffsetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9AA38401E6EBC7800FFAA33 /* OffsetController.swift */; };
+		A9AA38421E6EBC7800FFAA33 /* OffsetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9AA38401E6EBC7800FFAA33 /* OffsetController.swift */; };
 		A9B36CA31BEA0FE300A27861 /* RefinderProgressIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B36CA21BEA0FE300A27861 /* RefinderProgressIndicator.swift */; };
 		A9B36CA91BEA2E0800A27861 /* HistoryDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B36CA81BEA2E0800A27861 /* HistoryDetailController.swift */; };
 		A9B36CAB1BEA30BF00A27861 /* PDFOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B36CAA1BEA30BF00A27861 /* PDFOverview.swift */; };
@@ -374,6 +376,13 @@
 			remoteGlobalIDString = A91CB9431B332EDB00671868;
 			remoteInfo = PeyeDF;
 		};
+		A9AA384D1E6EBC7900FFAA33 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A90D0EE21D91185D00CB7011 /* Sparkle.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5AE13FB31E0D9E07000D2C2C;
+			remoteInfo = generate_appcast;
+		};
 		A9E8F7761DA27E8C004FBA51 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */;
@@ -549,6 +558,7 @@
 		A9A2DFC51BC427BE006C07FD /* MetadataWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = MetadataWindowController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9A2DFCB1BC427D2006C07FD /* MetadataViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = MetadataViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9A793531CD35E1F00E14CCF /* NearlyEquatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NearlyEquatable.swift; sourceTree = "<group>"; };
+		A9AA38401E6EBC7800FFAA33 /* OffsetController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OffsetController.swift; sourceTree = "<group>"; };
 		A9B36CA21BEA0FE300A27861 /* RefinderProgressIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefinderProgressIndicator.swift; sourceTree = "<group>"; };
 		A9B36CA81BEA2E0800A27861 /* HistoryDetailController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = HistoryDetailController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9B36CAA1BEA30BF00A27861 /* PDFOverview.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PDFOverview.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -751,6 +761,7 @@
 				A90D0EF81D91185E00CB7011 /* Autoupdate.app */,
 				A90D0EFA1D91185E00CB7011 /* UI Tests.xctest */,
 				A90D0EFC1D91185E00CB7011 /* fileop */,
+				A9AA384E1E6EBC7900FFAA33 /* generate_appcast */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -933,6 +944,7 @@
 				A9C3F9DD1D9176D900191363 /* AnnotationPreferencesViewController.swift */,
 				A97D2F021D9BB28C00D2536B /* DebugPreferencesController.swift */,
 				A97D2F161D9BB83000D2536B /* ExperimentPreferencesController.swift */,
+				A9AA38401E6EBC7800FFAA33 /* OffsetController.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -1297,6 +1309,13 @@
 			remoteRef = A90D0EFB1D91185E00CB7011 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		A9AA384E1E6EBC7900FFAA33 /* generate_appcast */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = generate_appcast;
+			remoteRef = A9AA384D1E6EBC7900FFAA33 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -1483,6 +1502,7 @@
 				A9C8F0251BC2B309007ABE1A /* Fixation.swift in Sources */,
 				A912D8A51B8B5C3A006F0657 /* ReadingEvent.swift in Sources */,
 				A9CDFD931CF74717000C4282 /* SessionDelegate.swift in Sources */,
+				A9AA38411E6EBC7800FFAA33 /* OffsetController.swift in Sources */,
 				A954F8C11D1DA1E5003A23F1 /* PDFPeerOverview.swift in Sources */,
 				A999D3311CFDF6410057F561 /* SecondaryWindow.swift in Sources */,
 				A9B36CB01BEA4A3A00A27861 /* PDFBase.swift in Sources */,
@@ -1525,6 +1545,7 @@
 				A9E8F77C1DA27E8C004FBA51 /* SummaryReadingEvent.swift in Sources */,
 				A9E8F77D1DA27E8C004FBA51 /* PDFOverview.swift in Sources */,
 				A9E8F77E1DA27E8C004FBA51 /* DesktopEvent.swift in Sources */,
+				A9AA38421E6EBC7800FFAA33 /* OffsetController.swift in Sources */,
 				A9E8F77F1DA27E8C004FBA51 /* WaitViewController.swift in Sources */,
 				A9E8F7E61DA27EBD004FBA51 /* QuestionLoader.swift in Sources */,
 				A9E8F7801DA27E8C004FBA51 /* DocumentWindow.swift in Sources */,

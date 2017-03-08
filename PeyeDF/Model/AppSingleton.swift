@@ -64,6 +64,9 @@ class AppSingleton {
     /// The class that provides eye tracking data (set by app delegate on start)
     static var eyeTracker: EyeDataProvider? = nil
     
+    /// Offset for eye tracker correction
+    static var eyeOffset: [CGFloat] = [0, 0]
+    
     /// Convenience getter for user's distance from screen, which defaults to 80cm
     /// if not known
     static var userDistance: CGFloat { get {

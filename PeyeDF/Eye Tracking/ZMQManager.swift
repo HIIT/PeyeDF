@@ -234,7 +234,7 @@ class ZMQManager: EyeDataProvider {
                     
                     // send data
                     let fix = FixationEvent(eye: eye, startTime: timestamp, endTime: timestamp + duration, duration: duration, positionX: sx, positionY: sy, unixtime: Date().unixTime, pupilSize: diameter)
-                    self.fixationDelegate?.receiveNewFixationData([fix])
+                    self.sendFixations([fix])
                 }
                 
             } // end of data fetch loop

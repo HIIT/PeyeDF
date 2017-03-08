@@ -217,7 +217,7 @@ class MidasManager: EyeDataProvider {
             if let (newFixations, lut) = getTimedFixationsAfter(fromMidasJSON: json, unixtime: minUnixTime, forEye: AppSingleton.dominantEye) {
                 // only send fixations if user is reading
                 if HistoryManager.sharedManager.userIsReading {
-                    fixationDelegate?.receiveNewFixationData(newFixations)
+                    sendFixations(newFixations)
                 }
                 lastFixationUnixtime = lut
             }
