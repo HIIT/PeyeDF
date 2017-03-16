@@ -51,7 +51,7 @@ BUNDLE_VERSION=$(get_bundle_version)
 
 # Run Script build phases that operate on product files of the target that defines them should use the value of this build setting [TARGET_BUILD_DIR]. But Run Script build phases that operate on product files of other targets should use “BUILT_PRODUCTS_DIR” instead.
 #INFO_PLIST="${TARGET_BUILD_DIR}/${INFOPLIST_PATH}"
-INFO_PLIST="PeyeDF/Info.plist"
+INFO_PLIST="${PROJECT_DIR}/${PROJECT_NAME}/Info.plist"
 
 #/usr/libexec/PlistBuddy -c "Add :CFBundleBuildVersion string $BUILD_VERSION" "$INFO_PLIST" 2>/dev/null || /usr/libexec/PlistBuddy -c "Set :CFBundleBuildVersion $BUILD_VERSION" "$INFO_PLIST"
 #/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $SHORT_VERSION" "$INFO_PLIST"
