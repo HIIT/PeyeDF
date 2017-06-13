@@ -331,7 +331,7 @@ class DiMeFetcher {
             if let json = json {
                 callback(json)
             } else {
-                AppSingleton.log.error("Error fetching list of PeyeDF events: \(error)")
+                AppSingleton.log.error("Error fetching list of PeyeDF events: \(error?.localizedDescription ?? "N/A")")
                 callback(nil)
             }
         }

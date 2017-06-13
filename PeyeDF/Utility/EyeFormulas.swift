@@ -76,5 +76,5 @@ func getSeenRect(fromPoint point: NSPoint, zoomLevel: CGFloat) -> NSRect {
 
 /// Converts degrees to radians (xcode tan function is in radians)
 func degToRad(_ deg: CGFloat) -> CGFloat {
-    return deg * CGFloat(M_PI) / 180.0
+    return deg * CGFloat.pi / 180.0
 }

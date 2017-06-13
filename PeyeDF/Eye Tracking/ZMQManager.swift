@@ -158,7 +158,7 @@ class ZMQManager: EyeDataProvider {
                     let topic: String? = String(data: msgdata, encoding: .utf8)
                     // verify that topic is "surface"
                     if topic ?? "" != "surfaces" {
-                        AppSingleton.log.warning("Unexpected topic found: \(topic)")
+                        AppSingleton.log.warning("Unexpected topic found: \(topic ?? "N/A")")
                         continue
                     }
                     

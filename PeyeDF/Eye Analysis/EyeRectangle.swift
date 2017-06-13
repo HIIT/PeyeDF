@@ -68,7 +68,7 @@ struct EyeRectangle: Dictionariable {
     /// Fails (returns nil) if no data matched
     init?(fromPageRect readingRect: ReadingRect, andPageData pageData: PageEyeDataChunk) {
         if readingRect.pageIndex != pageData.pageIndex {
-            fatalError("Given reading rect has page index: \(readingRect.pageIndex), while data has \(pageData.pageIndex)")
+            fatalError("Given reading rect has page index: \(readingRect.pageIndex), while data has \(String(describing: pageData.pageIndex))")
         }
         
         if readingRect.scaleFactor != pageData.scaleFactor {

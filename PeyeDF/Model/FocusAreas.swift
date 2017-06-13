@@ -185,7 +185,7 @@ struct FocusArea: CustomStringConvertible {
     /// Fails if page is missing is below 0, or did not contain a type.
     init?(fromURLComponents comps: URLComponents) {
         guard let params = comps.parameterDictionary, let pageS = params["page"], let pageIndex = Int(pageS) , pageIndex >= 0 else {
-            AppSingleton.log.warning("Could not parse string: \(comps.string)")
+            AppSingleton.log.warning("Could not parse string: \(comps.string ?? "<nil>")")
             return nil
         }
         if let t = FocusAreaType(fromURLComponents: comps) {

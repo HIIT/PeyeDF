@@ -68,7 +68,7 @@ class LittleClock: NSView {
         //// Bezier 2 Drawing
         NSGraphicsContext.saveGraphicsState()
         context.translateBy(x: frame.minX + 0.50000 * frame.width, y: frame.minY + 0.50000 * frame.height)
-        context.rotate(by: (minutes_rotation - 740.311523438) * CGFloat(M_PI) / 180)
+        context.rotate(by: (minutes_rotation - 740.311523438) * CGFloat.pi / 180)
         
         let bezier2Path = NSBezierPath()
         bezier2Path.move(to: NSMakePoint(0, 0))
@@ -83,7 +83,7 @@ class LittleClock: NSView {
         //// Bezier Drawing
         NSGraphicsContext.saveGraphicsState()
         context.translateBy(x: frame.minX + 0.50000 * frame.width, y: frame.minY + 0.50000 * frame.height)
-        context.rotate(by: hours_rotation * CGFloat(M_PI) / 180)
+        context.rotate(by: hours_rotation * CGFloat.pi / 180)
         
         let bezierPath = NSBezierPath()
         bezierPath.move(to: NSMakePoint(0, 0))

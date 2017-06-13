@@ -47,7 +47,7 @@ class MidasSession {
                 callback(true)
             } else {
                 callback(false)
-                AppSingleton.log.error("Failed to connect to Midas: \(error)")
+                AppSingleton.log.error("Failed to connect to Midas: \(error?.localizedDescription ?? "<nil>")")
             }
         }.resume()
     }
@@ -70,7 +70,7 @@ class MidasSession {
                 callback(JSON(data: data), nil)
             } else {
                 callback(nil, error)
-                AppSingleton.log.error("Failed to fetch Midas data for \(fullAddress): \(error)")
+                AppSingleton.log.error("Failed to fetch Midas data for \(fullAddress): \(error?.localizedDescription ?? "<nil>")")
             }
         }.resume()
     }

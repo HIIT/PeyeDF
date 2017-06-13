@@ -340,7 +340,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         for doc: PeyeDocument in doci as! [PeyeDocument] {
             outString += "-- Document \(inum) --\n" +
             "Filename: \(doc.pdfDoc!.documentURL!.lastPathComponent)\n" +
-            "Title: \(doc.pdfDoc!.getTitle())\nAuthor(s):\(doc.pdfDoc!.getAuthor())\n\n"
+            "Title: \(doc.pdfDoc!.getTitle() ?? "N/A")\nAuthor(s):\(doc.pdfDoc!.getAuthor() ?? "N/A")\n\n"
             inum += 1
         }
         if let mainWin = NSApplication.shared().mainWindow {

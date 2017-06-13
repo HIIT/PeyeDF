@@ -42,7 +42,7 @@ class CrossRefSession {
                 callback(JSON(data: data))
             } else {
                 callback(nil)
-                AppSingleton.log.error("Failed to fetch crossref data for \(doi): \(error)")
+                AppSingleton.log.error("Failed to fetch crossref data for \(doi): \(error?.localizedDescription ?? "<nil>")")
             }
         }.resume()
     }
