@@ -31,7 +31,7 @@ class DiMeEraser {
     /// Returns a progress that can be used to track the operation (which will be
     /// done asynchronously on the main utility queue).
     /// Calls the given callback on complete.
-    static func deleteAllOrphaned(callback: ((Void) -> Void)? ) -> Progress {
+    static func deleteAllOrphaned(callback: (() -> Void)? ) -> Progress {
         
         let orphanedDeleteProgress = Progress(totalUnitCount: .max)
         
