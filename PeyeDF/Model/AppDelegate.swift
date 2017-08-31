@@ -304,6 +304,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
+    /// Show PeyeDF github page
+    @IBAction func showGitHub(_ sender: NSMenuItem) {
+        let url = URL(string: "https://github.com/HIIT/PeyeDF")
+        NSWorkspace.shared().open(url!)
+    }
+    
     /// Callback for connect to midas menu action
     @IBAction func connectEyeTracker(_ sender: NSMenuItem) {
         if connectEyeTracker.state == NSOffState {
