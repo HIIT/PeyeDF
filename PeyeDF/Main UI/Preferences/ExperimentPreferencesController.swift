@@ -254,7 +254,6 @@ class ExperimentPreferencesController: NSViewController {
         openPanel.directoryURL = QuestionSingleton.FolderLocation(rawValue: sender.tag)!.url
         
         guard let win = self.view.window else {
-            AppSingleton.log.error("Failed to get window")
             return
         }
         

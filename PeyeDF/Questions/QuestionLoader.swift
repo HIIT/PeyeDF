@@ -24,6 +24,7 @@
 
 import Foundation
 import GameplayKit
+import os.log
 
 /// Retrieves questions saved on disk and tells us whether an answer is correct
 class QuestionLoader {
@@ -64,7 +65,9 @@ class QuestionLoader {
                 AppSingleton.alertUser("Question json target topic does not match selection")
             }
         } catch {
-            AppSingleton.log.error("Failed to load questions: \(error)")
+            if #available(OSX 10.12, *) {
+                os_log("Failed to load questions: %@", type: .error, error.localizedDescription)
+            }
             return nil
         }
     }

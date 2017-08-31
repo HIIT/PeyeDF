@@ -61,6 +61,23 @@
 		A933C0731E52301600CE94CF /* libzmq.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A933C0721E52301600CE94CF /* libzmq.5.dylib */; };
 		A933C0741E52303800CE94CF /* libzmq.5.dylib in Copy manually compiled dylibs */ = {isa = PBXBuildFile; fileRef = A933C0721E52301600CE94CF /* libzmq.5.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		A933C0781E5252CE00CE94CF /* ZMQManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C0771E5252CE00CE94CF /* ZMQManager.swift */; };
+		A933EE1D1F58716A002A180D /* ZMQManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C0771E5252CE00CE94CF /* ZMQManager.swift */; };
+		A933EE281F587186002A180D /* libzmq.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A933C0721E52301600CE94CF /* libzmq.5.dylib */; };
+		A933EE291F587196002A180D /* Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C0631E522F4800CE94CF /* Context.swift */; };
+		A933EE2A1F587196002A180D /* CURVE.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C0641E522F4800CE94CF /* CURVE.swift */; };
+		A933EE2B1F587196002A180D /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C0651E522F4800CE94CF /* Error.swift */; };
+		A933EE2C1F587196002A180D /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C0661E522F4800CE94CF /* Message.swift */; };
+		A933EE2D1F587196002A180D /* Poller.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C0671E522F4800CE94CF /* Poller.swift */; };
+		A933EE2E1F587196002A180D /* Proxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C0681E522F4800CE94CF /* Proxy.swift */; };
+		A933EE2F1F587196002A180D /* Socket.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C0691E522F4800CE94CF /* Socket.swift */; };
+		A933EE301F5871EF002A180D /* ConvenienceInitializers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C0461E522EB100CE94CF /* ConvenienceInitializers.swift */; };
+		A933EE311F5871EF002A180D /* ConvenienceProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C0471E522EB100CE94CF /* ConvenienceProperties.swift */; };
+		A933EE321F5871EF002A180D /* LiteralConvertibles.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C0481E522EB100CE94CF /* LiteralConvertibles.swift */; };
+		A933EE331F5871EF002A180D /* MessagePack.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C0491E522EB100CE94CF /* MessagePack.swift */; };
+		A933EE341F5871EF002A180D /* Pack.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C04A1E522EB100CE94CF /* Pack.swift */; };
+		A933EE351F5871EF002A180D /* Unpack.swift in Sources */ = {isa = PBXBuildFile; fileRef = A933C04B1E522EB100CE94CF /* Unpack.swift */; };
+		A933EE361F5871EF002A180D /* MessagePack+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C06A411E54B9E5000476BD /* MessagePack+Extensions.swift */; };
+		A933EE371F587256002A180D /* libzmq.5.dylib in Copy LSL dylib */ = {isa = PBXBuildFile; fileRef = A933C0721E52301600CE94CF /* libzmq.5.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		A935F0C61B8CC5FD00587C99 /* DesktopEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A935F0C51B8CC5FD00587C99 /* DesktopEvent.swift */; };
 		A93C53DC1B8DCEFB00179C72 /* HistoryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93C53DB1B8DCEFB00179C72 /* HistoryManager.swift */; };
 		A948C0ED1CF734D000625FF4 /* CollaborationMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A948C0EC1CF734D000625FF4 /* CollaborationMessage.swift */; };
@@ -343,6 +360,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				A933EE371F587256002A180D /* libzmq.5.dylib in Copy LSL dylib */,
 				A910FC221DCB7CB8003BCA66 /* liblsl.dylib in Copy LSL dylib */,
 			);
 			name = "Copy LSL dylib";
@@ -556,6 +574,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A933EE281F587186002A180D /* libzmq.5.dylib in Frameworks */,
 				A910FC201DCB7C6D003BCA66 /* liblsl.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1397,6 +1416,7 @@
 				A9E8F77C1DA27E8C004FBA51 /* SummaryReadingEvent.swift in Sources */,
 				A9E8F77D1DA27E8C004FBA51 /* PDFOverview.swift in Sources */,
 				A9E8F77E1DA27E8C004FBA51 /* DesktopEvent.swift in Sources */,
+				A933EE2D1F587196002A180D /* Poller.swift in Sources */,
 				A9AA38421E6EBC7800FFAA33 /* OffsetController.swift in Sources */,
 				A9E8F77F1DA27E8C004FBA51 /* WaitViewController.swift in Sources */,
 				A9E8F7E61DA27EBD004FBA51 /* QuestionLoader.swift in Sources */,
@@ -1407,9 +1427,13 @@
 				A9E8F7831DA27E8C004FBA51 /* DocumentInformationElement.swift in Sources */,
 				A9E8F7841DA27E8C004FBA51 /* MPConstants.swift in Sources */,
 				A9E8F7851DA27E8C004FBA51 /* NS+Extensions.swift in Sources */,
+				A933EE321F5871EF002A180D /* LiteralConvertibles.swift in Sources */,
+				A933EE361F5871EF002A180D /* MessagePack+Extensions.swift in Sources */,
+				A933EE291F587196002A180D /* Context.swift in Sources */,
 				A9E8F7861DA27E8C004FBA51 /* Multipeer.swift in Sources */,
 				A9E8F7871DA27E8C004FBA51 /* PeyeDocument.swift in Sources */,
 				A9E8F7881DA27E8C004FBA51 /* PDFReader.swift in Sources */,
+				A933EE311F5871EF002A180D /* ConvenienceProperties.swift in Sources */,
 				A9E8F7891DA27E8C004FBA51 /* TagConstants.swift in Sources */,
 				A910FC2D1DCB8439003BCA66 /* LSLManager.swift in Sources */,
 				A9E8F78A1DA27E8C004FBA51 /* HistoryDetailController.swift in Sources */,
@@ -1423,6 +1447,7 @@
 				A9E8F7921DA27E8C004FBA51 /* HistoryTableCell.swift in Sources */,
 				A9E8F7931DA27E8C004FBA51 /* ReadingRect.swift in Sources */,
 				A9E8F7941DA27E8C004FBA51 /* HistoryManager.swift in Sources */,
+				A933EE2E1F587196002A180D /* Proxy.swift in Sources */,
 				A9E8F7951DA27E8C004FBA51 /* AllPeersController.swift in Sources */,
 				A9E8F7961DA27E8C004FBA51 /* Tags.swift in Sources */,
 				A9E8F7971DA27E8C004FBA51 /* PeerOverviewController.swift in Sources */,
@@ -1437,9 +1462,12 @@
 				A9B3D57E1DA7DAA600FDD738 /* Paper.swift in Sources */,
 				A9E8F79E1DA27E8C004FBA51 /* ExperimentPreferencesController.swift in Sources */,
 				A9E8F79F1DA27E8C004FBA51 /* FocusAreas.swift in Sources */,
+				A933EE2B1F587196002A180D /* Error.swift in Sources */,
 				A9E8F7A01DA27E8C004FBA51 /* ThumbSideController.swift in Sources */,
+				A933EE2C1F587196002A180D /* Message.swift in Sources */,
 				A9E8F7A11DA27E8C004FBA51 /* PeyeConstants.swift in Sources */,
 				A9E8F7A21DA27E8C004FBA51 /* TagFieldDelegate.swift in Sources */,
+				A933EE351F5871EF002A180D /* Unpack.swift in Sources */,
 				A9E8F7A31DA27E8C004FBA51 /* DocumentWindowController.swift in Sources */,
 				A9E8F7A41DA27E8C004FBA51 /* AppSingleton.swift in Sources */,
 				A9E8F7A51DA27E8C004FBA51 /* eyeBox.swift in Sources */,
@@ -1447,16 +1475,20 @@
 				A9E8F7A71DA27E8C004FBA51 /* Dictionariable.swift in Sources */,
 				A9E8F7A81DA27E8C004FBA51 /* PDFSelection+Extensions.swift in Sources */,
 				A9B3D5811DA7DAEE00FDD738 /* QuestionConstants.swift in Sources */,
+				A933EE331F5871EF002A180D /* MessagePack.swift in Sources */,
 				A9E8F7EB1DA27EEF004FBA51 /* QuestionSingleton.swift in Sources */,
 				A9E8F7A91DA27E8C004FBA51 /* AnnotationPreferencesViewController.swift in Sources */,
 				A9E8F7AA1DA27E8C004FBA51 /* CrossRefSession.swift in Sources */,
 				A9E8F7AB1DA27E8C004FBA51 /* DiMePreferencesViewController.swift in Sources */,
 				A9E8F7AC1DA27E8C004FBA51 /* PeerViewController.swift in Sources */,
 				A9E8F7AD1DA27E8C004FBA51 /* ThresholdEditor.swift in Sources */,
+				A933EE301F5871EF002A180D /* ConvenienceInitializers.swift in Sources */,
 				A9E8F7E91DA27EBD004FBA51 /* QuestionViewController.swift in Sources */,
 				A9E8F7AE1DA27E8C004FBA51 /* ScientificDocument.swift in Sources */,
+				A933EE341F5871EF002A180D /* Pack.swift in Sources */,
 				A9E8F7AF1DA27E8C004FBA51 /* NSRect+Extensions.swift in Sources */,
 				A9E8F7B01DA27E8C004FBA51 /* DocumentSplitController.swift in Sources */,
+				A933EE2F1F587196002A180D /* Socket.swift in Sources */,
 				A9E8F7B11DA27E8C004FBA51 /* NearlyEquatable.swift in Sources */,
 				A9E8F7B21DA27E8C004FBA51 /* TagViewController.swift in Sources */,
 				A9E8F7B31DA27E8C004FBA51 /* Event.swift in Sources */,
@@ -1472,6 +1504,7 @@
 				A9E8F7BC1DA27E8C004FBA51 /* DebugPreferencesController.swift in Sources */,
 				A9E8F7BD1DA27E8C004FBA51 /* SwiftyJSON.swift in Sources */,
 				A9E8F7BE1DA27E8C004FBA51 /* Fixation.swift in Sources */,
+				A933EE2A1F587196002A180D /* CURVE.swift in Sources */,
 				A9E8F7BF1DA27E8C004FBA51 /* ReadingEvent.swift in Sources */,
 				A9E8F7C01DA27E8C004FBA51 /* SessionDelegate.swift in Sources */,
 				A9E8F7C11DA27E8C004FBA51 /* PDFPeerOverview.swift in Sources */,
@@ -1484,6 +1517,7 @@
 				A9E8F7C81DA27E8C004FBA51 /* CollaborationMessage.swift in Sources */,
 				A910FC2A1DCB81C1003BCA66 /* LSLXMLParserDelegate.swift in Sources */,
 				A9E8F7C91DA27E8C004FBA51 /* Raw.swift in Sources */,
+				A933EE1D1F58716A002A180D /* ZMQManager.swift in Sources */,
 				A9E8F7CA1DA27E8C004FBA51 /* DiMeData.swift in Sources */,
 				A9E8F7CB1DA27E8C004FBA51 /* TagAnnotation.swift in Sources */,
 			);
@@ -1783,6 +1817,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/PeyeDF/LSL",
+					"$(PROJECT_DIR)/PeyeDF/ZeroMQ",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_SWIFT_FLAGS = "-DDEBUG -DQUESTIONS";
@@ -1808,6 +1843,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/PeyeDF/LSL",
+					"$(PROJECT_DIR)/PeyeDF/ZeroMQ",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_SWIFT_FLAGS = "-DRELEASE -DQUESTIONS";

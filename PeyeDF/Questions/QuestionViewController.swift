@@ -25,6 +25,7 @@
 import Foundation
 import Cocoa
 import GameplayKit
+import os.log
 
 class QuestionViewController: NSViewController {
     
@@ -88,7 +89,9 @@ class QuestionViewController: NSViewController {
     /// returns question frame rect
     func moveQuestionBelow() {
         guard let winc = docWindowController, let win = winc.window, let mainS = NSScreen.main() else {
-            AppSingleton.log.error("Failed to capture window or screen references, trying again in one second")
+            if #available(OSX 10.12, *) {
+                os_log("Failed to capture window or screen references, trying again in one second", type: .error)
+            }
             DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 1) {
                 self.moveQuestionBelow()
             }
