@@ -81,7 +81,6 @@ class MetadataViewController: NSViewController {
     
     func refreshStatus() {
         guard let pdfr = mainCont?.pdfReader else {
-            AppSingleton.log.error("Metadata window does not have a valid relation to pdfReader")
             return
         }
         DispatchQueue.main.async {

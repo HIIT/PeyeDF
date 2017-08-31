@@ -25,6 +25,7 @@
 // This source file contains classes helpful in storing paragraph (of various classes of "importance") in PDF documents
 
 import Foundation
+import os.log
 
 /// Represents all markings in a given PDF Document. Essentially, it uses PDF Page indices to index all rectangles (paragraphs) of a given importance
 struct PDFMarkings {
@@ -106,9 +107,6 @@ struct PDFMarkings {
         // remove all rects of the given class
         allRects = allRects.filter({$0.readingClass != theClass})
         for newRect in rects {
-            if newRect.readingClass != theClass {
-                AppSingleton.log.error("Added reading rect class does not match requested class")
-            }
             if !allRects.contains(newRect) {
                 allRects.append(newRect)
             }
@@ -118,12 +116,8 @@ struct PDFMarkings {
     /// Set all rect with the given source to a new list of rects.
     mutating func setAll(forSource source: ClassSource, newRects: [ReadingRect]) {
         allRects = allRects.filter({$0.classSource != source})
-        for rect in newRects {
-            if rect.classSource != source {
-                AppSingleton.log.error("Passed rect with source \(rect.classSource) does not match \(source)")
-            } else {
-                allRects.append(rect)
-            }
+        for rect in newRects where rect.classSource == source {
+            allRects.append(rect)
         }
     }
 
@@ -134,7 +128,9 @@ struct PDFMarkings {
         })
         for rect in newRects {
             if !(sources.reduce(false, {$0 || rect.classSource == $1})) {
-                AppSingleton.log.error("Passed rect with source \(rect.classSource) does not match any of the given sources (\(sources))")
+                if #available(OSX 10.12, *) {
+                    os_log("Passed rect with source %d does not match any of the given sources %@", type: .error, rect.classSource.rawValue, sources)
+                }
             } else {
                 allRects.append(rect)
             }
@@ -365,7 +361,6 @@ struct PDFMarkings {
             var seenArea: Double = 0
             
             guard let page = document.page(at: pNo) else {
-                AppSingleton.log.error("Failed to get page at \(pNo)")
                 return nil
             }
             
@@ -460,7 +455,9 @@ struct PDFMarkings {
             loops += 1
         } while collisions && loops < maxLoops
         if loops >= maxLoops {
-            AppSingleton.log.error("Loops exceeded maximum loops, check subtraction algo")
+            if #available(OSX 10.12, *) {
+                os_log("Loops exceeded maximum loops, check subtraction algo", type: .error)
+            }
         }
         return result
     }

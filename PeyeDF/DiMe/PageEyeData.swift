@@ -23,6 +23,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 import Foundation
+import os.log
 
 struct PageEyeDataChunk: Dictionariable {
     var Xs: [Double]
@@ -157,7 +158,9 @@ struct PageEyeDataChunk: Dictionariable {
                         arraysToCheck[aa].remove(at: i)
                     }
                     foundInvalid = true
-                    AppSingleton.log.error("Found invalid Number")
+                    if #available(OSX 10.12, *) {
+                        os_log("Found invalid Number", type: .error)
+                    }
                     break
                 }
             }
@@ -184,11 +187,15 @@ struct PageEyeDataChunk: Dictionariable {
                 retDict["pageIndex"] = pi
             } else {
                 retDict["pageIndex"] = -1
-                AppSingleton.log.error("Found out of range page index")
+                if #available(OSX 10.12, *) {
+                    os_log("Found out of range page index", type: .error)
+                }
             }
         } else {
             retDict["pageIndex"] = -1
-            AppSingleton.log.error("Found nil page index")
+            if #available(OSX 10.12, *) {
+                os_log("Found nil page index", type: .error)
+            }
         }
         
         return retDict

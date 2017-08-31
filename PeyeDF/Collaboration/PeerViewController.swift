@@ -24,6 +24,7 @@
 
 import Cocoa
 import MultipeerConnectivity
+import os.log
 
 private var pContext = 0
 
@@ -136,7 +137,7 @@ class PeerViewController: NSViewController {
                 Multipeer.tracked.cHash = ""
             }
         default:
-            AppSingleton.log.error("Track was pressed when we were not in the trackable state")
+            // Track was pressed when we were not in the trackable state
             Multipeer.tracked.peer = nil
             Multipeer.tracked.cHash = ""
         }
@@ -163,7 +164,9 @@ class PeerViewController: NSViewController {
                 self.currentState = .trackable(contentHash: cHash)
             }
         default:
-            AppSingleton.log.error("Read was pressed when we were not in the reading state")
+            if #available(OSX 10.12, *) {
+                os_log("Read was pressed when we were not in the reading state", type: .error)
+            }
         }
     }
     

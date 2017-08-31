@@ -117,7 +117,6 @@ enum FocusAreaType: CustomStringConvertible {
         } else if string.isEmpty {
             self = .page
         } else {
-            AppSingleton.log.error("Failed to parse '\(string)'")
             return nil
         }
     }
@@ -185,7 +184,6 @@ struct FocusArea: CustomStringConvertible {
     /// Fails if page is missing is below 0, or did not contain a type.
     init?(fromURLComponents comps: URLComponents) {
         guard let params = comps.parameterDictionary, let pageS = params["page"], let pageIndex = Int(pageS) , pageIndex >= 0 else {
-            AppSingleton.log.warning("Could not parse string: \(comps.string ?? "<nil>")")
             return nil
         }
         if let t = FocusAreaType(fromURLComponents: comps) {
@@ -207,7 +205,6 @@ struct FocusArea: CustomStringConvertible {
             self.type = .page
             self.pageIndex = pno
         } else {
-            AppSingleton.log.error("Failed to parse '\(string)'")
             return nil
         }
     }
@@ -249,7 +246,6 @@ extension PDFBase {
     /// - Parameter delay: Apply a delay for user feedback (a small amount by default)
     func focusOn(_ f: FocusArea, delay: Double = 0.5) {
         guard let document = self.document, f.pageIndex < document.pageCount else {
-           AppSingleton.log.warning("Attempted to focus on a non-existing page")
             return
         }
         
@@ -265,7 +261,6 @@ extension PDFBase {
             switch f.type {
             case let .rect(r):
                 guard NSContainsRect(pageRect, r) else {
-                   AppSingleton.log.warning("Attempted to focus on a rect outside bounds")
                     return
                 }
                 

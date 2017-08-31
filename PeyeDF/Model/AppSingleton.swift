@@ -25,7 +25,6 @@
 import Foundation
 import Cocoa
 import Quartz
-import XCGLogger
 //
 //fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 //  switch (lhs, rhs) {
@@ -57,9 +56,6 @@ class AppSingleton {
     static let collaborationStoryboard = NSStoryboard(name: "Collaboration", bundle: nil)
     static let appDelegate = NSApplication.shared().delegate! as! AppDelegate
     static let findPasteboard = NSPasteboard(name: NSFindPboard)
-        
-    static let log = AppSingleton.createLog()
-    static fileprivate(set) var logsURL: URL?
         
     /// The class that provides eye tracking data (set by app delegate on start).
     /// Changing this value causes the eye tracker to start.
@@ -163,29 +159,6 @@ class AppSingleton {
         DispatchQueue.main.async {
             myAl.runModal()
         }
-    }
-    
-    /// Set up console and file log
-    fileprivate static func createLog() -> XCGLogger {
-        let dateFormat = "Y'-'MM'-'d'T'HH':'mm':'ssZ"  // date format for string appended to log
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = dateFormat
-        let appString = dateFormatter.string(from: Date())
-        
-        var firstLine: String = "Log directory succesfully created / present"
-        let tempURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(Bundle.main.bundleIdentifier!)
-        do {
-            try FileManager.default.createDirectory(at: tempURL, withIntermediateDirectories: true, attributes: nil)
-        } catch {
-            firstLine = "Error creating log directory: \(error)"
-        }
-        AppSingleton.logsURL = tempURL
-        let logFilePathURL = tempURL.appendingPathComponent("XCGLog_\(appString).log")
-        let newLog = XCGLogger.default
-        newLog.setup(level: .debug, showThreadName: true, showLevel: true, showFileNames: true, showLineNumbers: true, writeToFile: logFilePathURL, fileLevel: .debug)
-        newLog.debug(firstLine)
-        
-        return newLog
     }
     
 }

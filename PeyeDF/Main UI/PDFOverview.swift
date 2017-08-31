@@ -25,6 +25,7 @@
 import Cocoa
 import Quartz
 import Foundation
+import os.log
 
 private let maskColour = NSColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 0.2)
 
@@ -136,7 +137,9 @@ class PDFOverview: PDFBase {
                             rectCol.setFill()
                             rectPath.fill()
                         } else {
-                            AppSingleton.log.error("Could not find an appropriate colour for reading class: \(rc.rawValue)")
+                            if #available(OSX 10.12, *) {
+                                os_log("Could not find an appropriate colour for reading class: %d", type: .error, rc.rawValue)
+                            }
                         }
                     }
                     

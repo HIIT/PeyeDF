@@ -24,6 +24,7 @@
 
 import Foundation
 import Quartz
+import os.log
 
 extension PDFDocument {
     
@@ -174,7 +175,9 @@ extension PDFDocument {
     func autoCrossref() -> JSON? {
         
         guard !Thread.isMainThread else {
-            AppSingleton.log.error("Attempted to call on the main thread, aborting")
+            if #available(OSX 10.12, *) {
+                os_log("Called from main thread, exiting", type: .error)
+            }
             return nil
         }
         
@@ -228,8 +231,8 @@ extension PDFDocument {
         
         // wait five seconds
         let waitTime = DispatchTime.now() + 5.0
-        if sema.wait(timeout: waitTime) == .timedOut {
-            AppSingleton.log.warning("Crossref request timed out")
+        guard sema.wait(timeout: waitTime) != .timedOut else {
+            return nil
         }
         
         return foundJson
@@ -292,7 +295,6 @@ extension PDFDocument {
      */
     public func getPage(atIndex index: Int) -> PDFPage? {
         if index < 0 || index >= self.pageCount {
-            AppSingleton.log.warning("Attempted to retrieve a page at index \(index), while the document has \(self.pageCount) pages.")
             return nil
         } else {
             return self.page(at: index)

@@ -25,6 +25,7 @@
 import Cocoa
 import Foundation
 import Quartz
+import os.log
 
 /// Manages the "Document Window", which comprises two split views, one inside the other
 class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollapseToggleDelegate, SearchPanelCollapseDelegate, TagDelegate, NSPopoverDelegate {
@@ -220,7 +221,9 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                             try FileManager.default.removeItem(at: outURL)
                             FileManager.default.createFile(atPath: outURL.path, contents: nil, attributes: nil)
                         } catch {
-                            AppSingleton.log.error("Could not delete file at \(outURL): \(error)")
+                            if #available(OSX 10.12, *) {
+                                os_log("Could not delete file at %@: %@", type: .error, outURL.relativePath, error.localizedDescription)
+                            }
                         }
                     }
                     
@@ -257,7 +260,9 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             pdfReader?.sciDoc?.addTag(theTag)  // add reading tag to scidoc
             CollaborationMessage.addReadingTag(theTag).sendToAll()  // tell peers we added this tag
         case .none:
-            AppSingleton.log.error("Adding a tag when no tags are currently being edited")
+            if #available(OSX 10.12, *) {
+                os_log("Adding a tag when no tags are currently being edited", type: .error)
+            }
         }
     }
     
@@ -280,7 +285,9 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             pdfReader?.sciDoc?.subtractTag(theTag)  // remove tag from scidoc
             CollaborationMessage.removeReadingTag(theTag).sendToAll()  // tell peers we removed this tag
         case .none:
-            AppSingleton.log.error("Removing a tag when no tags are currently being edited")
+            if #available(OSX 10.12, *) {
+                os_log("Removing a tag when no tags are currently being edited", type: .error)
+            }
         }
     }
     
@@ -456,7 +463,6 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     /// Tells multipeer that this window is associated to the found contentHash (if file has text).
     func startTracking() {
         guard let pdfr = self.pdfReader, let sciDoc = pdfr.sciDoc else {
-            AppSingleton.log.error("Could not find pdfReader and valid scientific document")
             return
         }
         
@@ -1014,7 +1020,6 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     /// Enable functions related to dime (e.g. tags) and refreshes scidoc when dime comes online
     @objc fileprivate func dimeConnectionChanged(_ notification: Notification) {
         guard let pdfr = self.pdfReader else {
-            AppSingleton.log.error("Could not reference a valid pdfReader object")
             return
         }
         let userInfo = (notification as NSNotification).userInfo as! [String: Bool]

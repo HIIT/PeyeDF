@@ -23,6 +23,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 import Foundation
+import os.log
 
 /// Convenience class to perform MIDAS RESTful fetches
 class MidasSession {
@@ -46,8 +47,11 @@ class MidasSession {
             if error == nil {
                 callback(true)
             } else {
+                if #available(OSX 10.12, *) {
+                    let errorDesc = error?.localizedDescription ?? "<nil>"
+                    os_log("Failed to connect to Midas: %@", type: .fault, errorDesc)
+                }
                 callback(false)
-                AppSingleton.log.error("Failed to connect to Midas: \(error?.localizedDescription ?? "<nil>")")
             }
         }.resume()
     }
@@ -69,8 +73,10 @@ class MidasSession {
             if let data = data, error == nil {
                 callback(JSON(data: data), nil)
             } else {
+                if #available(OSX 10.12, *) {
+                    os_log("Failed to fetch Midas data for %@", type: .fault, fullAddress)
+                }
                 callback(nil, error)
-                AppSingleton.log.error("Failed to fetch Midas data for \(fullAddress): \(error?.localizedDescription ?? "<nil>")")
             }
         }.resume()
     }

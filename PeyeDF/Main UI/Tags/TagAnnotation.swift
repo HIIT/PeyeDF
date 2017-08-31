@@ -24,6 +24,7 @@
 
 import Foundation
 import Quartz
+import os.log
 
 /**
 This class wraps all PDFAnnotation classes related to Tag(s) associated to
@@ -87,7 +88,9 @@ class TagAnnotation: Equatable {
         // Report error if page index is different in any reading tag
         tag.rRects.forEach() {
             if $0.pageIndex as Int != self.pageIndex {
-                AppSingleton.log.error("Tag annotation page index (\(self.pageIndex)) is different from a page index of a contained reading tag (\($0.pageIndex))")
+                if #available(OSX 10.12, *) {
+                    os_log("Tag annotation page index %d is different from a page index of a contained reading tag %d", type: .error, self.pageIndex, $0.pageIndex)
+                }
             }
         }
     }
@@ -101,7 +104,9 @@ class TagAnnotation: Equatable {
     /// Removes a tag from this block of text. Returns count of remaining tags after removal. Also removes associated label.
     func removeTag(_ tag: ReadingTag) -> Int {
         guard let i = self.tags.index(of: tag) else {
-            AppSingleton.log.error("Could not find requested tag")
+            if #available(OSX 10.12, *) {
+                os_log("Could not find requested tag", type: .error)
+            }
             return tags.count
         }
         tags.remove(at: i)
@@ -175,7 +180,9 @@ class TagAnnotation: Equatable {
         // filter should return only one match
         let wantedTags = tags.filter({$0.text == forTag})
         if wantedTags.count > 1 {
-            AppSingleton.log.error("More than one tag in tuple with the same text")
+            if #available(OSX 10.12, *) {
+                os_log("More than one tag in tuple with the same text", type: .error)
+            }
         }
         
         // If any tags were found, selection will be updated
@@ -183,12 +190,16 @@ class TagAnnotation: Equatable {
             wantedTag in
 
             if wantedTag.rRects.count < 1 {
-                AppSingleton.log.error("Tag has less than one rect")
+                if #available(OSX 10.12, *) {
+                    os_log("Tag has less than one rect", type: .error)
+                }
                 return
             }
             // selection for first rect
             guard let doc = pdfBase.document, let page = doc.getPage(atIndex: wantedTag.rRects[0].pageIndex as Int), let pdfSel = page.selection(for: wantedTag.rRects[0].rect.outset(1.0)) else {
-                AppSingleton.log.error("Selection is nil")
+                if #available(OSX 10.12, *) {
+                    os_log("Selection is nil", type: .error)
+                }
                 return
             }
             

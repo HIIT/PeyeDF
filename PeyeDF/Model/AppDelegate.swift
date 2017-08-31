@@ -25,6 +25,7 @@
 import Cocoa
 import Sparkle
 import Quartz
+import os.log
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -100,7 +101,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 AppSingleton.eyeTracker = eyeTracker
             }
         } else {
-            AppSingleton.log.error("Failed to find a corresponding eye data provider type enum for Int: \(eyeTrackerPref)")
+            if #available(OSX 10.12, *) {
+                os_log("Failed to find a corresponding eye data provider type enum for Int: %d", type: .error, eyeTrackerPref)
+            }
         }
         
         // Start multipeer connectivity
@@ -151,7 +154,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 document, _, _ in
                 guard let doc = document as? PeyeDocument,
                       let vc = doc.windowControllers[0] as? DocumentWindowController else {
-                        AppSingleton.log.error("Failed to obtain PeyeDocument or window controller")
                         return
                 }
                 if let searchS = searchString, searchS != "" && doc.windowControllers.count == 1 {
@@ -231,15 +233,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 let path = comps.path.skipPrefix(1)
                 // first try to convert path to sessionId, then contentHash, then appId
                 let foundSciDoc: ScientificDocument?
-                if let sciDoc = DiMeFetcher.getScientificDocument(for: .sessionId(path), reportErrors: false) {
+                if let sciDoc = DiMeFetcher.getScientificDocument(for: .sessionId(path)) {
                     foundSciDoc = sciDoc
-                } else if let sciDoc = DiMeFetcher.getScientificDocument(for: .contentHash(path), reportErrors: false) {
+                } else if let sciDoc = DiMeFetcher.getScientificDocument(for: .contentHash(path)) {
                     foundSciDoc = sciDoc
-                } else if let sciDoc = DiMeFetcher.getScientificDocument(for: .appId(path), reportErrors: true) {
+                } else if let sciDoc = DiMeFetcher.getScientificDocument(for: .appId(path)) {
                     foundSciDoc = sciDoc
                 } else {
                     foundSciDoc = nil
-                    AppSingleton.log.error("Failed to open document for url request (path: \(path))")
                 }
                 if let sciDoc = foundSciDoc {
                     let url = URL(fileURLWithPath: sciDoc.uri)
@@ -323,16 +324,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    /// Shows logs menu
-    @IBAction func showLogsPath(_ sender: AnyObject) {
-        if let logsPath = AppSingleton.logsURL?.path {
-            NSPasteboard.general().stringValue = logsPath
-            AppSingleton.alertUser("Logs file path copied to clipboard.", infoText: logsPath)
-        } else {
-            AppSingleton.alertUser("Nothing logged so far.")
-        }
-    }
-
     @IBAction func allDocMetadata(_ sender: AnyObject) {
         let doci = NSDocumentController.shared().documents
         var outString = ""
@@ -379,11 +370,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 default:
                     AppSingleton.alertUser("\(host) not recognized.", infoText: "Allowed \"hosts\" are 'reader' and 'refinder'.")
                 }
-            } else {
-                AppSingleton.log.error("Failed to convert this to NSURLComponents: \(stringVal)")
             }
-        } else {
-            AppSingleton.log.error("Failed to retrieve url from event: \(event)")
         }
     }
     

@@ -24,6 +24,7 @@
 
 import Foundation
 import MultipeerConnectivity
+import os.log
 
 /// This class receives and reroutes all multipeer messages to other parts of the application
 @objc class SessionDelegate: NSObject, MCSessionDelegate {
@@ -81,7 +82,6 @@ import MultipeerConnectivity
                 foundUrl in
                 
                 guard let url = foundUrl else {
-                    AppSingleton.log.error("We received a request for a contenthash referring to a file that we do not have.")
                     return
                 }
                 
@@ -150,7 +150,9 @@ import MultipeerConnectivity
                 case .rect, .circle:
                     pdfReader.highlight = area
                 default:
-                    AppSingleton.log.error("Displaying read areas other than rects or circles is not implemented")
+                    if #available(OSX 10.12, *) {
+                        os_log("Displaying read areas other than rects or circles is not implemented", type: .error)
+                    }
                 }
             }
             
@@ -269,7 +271,9 @@ import MultipeerConnectivity
     
     /// Receives a stream. Not used.
     func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
-        AppSingleton.log.error("Multipeer framework receiving a stream: -- not implemented --")
+        if #available(OSX 10.12, *) {
+            os_log("Multipeer framework receiving a stream: -- not implemented --", type: .error)
+        }
         return
     }
     

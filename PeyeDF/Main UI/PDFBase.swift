@@ -25,6 +25,7 @@
 import Cocoa
 import Foundation
 import Quartz
+import os.log
 
 /// Base class extended by all PDF renderers (PDFReader, PDFOverview, MyPDFDetail) used in PeyeDF
 /// support custom "markings" and their writing to annotation
@@ -93,9 +94,6 @@ class PDFBase: PDFView {
                 string in
                 let oldTag = readingTags.filter({$0.text == string})
                 let newTag = newValue.filter({$0.text == string})
-                if oldTag.count != 1 || newTag.count != 1 {
-                    AppSingleton.log.error("Changed tag filter returned more than one tag")
-                }
                 if newTag[0].rRects.nearlyEqual(oldTag[0].rRects) {
                     return nil
                 } else {
@@ -422,7 +420,7 @@ class PDFBase: PDFView {
         
         // Make sure tag was not already added
         guard tagAnnotations.reduce(false, {$0 || $1.tags.contains(tag) }) == false else {
-            AppSingleton.log.error("A tag exactly the same as this was already present")
+            // A tag exactly the same as this was already present
             return
         }
         
@@ -443,11 +441,15 @@ class PDFBase: PDFView {
             } else if splitTags.count == 1 {
                 tagAnnotations.append(TagAnnotation(fromReadingTag: splitTags[0], pdfBase: self))
             } else {
-                AppSingleton.log.error("Zero tags where obtained by splitting a tag that contained something")
+                if #available(OSX 10.12, *) {
+                    os_log("Zero tags where obtained by splitting a tag that contained something", type: .error)
+                }
             }
         } else {
             if previous.count != 1 {
-                AppSingleton.log.error("More than one tag annotation was already related to an existing tag")
+                if #available(OSX 10.12, *) {
+                    os_log("More than one tag annotation was already related to an existing tag", type: .error)
+                }
             }
             previous[0].addTag(tag)
         }
@@ -463,7 +465,9 @@ class PDFBase: PDFView {
         let _found = tagAnnotations.index(where: {$0.sameAnnotationsAs(tag)})
         
         guard let foundI = _found else {
-            AppSingleton.log.error("Tag not found in already existing tags")
+            if #available(OSX 10.12, *) {
+                os_log("Tag not found in already existing tags", type: .error)
+            }
             return
         }
         
@@ -674,7 +678,6 @@ class PDFBase: PDFView {
         
         switch area.type {
         case .page:
-            AppSingleton.log.error("Tried to convert a page area to view coordinates. Not supported.")
             _point = nil
         case .point(let pt):
             _point = pt

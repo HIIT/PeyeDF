@@ -10,7 +10,6 @@
 		A9038F761B8F5EE500A7D183 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9038F751B8F5EE500A7D183 /* Event.swift */; };
 		A9038F7B1B8F634200A7D183 /* Dictionariable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9038F7A1B8F634200A7D183 /* Dictionariable.swift */; };
 		A90520B01D89403300F3C35E /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90520AF1D89403300F3C35E /* SwiftyJSON.swift */; };
-		A90520CD1D89406600F3C35E /* XCGLogger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A90520BF1D89405900F3C35E /* XCGLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A90BA3111CB681A400E7303D /* Tags.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A90BA3101CB681A400E7303D /* Tags.storyboard */; };
 		A90C0AD61CEE0F22000D4B75 /* Multipeer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90C0AD51CEE0F22000D4B75 /* Multipeer.swift */; };
 		A90D0F051D91187700CB7011 /* Sparkle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A90D0EF01D91185E00CB7011 /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -226,7 +225,6 @@
 		A9E8F7D41DA27E8C004FBA51 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A91CB9511B332EDB00671868 /* Main.storyboard */; };
 		A9E8F7D51DA27E8C004FBA51 /* Refinder.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A95795141BD69BAA0083525C /* Refinder.storyboard */; };
 		A9E8F7D61DA27E8C004FBA51 /* PeyeDF.icns in Resources */ = {isa = PBXBuildFile; fileRef = A9A23CE21C776989008B61C4 /* PeyeDF.icns */; };
-		A9E8F7D81DA27E8C004FBA51 /* XCGLogger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A90520BF1D89405900F3C35E /* XCGLogger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A9E8F7D91DA27E8C004FBA51 /* Sparkle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A90D0EF01D91185E00CB7011 /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A9E8F7E51DA27EBD004FBA51 /* AnswerSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E8F7E01DA27EBD004FBA51 /* AnswerSaver.swift */; };
 		A9E8F7E61DA27EBD004FBA51 /* QuestionLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E8F7E11DA27EBD004FBA51 /* QuestionLoader.swift */; };
@@ -245,69 +243,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		A90520BC1D89405900F3C35E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 55E3EE4519D76F280068C3A7;
-			remoteInfo = "XCGLogger (iOS)";
-		};
-		A90520BE1D89405900F3C35E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 554DF41719D76FE7005708BE;
-			remoteInfo = "XCGLogger (OS X)";
-		};
-		A90520C01D89405900F3C35E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 70CB94201B99E728007802FF;
-			remoteInfo = "XCGLogger (watchOS)";
-		};
-		A90520C21D89405900F3C35E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 5515A3DF1BA119FA0047BA31;
-			remoteInfo = "XCGLogger (tvOS)";
-		};
-		A90520C41D89405900F3C35E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 55E3EE5019D76F280068C3A7;
-			remoteInfo = XCGLoggerTests_iOS;
-		};
-		A90520C61D89405900F3C35E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 55BB1F011B79DC7500709779;
-			remoteInfo = XCGLoggerTests_OSX;
-		};
-		A90520C81D89405900F3C35E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 558EEB851D6BAC61006A9C7A;
-			remoteInfo = XCGLoggerTests_watchOS;
-		};
-		A90520CA1D89405900F3C35E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 558EEB921D6BAC66006A9C7A;
-			remoteInfo = XCGLoggerTests_tvOS;
-		};
-		A90520CE1D89406600F3C35E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 554DF41619D76FE7005708BE;
-			remoteInfo = "XCGLogger (OS X)";
-		};
 		A90D0EEF1D91185E00CB7011 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A90D0EE21D91185D00CB7011 /* Sparkle.xcodeproj */;
@@ -385,13 +320,6 @@
 			remoteGlobalIDString = 5AE13FB31E0D9E07000D2C2C;
 			remoteInfo = generate_appcast;
 		};
-		A9E8F7761DA27E8C004FBA51 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 554DF41619D76FE7005708BE;
-			remoteInfo = "XCGLogger (OS X)";
-		};
 		A9E8F7781DA27E8C004FBA51 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A90D0EE21D91185D00CB7011 /* Sparkle.xcodeproj */;
@@ -438,7 +366,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				A90520CD1D89406600F3C35E /* XCGLogger.framework in Embed Frameworks */,
 				A90D0F051D91187700CB7011 /* Sparkle.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -450,7 +377,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				A9E8F7D81DA27E8C004FBA51 /* XCGLogger.framework in Embed Frameworks */,
 				A9E8F7D91DA27E8C004FBA51 /* Sparkle.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -462,7 +388,6 @@
 		A9038F751B8F5EE500A7D183 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Event.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9038F7A1B8F634200A7D183 /* Dictionariable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = Dictionariable.swift; path = ../DiMe/Dictionariable.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A90520AF1D89403300F3C35E /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftyJSON.swift; path = SwiftyJSON/Source/SwiftyJSON.swift; sourceTree = "<group>"; };
-		A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = XCGLogger.xcodeproj; path = XCGLogger/Sources/XCGLogger.xcodeproj; sourceTree = "<group>"; };
 		A90BA3101CB681A400E7303D /* Tags.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Tags.storyboard; sourceTree = "<group>"; };
 		A90C0AD51CEE0F22000D4B75 /* Multipeer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Multipeer.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A90D0EE21D91185D00CB7011 /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
@@ -700,24 +625,8 @@
 				A910FC1C1DCB7C06003BCA66 /* LSL */,
 				A90D0EE21D91185D00CB7011 /* Sparkle.xcodeproj */,
 				A90520AF1D89403300F3C35E /* SwiftyJSON.swift */,
-				A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */,
 			);
 			name = Dependencies;
-			sourceTree = "<group>";
-		};
-		A90520B21D89405800F3C35E /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				A90520BD1D89405900F3C35E /* XCGLogger.framework */,
-				A90520BF1D89405900F3C35E /* XCGLogger.framework */,
-				A90520C11D89405900F3C35E /* XCGLogger.framework */,
-				A90520C31D89405900F3C35E /* XCGLogger.framework */,
-				A90520C51D89405900F3C35E /* XCGLoggerTests_iOS.xctest */,
-				A90520C71D89405900F3C35E /* XCGLoggerTests (OS X).xctest */,
-				A90520C91D89405900F3C35E /* XCGLoggerTests_watchOS.xctest */,
-				A90520CB1D89405900F3C35E /* XCGLoggerTests_tvOS.xctest */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		A90C0AD41CEE0EAD000D4B75 /* Collaboration */ = {
@@ -1054,7 +963,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				A90520CF1D89406600F3C35E /* PBXTargetDependency */,
 				A90D0F071D91187700CB7011 /* PBXTargetDependency */,
 			);
 			name = PeyeDF;
@@ -1112,7 +1020,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				A9E8F7751DA27E8C004FBA51 /* PBXTargetDependency */,
 				A9E8F7771DA27E8C004FBA51 /* PBXTargetDependency */,
 			);
 			name = "PeyeDF Questions";
@@ -1191,10 +1098,6 @@
 					ProductGroup = A90D0EE31D91185D00CB7011 /* Products */;
 					ProjectRef = A90D0EE21D91185D00CB7011 /* Sparkle.xcodeproj */;
 				},
-				{
-					ProductGroup = A90520B21D89405800F3C35E /* Products */;
-					ProjectRef = A90520B11D89405800F3C35E /* XCGLogger.xcodeproj */;
-				},
 			);
 			projectRoot = "";
 			targets = (
@@ -1208,62 +1111,6 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		A90520BD1D89405900F3C35E /* XCGLogger.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = XCGLogger.framework;
-			remoteRef = A90520BC1D89405900F3C35E /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		A90520BF1D89405900F3C35E /* XCGLogger.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = XCGLogger.framework;
-			remoteRef = A90520BE1D89405900F3C35E /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		A90520C11D89405900F3C35E /* XCGLogger.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = XCGLogger.framework;
-			remoteRef = A90520C01D89405900F3C35E /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		A90520C31D89405900F3C35E /* XCGLogger.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = XCGLogger.framework;
-			remoteRef = A90520C21D89405900F3C35E /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		A90520C51D89405900F3C35E /* XCGLoggerTests_iOS.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = XCGLoggerTests_iOS.xctest;
-			remoteRef = A90520C41D89405900F3C35E /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		A90520C71D89405900F3C35E /* XCGLoggerTests (OS X).xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = "XCGLoggerTests (OS X).xctest";
-			remoteRef = A90520C61D89405900F3C35E /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		A90520C91D89405900F3C35E /* XCGLoggerTests_watchOS.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = XCGLoggerTests_watchOS.xctest;
-			remoteRef = A90520C81D89405900F3C35E /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		A90520CB1D89405900F3C35E /* XCGLoggerTests_tvOS.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = XCGLoggerTests_tvOS.xctest;
-			remoteRef = A90520CA1D89405900F3C35E /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		A90D0EF01D91185E00CB7011 /* Sparkle.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -1655,11 +1502,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		A90520CF1D89406600F3C35E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "XCGLogger (OS X)";
-			targetProxy = A90520CE1D89406600F3C35E /* PBXContainerItemProxy */;
-		};
 		A90D0F071D91187700CB7011 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = Sparkle;
@@ -1674,11 +1516,6 @@
 			isa = PBXTargetDependency;
 			target = A91CB9431B332EDB00671868 /* PeyeDF */;
 			targetProxy = A964E1021CD8F23D00EE72B5 /* PBXContainerItemProxy */;
-		};
-		A9E8F7751DA27E8C004FBA51 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "XCGLogger (OS X)";
-			targetProxy = A9E8F7761DA27E8C004FBA51 /* PBXContainerItemProxy */;
 		};
 		A9E8F7771DA27E8C004FBA51 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

@@ -23,6 +23,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 import Foundation
+import os.log
 
 // MARK: - Enums
 
@@ -228,7 +229,6 @@ class DiMeFetcher {
             events in
             if events.count == 0 {
                 callback(nil)
-                AppSingleton.log.warning("Didn't find any event with sessionId: \(sesId)")
             } else {
                 DiMeFetcher.retrieveScientificDocument(events.last!.infoElemId as String) {
                     sciDoc in
@@ -244,7 +244,9 @@ class DiMeFetcher {
     func getTuple(forSessionId sesId: String) -> (ev: SummaryReadingEvent, ie: ScientificDocument)? {
         
         guard !Thread.isMainThread else {
-            AppSingleton.log.error("Attempted to call on the main thread, aborting")
+            if #available(OSX 10.12, *) {
+                os_log("Attempted to call on the main thread, aborting", type: .error)
+            }
             return nil
         }
         
@@ -257,17 +259,18 @@ class DiMeFetcher {
         DiMeFetcher.fetchPeyeDFEvents(getSummaries: true, sessionId: sesId) {
             json in
             guard let retVals = json?.array , retVals.count > 0 else {
-                AppSingleton.log.error("Failed to find results for sessionId \(sesId)")
                 dGroup.leave()
                 return
             }
             if retVals.count != 1 {
-                AppSingleton.log.warning("Found \(retVals.count) instead of 1 for sessionId \(sesId). Returning last one.")
+                if #available(OSX 10.12, *) {
+                    os_log("Found %d instead of 1 for sessionId %@. Returning last one.", type: .error, retVals.count, sesId)
+                }
             }
             foundEvent = SummaryReadingEvent(fromDime: retVals.last!)
             
             guard foundEvent!.infoElemId != "" else {
-                AppSingleton.log.error("Found an event but no associated infoElemId for sessionId \(sesId)")
+                // Found an event but no associated infoElemId
                 dGroup.leave()
                 return
             }
@@ -275,7 +278,7 @@ class DiMeFetcher {
             DiMeFetcher.retrieveScientificDocument(foundEvent!.infoElemId as String) {
                 fetchedDoc in
                 guard let sciDoc = fetchedDoc else {
-                    AppSingleton.log.error("Failed to find SciDoc for sessionId \(sesId)")
+                    // Failed to find SciDoc for sessionId
                     dGroup.leave()
                     return
                 }
@@ -288,13 +291,12 @@ class DiMeFetcher {
         // wait 5 seconds for all operations to complete
         let waitTime = DispatchTime.now() + 5.0
         
-        if dGroup.wait(timeout: waitTime) == .timedOut {
-            AppSingleton.log.debug("Tuple request failed")
-        }
-        
-        guard let ev = foundEvent, let ie = foundDoc else {
+        guard dGroup.wait(timeout: waitTime) != .timedOut,
+              let ev = foundEvent, let ie = foundDoc else {
+            // timed out
             return nil
         }
+        
         return (ev: ev, ie: ie)
     }
     
@@ -331,7 +333,10 @@ class DiMeFetcher {
             if let json = json {
                 callback(json)
             } else {
-                AppSingleton.log.error("Error fetching list of PeyeDF events: \(error?.localizedDescription ?? "N/A")")
+                if #available(OSX 10.12, *) {
+                    let error = error?.localizedDescription ?? "<nil>"
+                    os_log("Error fetching list of PeyeDF events: %@", type: .error, error)
+                }
                 callback(nil)
             }
         }
@@ -390,7 +395,9 @@ class DiMeFetcher {
             json, _ in
             if let json = json {
                 if let error = json["error"].string {
-                    AppSingleton.log.error("Dime fetched json contains error:\n\(error)")
+                    if #available(OSX 10.12, *) {
+                        os_log("Dime fetched json contains error: %@", type: .error, error)
+                    }
                 }
                 // assume first returned item is the one we are looking for
                 let firstResponse = json[0]
@@ -400,11 +407,15 @@ class DiMeFetcher {
                         let newInfoElem = DocumentInformationElement(fromDime: firstResponse)
                         callback(newInfoElem.tags)
                     } else {
-                        AppSingleton.log.error("Retrieved info element id does not match requested id: \(json)")
+                        if #available(OSX 10.12, *) {
+                            os_log("Retrieved info element id does not match requested id: %@", type: .error, json.description)
+                        }
                         callback(nil)
                     }
                 } else {
-                    AppSingleton.log.warning("Info element with appId:'\(appId)' was not found in the database.")
+                    if #available(OSX 10.12, *) {
+                        os_log("Info element with appId: '%@' was not found in the database.", type: .error, appId)
+                    }
                     callback(nil)
                 }
             }
@@ -415,20 +426,17 @@ class DiMeFetcher {
     /// The id can be any id defined by SciDocConvertible (appId, int id, etc.)
     /// Returns a scientific document or nil if it failed.
     /// - Attention: Don't call this from the main thread.
-    static func getScientificDocument(for idType: SciDocConvertible, reportErrors: Bool = true) -> ScientificDocument? {
+    static func getScientificDocument(for idType: SciDocConvertible) -> ScientificDocument? {
         
         /// Helper function to synchronously fetch a scientific document given a url, logging any error.
-        func getSciDocFromDime(urlString: String, reportErrors: Bool) -> ScientificDocument? {
+        func getSciDocFromDime(urlString: String) -> ScientificDocument? {
             let (responseJson, _) = DiMeSession.fetch_sync(urlString: urlString)
             guard let json = responseJson, json.count > 0 else {
-                if reportErrors {
-                    AppSingleton.log.debug("ScientificDocument for request:'\(urlString)' was not found in the database.")
-                }
                 return nil
             }
             if let error = json["error"].string {
-                if reportErrors {
-                    AppSingleton.log.error("Dime fetched json contains error:\n\(error)")
+                if #available(OSX 10.12, *) {
+                    os_log("Error retrieving SciDoc from DiMe: %@", type: .error, error)
                 }
                 return nil
             }
@@ -436,9 +444,6 @@ class DiMeFetcher {
             let lastResponse = json[json.count - 1]
             let foundScidoc = ScientificDocument(fromDime: lastResponse)
             if foundScidoc.appId == "" || foundScidoc.contentHash == nil {
-                if reportErrors {
-                    AppSingleton.log.error("Found Scientific Document appears invalid (no IDs)")
-                }
                 return nil
             } else {
                 return foundScidoc
@@ -446,7 +451,9 @@ class DiMeFetcher {
         }
         
         guard !Thread.isMainThread else {
-            AppSingleton.log.error("Attempted to call on the main thread, aborting")
+            if #available(OSX 10.12, *) {
+                os_log("Attempted to call on the main thread, aborting", type: .error)
+            }
             return nil
         }
         
@@ -494,15 +501,12 @@ class DiMeFetcher {
                 let targettedResource = lastEvent.targettedResource {
                 return targettedResource
             } else  {
-                if reportErrors {
-                    AppSingleton.log.debug("Failed to find an associated document for sessionId:\(queryValue)")
-                }
                 return nil
             }
             
         default:
             // otherwise, just use the query to filter dime results (use helper function)
-            return getSciDocFromDime(urlString: query_url + "\(endpoint.rawValue)\(querySuffix)\(queryValue)", reportErrors: reportErrors)
+            return getSciDocFromDime(urlString: query_url + "\(endpoint.rawValue)\(querySuffix)\(queryValue)")
         }
         
     }
@@ -518,7 +522,9 @@ class DiMeFetcher {
             json, _ in
             if let json = json {
                 if let error = json["error"].string {
-                    AppSingleton.log.error("Dime fetched json contains error:\n\(error)")
+                    if #available(OSX 10.12, *) {
+                        os_log("Dime fetched json contains error: %@", type: .error, error)
+                    }
                 }
                 // assume first returned item is the one we are looking for
                 let firstResponse = json[0]
@@ -528,11 +534,15 @@ class DiMeFetcher {
                         let newScidoc = ScientificDocument(fromDime: firstResponse)
                         callback(newScidoc)
                     } else {
-                        AppSingleton.log.error("Retrieved info element id does not match requested id: \(json)")
+                        if #available(OSX 10.12, *) {
+                            os_log("Retrieved info element id does not match requested id: %@", type: .debug, json.description)
+                        }
                         callback(nil)
                     }
                 } else {
-                    AppSingleton.log.debug("Info element with appId:'\(appId)' was not found in the database.")
+                    if #available(OSX 10.12, *) {
+                        os_log("Info element with appId: '%@' was not found in the database.", type: .debug, appId)
+                    }
                     callback(nil)
                 }
             }
@@ -586,11 +596,11 @@ class DiMeFetcher {
     /// Attempts to convert any kind of ID string (see SciDocConvertible) to a URL pointing to a file on disk.
     /// Returns nil if the specified item was not on dime, or if the url points to an non-existing file.
     /// Aysnchronously calls the specified callback with the (nullable) url.
-    static func retrieveUrl(for idType: SciDocConvertible, reportErrors: Bool = true, callback: @escaping (URL?) -> Void ) {
+    static func retrieveUrl(for idType: SciDocConvertible, callback: @escaping (URL?) -> Void ) {
         // run task on default concurrent queue
         DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async {
             
-            guard let sciDoc = DiMeFetcher.getScientificDocument(for: idType, reportErrors: reportErrors) else {
+            guard let sciDoc = DiMeFetcher.getScientificDocument(for: idType) else {
                 callback(nil)
                 return
             }
@@ -598,9 +608,6 @@ class DiMeFetcher {
             if FileManager.default.fileExists(atPath: sciDoc.uri) {
                 callback(URL(fileURLWithPath: sciDoc.uri))
             } else {
-                if reportErrors {
-                    AppSingleton.log.warning("URL for associated SciDoc not found: \(sciDoc.uri)")
-                }
                 callback(nil)
             }
             
@@ -649,7 +656,6 @@ class DiMeFetcher {
         var outgoingSummaries = [(ev: SummaryReadingEvent, ie: ScientificDocument)]()
         
         guard let json = json else {
-            AppSingleton.log.warning("Failed to obtain summary events")
             return
         }
 

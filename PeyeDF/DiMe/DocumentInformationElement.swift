@@ -23,6 +23,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 import Foundation
+import os.log
 
 class DocumentInformationElement: DiMeBase {
     
@@ -134,8 +135,6 @@ class DocumentInformationElement: DiMeBase {
                     }
                 }
             }
-        } else {
-            AppSingleton.log.error("Tried to add a tag, but DiMe was down")
         }
     }
     
@@ -145,12 +144,16 @@ class DocumentInformationElement: DiMeBase {
     func subtractTag(_ newTag: ReadingTag) {
         
         guard let oldTag = tags.getTag(newTag.text) else {
-            AppSingleton.log.error("Could not find a tag to subtract")
+            if #available(OSX 10.12, *) {
+                os_log("Could not find a tag to subtract", type: .error)
+            }
             return
         }
         
         guard let oldReadingTag = oldTag as? ReadingTag else {
-            AppSingleton.log.error("Tag to subtract was not a reading tag")
+            if #available(OSX 10.12, *) {
+                os_log("Could not find a tag to subtract", type: .error)
+            }
             return
         }
         
@@ -168,8 +171,6 @@ class DocumentInformationElement: DiMeBase {
                     }
                 }
             }
-        } else {
-            AppSingleton.log.error("Tried to remove a tag, but DiMe was down")
         }
     }
     
@@ -211,11 +212,7 @@ class DocumentInformationElement: DiMeBase {
                         }
                     }
                 }
-            } else {
-                AppSingleton.log.error("Tried to remove a tag, but DiMe was down")
             }
-        } else {
-            AppSingleton.log.error("Tag to remove not found in the info element")
         }
     }
 }

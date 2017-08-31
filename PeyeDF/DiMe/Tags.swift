@@ -41,7 +41,6 @@ open class Tag: Dictionariable, Equatable, CustomStringConvertible {
         } else if json["@type"].stringValue == "ReadingTag" {
             return ReadingTag(fromDiMe: json)
         } else {
-            AppSingleton.log.error("Unrecognized tag @type")
             return nil
         }
     }
@@ -132,7 +131,6 @@ open class ReadingTag: Tag {
         let components = suffix.components(separatedBy: "::")
         
         guard components.count == 2 else {
-            AppSingleton.log.error("Unexpected number of components. Input was:\n\(string)")
             return nil
         }
         
@@ -143,7 +141,6 @@ open class ReadingTag: Tag {
         let rects = rectsString.components(separatedBy: ";").flatMap {NSRect(string: $0)}
         
         guard pages.count == rects.count else {
-            AppSingleton.log.error("Pages and rect counts do not match. Input was:\n\(string)")
             return nil
         }
         
@@ -251,9 +248,6 @@ extension Collection where Iterator.Element: Tag {
     func getTag(_ withText: String) -> Tag? {
         let retVal = self.filter({$0.text == withText})
         if retVal.count >= 1 {
-            if retVal.count > 1 {
-                AppSingleton.log.error("More than one tag with a given corresponding text was found. This should never happen")
-            }
             return retVal[0]
         } else {
             return nil

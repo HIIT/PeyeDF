@@ -24,6 +24,7 @@
 
 import Foundation
 import MultipeerConnectivity
+import os.log
 
 // requestStatus:
 // trackingChange:<"true"/"false">
@@ -120,7 +121,6 @@ enum CollaborationMessage {
         let suffix = string.substring(from: r.upperBound)
         
         guard let parsedPrefix = MessagePrefix(rawValue: prefix) else {
-            AppSingleton.log.error("Failed to parse prefix: \(prefix)")
             return nil
         }
         
@@ -155,7 +155,9 @@ enum CollaborationMessage {
         case .scrollTo:
             
             guard let area = FocusArea(fromString: suffix) else {
-                AppSingleton.log.error("Could not convert string to focus area")
+                if #available(OSX 10.12, *) {
+                    os_log("Could not convert string to focus area", type: .debug)
+                }
                 return nil
             }
             
@@ -164,7 +166,9 @@ enum CollaborationMessage {
         case .addReadingTag:
             
             guard let tag = ReadingTag(fromString: suffix, pdfBase: nil) else {
-                AppSingleton.log.error("Failed to parse tag string")
+                if #available(OSX 10.12, *) {
+                    os_log("Failed to parse tag string", type: .debug)
+                }
                 return nil
             }
             
@@ -173,7 +177,9 @@ enum CollaborationMessage {
         case .removeReadingTag:
             
             guard let tag = ReadingTag(fromString: suffix, pdfBase: nil) else {
-                AppSingleton.log.error("Failed to parse tag string")
+                if #available(OSX 10.12, *) {
+                    os_log("Failed to parse tag string", type: .debug)
+                }
                 return nil
             }
             
@@ -184,7 +190,9 @@ enum CollaborationMessage {
             let inputAreas = suffix.components(separatedBy: ";")
             let parsedAreas = inputAreas.flatMap({FocusArea(fromString: $0)})
             guard parsedAreas.count > 0 else {
-                AppSingleton.log.error("Failed to find any areas in input")
+                if #available(OSX 10.12, *) {
+                    os_log("Failed to find any areas in input", type: .debug)
+                }
                 return nil
             }
             self = .seenAreas(parsedAreas)
@@ -197,7 +205,9 @@ enum CollaborationMessage {
         case .fixation:
         
             guard let area = FocusArea(fromString: suffix) else {
-                AppSingleton.log.error("Failed to parse fixation string")
+                if #available(OSX 10.12, *) {
+                    os_log("Failed to parse fixation string", type: .debug)
+                }
                 return nil
             }
         
@@ -291,7 +301,9 @@ enum CollaborationMessage {
         do {
             try Multipeer.session.send(data, toPeers: peers, with: mode)
         } catch {
-            AppSingleton.log.error("Failed to send message '\(self.buildMessage())' to peers: \(error)")
+            if #available(OSX 10.12, *) {
+                os_log("Failed to send message to peers: %@", type: .fault, error.localizedDescription)
+            }
         }
     }
     

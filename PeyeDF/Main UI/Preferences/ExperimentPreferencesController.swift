@@ -58,7 +58,6 @@ class ExperimentPreferencesController: NSViewController {
     
     @IBAction func eyeTrackerSelection(_ sender: NSMenuItem) {
         guard let selectedTrackerType = EyeDataProviderType(rawValue: sender.tag) else {
-            AppSingleton.log.error("Invalid eye tracker selected. Check EyeDataProviderType and sender menu tag.")
             return
         }
         
@@ -86,8 +85,6 @@ class ExperimentPreferencesController: NSViewController {
         // select correct menu item
         if let storedTrackerPref = UserDefaults.standard.object(forKey: PeyeConstants.prefEyeTrackerType) as? Int {
             eyeTrackerPopUp.select(eyeTrackerPopUp.itemArray[storedTrackerPref])
-        } else {
-            AppSingleton.log.error("Failed to load saved eye tracker from preferences")
         }
         
         if AppSingleton.dominantEye == .left {

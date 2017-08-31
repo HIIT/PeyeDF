@@ -24,6 +24,7 @@
 
 import Foundation
 import Cocoa
+import os.log
 
 /// Manages "all history" that is, all the documents stored in dime, and allows to manipulate some of that history
 class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewDataSource, NSTableViewDelegate {
@@ -37,7 +38,9 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
             if lastTriedSessionId != sesId {
                 selectSessionId(sesId)
             } else {
-                AppSingleton.log.debug("Could not find sessionId: '\(sesId)' even after reloading, opening instead.")
+                if #available(OSX 10.12, *) {
+                    os_log("Could not find sessionId: %@ even after reloading, opening instead.", type: .debug, sesId)
+                }
                 // retreve scidoc and if found, open the document with the url associated to it
                 diMeFetcher?.retrieveScientificDocument(forSessionId: sesId) {
                     sciDoc in
@@ -237,7 +240,9 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
                                     try FileManager.default.removeItem(at: outURL)
                                     FileManager.default.createFile(atPath: outURL.path, contents: nil, attributes: nil)
                                 } catch {
-                                    AppSingleton.log.error("Could not delete file at \(outURL): \(error)")
+                                    if #available(OSX 10.12, *) {
+                                        os_log("Could not delete file at %@: %@", type: .error, outURL.relativePath, error.localizedDescription)
+                                    }
                                 }
                             }
                             

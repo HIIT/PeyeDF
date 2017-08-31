@@ -58,7 +58,6 @@ class LSLManager: EyeDataProvider {
             eyeConnectionChange(available: true)
             available = true
         } else {
-            AppSingleton.log.error("Failed to initialize both LSL streams")
             AppSingleton.alertUser("Failed to initialize Lab Streaming Layer")
             eyeConnectionChange(available: false)
             available = false

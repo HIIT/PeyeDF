@@ -23,6 +23,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 import Foundation
+import os.log
 
 /// This class is used as a convenience to snd data to dime
 class DiMePusher {
@@ -58,9 +59,13 @@ class DiMePusher {
                 json, _ in
                 if let json = json {
                     if let error = json["error"].string {
-                        AppSingleton.log.error("DiMe reply to submission contains error:\n\(error)")
+                        if #available(OSX 10.12, *) {
+                            os_log("DiMe reply to submission contains error: %@", type: .error, error)
+                        }
                         if let message = json["message"].string {
-                            AppSingleton.log.error("DiMe's error message:\n\(message)")
+                            if #available(OSX 10.12, *) {
+                                os_log("DiMe's error message: %@", type: .error, message)
+                            }
                         }
                         callback?(false, nil)
                     } else {
@@ -70,7 +75,9 @@ class DiMePusher {
                 }
             }
         } catch {
-            AppSingleton.log.error("Error while serializing json - no data sent:\n\(error)")
+            if #available(OSX 10.12, *) {
+                os_log("Error while serializing json: %@", type: .error, error.localizedDescription)
+            }
             callback?(false, nil)
         }
             

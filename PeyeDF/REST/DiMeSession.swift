@@ -23,6 +23,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 import Foundation
+import os.log
 
 enum RESTError: Error {
     case invalidUrl
@@ -96,7 +97,9 @@ class DiMeSession {
     static func fetch_sync(urlString: String) -> (json: JSON?, error: Error?) {
         
         guard !Thread.isMainThread else {
-            AppSingleton.log.error("Called from main thread, exiting")
+            if #available(OSX 10.12, *) {
+                os_log("Called from main thread, exiting", type: .error)
+            }
             return (nil, RESTError.waitOnMain)
         }
         
@@ -121,7 +124,9 @@ class DiMeSession {
         }.resume()
         
         if dGroup.wait(timeout: DispatchTime.now() + 10.0) == .timedOut {
-            AppSingleton.log.error("Synchronous request fetch timeout")
+            if #available(OSX 10.12, *) {
+                os_log("Synchronous request fetch timeout", type: .fault)
+            }
         }
         
         return retVal
@@ -143,7 +148,9 @@ class DiMeSession {
             DiMeSession.sharedSession.dataTask(with: urlRequest) {
                 data, _, error in
                 if let error = error {
-                    AppSingleton.log.error("Error while uploading json: \(error)")
+                    if #available(OSX 10.12, *) {
+                        os_log("Error while uploading json: %@", type: .fault, error.localizedDescription)
+                    }
                     callback(nil, error)
                 } else if let data = data {
                     callback(JSON(data: data), nil)
@@ -152,7 +159,9 @@ class DiMeSession {
                 }
             }.resume()
         } catch {
-            AppSingleton.log.error("Failed to convert to json: \(error)")
+            if #available(OSX 10.12, *) {
+                os_log("Failed to convert to json: %@", type: .error, error.localizedDescription)
+            }
         }
     }
     
@@ -162,7 +171,9 @@ class DiMeSession {
     @discardableResult
     static func delete_sync(urlString: String) -> Error? {
         guard !Thread.isMainThread else {
-            AppSingleton.log.error("Called from main thread, exiting")
+            if #available(OSX 10.12, *) {
+                os_log("Called from main thread, exiting", type: .error)
+            }
             return RESTError.waitOnMain
         }
 
@@ -188,14 +199,18 @@ class DiMeSession {
                         returnedError = RESTError.dimeError("Code \(httpResponse.statusCode)")
                     }
                 } else {
-                    AppSingleton.log.error("Failed to convert url response to http url response")
+                    if #available(OSX 10.12, *) {
+                        os_log("Failed to convert url response to http url response", type: .error)
+                    }
                 }
             }
             dGroup.leave()
         }.resume()
         
         if dGroup.wait(timeout: DispatchTime.now() + 10.0) == .timedOut {
-            AppSingleton.log.error("Synchronous request fetch timeout")
+            if #available(OSX 10.12, *) {
+                os_log("Synchronous request fetch timeout", type: .fault)
+            }
         }
         
         return returnedError
@@ -216,13 +231,19 @@ class DiMeSession {
                 var returnedError: Error? = nil
                 // connection failed
                 if let error = error {
-                    AppSingleton.log.error("Error while connecting to (pinging) DiMe. Error message:\n\(error)")
+                    if #available(OSX 10.12, *) {
+                        os_log("Error while connecting to (pinging) DiMe. Error message: %@", type: .fault, error.localizedDescription)
+                    }
                     returnedError = error
                 } else if let jsonError = json?["error"].string {
-                   AppSingleton.log.error("DiMe Connection error: \(jsonError)")
+                    if #available(OSX 10.12, *) {
+                        os_log("DiMe Connection error: %@", type: .fault, jsonError)
+                    }
                     returnedError = RESTError.dimeError(jsonError)
                 } else {
-                    AppSingleton.log.error("Error while connecting to (pinging) DiMe. No error returned.")
+                    if #available(OSX 10.12, *) {
+                        os_log("Error while connecting to (pinging) DiMe. No error returned.", type: .fault)
+                    }
                 }
                 callback?(false, returnedError)
                 dimeAvailable = false

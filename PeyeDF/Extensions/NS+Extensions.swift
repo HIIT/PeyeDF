@@ -24,6 +24,7 @@
 
 import Foundation
 import Cocoa
+import os.log
 
 /// If this value can be checked as "valid" (i.e. is not infinity, nan or other invalid value)
 protocol Validable {
@@ -325,7 +326,9 @@ extension URL {
                 return false
             }
         } catch {
-            AppSingleton.log.warning("Failed to check: \(error)")
+            if #available(OSX 10.12, *) {
+                os_log("Failed to check directory: %@", type: .error, error.localizedDescription)
+            }
             return false
         }
     } }
@@ -337,7 +340,9 @@ extension URL {
         do {
             return try self.checkResourceIsReachable()
         } catch {
-            AppSingleton.log.warning("Failed to retrieve url: \(error)")
+            if #available(OSX 10.12, *) {
+                os_log("Failed to retrieve url: %@", type: .error, error.localizedDescription)
+            }
             return false
         }
     }

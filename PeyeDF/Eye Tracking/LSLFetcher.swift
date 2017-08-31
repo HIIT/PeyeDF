@@ -23,6 +23,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 import Foundation
+import os.log
 
 // NOTE: -------
 //
@@ -98,7 +99,9 @@ class LSLFetcher<EyeDataType: FloatDictInitializable> {
         let found = lsl_resolve_byprop(&inf, 1, UnsafeMutablePointer<Int8>(mutating: ("name" as NSString).utf8String), UnsafeMutablePointer<Int8>(mutating: streamName.utf8String), 1, timeout)
         
         guard found == 1, let streamInfo = inf else {
-            AppSingleton.log.error("Failed to find LSL stream: \(self.streamName)")
+            if #available(OSX 10.12, *) {
+                os_log("Failed to find LSL stream: %@", type: .fault, self.streamName)
+            }
             active = false
             return false
         }
@@ -128,7 +131,9 @@ class LSLFetcher<EyeDataType: FloatDictInitializable> {
         lsl_open_stream(inlet, timeout, &errcode)
         
         guard errcode == 0 else {
-            AppSingleton.log.error("Failed to open LSL stream: \(self.streamName). Code: \(errcode)")
+            if #available(OSX 10.12, *) {
+                os_log("Failed to open LSL stream: %@. Code: %d", type: .fault, self.streamName, errcode)
+            }
             active = false
             return false
         }

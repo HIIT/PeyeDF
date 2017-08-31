@@ -25,6 +25,7 @@
 import Foundation
 import Cocoa
 import Quartz
+import os.log
 
 /// Status of a pdfReader instance
 enum TrackingStatus: CustomStringConvertible {
@@ -252,7 +253,9 @@ class PDFReader: PDFBase {
     @IBAction func selectionMark(sender: AnyObject?) {
         
         guard let sender = sender, let importance = ReadingClass(rawValue: sender.tag) else {
-            AppSingleton.log.error("Failed to convert sender's tag to an importance")
+            if #available(OSX 10.12, *) {
+                os_log("Failed to convert sender's tag to an importance", type: .error)
+            }
             return
         }
         

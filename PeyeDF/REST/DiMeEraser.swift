@@ -23,6 +23,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 import Foundation
+import os.log
 
 /// Wraps delete operations
 class DiMeEraser {
@@ -59,7 +60,6 @@ class DiMeEraser {
                     deleteAllEvents(relatedToSessionId: event.sessionId)
                     processedSessionIds.insert(event.sessionId)
                     orphanedSessionsFound += 1
-                    AppSingleton.log.debug("Deleting for sesId: \(event.sessionId)")
                 }
                 
                 DispatchQueue.main.async {
@@ -68,7 +68,6 @@ class DiMeEraser {
 
             }
             
-            AppSingleton.log.debug("Deleted \(orphanedSessionsFound) orphaned sessions")
             callback?()
         }
         
@@ -100,7 +99,9 @@ class DiMeEraser {
     static func deleteEvent(id: Int) {
         let urlString = DiMeSession.dimeUrl + "/data/event/\(id)"
         if let error = DiMeSession.delete_sync(urlString: urlString) {
-            AppSingleton.log.debug("Found error: \(error)")
+            if #available(OSX 10.12, *) {
+                os_log("Found error: %@", type: .error, error.localizedDescription)
+            }
         }
     }
     

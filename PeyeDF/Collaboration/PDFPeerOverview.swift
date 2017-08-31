@@ -24,6 +24,7 @@
 
 import Foundation
 import Cocoa
+import os.log
 
 class PDFPeerOverview: PDFOverview {
     
@@ -37,7 +38,9 @@ class PDFPeerOverview: PDFOverview {
     /// Marks an area as read by the local user (.localPeer source) or network peer (.networkPeer source)
     func addArea(_ area: FocusArea, fromSource source: ClassSource) {
         guard source == .localPeer || source == .networkPeer else {
-            AppSingleton.log.error("Adding areas for sources other than local or network peer is not supported")
+            if #available(OSX 10.12, *) {
+                os_log("Adding areas for sources other than local or network peer is not supported", type: .error)
+            }
             return
         }
         
@@ -64,7 +67,9 @@ class PDFPeerOverview: PDFOverview {
                 self?.refreshPage(atIndex: area.pageIndex, rect: rect)
             }
         default:
-            AppSingleton.log.error("Displaying read areas other than rects or circles is not implemented")
+            if #available(OSX 10.12, *) {
+                os_log("Displaying read areas other than rects or circles is not implemented", type: .error)
+            }
         }
     }
     

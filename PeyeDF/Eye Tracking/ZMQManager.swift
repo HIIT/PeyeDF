@@ -23,6 +23,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 import Foundation
+import os.log
 
 /// Provides support for pupil labs ZMQ interface.
 /// Does not support distance from screen and is less accurate, but provides a more reliable pupil size measurement.
@@ -69,7 +70,9 @@ class ZMQManager: EyeDataProvider {
         do {
             ctx = try Context()
         } catch {
-            AppSingleton.log.error("Error while creating ZeroMQ Context: \(error). Pupil labs data will be unavailable.")
+            if #available(OSX 10.12, *) {
+                os_log("Error while creating ZeroMQ Context: %@. Pupil labs data will be unavailable.", type: .error, error.localizedDescription)
+            }
         }
         return ctx
     }()
@@ -101,7 +104,9 @@ class ZMQManager: EyeDataProvider {
                 try requester.connect("tcp://127.0.0.1:\(self.port)")
                 
                 guard try requester.send("SUB_PORT") == true else {
-                    AppSingleton.log.error("Failed to connect to ZeroMQ pupil on port: \(self.port)")
+                    if #available(OSX 10.12, *) {
+                        os_log("Failed to connect to ZeroMQ pupil on port: %d", type: .fault, self.port)
+                    }
                     return
                 }
 
@@ -112,7 +117,9 @@ class ZMQManager: EyeDataProvider {
                 
                 try requester.close()
             } catch {
-                AppSingleton.log.error("Error while connecting to pupil capture: \(error)")
+                if #available(OSX 10.12, *) {
+                    os_log("Error while connecting to pupil capture: %@", type: .fault, error.localizedDescription)
+                }
                 self.available = false
                 return
             }
@@ -129,7 +136,6 @@ class ZMQManager: EyeDataProvider {
                 try socket.connect("tcp://127.0.0.1:\(sub_port_string)")
                 try socket.setOption(ZMQ_SUBSCRIBE, "surface")
             } catch {
-                AppSingleton.log.error("Failed to create zmq socket: \(error)")
                 return
             }
             
@@ -142,7 +148,6 @@ class ZMQManager: EyeDataProvider {
                 do {
                     _msg = try socket.receiveMessage()
                 } catch {
-                    AppSingleton.log.error("Failed to receive message from zmq subscription: \(error).")
                     continue
                 }
                 
@@ -158,7 +163,10 @@ class ZMQManager: EyeDataProvider {
                     let topic: String? = String(data: msgdata, encoding: .utf8)
                     // verify that topic is "surface"
                     if topic ?? "" != "surfaces" {
-                        AppSingleton.log.warning("Unexpected topic found: \(topic ?? "N/A")")
+                        if #available(OSX 10.12, *) {
+                            let topicName = topic ?? "N/A"
+                            os_log("Unexpected topic found: %@", type: .error, topicName)
+                        }
                         continue
                     }
                     
@@ -171,7 +179,9 @@ class ZMQManager: EyeDataProvider {
                     do {
                         packArray = try unpackAll(msgdata)
                     } catch {
-                        AppSingleton.log.error("Failed to unpack message: \(error)")
+                        if #available(OSX 10.12, *) {
+                            os_log("Failed to unpack message: %@", type: .fault, error.localizedDescription)
+                        }
                         continue
                     }
                     
@@ -244,7 +254,9 @@ class ZMQManager: EyeDataProvider {
             do {
                 try socket.close()
             } catch {
-                AppSingleton.log.error("Failed to close zmq socket: \(error)")
+                if #available(OSX 10.12, *) {
+                    os_log("Failed to close zmq socket: %@", type: .fault, error.localizedDescription)
+                }
             }
             
         } // end of async data queue
