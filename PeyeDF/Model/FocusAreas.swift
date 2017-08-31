@@ -230,10 +230,6 @@ extension PDFBase {
     
     /// Gets the point currently shown on the centre (left margin).
     func getCurrentPoint() -> FocusArea? {
-        guard self.visiblePages() != nil else {
-            return nil
-        }
-        
         let midPoint = NSPoint(x: self.bounds.width / 2, y: self.bounds.height / 2)
         guard let page = self.page(for: midPoint, nearest: true), let pageIndex = document?.index(for: page) else {
             return nil

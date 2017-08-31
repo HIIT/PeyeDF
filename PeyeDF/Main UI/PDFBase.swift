@@ -506,7 +506,7 @@ class PDFBase: PDFView {
     /// Get the number of visible page numbers (starting from 0)
     func getVisiblePageNums() -> [Int] {
         var visibleArray = [Int]()
-        for visiblePage in self.visiblePages()! where self.visiblePages() != nil {
+        for visiblePage in self.visiblePages {
             visibleArray.append(document!.index(for: visiblePage))
         }
         return visibleArray
@@ -515,7 +515,7 @@ class PDFBase: PDFView {
     /// Get the number of visible page labels (as embedded in the PDF)
     func getVisiblePageLabels() -> [String] {
         var visibleArray = [String]()
-        for visiblePage in self.visiblePages()!.flatMap({$0}) {
+        for visiblePage in self.visiblePages.flatMap({$0}) {
             visibleArray.append(visiblePage.label!)
         }
         return visibleArray
@@ -526,7 +526,7 @@ class PDFBase: PDFView {
         
         var visibleRects = [NSRect]()  // rects in page coordinates, one for each page, representing visible portion
         
-        for visiblePage in self.visiblePages()! where self.visiblePages() != nil {
+        for visiblePage in self.visiblePages {
             
             // Get page's rectangle coordinates
             let pageRect = getPageRect(visiblePage)

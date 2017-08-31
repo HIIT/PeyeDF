@@ -241,10 +241,14 @@ import MultipeerConnectivity
     }
     
     /// Pdf document is received. Hides the progress bar and opens the document.
-    func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL, withError error: Error?) {
+    func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {
         Multipeer.peerController.endDownload(peerID)
         if let error = error {
             AppSingleton.alertUser("Error while transferring file.", infoText: "\(error)")
+            return
+        }
+        guard let localURL = localURL else {
+            AppSingleton.alertUser("Could not get local url.")
             return
         }
         // resource name is without pdf, append .pdf to it

@@ -245,7 +245,7 @@ public struct ReadingRect: Comparable, Equatable, Dictionariable, NearlyEquatabl
 /// ReadingRects are equal if all their properties are equal
 public func == (lhs: ReadingRect, rhs: ReadingRect) -> Bool {
     return lhs.pageIndex == rhs.pageIndex &&
-           lhs.rect == rhs.rect &&
+           lhs.rect.equalTo(rhs.rect) &&
            lhs.readingClass == rhs.readingClass &&
            lhs.classSource == rhs.classSource &&
            lhs.scaleFactor == rhs.scaleFactor

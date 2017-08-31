@@ -490,7 +490,7 @@ class PDFReader: PDFBase {
     ///
     /// - returns: The reading event for the current status, or nil if nothing is actually visible
     func getViewportStatus() -> ReadingEvent? {
-        guard self.status == .trackable && self.visiblePages() != nil else {
+        guard self.status == .trackable else {
             return nil
         }
         
@@ -570,8 +570,8 @@ class PDFReader: PDFBase {
         guard status == .trackable else {
             return nil
         }
-        
-        guard let visiblePages = self.visiblePages(), let document = self.document else {
+        let visiblePages = self.visiblePages
+        guard let document = self.document else {
             return nil
         }
         let generatedSelection = PDFSelection(document: document)
@@ -603,10 +603,9 @@ class PDFReader: PDFBase {
         guard status == .trackable, let document = self.document else {
             return
         }
-            
-        guard let visiblePages = self.visiblePages() else {
-            return
-        }
+        
+        let visiblePages = self.visiblePages
+ 
         let generatedSelection = PDFSelection(document: document)
         
         for visiblePage in visiblePages {

@@ -108,7 +108,7 @@ extension PDFDocument {
     /// Gets the title from the document metadata, returns nil if not present
     func getTitle() -> String? {
         let docAttrib = documentAttributes
-        if let title: String = docAttrib![PDFDocumentTitleAttribute] as? String , title.trimmed().characters.count > 0 {
+        if let title: String = docAttrib![PDFDocumentAttribute.titleAttribute] as? String , title.trimmed().characters.count > 0 {
             return title.trimmed()
         } else {
             return nil
@@ -118,7 +118,7 @@ extension PDFDocument {
     /// Gets the author(s) from the document metadata, returns nil if not present
     func getAuthor() -> String? {
         let docAttrib = documentAttributes
-        if let author: Any = docAttrib![PDFDocumentAuthorAttribute] {
+        if let author: Any = docAttrib![PDFDocumentAttribute.authorAttribute] {
             return (author as! String)
         } else {
             return nil
@@ -128,7 +128,7 @@ extension PDFDocument {
     /// Gets the subject from the document metadata, returns nil if not present
     func getSubject() -> String? {
         let docAttrib = documentAttributes
-        if let subject: Any = docAttrib![PDFDocumentSubjectAttribute] {
+        if let subject: Any = docAttrib![PDFDocumentAttribute.subjectAttribute] {
             return (subject as! String)
         } else {
             return nil
@@ -138,7 +138,7 @@ extension PDFDocument {
     /// Gets the keywods from the document metadata, returns nil if not present
     func getKeywords() -> String? {
         let docAttrib = documentAttributes
-        if let keywords: Any = docAttrib![PDFDocumentKeywordsAttribute] {
+        if let keywords: Any = docAttrib![PDFDocumentAttribute.keywordsAttribute] {
             // some times keywords are in an array
             // other times keywords are all contained in the first element of the array as a string
             // other times they are a string
@@ -264,25 +264,25 @@ extension PDFDocument {
     
     func setTitle(_ newTitle: String) {
         var docAttrib = documentAttributes
-        docAttrib![PDFDocumentTitleAttribute] = newTitle
+        docAttrib![PDFDocumentAttribute.titleAttribute] = newTitle
         documentAttributes = docAttrib
     }
     
     func setSubject(_ newSubject: String) {
         var docAttrib = documentAttributes
-        docAttrib![PDFDocumentSubjectAttribute] = newSubject
+        docAttrib![PDFDocumentAttribute.subjectAttribute] = newSubject
         documentAttributes = docAttrib
     }
     
     func setAuthor(_ newAuthor: String) {
         var docAttrib = documentAttributes
-        docAttrib![PDFDocumentAuthorAttribute] = newAuthor
+        docAttrib![PDFDocumentAttribute.authorAttribute] = newAuthor
         documentAttributes = docAttrib
     }
     
     func setKeywords(_ newKeywords: String) {
         var docAttrib = documentAttributes
-        docAttrib![PDFDocumentKeywordsAttribute] = newKeywords
+        docAttrib![PDFDocumentAttribute.keywordsAttribute] = newKeywords
         documentAttributes = docAttrib
     }
     

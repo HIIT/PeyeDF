@@ -803,7 +803,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     // MARK: - Unloading
     
     /// This window is going to close, send exit event and send all paragraph data to HistoryManager as summary. Calls the given callback once done saving to dime.
-    func unload(_ callback: ((Void) -> Void)? = nil) {
+    func unload(_ callback: (() -> ())? = nil) {
         guard closeToken == 0 else {
             return
         }
