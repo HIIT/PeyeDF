@@ -37,11 +37,11 @@ class DebugPreferencesController: NSViewController {
         
         orphanedDeleteProgressBar.usesThreadedAnimation = true
         
-        let options: [String: AnyObject] = ["NSContinuouslyUpdatesValue": true as AnyObject]
+        let options = [NSBindingOption.continuouslyUpdatesValue: true]
         
-        refinderDrawGazedCheckCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefRefinderDrawGazedUpon, options: options)
-        constrainMaxSizeCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefConstrainWindowMaxSize, options: options)
-        drawDebugCircleCheckCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefDrawDebugCircle, options: options)
+        refinderDrawGazedCheckCell.bind(NSBindingName(rawValue: "value"), to: NSUserDefaultsController.shared, withKeyPath: "values." + PeyeConstants.prefRefinderDrawGazedUpon, options: options)
+        constrainMaxSizeCell.bind(NSBindingName(rawValue: "value"), to: NSUserDefaultsController.shared, withKeyPath: "values." + PeyeConstants.prefConstrainWindowMaxSize, options: options)
+        drawDebugCircleCheckCell.bind(NSBindingName(rawValue: "value"), to: NSUserDefaultsController.shared, withKeyPath: "values." + PeyeConstants.prefDrawDebugCircle, options: options)
     }
     
     @IBAction func deleteOrphanedReadingEvents(_ sender: NSButton) {
@@ -51,10 +51,10 @@ class DebugPreferencesController: NSViewController {
             // re-enable button and unbind progress on done
             DispatchQueue.main.async {
                 sender.isEnabled = true
-                self.orphanedDeleteProgressBar.unbind("value")
+                self.orphanedDeleteProgressBar.unbind(NSBindingName(rawValue: "value"))
             }
         }
         
-        orphanedDeleteProgressBar.bind("value", to: bulkProgress, withKeyPath: "fractionCompleted")
+        orphanedDeleteProgressBar.bind(NSBindingName(rawValue: "value"), to: bulkProgress, withKeyPath: "fractionCompleted")
     }
 }

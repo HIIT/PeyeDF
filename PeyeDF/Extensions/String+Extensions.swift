@@ -171,7 +171,8 @@ extension String {
     
     /// Skips the first x characters
     func skipPrefix(_ nOfChars: Int) -> String {
-        return self.substring(from: self.characters.index(self.startIndex, offsetBy: nOfChars))
+        let i = self.characters.index(self.startIndex, offsetBy: nOfChars)
+        return String(self[i...])
     }
     
 }

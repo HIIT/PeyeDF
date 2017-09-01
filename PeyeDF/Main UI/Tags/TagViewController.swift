@@ -68,7 +68,7 @@ class TagViewController: NSViewController {
 
         // Do any additional setup after loading the view.
         inputField.delegate = mydel
-        NotificationCenter.default.addObserver(self, selector: #selector(textChanged(_:)), name: NSNotification.Name.NSControlTextDidChange, object: inputField)
+        NotificationCenter.default.addObserver(self, selector: #selector(textChanged(_:)), name: NSControl.textDidChangeNotification, object: inputField)
     }
     
     // MARK: - External
@@ -80,7 +80,7 @@ class TagViewController: NSViewController {
         self.representedTags = tags.map({$0.text})
         for tag in tags {
             var objs: NSArray? = NSArray() // temporary store for items in tagview
-            Bundle.main.loadNibNamed("TagView", owner: nil, topLevelObjects: &objs!)
+            Bundle.main.loadNibNamed(NSNib.Name(rawValue: "TagView"), owner: nil, topLevelObjects: &objs)
             if let objs = objs {
                 for obj in objs {
                     if let view = obj as? NSView {
@@ -89,7 +89,7 @@ class TagViewController: NSViewController {
                             if let but = subview as? NSButton {
                                 but.tag = count
                                 // show lookup button only if tag is a readingtag
-                                if let butI = but.identifier , butI == kLookupButId {
+                                if let butI = but.identifier , butI.rawValue == kLookupButId {
                                     if type(of: tag) == ReadingTag.self {
                                         but.isHidden = false
                                     } else {
@@ -153,7 +153,7 @@ class TagViewController: NSViewController {
             tagDelegate?.tagAdded(newTag)
             AppSingleton.updateRecentTags(newTag)
             var objs: NSArray? = NSArray() // temporary store for items in tagview
-            Bundle.main.loadNibNamed("TagView", owner: nil, topLevelObjects: &objs!)
+            Bundle.main.loadNibNamed(NSNib.Name(rawValue: "TagView"), owner: nil, topLevelObjects: &objs)
             if let objs = objs {
                 for obj in objs {
                     if let view = obj as? NSView {
@@ -161,7 +161,7 @@ class TagViewController: NSViewController {
                         for subview in view.subviews {
                             if let but = subview as? NSButton {
                                 but.tag = count
-                                if let butI = but.identifier , butI == kLookupButId {
+                                if let butI = but.identifier , butI.rawValue == kLookupButId {
                                     if tagDelegate!.isNextTagReading() {
                                         but.isHidden = false
                                     }

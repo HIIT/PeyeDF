@@ -85,8 +85,8 @@ import os.log
                     return
                 }
                 
-                // (arbitrary) name of resource is filename without extension (minus last 4 characters)
-                let rname = url.lastPathComponent.substring(to: url.lastPathComponent.characters.index(url.lastPathComponent.endIndex, offsetBy: -4))
+                // (arbitrary) name of resource is filename without extension
+                let rname = url.deletingPathExtension().lastPathComponent
                     
                 Multipeer.session.sendResource(at: url, withName: rname, toPeer: peerID, withCompletionHandler: nil)
             }
@@ -258,9 +258,9 @@ import os.log
         let baseUrl = localURL.deletingLastPathComponent()
         let newUrl = baseUrl.appendingPathComponent(newname)
         // if file does not exists already, rename received resource
-        if !FileManager.default.fileExists(atPath: newUrl.path) {
+        if !FileManager.default.fileExists(atPath: (newUrl.path)) {
             do {
-                try FileManager.default.moveItem(atPath: localURL.path, toPath: newUrl.path)
+                try FileManager.default.moveItem(atPath: (localURL.path), toPath: (newUrl.path))
             } catch {
                 AppSingleton.alertUser("Failed to rename received file.", infoText: "\(error)")
                 return
@@ -280,7 +280,7 @@ import os.log
     /// Convenience function to send our current status to a given peer
     fileprivate func sendStatus(_ peer: MCPeerID) {
         // get the scidoc from the current main window, if main window is documentwindowcontroller
-        if let docWindow = NSApplication.shared().mainWindow?.windowController as? DocumentWindowController,
+        if let docWindow = NSApplication.shared.mainWindow?.windowController as? DocumentWindowController,
           let pdfReader = docWindow.pdfReader {
             CollaborationMessage(readingDocumentFromSciDoc: pdfReader.sciDoc)?.sendTo([peer])
         }

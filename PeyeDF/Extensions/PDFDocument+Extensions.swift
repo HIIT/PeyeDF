@@ -193,7 +193,7 @@ extension PDFDocument {
             let range = pageString.range(of: doiS, options: NSString.CompareOptions.caseInsensitive, range: nil, locale: nil)
             
             if let upperBound = range?.upperBound {
-                let s = pageString.substring(from: upperBound).trimmed()
+                let s = String(pageString[upperBound...]).trimmed()
                 if let doiChunk = s.firstChunk() , doiChunk.characters.count >= 5 {
                     _doi = doiChunk
                     break
@@ -247,10 +247,10 @@ extension PDFDocument {
 
         var textInfo = [(size: CGFloat, range: NSRange)]()
 
-        astring!.enumerateAttribute(NSFontAttributeName, in: fullRange, options: NSAttributedString.EnumerationOptions()) {
+        astring!.enumerateAttribute(NSAttributedStringKey.font, in: fullRange, options: NSAttributedString.EnumerationOptions()) {
             obj, range, stop in
             if let font = obj as? NSFont {
-                textInfo.append(size: font.pointSize, range: range)
+                textInfo.append((size: font.pointSize, range: range))
             }
         }
 

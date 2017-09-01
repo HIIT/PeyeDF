@@ -132,7 +132,7 @@ class MetadataViewController: NSViewController {
         }
         if dirty {
             mainCont!.setDocumentEdited(true)
-            (mainCont!.document as! NSDocument).updateChangeCount(NSDocumentChangeType.changeDone)
+            (mainCont!.document as! NSDocument).updateChangeCount(NSDocument.ChangeType.changeDone)
         }
     }
     

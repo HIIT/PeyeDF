@@ -90,7 +90,7 @@ class MyOverlay: NSView {
             theirFix = theirLayer
         }
         
-        self.layerContentsRedrawPolicy = NSViewLayerContentsRedrawPolicy.onSetNeedsDisplay
+        self.layerContentsRedrawPolicy = NSView.LayerContentsRedrawPolicy.onSetNeedsDisplay
     }
     
     /// All events will be redirected to this view

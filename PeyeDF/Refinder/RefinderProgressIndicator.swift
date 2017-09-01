@@ -48,7 +48,7 @@ class RefinderProgressIndicator: NSView {
         self.wantsLayer = true
         self.layer?.addSublayer(frontLayer)
         self.layer?.addSublayer(backLayer)
-        self.layerContentsRedrawPolicy = NSViewLayerContentsRedrawPolicy.duringViewResize
+        self.layerContentsRedrawPolicy = NSView.LayerContentsRedrawPolicy.duringViewResize
     }
     
     /// Drawn "outside" to show borders

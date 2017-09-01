@@ -40,7 +40,7 @@ class QuestionViewController: NSViewController {
     /// Reference to the current document window
     weak var docWindowController: DocumentWindowController?
     
-    let appDel = NSApplication.shared().delegate as! AppDelegate
+    let appDel = NSApplication.shared.delegate as! AppDelegate
     var givenAnswer: String = ""
     let answerSaver = AnswerSaver(pNo: QuestionSingleton.pNo)
     
@@ -88,7 +88,7 @@ class QuestionViewController: NSViewController {
     /// Puts the document's window above the question, with a smaller question window below
     /// returns question frame rect
     func moveQuestionBelow() {
-        guard let winc = docWindowController, let win = winc.window, let mainS = NSScreen.main() else {
+        guard let winc = docWindowController, let win = winc.window, let mainS = NSScreen.main else {
             if #available(OSX 10.12, *) {
                 os_log("Failed to capture window or screen references, trying again in one second", type: .error)
             }
@@ -141,7 +141,7 @@ class QuestionViewController: NSViewController {
     /// Prepare user to read a new paper (Entered GivePaper. Also initial state.).
     /// Covers the whole screen.
     func prepareMode(showContinue: Bool) {
-        guard let mainScreen = NSScreen.main() else {
+        guard let mainScreen = NSScreen.main else {
             return
         }
         
@@ -151,6 +151,7 @@ class QuestionViewController: NSViewController {
         let topicQuestDist: CGFloat = 80
         self.answerBox.isHidden = true
         self.confirmButton.isEnabled = false
+        self.continueButton.isHidden = true
         
         NSAnimationContext.runAnimationGroup( { context in
             
@@ -207,11 +208,11 @@ class QuestionViewController: NSViewController {
         let shuffled = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: answers)
         DispatchQueue.main.async {
             self.answer1.title = shuffled[0] as! String
-            self.answer1.state = NSOffState
+            self.answer1.state = .off
             self.answer2.title = shuffled[1] as! String
-            self.answer2.state = NSOffState
+            self.answer2.state = .off
             self.answer3.title = shuffled[2] as! String
-            self.answer3.state = NSOffState
+            self.answer3.state = .off
         }
     }
     

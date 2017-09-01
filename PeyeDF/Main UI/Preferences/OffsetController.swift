@@ -124,7 +124,7 @@ class OffsetOverlayView: NSView, FixationDataDelegate {
         self.layer?.addSublayer(layer)
         fixBall = layer
         
-        self.layerContentsRedrawPolicy = NSViewLayerContentsRedrawPolicy.onSetNeedsDisplay
+        self.layerContentsRedrawPolicy = NSView.LayerContentsRedrawPolicy.onSetNeedsDisplay
     }
     
     func receiveNewFixationData(_ newData: [FixationEvent]) {

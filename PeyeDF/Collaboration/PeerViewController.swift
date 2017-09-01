@@ -50,21 +50,21 @@ class PeerViewController: NSViewController {
                 self.readButton.isHidden = false
                 self.readButton.isEnabled = true
                 self.trackButton.isHidden = true
-                self.trackButton.state = NSOffState
+                self.trackButton.state = .off
             }
         case .reading:
             DispatchQueue.main.async {
                 self.readButton.isHidden = false
                 self.readButton.isEnabled = true
                 self.trackButton.isHidden = true
-                self.trackButton.state = NSOffState
+                self.trackButton.state = .off
             }
         case .trackable:
             DispatchQueue.main.async {
                 self.readButton.isHidden = true
                 self.readButton.isEnabled = false
                 self.trackButton.isHidden = false
-                self.trackButton.state = NSOffState
+                self.trackButton.state = .off
             }
         }
     } }
@@ -123,7 +123,7 @@ class PeerViewController: NSViewController {
         // make sure the current state is trackable, if so set values accordingly. If not, reset tracking and post an error.
         switch currentState {
         case .trackable(let cHash):
-            if sender.state == NSOnState {
+            if sender.state == .on {
                 // get the peer corresponding to the senders' tag (we set the tag to the peer's hash)
                 let peers = Multipeer.session.connectedPeers.filter({$0.hash == sender.tag})
                 guard peers.count == 1 else {

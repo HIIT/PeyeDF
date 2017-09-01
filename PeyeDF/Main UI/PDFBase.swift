@@ -656,11 +656,14 @@ class PDFBase: PDFView {
     /// Writes all annotations corresponding to all marks, and deletes intersecting rectangles for "lower-class" rectangles which
     /// intersect with "higher-class" rectangles
     func autoAnnotate() {
-        removeAllParagraphAnnotations()
-        markings.flattenRectangles_relevance()
-        outputAnnotations(.high, colour: PeyeConstants.annotationColourCritical) // TODO: change this to markAnnotationColours[readingClass]?
-        outputAnnotations(.medium, colour: PeyeConstants.annotationColourInteresting)
-        outputAnnotations(.low, colour: PeyeConstants.annotationColourRead)
+        DispatchQueue.global(qos: .userInitiated).async {
+            [weak self] in
+            self?.removeAllParagraphAnnotations()
+            self?.markings.flattenRectangles_relevance()
+            self?.outputAnnotations(.high, colour: PeyeConstants.annotationColourCritical) // TODO: change this to markAnnotationColours[readingClass]?
+            self?.outputAnnotations(.medium, colour: PeyeConstants.annotationColourInteresting)
+            self?.outputAnnotations(.low, colour: PeyeConstants.annotationColourRead)
+        }
     }
     
     /// Returns a point in view coordinates from a Focus Area (if a rect or circle is given, returns point corresponding to centre).

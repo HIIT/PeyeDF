@@ -85,7 +85,7 @@ class QuestionSingleton {
     /// Participant number (defaults to infinity, should be changed on app start)
     static var pNo = Int.max
     
-    static let questionsStoryboard = NSStoryboard(name: "Questions", bundle: nil)
+    static let questionsStoryboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "Questions"), bundle: nil)
     
     /// Seconds taken to read each apper
     static var timeTaken = [Double]()
@@ -155,17 +155,17 @@ class QuestionSingleton {
     static func startQuestions() {
         
         // close all open documents
-        NSDocumentController.shared().documents.forEach() {
+        NSDocumentController.shared.documents.forEach() {
             if $0.windowControllers.count == 1 {
                 ($0.windowControllers[0] as? DocumentWindowController)?.window?.close()
             }
         }
         
-        questionWindow = (QuestionSingleton.questionsStoryboard.instantiateController(withIdentifier: "QuestionWindowController") as! NSWindowController)
+        questionWindow = (QuestionSingleton.questionsStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "QuestionWindowController")) as! NSWindowController)
         questionWindow.showWindow(nil)
         // put the question window always in front
-        questionWindow.window?.level = Int(CGWindowLevelForKey(.floatingWindow))
-        questionWindow.window?.level = Int(CGWindowLevelForKey(.maximumWindow))
+        questionWindow.window?.level = NSWindow.Level(rawValue: Int(CGWindowLevelForKey(.floatingWindow)))
+        questionWindow.window?.level = NSWindow.Level(rawValue: Int(CGWindowLevelForKey(.maximumWindow)))
         questionController = (questionWindow.contentViewController as! QuestionViewController)
         questionController!.begin(withPapers: paperOrder)
 

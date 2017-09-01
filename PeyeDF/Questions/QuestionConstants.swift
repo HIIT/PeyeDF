@@ -32,10 +32,12 @@ class QuestionConstants {
     static let baseUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("Peyexperiment")
 
     /// Time spent reading a paper without being shown any questions
-    static let familiarizeTime: Double = 5 * 60
+//    static let familiarizeTime: Double = 5 * 60
+    static let familiarizeTime: Double = 5
 
     /// Seconds of break
-    static let breakTime: Double = 5 * 60
+//    static let breakTime: Double = 5 * 60
+    static let breakTime: Double = 5
 
     /// Total number of papers
     static let nOfPapers = Paper.defaultPapers.count - 1

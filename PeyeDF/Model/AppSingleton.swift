@@ -50,12 +50,12 @@ import Quartz
 /// Used to share common instances across the whole application, including posting history notifications to the store, access to logs, storyboards, eye tracking data.
 class AppSingleton {
     
-    static let mainStoryboard = NSStoryboard(name: "Main", bundle: nil)
-    static let refinderStoryboard = NSStoryboard(name: "Refinder", bundle: nil)
-    static let tagsStoryboard = NSStoryboard(name: "Tags", bundle: nil)
-    static let collaborationStoryboard = NSStoryboard(name: "Collaboration", bundle: nil)
-    static let appDelegate = NSApplication.shared().delegate! as! AppDelegate
-    static let findPasteboard = NSPasteboard(name: NSFindPboard)
+    static let mainStoryboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "Main"), bundle: nil)
+    static let refinderStoryboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "Refinder"), bundle: nil)
+    static let tagsStoryboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "Tags"), bundle: nil)
+    static let collaborationStoryboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "Collaboration"), bundle: nil)
+    static let appDelegate = NSApplication.shared.delegate! as! AppDelegate
+    static let findPasteboard = NSPasteboard(name: NSPasteboard.Name.findPboard)
         
     /// The class that provides eye tracking data (set by app delegate on start).
     /// Changing this value causes the eye tracker to start.
@@ -107,11 +107,11 @@ class AppSingleton {
     
     /// Gets DPI programmatically
     static func getComputedDPI() -> Int? {
-        guard let screens = NSScreen.screens() else {
-            AppSingleton.alertUser("Can't get find displayes", infoText: "Please try restarting the app.")
+        guard NSScreen.screens.count > 0 else {
+            AppSingleton.alertUser("Can't get find any displays", infoText: "Please try restarting the app.")
             return nil
         }
-        let screen = screens[0]
+        let screen = NSScreen.screens[0]
         let id = CGMainDisplayID()
         let mmSize = CGDisplayScreenSize(id)
 
@@ -140,7 +140,7 @@ class AppSingleton {
     static func alertUser(_ message: String, infoText: String) {
         let myAl = NSAlert()
         myAl.alertStyle = .warning
-        myAl.icon = NSImage(named: "NSCaution")
+        myAl.icon = NSImage(named: NSImage.Name(rawValue: "NSCaution"))
         myAl.messageText = message
         myAl.informativeText = infoText
         DispatchQueue.main.async {
@@ -154,7 +154,7 @@ class AppSingleton {
     static func alertUser(_ message: String) {
         let myAl = NSAlert()
         myAl.alertStyle = .warning
-        myAl.icon = NSImage(named: "NSCaution")
+        myAl.icon = NSImage(named: NSImage.Name(rawValue: "NSCaution"))
         myAl.messageText = message
         DispatchQueue.main.async {
             myAl.runModal()

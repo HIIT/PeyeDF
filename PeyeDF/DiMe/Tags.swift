@@ -126,8 +126,8 @@ open class ReadingTag: Tag {
             return nil
         }
         
-        let text = string.substring(to: pr.lowerBound)
-        let suffix = string.substring(from: pr.upperBound)
+        let text = string[..<pr.lowerBound]
+        let suffix = string[pr.upperBound...]
         let components = suffix.components(separatedBy: "::")
         
         guard components.count == 2 else {
@@ -144,7 +144,7 @@ open class ReadingTag: Tag {
             return nil
         }
         
-        self.init(text: text, withRects: rects, pages: pages, pdfBase: pdfBase)
+        self.init(text: String(text), withRects: rects, pages: pages, pdfBase: pdfBase)
     }
     
     /// Combines this tag with another, and returns the new tag.

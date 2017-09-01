@@ -34,7 +34,7 @@ class AllPeersController: NSViewController {
     
     func addPeer(_ peer: MCPeerID) {
         DispatchQueue.main.async {
-            let vc = AppSingleton.collaborationStoryboard.instantiateController(withIdentifier: "PeerViewController") as! PeerViewController
+            let vc = AppSingleton.collaborationStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "PeerViewController")) as! PeerViewController
             self.stackView.animateViewIn(vc.view)
             vc.setPeer(peer)
             self.connectedPeers[peer.hash] = vc
@@ -128,11 +128,11 @@ class AllPeersController: NSViewController {
             if let newP = newTuple.peer, let newCH = newTuple.cHash, let theirCurrentHash = vc.currentHash ,
               newP == ph && newCH == theirCurrentHash {
                 DispatchQueue.main.async {
-                    vc.trackButton.state = NSOnState
+                    vc.trackButton.state = .on
                 }
             } else {
                 DispatchQueue.main.async {
-                    vc.trackButton.state = NSOffState
+                    vc.trackButton.state = .off
                 }
             }
         }

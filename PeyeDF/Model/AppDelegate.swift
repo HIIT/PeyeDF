@@ -128,7 +128,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
         } else {
             DiMeSession.dimeConnect() {
-                _ in
+                _, _ in
                 for filename in filenames {
                     let fileUrl = URL(fileURLWithPath: filename)
                     self.openDocument(fileUrl, searchString: searchString)
@@ -150,7 +150,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     ///   - urlRects: If not empty, highlight these rects on the given page indices
     func openDocument(_ fileURL: URL, searchString: String? = nil, focusArea: FocusArea? = nil, previousSessionId: String? = nil, urlRects: [(rect: NSRect, page: Int)] = []) {
         DispatchQueue.main.async {
-            NSDocumentController.shared().openDocument(withContentsOf: fileURL, display: true) {
+            NSDocumentController.shared.openDocument(withContentsOf: fileURL, display: true) {
                 document, _, _ in
                 guard let doc = document as? PeyeDocument,
                       let vc = doc.windowControllers[0] as? DocumentWindowController else {
@@ -268,7 +268,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// Show refinder window (creating it, if needed)
     @IBAction func showRefinderWindow(_ sender: AnyObject?) {
         if refinderWindow == nil {
-            refinderWindow = (AppSingleton.refinderStoryboard.instantiateController(withIdentifier: "RefinderWindowController") as! RefinderWindowController)
+            refinderWindow = (AppSingleton.refinderStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "RefinderWindowController")) as! RefinderWindowController)
         }
         refinderWindow!.showWindow(self)
         Multipeer.advertiser.start()
@@ -307,12 +307,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// Show PeyeDF github page
     @IBAction func showGitHub(_ sender: NSMenuItem) {
         let url = URL(string: "https://github.com/HIIT/PeyeDF")
-        NSWorkspace.shared().open(url!)
+        NSWorkspace.shared.open(url!)
     }
     
     /// Callback for connect to midas menu action
     @IBAction func connectEyeTracker(_ sender: NSMenuItem) {
-        if connectEyeTracker.state == NSOffState {
+        if connectEyeTracker.state == .off {
             AppSingleton.eyeTracker?.start()
             AppSingleton.eyeTracker?.fixationDelegate = HistoryManager.sharedManager
         } else {
@@ -323,7 +323,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     /// Find menu item is linked to this global function
     @IBAction func manualSearch(_ sender: AnyObject) {
-        if let keyWin = NSApplication.shared().keyWindow {
+        if let keyWin = NSApplication.shared.keyWindow {
             if let docWinController = keyWin.windowController as? DocumentWindowController {
                 docWinController.focusOnSearch()
             }
@@ -331,7 +331,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @IBAction func allDocMetadata(_ sender: AnyObject) {
-        let doci = NSDocumentController.shared().documents
+        let doci = NSDocumentController.shared.documents
         var outString = ""
         var inum = 1
         for doc: PeyeDocument in doci as! [PeyeDocument] {
@@ -340,7 +340,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             "Title: \(doc.pdfDoc!.getTitle() ?? "N/A")\nAuthor(s):\(doc.pdfDoc!.getAuthor() ?? "N/A")\n\n"
             inum += 1
         }
-        if let mainWin = NSApplication.shared().mainWindow {
+        if let mainWin = NSApplication.shared.mainWindow {
             let myAl = NSAlert()
             myAl.messageText = outString
             myAl.beginSheetModal(for: mainWin, completionHandler: nil)
@@ -385,11 +385,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let dimeAvailable = userInfo["available"]!
         DispatchQueue.main.async {
             if dimeAvailable {
-                self.connectDime.state = NSOnState
+                self.connectDime.state = .on
                 self.connectDime.isEnabled = false
                 self.connectDime.title = "Connected to DiMe"
             } else {
-                self.connectDime.state = NSOffState
+                self.connectDime.state = .off
                 self.connectDime.isEnabled = true
                 self.connectDime.title = "Connect to DiMe"
             }
@@ -401,10 +401,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let avail = userInfo["available"]!
         
         if avail {
-            connectEyeTracker.state = NSOnState
+            connectEyeTracker.state = .on
             connectEyeTracker.title = "Connected to Eye Tracker"
         } else {
-            connectEyeTracker.state = NSOffState
+            connectEyeTracker.state = .off
             connectEyeTracker.title = "Not connected to Eye Tracker"
         }
     }

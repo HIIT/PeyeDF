@@ -47,9 +47,9 @@ class ExperimentPreferencesController: NSViewController {
     
     /// Action responding to left or right dominant eye selection
     @IBAction func dominantButtonPress(_ sender: NSButton) {
-        if sender.identifier! == "leftDomEyeButton" {
+        if sender.identifier!.rawValue == "leftDomEyeButton" {
             AppSingleton.dominantEye = .left
-        } else if sender.identifier! == "rightDomEyeButton" {
+        } else if sender.identifier!.rawValue == "rightDomEyeButton" {
             AppSingleton.dominantEye = .right
         } else {
             fatalError("Some unrecognized button was pressed!?")
@@ -88,9 +88,9 @@ class ExperimentPreferencesController: NSViewController {
         }
         
         if AppSingleton.dominantEye == .left {
-            leftDomEyeButton.state = NSOnState
+            leftDomEyeButton.state = .on
         } else {
-            rightDomEyeButton.state = NSOnState
+            rightDomEyeButton.state = .on
         }
         
         // number formatter for dpi
@@ -100,11 +100,11 @@ class ExperimentPreferencesController: NSViewController {
         intFormatter.minimum = 0
         dpiField.formatter = intFormatter
         
-        let options: [String: AnyObject] = ["NSContinuouslyUpdatesValue": true as AnyObject]
+        let options = [NSBindingOption.continuouslyUpdatesValue: true]
         
-        showJsonMenusCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefShowJsonMenus, options: options)
+        showJsonMenusCell.bind(NSBindingName(rawValue: "value"), to: NSUserDefaultsController.shared, withKeyPath: "values." + PeyeConstants.prefShowJsonMenus, options: options)
 
-        dpiField.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefMonitorDPI, options: options)
+        dpiField.bind(NSBindingName(rawValue: "value"), to: NSUserDefaultsController.shared, withKeyPath: "values." + PeyeConstants.prefMonitorDPI, options: options)
         
         // MARK: - "Questions" target
         
@@ -258,7 +258,7 @@ class ExperimentPreferencesController: NSViewController {
         }
         
         openPanel.beginSheetModal(for: win) {
-            if $0 == NSFileHandlingPanelOKButton, let url = openPanel.url {
+            if $0.rawValue == NSFileHandlingPanelOKButton, let url = openPanel.url {
                 DispatchQueue.main.async {
                     let loc = QuestionSingleton.FolderLocation(rawValue: sender.tag)!
                     self.fieldFor(location: loc).stringValue = url.path

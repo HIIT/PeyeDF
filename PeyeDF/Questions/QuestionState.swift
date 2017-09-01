@@ -90,7 +90,7 @@ class GivePaper: QuestionState, Advanceable {
                 view.showGenericMessage("You're halfway done. Please take a break now.",
                                         title: "Break time!")
                 view.continueButton.isHidden = true
-                QuestionState.waitQueue.asyncAfter(deadline: .now() + QuestionConstants.breakTime) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + QuestionConstants.breakTime) {
                     // exit and call itself after break is done
                     self.view.continueButton.isHidden = false
                 }
@@ -102,7 +102,7 @@ class GivePaper: QuestionState, Advanceable {
         if let cp = currentPaper {
             
             // open document
-            ((NSApplication.shared().delegate) as? AppDelegate)?.openDocument(currentPaper!.url)
+            ((NSApplication.shared.delegate) as? AppDelegate)?.openDocument(currentPaper!.url)
             
             view.answerSaver.setCurrent(paperState: self)
             view.showGenericMessage("A new paper has been assigned",
@@ -157,9 +157,8 @@ class FamiliarisePaper: QuestionState {
         view.continueButton.isHidden = true
         view.moveQuestionBelow()
         
-        let startTime = Date()
         QuestionState.waitQueue.asyncAfter(deadline: .now() + QuestionConstants.familiarizeTime) {
-            NSBeep()
+            __NSBeep()
             self.stateMachine!.enter(GiveTopic.self)
         }
     }
@@ -193,7 +192,7 @@ class GiveTopic: QuestionState, Advanceable {
         if currentTtopic >= nOfTargetTopics {
             view.showGenericMessage("Paper completed", title: "No more questions for this paper.")
             // close all open documents
-            NSDocumentController.shared().documents.forEach() {
+            NSDocumentController.shared.documents.forEach() {
                 if $0.windowControllers.count == 1 {
                     ($0.windowControllers[0] as? DocumentWindowController)?.window?.close()
                 }

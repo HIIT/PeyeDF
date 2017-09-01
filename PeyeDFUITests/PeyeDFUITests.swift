@@ -56,18 +56,22 @@ class PeyeDFUITests: XCTestCase {
         toolbarsQuery.buttons["Tag"].click()
         
         let calvoEtAl2009PdfWindow = XCUIApplication().windows["CalvoDMello.pdf"]
-        calvoEtAl2009PdfWindow.groups["PDF Content"].click()
+        
+        let pdfContent = calvoEtAl2009PdfWindow.scrollViews.firstMatch
+        
+        pdfContent.click()
         
         let clickVector = CGVector(dx: 0.2, dy: 0.5)
-        calvoEtAl2009PdfWindow.groups["PDF Content"].staticTexts["PDF Static Text"].coordinate(withNormalizedOffset: clickVector).doubleClick()
+        
+        pdfContent.coordinate(withNormalizedOffset: clickVector).doubleClick()
         
         toolbarsQuery.buttons["Tag"].click()
         
-        putInPasteboard("test")
         let windowPopovers = calvodmelloPdfWindow.popovers
         let textField = windowPopovers.children(matching: .textField).element
-        textField.typeKey("v", modifierFlags:.command)  // gets stuck here because of auto completion
-        windowPopovers.staticTexts["tagging text"].click()
+        textField.typeText("Testing tag")
+        
+        windowPopovers.textFields["Input tag field"].click()
         windowPopovers.children(matching: .checkBox).matching(identifier: "Add Tag Button").element.click()
     }
     
@@ -78,29 +82,22 @@ class PeyeDFUITests: XCTestCase {
         
         // put path of file in pasteboard
         let textToEnter = testPDFURL!.relativePath
-        putInPasteboard(textToEnter)
         
         let app = XCUIApplication()
-        app.typeKey("o", modifierFlags:.command)
+        app.typeKey("o", modifierFlags:XCUIElement.KeyModifierFlags.command)
         
         let xsidebarheaderCell = app.outlines["sidebar"].children(matching: .outlineRow).element(boundBy: 0).cells.containing(.staticText, identifier:"xSidebarHeader").element
-        xsidebarheaderCell.typeKey("g", modifierFlags:[.command, .shift])
+        xsidebarheaderCell.typeKey("g", modifierFlags:[XCUIElement.KeyModifierFlags.command, XCUIElement.KeyModifierFlags.shift])
         let sheetsQuery = app.sheets
-        let textField = sheetsQuery.children(matching: .textField).element
+        let textField = sheetsQuery.children(matching: .comboBox).element
         textField.click()
         
-        xsidebarheaderCell.typeKey("a", modifierFlags:.command)
-        xsidebarheaderCell.typeKey("v", modifierFlags:.command)
+        xsidebarheaderCell.typeKey("a", modifierFlags: .command)
+        xsidebarheaderCell.typeText(textToEnter)
         
         app.sheets.buttons["Go"].click()
-        app.buttons["Open"].click()
+        app.buttons["Open"].firstMatch.click()
         
-    }
-    
-    /// Places an arbitrary string in the global pasteboard
-    func putInPasteboard(_ string: String) {
-        NSPasteboard.general().declareTypes([NSStringPboardType], owner: self)
-        NSPasteboard.general().setString(string, forType: NSStringPboardType)
     }
     
 }

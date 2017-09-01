@@ -65,7 +65,7 @@ class PeyeDocument: NSDocument {
     
     /// Open this PDF in preview
     @IBAction func openInPreview(_ sender: AnyObject?) {
-        NSWorkspace.shared().open([self.fileURL!], withAppBundleIdentifier: "com.apple.Preview", options: NSWorkspaceLaunchOptions(), additionalEventParamDescriptor: nil, launchIdentifiers: nil)
+        NSWorkspace.shared.open([self.fileURL!], withAppBundleIdentifier: "com.apple.Preview", options: NSWorkspace.LaunchOptions(), additionalEventParamDescriptor: nil, launchIdentifiers: nil)
         if self.windowControllers.count == 1, let wc = self.windowControllers[0] as? DocumentWindowController {
             wc.window!.performClose(self)
         }
@@ -94,14 +94,14 @@ class PeyeDocument: NSDocument {
         // Add any code here that needs to be executed once the windowController has loaded the document's window.
     }
 
-    override class func autosavesInPlace() -> Bool {
+    override class var autosavesInPlace: Bool {
         return false
     }
     
     /// Creates window controllers and automatically calls loadDocument()
     override func makeWindowControllers() {
         let storyboard = AppSingleton.mainStoryboard
-        let windowController = storyboard.instantiateController(withIdentifier: "Document Window Controller") as! DocumentWindowController
+        let windowController = storyboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "Document Window Controller")) as! DocumentWindowController
         
         // if eye tracker is NOT active, cascade window, otherwise constrain to center of screen
         if !(AppSingleton.eyeTracker?.available ?? false) {

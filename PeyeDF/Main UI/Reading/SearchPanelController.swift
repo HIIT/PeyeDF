@@ -47,9 +47,9 @@ protocol SearchProvider: class {
 class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableViewDelegate, SearchProvider {
     
     // make sure these match in IB
-    let kColumnTitlePageNumber = "Page #"
-    let kColumnTitlePageLabel = "Page Label"
-    let kColumnTitleLine = "Line"
+    let kColumnTitlePageNumber = NSUserInterfaceItemIdentifier(rawValue: "Page #")
+    let kColumnTitlePageLabel = NSUserInterfaceItemIdentifier(rawValue: "Page Label")
+    let kColumnTitleLine = NSUserInterfaceItemIdentifier(rawValue: "Line")
     
     // String used to make tag searches
     let kTagSString = TagConstants.tagSearchPrefix
@@ -91,12 +91,12 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
     
     @IBAction func exactMatchPress(_ sender: NSButton) {
         exactMatch = true
-        separateWordsButton.state = NSOffState
+        separateWordsButton.state = .off
     }
     
     @IBAction func separateWordsPress(_ sender: NSButton) {
         exactMatch = false
-        exactMatchButton.state = NSOffState
+        exactMatchButton.state = .off
     }
     
     // MARK: - Loading / unloading
@@ -111,19 +111,19 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
         // recents menu --
         let cellMenu = NSMenu(title: NSLocalizedString("recentSearchMenu.title", value: "Search Menu", comment: "Search menu title"))
         let clearMenuItem = NSMenuItem(title: NSLocalizedString("recentSearchMenu.clear", value: "Clear", comment: "Clear recent searches menu item"), action: nil, keyEquivalent: "")
-        clearMenuItem.tag = Int(NSSearchFieldClearRecentsMenuItemTag)
+        clearMenuItem.tag = Int(NSSearchField.clearRecentsMenuItemTag)
         cellMenu.insertItem(clearMenuItem, at: 0)
         
         let menuSep = NSMenuItem.separator()
-        menuSep.tag = Int(NSSearchFieldRecentsTitleMenuItemTag)
+        menuSep.tag = Int(NSSearchField.recentsTitleMenuItemTag)
         cellMenu.insertItem(menuSep, at: 1)
         
         let recentSearchMenuItem = NSMenuItem(title: NSLocalizedString("recentSearchMenu.recentSearches", value: "Recent Searches", comment: "Recent searches menu item"), action: nil, keyEquivalent: "")
-        recentSearchMenuItem.tag = Int(NSSearchFieldRecentsTitleMenuItemTag)
+        recentSearchMenuItem.tag = Int(NSSearchField.recentsTitleMenuItemTag)
         cellMenu.insertItem(recentSearchMenuItem, at: 2)
         
         let recentMenu = NSMenuItem(title: "Recents", action: nil, keyEquivalent: "")
-        recentMenu.tag = Int(NSSearchFieldRecentsMenuItemTag)
+        recentMenu.tag = Int(NSSearchField.recentsMenuItemTag)
         cellMenu.insertItem(recentMenu, at: 3)
         
         searchCell.searchMenuTemplate = cellMenu
@@ -252,11 +252,11 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
         // reset exact flag and button in case we are called from outside ui
         exactMatch = exact
         if exact {
-            exactMatchButton.state = NSOnState
-            separateWordsButton.state = NSOffState
+            exactMatchButton.state = .on
+            separateWordsButton.state = .off
         } else {
-            separateWordsButton.state = NSOnState
-            exactMatchButton.state = NSOffState
+            separateWordsButton.state = .on
+            exactMatchButton.state = .off
         }
         
         if searchField.stringValue != theString {
@@ -277,12 +277,12 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
             guard let r = theString.range(of: kTagSString) else {
                 return
             }
-            let tagString = theString.substring(from: r.upperBound)
-            guard tagString.characters.count > 0 else {
+            let tagString = theString[r.upperBound...]
+            guard tagString.count > 0 else {
                 return
             }
             
-            pdfReader!.beginTagStringSearch(tagString)
+            pdfReader!.beginTagStringSearch(String(tagString))
             
         } else {
             
@@ -392,7 +392,7 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
             let rangeOfQuery = lineString.range(of: foundString!, options: NSString.CompareOptions.caseInsensitive)
             let boldFont = NSFont.boldSystemFont(ofSize: 12.0)
             attrString.beginEditing()
-            attrString.addAttribute(NSFontAttributeName, value: boldFont, range: rangeOfQuery)
+            attrString.addAttribute(NSAttributedStringKey.font, value: boldFont, range: rangeOfQuery)
             attrString.endEditing()
             return attrString
         }

@@ -34,10 +34,7 @@ class MetadataWindowController: NSWindowController, NSWindowDelegate {
     }
     
     /// Overriding this to ask the user if changes should be saved before closing
-    func windowShouldClose(_ sender: Any) -> Bool {
-        guard let sender = sender as? NSWindow else {
-            return true
-        }
+    func windowShouldClose(_ sender: NSWindow) -> Bool {
         if sender.isDocumentEdited {
             self.metadataView?.saveData()
             return true

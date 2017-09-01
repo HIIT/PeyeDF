@@ -117,8 +117,8 @@ enum CollaborationMessage {
         }
         
         // split using :
-        let prefix = string.substring(to: r.lowerBound)
-        let suffix = string.substring(from: r.upperBound)
+        let prefix = String(string[..<r.lowerBound])
+        let suffix = String(string[r.upperBound...])
         
         guard let parsedPrefix = MessagePrefix(rawValue: prefix) else {
             return nil

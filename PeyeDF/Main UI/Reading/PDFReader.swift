@@ -42,13 +42,13 @@ enum TrackingStatus: CustomStringConvertible {
     var image: NSImage { get {
         switch self {
         case .unknown:
-            return NSImage(named: NSImageNameStatusNone)!
+            return NSImage(named: NSImage.Name.statusNone)!
         case .trackable:
-            return NSImage(named: NSImageNameStatusAvailable)!
+            return NSImage(named: NSImage.Name.statusAvailable)!
         case .blocked:
-            return NSImage(named: NSImageNameStatusPartiallyAvailable)!
+            return NSImage(named: NSImage.Name.statusPartiallyAvailable)!
         case .impossible:
-            return NSImage(named: NSImageNameStatusUnavailable)!
+            return NSImage(named: NSImage.Name.statusUnavailable)!
         }
     } }
     
@@ -84,17 +84,18 @@ class PDFReader: PDFBase {
     /// enables the toolbar item (if the status is anything other than unknown).
     /// If we go to the trackable status, tells the window controller to start tracking
     var status: TrackingStatus = .unknown { didSet {
-        guard let dwc = self.window?.windowController as? DocumentWindowController else {
-            return
-        }
-        
         DispatchQueue.main.async {
+            [unowned self] in
+            guard let dwc = self.window?.windowController as? DocumentWindowController else {
+                return
+            }
+            
             dwc.tbDocument.isEnabled = !(self.status == .unknown)
             dwc.tbDocument.image = self.status.image
-        }
-        
-        if (oldValue == .blocked || oldValue == .unknown) && status == .trackable {
-            dwc.startTracking()
+            
+            if (oldValue == .blocked || oldValue == .unknown) && self.status == .trackable {
+                dwc.startTracking()
+            }
         }
     } }
     
@@ -170,8 +171,8 @@ class PDFReader: PDFBase {
         if status == .trackable && theEvent.clickCount == 1 && !mouseDragging {
             /// GETTING MOUSE LOCATION IN WINDOW FROM SCREEN COORDINATES (for debug reasons)
             // get mouse in screen coordinates
-            let mouseLoc = NSEvent.mouseLocation()
-            for screen in (NSScreen.screens() as [NSScreen]!) {
+            let mouseLoc = NSEvent.mouseLocation
+            for screen in (NSScreen.screens as [NSScreen]!) {
                 if NSMouseInRect(mouseLoc, screen.frame, false) {
                     let tinySize = NSSize(width: 1, height: 1)
                     let mouseRect = NSRect(origin: mouseLoc, size: tinySize)
@@ -221,7 +222,7 @@ class PDFReader: PDFBase {
     }
     
     /// SciDoc tags changed
-    func tagsChanged(_ notification: Notification) {
+    @objc func tagsChanged(_ notification: Notification) {
         if let uInfo = (notification as NSNotification).userInfo, let newTags = uInfo["tags"] as? [Tag] {
             readingTags = newTags.flatMap({$0 as? ReadingTag})
         }

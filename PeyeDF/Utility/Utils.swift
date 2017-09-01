@@ -185,13 +185,11 @@ func binaryGreaterOrEqOnSortedArray<T: Comparable>(_ ary: [T], target: T) -> Int
 /// most width, after which will be broken on multiple lines)
 public func sizeForText(_ str: String, font: NSFont) -> CGSize {
     
-    var dd = [String: AnyObject]()
-    
-    dd[NSFontAttributeName] = font
+    let dd = [NSAttributedStringKey.font: font]
     
     let AS = NSAttributedString(string: str, attributes: dd)
     
-    return AS.boundingRect(with: CGSize(width: 200, height: 400), options: NSStringDrawingOptions.usesDeviceMetrics).addTo(2.5).size
+    return AS.boundingRect(with: CGSize(width: 200, height: 400), options: NSString.DrawingOptions.usesDeviceMetrics).addTo(2.5).size
 }
 
 /// Given a value and an input range, return a value in the output range

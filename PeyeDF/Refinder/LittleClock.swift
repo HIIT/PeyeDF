@@ -49,7 +49,7 @@ class LittleClock: NSView {
     
     func drawLittleClock(_ frame: NSRect = NSMakeRect(3, 4, 23, 23)) {
         //// General Declarations
-        let context = NSGraphicsContext.current()!.cgContext
+        let context = NSGraphicsContext.current!.cgContext
         
         //// Color Declarations
         let color3 = NSColor(calibratedRed: 0.552, green: 0.552, blue: 0.552, alpha: 1)

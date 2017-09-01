@@ -31,7 +31,7 @@ class TagFieldDelegate: NSObject, NSTextFieldDelegate {
     func control(_ control: NSControl, textView: NSTextView, completions words: [String], forPartialWordRange charRange: NSRange, indexOfSelectedItem index: UnsafeMutablePointer<Int>) -> [String] {
         index.pointee = -1
         let recentTags = UserDefaults.standard.object(forKey: TagConstants.defaultsSavedTags) as! [String]
-        return recentTags.sorted().filter({$0.hasPrefix(textView.string ?? "")})
+        return recentTags.sorted().filter({$0.hasPrefix(textView.string)})
     }
     
 }

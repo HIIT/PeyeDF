@@ -196,7 +196,7 @@ struct FocusArea: CustomStringConvertible {
     
     /// Creates itself from a string with the same format as description.
     init?(fromString string: String) {
-        if let r = string.range(of: ":"), let pno = Int(string.substring(to: r.lowerBound)), let fatype = FocusAreaType(fromString: string.substring(from: r.upperBound)) {
+        if let r = string.range(of: ":"), let pno = Int(String(string[..<r.lowerBound])), let fatype = FocusAreaType(fromString: String(string[r.upperBound...])) {
             // there is range, extract page and focus area type
             self.pageIndex = pno
             self.type = fatype

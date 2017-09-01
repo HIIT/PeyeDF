@@ -88,8 +88,8 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     override func viewDidLoad() {
         // creates dime fetcher with self as receiver and prepares to receive table selection notifications
         diMeFetcher = DiMeFetcher(receiver: self)
-        progressBar.bind("value", to: diMeFetcher!.fetchProgress, withKeyPath: "fractionCompleted")
-        NotificationCenter.default.addObserver(self, selector: #selector(newHistoryTableSelection(_:)), name: NSNotification.Name.NSTableViewSelectionDidChange, object: historyTable)
+        progressBar.bind(NSBindingName(rawValue: "value"), to: diMeFetcher!.fetchProgress, withKeyPath: "fractionCompleted")
+        NotificationCenter.default.addObserver(self, selector: #selector(newHistoryTableSelection(_:)), name: NSTableView.selectionDidChangeNotification, object: historyTable)
     }
     
     /// Perform search using default methods.
@@ -124,7 +124,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     }
     
     override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
-        if let segueId = segue.identifier , segueId == "showThresholdEditor" {
+        if let segueId = segue.identifier , segueId.rawValue == "showThresholdEditor" {
             let thresholdCont = segue.destinationController as! ThresholdEditor
             thresholdCont.detailDelegate = self.delegate
         }
@@ -143,9 +143,9 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
             button in
             DispatchQueue.main.async {
                 if button.tag == self.searchIn.rawValue {
-                    button.state = NSOnState
+                    button.state = .on
                 } else {
-                    button.state = NSOffState
+                    button.state = .off
                 }
             }
         }
@@ -194,7 +194,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
         panel.allowedFileTypes = ["json", "JSON"]
         panel.canSelectHiddenExtension = true
         panel.nameFieldStringValue = "\(sessionId).json"
-        if panel.runModal() == NSFileHandlingPanelOKButton {
+        if panel.runModal().rawValue == NSFileHandlingPanelOKButton {
                 
             let outURL = panel.url!
             loadingStarted()
@@ -277,7 +277,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
             panel.allowedFileTypes = ["json", "JSON"]
             panel.beginSheetModal(for: self.view.window!, completionHandler: {
                 result in
-                if result == NSFileHandlingPanelOKButton {
+                if result.rawValue == NSFileHandlingPanelOKButton {
                     let inURL = panel.url!
                     let data = try? Data(contentsOf: inURL)
                     let json = JSON(data: data!)
@@ -300,7 +300,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
                         // normalize imported rects so attnVal_n ranges between 0 and 1
                         outRects = outRects.normalize()
                         
-                        self.performSegue(withIdentifier: "showThresholdEditor", sender: self)
+                        self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "showThresholdEditor"), sender: self)
                         self.delegate?.setEyeRects(outRects)
                         
                         self.lastImportedIndex = row
@@ -357,8 +357,8 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
             delegate?.setSearchString(newString: nil)
             diMeFetcher?.getAllSummaries()
         } else {
-            AppSingleton.findPasteboard.declareTypes([NSStringPboardType], owner: nil)
-            AppSingleton.findPasteboard.setString(searchField.stringValue, forType: NSStringPboardType)
+            AppSingleton.findPasteboard.declareTypes([.string], owner: nil)
+            AppSingleton.findPasteboard.setString(searchField.stringValue, forType: .string)
             if searchIn == .tag {
                 delegate?.setSearchString(newString: "#tag:" + searchField.stringValue)
             } else {
@@ -393,8 +393,8 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     }
     
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
-        if tableColumn?.identifier == "HistoryList" {
-            let listItem = tableView.make(withIdentifier: "HistoryListItem", owner: self) as! HistoryTableCell
+        if tableColumn?.identifier == NSUserInterfaceItemIdentifier(rawValue: "HistoryList") {
+            let listItem = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "HistoryListItem"), owner: self) as! HistoryTableCell
             listItem.setValues(fromReadingEvent: allHistoryTuples[row].ev, sciDoc: allHistoryTuples[row].ie)
             return listItem
         } else {

@@ -61,7 +61,7 @@ class eyeBox: NSBox {
     }
     
     /// Notification callback
-    func newDataReceived(_ notification: Notification) {
+    @objc func newDataReceived(_ notification: Notification) {
         let userInfo = (notification as NSNotification).userInfo!
         DispatchQueue.main.async {
             self.dist = CGFloat(userInfo["zpos"] as! Double)

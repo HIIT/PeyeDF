@@ -42,13 +42,13 @@ class AnnotationPreferencesViewController: NSViewController {
         floatFormatter.allowsFloats = true
         thicknessField.formatter = floatFormatter
         
-        let options: [String: AnyObject] = ["NSContinuouslyUpdatesValue": true as AnyObject]
+        let options = [NSBindingOption.continuouslyUpdatesValue: true]
         
-        loadPreviousAnnotationsCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefLoadPreviousAnnotations, options: options)
-        annotateDefaultOnCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefEnableAnnotate, options: options)
-        thicknessSlider.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefAnnotationLineThickness, options: options)
-        thicknessField.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefAnnotationLineThickness, options: options)
-        askToSaveAnnotatedPDFCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefAskToSaveOnClose, options: options)
+        loadPreviousAnnotationsCell.bind(NSBindingName(rawValue: "value"), to: NSUserDefaultsController.shared, withKeyPath: "values." + PeyeConstants.prefLoadPreviousAnnotations, options: options)
+        annotateDefaultOnCell.bind(NSBindingName(rawValue: "value"), to: NSUserDefaultsController.shared, withKeyPath: "values." + PeyeConstants.prefEnableAnnotate, options: options)
+        thicknessSlider.bind(NSBindingName(rawValue: "value"), to: NSUserDefaultsController.shared, withKeyPath: "values." + PeyeConstants.prefAnnotationLineThickness, options: options)
+        thicknessField.bind(NSBindingName(rawValue: "value"), to: NSUserDefaultsController.shared, withKeyPath: "values." + PeyeConstants.prefAnnotationLineThickness, options: options)
+        askToSaveAnnotatedPDFCell.bind(NSBindingName(rawValue: "value"), to: NSUserDefaultsController.shared, withKeyPath: "values." + PeyeConstants.prefAskToSaveOnClose, options: options)
 
     }
     @IBAction func thicknessSlided(_ sender: NSSlider) {

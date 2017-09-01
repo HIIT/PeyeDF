@@ -27,7 +27,7 @@ import Cocoa
 
 class GeneralSettingsController: NSViewController {
     
-    var blockStrings: [String] = {
+    @objc var blockStrings: [String] = {
         return UserDefaults.standard.object(forKey: PeyeConstants.prefStringBlockList) as! [String]
     }()
     
@@ -43,10 +43,10 @@ class GeneralSettingsController: NSViewController {
         super.viewDidLoad()
         
         
-        let options: [String: AnyObject] = ["NSContinuouslyUpdatesValue": true as AnyObject]
+        let options = [NSBindingOption.continuouslyUpdatesValue: true]
         
-        downloadMetadataCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefDownloadMetadata, options: options)
-        checkForUpdatesCell.bind("value", to: NSUserDefaultsController.shared(), withKeyPath: "values." + PeyeConstants.prefCheckForUpdatesOnStartup, options: options)
+        downloadMetadataCell.bind(NSBindingName(rawValue: "value"), to: NSUserDefaultsController.shared, withKeyPath: "values." + PeyeConstants.prefDownloadMetadata, options: options)
+        checkForUpdatesCell.bind(NSBindingName(rawValue: "value"), to: NSUserDefaultsController.shared, withKeyPath: "values." + PeyeConstants.prefCheckForUpdatesOnStartup, options: options)
     }
     
     @IBAction func Editeditem(_ sender: NSTextFieldCell) {

@@ -82,8 +82,8 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     lazy var popover: NSPopover = {
         let pop = NSPopover()
-        pop.behavior = NSPopoverBehavior.transient
-        let tvc = AppSingleton.tagsStoryboard.instantiateController(withIdentifier: "TagViewController")
+        pop.behavior = NSPopover.Behavior.transient
+        let tvc = AppSingleton.tagsStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "TagViewController"))
         pop.contentViewController = tvc as! TagViewController
         pop.delegate = self
         return pop
@@ -204,7 +204,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         panel.nameFieldStringValue = "\((self.document as! PeyeDocument).fileURL!.deletingPathExtension().lastPathComponent)-Tags.json"
         panel.beginSheetModal(for: win, completionHandler: {
             result in
-            if result == NSFileHandlingPanelOKButton {
+            if result.rawValue == NSFileHandlingPanelOKButton {
                 let outURL = panel.url!
                 let options = JSONSerialization.WritingOptions.prettyPrinted
                 
@@ -407,9 +407,9 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     func searchCollapseAction(_ wasCollapsed: Bool) {
         if wasCollapsed {
-            searchTB.image = NSImage(named: PeyeConstants.searchButton_UP)
+            searchTB.image = NSImage(named: NSImage.Name(rawValue: PeyeConstants.searchButton_UP))
         } else {
-            searchTB.image = NSImage(named: PeyeConstants.searchButton_DOWN)
+            searchTB.image = NSImage(named: NSImage.Name(rawValue: PeyeConstants.searchButton_DOWN))
         }
     }
     
@@ -422,9 +422,9 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     func sideCollapseAction(_ wasCollapsed: Bool) {
         if wasCollapsed {
-            thumbTB.image = NSImage(named: PeyeConstants.thumbButton_UP)
+            thumbTB.image = NSImage(named: NSImage.Name(rawValue: PeyeConstants.thumbButton_UP))
         } else {
-            thumbTB.image = NSImage(named: PeyeConstants.thumbButton_DOWN)
+            thumbTB.image = NSImage(named: NSImage.Name(rawValue: PeyeConstants.thumbButton_DOWN))
         }
     }
     
@@ -449,10 +449,10 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         if let annotateTB = tbAnnotate, let delegate = readerDelegate {
             if toState {
                 delegate.setRecognizersTo(true)
-                annotateTB.image = NSImage(named: PeyeConstants.annotateButton_DOWN)
+                annotateTB.image = NSImage(named: NSImage.Name(rawValue: PeyeConstants.annotateButton_DOWN))
             } else {
                 delegate.setRecognizersTo(false)
-                annotateTB.image = NSImage(named: PeyeConstants.annotateButton_UP)
+                annotateTB.image = NSImage(named: NSImage.Name(rawValue: PeyeConstants.annotateButton_UP))
             }
         }
     }
@@ -481,14 +481,18 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                 DispatchQueue.global(qos: DispatchQoS.QoSClass.utility).asyncAfter(deadline: showTime) {
                     [weak self] in
                     DiMeFetcher.retrieveAllManualReadingRects(forSciDoc: sciDoc) {
+                        readingRect in
                         // disable button until operation is complete
-                        self?.window?.standardWindowButton(.closeButton)?.isEnabled = false
-                        $0.forEach() {
-                            pdfr.markings.addRect($0)
+                        DispatchQueue.main.async {
+                            [weak self] in
+                            self?.window?.standardWindowButton(.closeButton)?.isEnabled = false
+                            readingRect.forEach() {
+                                pdfr.markings.addRect($0)
+                            }
+                            pdfr.autoAnnotate()
+                            // re enable close button once all data has been retrieved
+                            self?.window?.standardWindowButton(.closeButton)?.isEnabled = true
                         }
-                        pdfr.autoAnnotate()
-                        // re enable close button once all data has been retrieved
-                        self?.window?.standardWindowButton(.closeButton)?.isEnabled = true
                     }
                 }
             }
@@ -580,7 +584,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     @IBAction func thisDocMdata(_ sender: AnyObject?) {
         // create metadata window, if currently nil
         if metadataWindowController == nil {
-            metadataWindowController = AppSingleton.mainStoryboard.instantiateController(withIdentifier: "MetadataWindow") as? MetadataWindowController
+            metadataWindowController = AppSingleton.mainStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "MetadataWindow")) as? MetadataWindowController
         }
         
         // show window controller for metadata and send data
@@ -599,10 +603,10 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         let panel = NSSavePanel()
         panel.allowedFileTypes = ["pdf", "PDF"]
         panel.nameFieldStringValue = (document as? NSDocument)?.fileURL?.lastPathComponent ?? "Untitled"
-        if panel.runModal() == NSFileHandlingPanelOKButton {
+        if panel.runModal().rawValue == NSFileHandlingPanelOKButton {
             pdfReader?.document!.write(to: panel.url!)
-            let documentController = NSDocumentController.shared() 
-            documentController.openDocument(withContentsOf: panel.url!, display: true) { _ in
+            let documentController = NSDocumentController.shared
+            documentController.openDocument(withContentsOf: panel.url!, display: true) { _,_,_  in
                 // empty, nothing else to do (NSDocumentController will automacally link URL to NSDocument (pdf file)
             }
         }
@@ -748,16 +752,16 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         
         NotificationCenter.default.addObserver(self, selector: #selector(autoAnnotateComplete(_:)), name: PeyeConstants.autoAnnotationComplete, object: self.pdfReader!)
         NotificationCenter.default.addObserver(self, selector: #selector(zoomChanged(_:)), name: NSNotification.Name.PDFViewScaleChanged, object: self.pdfReader!)
-        NotificationCenter.default.addObserver(self, selector: #selector(frameChanged(_:)), name: NSNotification.Name.NSViewFrameDidChange, object: self.pdfReader!)
+        NotificationCenter.default.addObserver(self, selector: #selector(frameChanged(_:)), name: NSView.frameDidChangeNotification, object: self.pdfReader!)
         // Note: forced downcast below relies on "undocumented" view tree
-        NotificationCenter.default.addObserver(self, selector: #selector(scrollingChanged(_:)), name: NSNotification.Name.NSViewBoundsDidChange, object: self.pdfReader!.subviews[0].subviews[0] as! NSClipView)
+        NotificationCenter.default.addObserver(self, selector: #selector(scrollingChanged(_:)), name: NSView.boundsDidChangeNotification, object: self.pdfReader!.subviews[0].subviews[0] as! NSClipView)
         
         // Get notifications from managed window
         
-        NotificationCenter.default.addObserver(self, selector: #selector(windowMoved(_:)), name: NSNotification.Name.NSWindowDidMove, object: self.window)
-        NotificationCenter.default.addObserver(self, selector: #selector(windowWillSwitchAway(_:)), name: NSNotification.Name.NSWindowDidResignKey, object: self.window)
-        NotificationCenter.default.addObserver(self, selector: #selector(windowWantsMain(_:)), name: NSNotification.Name.NSWindowDidBecomeKey, object: self.window)
-        NotificationCenter.default.addObserver(self, selector: #selector(windowOcclusionChange(_:)), name: NSNotification.Name.NSWindowDidChangeOcclusionState, object: self.window)
+        NotificationCenter.default.addObserver(self, selector: #selector(windowMoved(_:)), name: NSWindow.didMoveNotification, object: self.window)
+        NotificationCenter.default.addObserver(self, selector: #selector(windowWillSwitchAway(_:)), name: NSWindow.didResignKeyNotification, object: self.window)
+        NotificationCenter.default.addObserver(self, selector: #selector(windowWantsMain(_:)), name: NSWindow.didBecomeKeyNotification, object: self.window)
+        NotificationCenter.default.addObserver(self, selector: #selector(windowOcclusionChange(_:)), name: NSWindow.didChangeOcclusionStateNotification, object: self.window)
         
         // Get notifications about user's eyes (present or not)
         
@@ -834,7 +838,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         // otherwise call the callback right now
         if pdfr.status == .trackable && DiMeSession.dimeAvailable {
             let ww = NSWindow()
-            let wvc = AppSingleton.mainStoryboard.instantiateController(withIdentifier: "WaitVC") as! WaitViewController
+            let wvc = AppSingleton.mainStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "WaitVC")) as! WaitViewController
             ww.contentViewController = wvc
             wvc.someText = "Sending data to DiMe..."
             self.window!.beginSheet(ww, completionHandler: nil)
@@ -845,7 +849,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
                 let summaryEv = pdfr.makeSummaryEvent()
                 summaryEv.readingTime = self.totalReadingTime
                 DiMePusher.sendToDiMe(summaryEv) {
-                    _ in
+                    _, _ in
                     // signal when done
                     DispatchQueue.main.async {
                         self.pdfReader!.document = nil

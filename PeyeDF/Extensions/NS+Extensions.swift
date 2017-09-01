@@ -305,8 +305,8 @@ extension NSPasteboard {
         }
     } set {
         if let newString = newValue {
-            self.declareTypes([NSStringPboardType], owner: nil)
-            self.setString(newString, forType: NSStringPboardType)
+            self.declareTypes([PasteboardType.string], owner: nil)
+            self.setString(newString, forType: PasteboardType.string)
         } else {
             self.clearContents()
         }
