@@ -158,7 +158,7 @@ accRX = 1000
 accRY = 1000
 inkey = "x"
 
-while (accLX > minAccuracy or accLY > minAccuracy or accRX > minAccuracy or accRY > minAccuracy) and inkey != "s":
+while (accLX > minAccuracy or accLY > minAccuracy or accRX > minAccuracy or accRY > minAccuracy) and not inkey == 's' and not inkey == ' s':
 
 	displayDevice = 1
 	calibrationData = CCalibration(9, 1, displayDevice, 0, 1, 250, 220, 2, 20, b"")
@@ -185,6 +185,7 @@ while (accLX > minAccuracy or accLY > minAccuracy or accRX > minAccuracy or accR
 	if accLX > minAccuracy or accLY > minAccuracy or accRX > minAccuracy or accRY > minAccuracy:
 		print("One or more accuracies were above " + str(minAccuracy))
 		inkey = raw_input('Enter to continue, or s + enter to skip: ')
+		print("Entered:'" + inkey + "'")
 
 # ---------------------------------------------
 # ---- define the callback functions. Also see the enum and string arrays in PeyeConstants for input/output formats.
@@ -242,7 +243,7 @@ eventCB = True
 
 command = ''
 while not command == 'q':
-    command = raw_input('Enter q+enter to quit: ')
+    command = raw_input('q+enter to stop streaming eye data. ')
 
 print('Terminating... ')
 sampleCB = False
