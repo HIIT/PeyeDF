@@ -274,8 +274,6 @@ class PDFReader: PDFBase {
     /// It sets the state of markings to the specified object (markingState) and
     /// refreshes the view (so that the change can be seen appearing / disappearing immediately).
     @objc func undoMarkAndAnnotate(_ previousState: PDFMarkingsState) {
-        guard let document = self.document else { return }
-        
         // if someone is tracking us, tell them to undo
         if Multipeer.trackers.count > 0 {
             if !(undoManager?.isRedoing ?? false) {
@@ -296,9 +294,6 @@ class PDFReader: PDFBase {
             // refresh the view for all rects affected by the undo
             previousState.lastRects.forEach() {
                 rRect in
-                DispatchQueue.main.async {
-                    self.setNeedsDisplay(self.convert(rRect.annotationRect, from: document.page(at: rRect.pageIndex)!))
-                }
             }
             // save last modified rects in state for redo
             evenPreviousState.lastRects = previousState.lastRects

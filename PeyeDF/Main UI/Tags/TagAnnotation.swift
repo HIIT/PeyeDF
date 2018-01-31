@@ -58,10 +58,13 @@ class TagAnnotation: Equatable {
     fileprivate var lastLabelHit: Int?
     
     /// Creates a block of annotations from a reading tag
-    init(fromReadingTag tag: ReadingTag, pdfBase: PDFBase) {
+    init?(fromReadingTag tag: ReadingTag, pdfBase: PDFBase) {
         
         self.pageIndex = tag.rRects[0].pageIndex as Int
-        let pdfPage = pdfBase.document!.page(at: self.pageIndex as Int)
+        
+        guard let document = pdfBase.document, let pdfPage = document.page(at: self.pageIndex as Int) else {
+            return nil
+        }
         
         var annots = [PDFAnnotationMarkup]()
         for rRect in tag.rRects {
@@ -69,19 +72,17 @@ class TagAnnotation: Equatable {
             
             annotation.color = TagConstants.annotationColourTagged
             
-            pdfPage!.addAnnotation(annotation)
+            DispatchQueue.main.async {
+                pdfPage.addAnnotation(annotation)
+            }
             annots.append(annotation)
             
-            // refresh view
-            DispatchQueue.main.async {
-                pdfBase.setNeedsDisplay(pdfBase.convert(rRect.rect, from: pdfPage!))
-            }
         }
         
         self.pdfBase = pdfBase
         self.tags.append(tag)
         self.markups = annots
-        let (label, labelBack) = TagAnnotation.makeLabelPair(tag, pdfPage: pdfPage!, pdfBase: pdfBase)
+        let (label, labelBack) = TagAnnotation.makeLabelPair(tag, pdfPage: pdfPage, pdfBase: pdfBase)
         labels.append(label)
         labelBacks.append(labelBack)
         
@@ -160,7 +161,9 @@ class TagAnnotation: Equatable {
         markups.forEach() {
             $0.color = TagConstants.annotationColourTaggedSelected
             let annRect = pdfBase.convert($0.bounds, from: $0.page!)
-            pdfBase.setNeedsDisplay(annRect)
+            DispatchQueue.main.async {
+                self.pdfBase.setNeedsDisplay(annRect)
+            }
         }
     }
     
@@ -169,7 +172,9 @@ class TagAnnotation: Equatable {
         markups.forEach() {
             $0.color = TagConstants.annotationColourTagged
             let annRect = pdfBase.convert($0.bounds, from: $0.page!)
-            pdfBase.setNeedsDisplay(annRect)
+            DispatchQueue.main.async {
+                self.pdfBase.setNeedsDisplay(annRect)
+            }
         }
     }
     

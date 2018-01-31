@@ -352,19 +352,27 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     /// Ask dime to fetch data
     func reloadData() {
         loadingStarted()
-        if searchField.stringValue == "" {
-            AppSingleton.findPasteboard.clearContents()
-            delegate?.setSearchString(newString: nil)
-            diMeFetcher?.getAllSummaries()
-        } else {
-            AppSingleton.findPasteboard.declareTypes([.string], owner: nil)
-            AppSingleton.findPasteboard.setString(searchField.stringValue, forType: .string)
-            if searchIn == .tag {
-                delegate?.setSearchString(newString: "#tag:" + searchField.stringValue)
-            } else {
-                delegate?.setSearchString(newString: searchField.stringValue)
+        DispatchQueue.main.async {
+            [weak self] in
+            
+            guard let strongSelf = self else {
+                return
             }
-            diMeFetcher?.getSummariesForSearch(string: searchField.stringValue, inData: searchIn)
+            
+            if strongSelf.searchField.stringValue == "" {
+                AppSingleton.findPasteboard.clearContents()
+                strongSelf.delegate?.setSearchString(newString: nil)
+                strongSelf.diMeFetcher?.getAllSummaries()
+            } else {
+                AppSingleton.findPasteboard.declareTypes([.string], owner: nil)
+                AppSingleton.findPasteboard.setString(strongSelf.searchField.stringValue, forType: .string)
+                if strongSelf.searchIn == .tag {
+                    strongSelf.delegate?.setSearchString(newString: "#tag:" + strongSelf.searchField.stringValue)
+                } else {
+                    strongSelf.delegate?.setSearchString(newString: strongSelf.searchField.stringValue)
+                }
+                strongSelf.diMeFetcher?.getSummariesForSearch(string: strongSelf.searchField.stringValue, inData: strongSelf.searchIn)
+            }
         }
     }
     

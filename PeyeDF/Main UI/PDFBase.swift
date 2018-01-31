@@ -438,8 +438,8 @@ class PDFBase: PDFView {
             // if split count is more than 1, call this method recursively, otherwise create a new tag annotation for the new tag
             if splitTags.count > 1 {
                 splitTags.forEach({appendTagAnnotation(forTag: $0)})
-            } else if splitTags.count == 1 {
-                tagAnnotations.append(TagAnnotation(fromReadingTag: splitTags[0], pdfBase: self))
+            } else if splitTags.count == 1, let newAnnotation = TagAnnotation(fromReadingTag: splitTags[0], pdfBase: self) {
+                tagAnnotations.append(newAnnotation)
             } else {
                 if #available(OSX 10.12, *) {
                     os_log("Zero tags where obtained by splitting a tag that contained something", type: .error)
@@ -706,18 +706,15 @@ class PDFBase: PDFView {
     
     /// Adds the given annotation on the given page and refreshes display
     internal func addAnnotation(_ annotation: PDFAnnotation, onPage: PDFPage) {
-        onPage.addAnnotation(annotation)
         DispatchQueue.main.async {
-            self.setNeedsDisplay(self.convert(annotation.bounds, from: onPage))
-            self.layoutDocumentView()
+            onPage.addAnnotation(annotation)
         }
     }
     
     /// Removes the given annotation from the given page and refreshes display
     internal func removeAnnotation(_ annotation: PDFAnnotation, onPage: PDFPage) {
-        onPage.removeAnnotation(annotation)
         DispatchQueue.main.async {
-            self.setNeedsDisplay(self.convert(annotation.bounds, from: onPage))
+            onPage.removeAnnotation(annotation)
         }
     }
     
@@ -726,10 +723,9 @@ class PDFBase: PDFView {
         let oldBounds = annotation.bounds
         let newOrigin = NSPoint(x: toPoint.x - annotation.bounds.size.width / 2, y: toPoint.y - annotation.bounds.size.height / 2)
         let newBounds = NSRect(origin: newOrigin, size: oldBounds.size)
-        annotation.bounds = newBounds
+        
         DispatchQueue.main.async {
-            self.setNeedsDisplay(self.convert(oldBounds, from: annotation.page!))
-            self.setNeedsDisplay(self.convert(newBounds, from: annotation.page!))
+            annotation.bounds = newBounds
         }
     }
     
@@ -756,8 +752,10 @@ class PDFBase: PDFView {
         // everything which is lineAutoSelectionTolerance bigger than that
         var selections = [PDFSelection]()
         for point in pointArray {
-            let sel = activePage.selectionForLine(at: point)
-            let selRect = sel!.bounds(for: activePage)
+            guard let sel = activePage.selectionForLine(at: point) else {
+                continue
+            }
+            let selRect = sel.bounds(for: activePage)
             let seenRect = getSeenRect(fromPoint: pagePoint, zoomLevel: self.scaleFactor)
             // only add selection if its rect intersect estimated seen rect
             // and if selection rect is less than maximum h and v size but more than minimum
@@ -768,7 +766,7 @@ class PDFBase: PDFView {
                 // only add selection if it wasn't added before
                 var foundsel = false
                 for oldsel in selections {
-                    if sel!.equalsTo(oldsel) {
+                    if sel.equalsTo(oldsel) {
                         foundsel = true
                         break
                     }
@@ -776,7 +774,7 @@ class PDFBase: PDFView {
                 if foundsel {
                     continue
                 }
-                selections.append(sel!)
+                selections.append(sel)
             }
         }
         
