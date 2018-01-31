@@ -41,8 +41,14 @@ class PeyeDocument: NSDocument {
         }
     } }
     
-    var wereAnnotationsAdded: Bool { get {
-        return super.isDocumentEdited
+    var wereManualAnnotationsAdded: Bool { get {
+        guard windowControllers.count > 0,
+              let wc = windowControllers[0] as? DocumentWindowController,
+              let pdfReader = wc.pdfReader,
+              let markings = pdfReader.markings  else {
+            return false
+        }
+        return markings.getAll(forSources: [.click, .manualSelection]).count > 0
     } }
     
     /// Reference to underlying PDFDocument. Set after loading document by window controller.

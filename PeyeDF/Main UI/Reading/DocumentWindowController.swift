@@ -845,7 +845,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
             // send data to dime (if document has been edited -- annotations have been added -- or enough
             // time elapsed)
             if let doc = self.document as? PeyeDocument,
-                (doc.wereAnnotationsAdded || self.totalReadingTime >= PeyeConstants.minTotalReadTime) {
+                (doc.wereManualAnnotationsAdded || self.totalReadingTime >= PeyeConstants.minTotalReadTime) {
                 let summaryEv = pdfr.makeSummaryEvent()
                 summaryEv.readingTime = self.totalReadingTime
                 DiMePusher.sendToDiMe(summaryEv) {

@@ -79,11 +79,27 @@ class PDFReader: PDFBase {
         return UserDefaults.standard.object(forKey: PeyeConstants.prefDrawDebugCircle) as! Bool
     }()
     
+    /// Queue on which status updates are stored / read, to avoid data races
+    private static let statusQueue = DispatchQueue(label: "hiit.PeyeDF.PDFReader.statusQueue", qos: .userInitiated)
+    
     /// Whether history tracking can be done on this document
-    /// Changhing this automatically sets the toolbar image and
+    /// Changing this automatically sets the toolbar image and
     /// enables the toolbar item (if the status is anything other than unknown).
     /// If we go to the trackable status, tells the window controller to start tracking
-    var status: TrackingStatus = .unknown { didSet {
+    var status: TrackingStatus { get {
+            return PDFReader.statusQueue.sync {
+                return self.privateStatus
+            }
+        }
+        set {
+            PDFReader.statusQueue.sync {
+                self.privateStatus = newValue
+            }
+    } }
+    
+    /// Private representation of status, should not be accessed directly (modify the "normal"
+    /// representation of status instead, which uses a serial queue)
+    private var privateStatus: TrackingStatus = .unknown { didSet {
         DispatchQueue.main.async {
             [unowned self] in
             guard let dwc = self.window?.windowController as? DocumentWindowController else {
