@@ -99,7 +99,7 @@ extension PDFDocument {
         trimmedText = trimmedText!.trimmingCharacters(in: CharacterSet.whitespaces) // get trimmed version of all text
         trimmedText = trimmedText!.trimmingCharacters(in: CharacterSet.newlines) // trim newlines
         trimmedText = trimmedText!.trimmingCharacters(in: CharacterSet.whitespaces) // trim again
-        if trimmedText!.characters.count > 5 {  // we assume the document does contain useful text if there are more than 5 characters remaining
+        if trimmedText!.count > 5 {  // we assume the document does contain useful text if there are more than 5 characters remaining
             return trimmedText
         } else {
             return nil
@@ -109,7 +109,7 @@ extension PDFDocument {
     /// Gets the title from the document metadata, returns nil if not present
     func getTitle() -> String? {
         let docAttrib = documentAttributes
-        if let title: String = docAttrib![PDFDocumentAttribute.titleAttribute] as? String , title.trimmed().characters.count > 0 {
+        if let title: String = docAttrib![PDFDocumentAttribute.titleAttribute] as? String , title.trimmed().count > 0 {
             return title.trimmed()
         } else {
             return nil
@@ -194,7 +194,7 @@ extension PDFDocument {
             
             if let upperBound = range?.upperBound {
                 let s = String(pageString[upperBound...]).trimmed()
-                if let doiChunk = s.firstChunk() , doiChunk.characters.count >= 5 {
+                if let doiChunk = s.firstChunk() , doiChunk.count >= 5 {
                     _doi = doiChunk
                     break
                 }

@@ -244,7 +244,7 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
         
         // if the string contains two quotes, at beginning and end, 
         // remove them and perform exact search
-        if theString.countOfChar("\"") == 2 && theString.characters.first! == "\"" && theString.characters.last! == "\"" {
+        if theString.countOfChar("\"") == 2 && theString.first! == "\"" && theString.last! == "\"" {
             theString.removeChars(["\""])
             exact = true
         }

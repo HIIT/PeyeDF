@@ -101,14 +101,14 @@ class MetadataViewController: NSViewController {
     func saveData() {
         var dirty = false
         if initialTitle != titleField.stringValue {
-            if titleField.stringValue.trimmingCharacters(in: CharacterSet.whitespaces).characters.count > 0 {
+            if titleField.stringValue.trimmingCharacters(in: CharacterSet.whitespaces).count > 0 {
                 let trimVal = titleField.stringValue.trimmingCharacters(in: CharacterSet.whitespaces)
                 pdfDoc!.setTitle(trimVal)
                 dirty = true
             }
         }
         if initialAuthor != authorField.stringValue {
-            if authorField.stringValue.trimmingCharacters(in: CharacterSet.whitespaces).characters.count > 0 {
+            if authorField.stringValue.trimmingCharacters(in: CharacterSet.whitespaces).count > 0 {
                 let trimVal = authorField.stringValue.trimmingCharacters(in: CharacterSet.whitespaces)
                 pdfDoc!.setAuthor(trimVal)
                 dirty = true
@@ -116,7 +116,7 @@ class MetadataViewController: NSViewController {
             
         }
         if initialSubject != subjectField.stringValue {
-            if subjectField.stringValue.trimmingCharacters(in: CharacterSet.whitespaces).characters.count > 0 {
+            if subjectField.stringValue.trimmingCharacters(in: CharacterSet.whitespaces).count > 0 {
                 let trimVal = subjectField.stringValue.trimmingCharacters(in: CharacterSet.whitespaces)
                 pdfDoc!.setSubject(trimVal)
                 dirty = true
@@ -124,7 +124,7 @@ class MetadataViewController: NSViewController {
             
         }
         if initialKeywords != keywordsField.stringValue {
-            if keywordsField.stringValue.trimmingCharacters(in: CharacterSet.whitespaces).characters.count > 0 {
+            if keywordsField.stringValue.trimmingCharacters(in: CharacterSet.whitespaces).count > 0 {
                 let trimVal = keywordsField.stringValue.trimmingCharacters(in: CharacterSet.whitespaces)
                 pdfDoc!.setKeywords(trimVal)
                 dirty = true

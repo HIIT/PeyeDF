@@ -60,7 +60,7 @@ extension String {
     /// Returns the first "chunk" i.e. a fragment which is not separated by whitespace
     func firstChunk() -> String? {
         var outC = [Character]()
-        for c in self.characters {
+        for c in self {
             if c != " " && c != "\n" && c != "\r" {
                 outC.append(c)
             } else {
@@ -76,13 +76,13 @@ extension String {
     
     /// Removes the character(s) from this string
     mutating func removeChars(_ theChars: [Character]) {
-        self = String(characters.filter({!theChars.contains($0)}))
+        self = String(filter({!theChars.contains($0)}))
     }
     
     /// Removes the character(s) and returns a new string
     
     func withoutChars(_ theChars: [Character]) -> String {
-        return String(self.characters.filter({!theChars.contains($0)}))
+        return String(self.filter({!theChars.contains($0)}))
     }
     
     /// Dumps a string to a file in the temporary directory.
@@ -125,7 +125,7 @@ extension String {
     
     /// Checks if this string contains the given character
     func containsChar(_ theChar: Character) -> Bool {
-        for c in self.characters {
+        for c in self {
             if c == theChar {
                 return true
             }
@@ -136,7 +136,7 @@ extension String {
     /// Counts occurrences of char within this string
     func countOfChar(_ theChar: Character) -> Int {
         var count = 0
-        for c in self.characters {
+        for c in self {
             if c == theChar {
                 count += 1
             }
@@ -171,7 +171,7 @@ extension String {
     
     /// Skips the first x characters
     func skipPrefix(_ nOfChars: Int) -> String {
-        let i = self.characters.index(self.startIndex, offsetBy: nOfChars)
+        let i = self.index(self.startIndex, offsetBy: nOfChars)
         return String(self[i...])
     }
     

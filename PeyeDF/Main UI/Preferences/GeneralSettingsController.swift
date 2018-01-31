@@ -71,7 +71,7 @@ class GeneralSettingsController: NSViewController {
     }
     
     @IBAction func addPress(_ sender: NSButton) {
-        guard textField.stringValue.trimmed().characters.count > 0 else {
+        guard textField.stringValue.trimmed().count > 0 else {
             return
         }
         

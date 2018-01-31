@@ -192,12 +192,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // the format is one or more of (x,y,width,height,pagenumber)
         // between square brackets
         if let urlRectsString = comps.parameterDictionary?["markRects"] {
-            if urlRectsString.characters.first == "[" && urlRectsString.characters.last == "]" {
+            if urlRectsString.first == "[" && urlRectsString.last == "]" {
                 let comps = urlRectsString.components(separatedBy: ["[","]","(",")"])
                 // we should have something like this now:
                 // ["", "", "10,20,30,40,4", "", "1,2,3,4,5", "", ""]
                 for comp in comps {
-                    if comp.characters.count >= 9 {
+                    if comp.count >= 9 {
                         let inner = comp.components(separatedBy: ",")
                         if inner.count == 5 {
                             if let x = Double(inner[0]),

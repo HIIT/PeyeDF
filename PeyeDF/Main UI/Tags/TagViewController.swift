@@ -148,7 +148,7 @@ class TagViewController: NSViewController {
     /// Adds a tag, and tells the delegate about it.
     @IBAction func addPress(_ sender: NSButton) {
         let newTag = inputField.stringValue.trimmed()
-        if newTag.characters.count > 0 && !representedTags.contains(newTag) {
+        if newTag.count > 0 && !representedTags.contains(newTag) {
             representedTags.append(newTag)
             tagDelegate?.tagAdded(newTag)
             AppSingleton.updateRecentTags(newTag)
