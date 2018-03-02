@@ -162,10 +162,10 @@ while (accLX > minAccuracy or accLY > minAccuracy or accRX > minAccuracy or accR
 
 	displayDevice = 1
     
-    if 'm' in inkey:
-        autoControl = 1
-    else
-        autoControl = 0
+	if 'm' in inkey:
+		autoControl = 0
+	else:
+		autoControl = 1
     
 	calibrationData = CCalibration(9, 1, displayDevice, 0, autoControl, 250, 220, 2, 20, b"")
 
