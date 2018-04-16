@@ -138,7 +138,7 @@ class PDFReader: PDFBase {
             // pdf reader gets notification from info elem tag changes
             NotificationCenter.default.addObserver(self, selector: #selector(tagsChanged(_:)), name: NSNotification.Name(rawValue: TagConstants.tagsChangedNotification), object: sd)
             
-            readingTags = sd.tags.flatMap({$0 as? ReadingTag})
+            readingTags = sd.tags.compactMap({$0 as? ReadingTag})
         }
         
     } }
@@ -188,7 +188,7 @@ class PDFReader: PDFBase {
             /// GETTING MOUSE LOCATION IN WINDOW FROM SCREEN COORDINATES (for debug reasons)
             // get mouse in screen coordinates
             let mouseLoc = NSEvent.mouseLocation
-            for screen in (NSScreen.screens as [NSScreen]!) {
+            for screen in NSScreen.screens {
                 if NSMouseInRect(mouseLoc, screen.frame, false) {
                     let tinySize = NSSize(width: 1, height: 1)
                     let mouseRect = NSRect(origin: mouseLoc, size: tinySize)
@@ -240,7 +240,7 @@ class PDFReader: PDFBase {
     /// SciDoc tags changed
     @objc func tagsChanged(_ notification: Notification) {
         if let uInfo = (notification as NSNotification).userInfo, let newTags = uInfo["tags"] as? [Tag] {
-            readingTags = newTags.flatMap({$0 as? ReadingTag})
+            readingTags = newTags.compactMap({$0 as? ReadingTag})
         }
     }
     

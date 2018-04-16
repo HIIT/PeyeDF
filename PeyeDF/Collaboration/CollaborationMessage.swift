@@ -188,7 +188,7 @@ enum CollaborationMessage {
         case .seenAreas:
             
             let inputAreas = suffix.components(separatedBy: ";")
-            let parsedAreas = inputAreas.flatMap({FocusArea(fromString: $0)})
+            let parsedAreas = inputAreas.compactMap({FocusArea(fromString: $0)})
             guard parsedAreas.count > 0 else {
                 if #available(OSX 10.12, *) {
                     os_log("Failed to find any areas in input", type: .debug)
@@ -200,7 +200,7 @@ enum CollaborationMessage {
         case .markRects:
             
             let json = JSON(parseJSON: suffix)
-            self = .markRects(json.array!.flatMap({ReadingRect(fromJson: $0)}))
+            self = .markRects(json.array!.compactMap({ReadingRect(fromJson: $0)}))
         
         case .fixation:
         

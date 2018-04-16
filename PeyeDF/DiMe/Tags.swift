@@ -137,8 +137,8 @@ open class ReadingTag: Tag {
         let pagesString = components[0]
         let rectsString = components[1]
         
-        let pages = pagesString.components(separatedBy: ";").flatMap {Int($0)}
-        let rects = rectsString.components(separatedBy: ";").flatMap {NSRect(string: $0)}
+        let pages = pagesString.components(separatedBy: ";").compactMap {Int($0)}
+        let rects = rectsString.components(separatedBy: ";").compactMap {NSRect(string: $0)}
         
         guard pages.count == rects.count else {
             return nil
@@ -172,7 +172,7 @@ open class ReadingTag: Tag {
     }
     
     override init(fromDiMe json: JSON) {
-        self.rRects = json["rects"].arrayValue.flatMap({ReadingRect(fromJson: $0)})
+        self.rRects = json["rects"].arrayValue.compactMap({ReadingRect(fromJson: $0)})
         super.init(fromDiMe: json)
     }
     
@@ -258,7 +258,7 @@ extension Collection where Iterator.Element: Tag {
     /// - Parameter forRects: Rectangles which cover the areas that should be tagged.
     /// - Parameter onPages: Page indices on which the rects appear (same order as forRects).
     func getReadingTags(_ forRects: [NSRect], onPages: [Int]) -> [ReadingTag] {
-        let rTags = self.flatMap({$0 as? ReadingTag})
+        let rTags = self.compactMap({$0 as? ReadingTag})
         return rTags.filter({$0.containsNSRects(forRects, onPages: onPages)})
     }
 }

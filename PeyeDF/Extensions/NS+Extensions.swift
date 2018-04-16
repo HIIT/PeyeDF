@@ -147,6 +147,7 @@ extension NSPoint {
             nf.localizesFormat = false  // to be locale-independent
             if let x = nf.number(from: spl[0]) as? CGFloat,
                let y = nf.number(from: spl[1]) as? CGFloat {
+                self.init()
                 self.x = x
                 self.y = y
             } else {

@@ -59,7 +59,7 @@ import os.log
             if newState {
                 if let theirHash = Multipeer.peerController.getCurrentContentHash(forPeer: peerID),
                    let wc = Multipeer.ourWindows[theirHash], let sciDoc = wc.pdfReader?.sciDoc {
-                    let ourReadingTags = sciDoc.tags.flatMap({$0 as? ReadingTag})
+                    let ourReadingTags = sciDoc.tags.compactMap({$0 as? ReadingTag})
                     ourReadingTags.forEach() {
                         CollaborationMessage.addReadingTag($0).sendTo([peerID])
                     }

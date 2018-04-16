@@ -90,7 +90,7 @@ class PDFBase: PDFView {
             let changedTagStrings = oldTagStrings.intersection(newTagStrings)
             
             // put old and new changed tags in a tuple (if different)
-            let changedTags: [(ReadingTag, ReadingTag)] = changedTagStrings.flatMap({
+            let changedTags: [(ReadingTag, ReadingTag)] = changedTagStrings.compactMap({
                 string in
                 let oldTag = readingTags.filter({$0.text == string})
                 let newTag = newValue.filter({$0.text == string})
@@ -519,7 +519,7 @@ class PDFBase: PDFView {
     /// Get the number of visible page labels (as embedded in the PDF)
     func getVisiblePageLabels() -> [String] {
         var visibleArray = [String]()
-        for visiblePage in self.visiblePages.flatMap({$0}) {
+        for visiblePage in self.visiblePages.compactMap({$0}) {
             visibleArray.append(visiblePage.label!)
         }
         return visibleArray

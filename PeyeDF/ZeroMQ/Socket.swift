@@ -94,7 +94,7 @@ public final class Socket {
         return true
     }
 
-    func send(_ buffer: UnsafeMutableRawPointer, length: Int, mode: SendMode = []) throws -> Bool {
+    func send(_ buffer: UnsafeRawPointer, length: Int, mode: SendMode = []) throws -> Bool {
         let result = zmq_send(socket, buffer, length, Int32(mode.rawValue))
 
         if result == -1 && zmq_errno() == EAGAIN {
@@ -109,7 +109,7 @@ public final class Socket {
     }
     public func send(_ data: Data, mode: SendMode = []) throws -> Bool {
         var data = data
-        return try data.withUnsafeMutableBytes { bytes in
+        return try data.withUnsafeBytes() { bytes in
             return try self.send(bytes, length: data.count, mode: mode)
         }
     }

@@ -57,10 +57,10 @@ class ScientificDocument: DocumentInformationElement {
     override init(fromDime json: JSON) {
         super.init(fromDime: json)
         if let authors = json["authors"].array {
-            self.authors = authors.flatMap({Person(fromDime: $0)})
+            self.authors = authors.compactMap({Person(fromDime: $0)})
         }
         if let keywords = json["keywords"].array {
-            self.keywords = keywords.flatMap({$0.string})
+            self.keywords = keywords.compactMap({$0.string})
         }
         self.year = json["year"].int
         self.publisher = json["publisher"].string
@@ -81,7 +81,7 @@ class ScientificDocument: DocumentInformationElement {
                 self.booktitle = subj
             }
             if let auths = json["message"]["author"].array {
-                self.authors = auths.flatMap({Person(fromCrossRef: $0)})
+                self.authors = auths.compactMap({Person(fromCrossRef: $0)})
             }
             if let doi = json["message"]["DOI"].string {
                 self.doi = doi

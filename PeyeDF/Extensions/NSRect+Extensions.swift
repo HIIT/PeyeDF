@@ -97,6 +97,7 @@ extension NSRect {
               let y = nf.number(from: spl[1]) as? CGFloat,
               let w = nf.number(from: spl[2]) as? CGFloat,
               let h = nf.number(from: spl[3]) as? CGFloat {
+                self.init()
                 self.origin = NSPoint(x: x, y: y)
                 self.size = NSSize(width: w, height: h)
             } else {
@@ -111,6 +112,7 @@ extension NSRect {
     init(circle: Circle) {
         let x = circle.centre.x - circle.radius
         let y = circle.centre.y - circle.radius
+        self.init()
         self.origin = NSPoint(x: x, y: y)
         self.size = NSSize(width: circle.radius * 2, height: circle.radius * 2)
     }

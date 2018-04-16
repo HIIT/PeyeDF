@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16C32f" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11542"/>
-        <plugIn identifier="com.apple.pdfkit.ibplugin" version="11542"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14109"/>
+        <plugIn identifier="com.apple.pdfkit.ibplugin" version="14109"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -15,6 +15,9 @@
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="500" y="700" width="450" height="120"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+                        <connections>
+                            <outlet property="delegate" destination="HAA-5S-2hG" id="U0I-MU-9XL"/>
+                        </connections>
                     </window>
                     <connections>
                         <segue destination="8ab-mh-r4m" kind="relationship" relationship="window.shadowedContentViewController" id="cYM-T8-jMb"/>
@@ -32,7 +35,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="450" height="160"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <stackView orientation="vertical" alignment="leading" hasEqualSpacing="YES" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="0vz-7a-CU8" customClass="AnimatedStack" customModule="PeyeDF" customModuleProvider="target">
+                            <stackView orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="0vz-7a-CU8" customClass="AnimatedStack" customModule="PeyeDF" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="40" width="450" height="120"/>
                                 <constraints>
                                     <constraint firstAttribute="height" priority="750" constant="120" id="P0P-ZE-2SP"/>

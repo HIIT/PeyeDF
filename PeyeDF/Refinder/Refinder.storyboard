@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12121"/>
-        <plugIn identifier="com.apple.pdfkit.ibplugin" version="12121"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14109"/>
+        <plugIn identifier="com.apple.pdfkit.ibplugin" version="14109"/>
         <capability name="box content view" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -16,6 +16,9 @@
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="425" y="461" width="480" height="270"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+                        <connections>
+                            <outlet property="delegate" destination="DIc-Fe-P6x" id="J1e-2O-EOJ"/>
+                        </connections>
                     </window>
                     <connections>
                         <segue destination="bkN-72-0hO" kind="relationship" relationship="window.shadowedContentViewController" id="wXF-6v-51S"/>
@@ -173,8 +176,12 @@
                     <splitView key="splitView" dividerStyle="thin" vertical="YES" id="KSX-3A-Rzy">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <connections>
+                            <outlet property="delegate" destination="bkN-72-0hO" id="Nbe-1c-W2F"/>
+                        </connections>
                     </splitView>
                     <connections>
+                        <outlet property="splitView" destination="KSX-3A-Rzy" id="bEq-ZM-Lb6"/>
                         <segue destination="GuY-65-HiL" kind="relationship" relationship="splitItems" id="A0O-K8-IGP"/>
                         <segue destination="dw0-Ff-K13" kind="relationship" relationship="splitItems" id="zLn-ld-1y0"/>
                     </connections>
