@@ -192,7 +192,7 @@ class MidasManager: EyeDataProvider {
         }
     }
  
-    /// Called when new data arrives (in fetchdata, Alamofire, hence asynchronously)
+    /// Called when new data arrives (in fetchdata, HTTP Get, hence asynchronously)
     fileprivate func gotData(ofKind fetchKind: MidasFetchKind, json: JSON) {
         switch fetchKind {
         case .eyePosition:

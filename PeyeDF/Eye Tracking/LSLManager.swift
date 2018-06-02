@@ -122,6 +122,7 @@ class LSLManager: EyeDataProvider {
             let now = Date()
             if self.lastSentRaw.addingTimeInterval(self.kMinRawInterval).compare(now) == .orderedAscending {
                 self.sendLastRaw(rawPosition)
+                self.lastValidDistance = CGFloat(rawPosition.EyePositionZ)
                 self.lastSentRaw = now
             }
 
@@ -132,7 +133,7 @@ class LSLManager: EyeDataProvider {
         let fixationDataCallback: (Double, FixationEvent?) -> Void = {
             _, fixationEvent in
             
-            guard let fixationEvent = fixationEvent else {
+            guard let fixationEvent = fixationEvent, fixationEvent.endTime != 0 else {
                 return
             }
             
