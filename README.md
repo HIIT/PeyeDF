@@ -1,4 +1,21 @@
-# Usage
+# PeyeDF
+
+<p align="center">
+  <a href="https://swift.org" target="_blank">
+    <img src="https://img.shields.io/badge/swift-4.1-brightgreen.svg" alt="Swift 4.1">
+  </a>
+  <a href="https://travis-ci.org/HIIT/PeyeDF" target="_blank">
+    <img src="https://travis-ci.org/HIIT/PeyeDF.svg" alt="Build status">
+  </a>
+  <a href="https://developer.apple.com/swift/" target="_blank">
+    <img src="https://img.shields.io/badge/Platform-macOS-lightgray.svg" alt="For macOS">
+  </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT License">
+  </a>
+</p>
+
+## Usage
 
 PeyeDF track the user's reading history, at the paragraph level. Currently it support manual marking of paragraphs by double and triple clicking. To mark a paragraph as "Interesting", double click. To mark it as "Critical" (red), triple click. Make sure "annotate" is enabled on the toolbar for this to work (which normally is, by default).
 
@@ -8,25 +25,25 @@ To see what data is pushed to DiMe, see the [wiki](https://github.com/HIIT/PeyeD
 
 [latest release](https://github.com/HIIT/PeyeDF/releases/latest)
 
-## Sumobules update
+### Sumobules update
 
 To update the submodules, use:
 
 `git submodule init && git submodule update`
 
-# Setup
+## Setup
 
 PeyeDF can be installed like any app. After running, open the preferences window by click on PeyeDF > Preferences, or press command + comma ( **&#8984;** + **,** -&#8997;- ). Make sure the DiMe preferences (username, password) are correct.
 
-# Additional software
+## Additional software
 
-## Git submodules
+### Git submodules
 
 The following GitHub projects are linked as git submodules.
 
 [Alamofire version 3.3.0](https://github.com/Alamofire/Alamofire/releases/tag/3.3.0) - For easier DiMe API calls. The correct version should be already checked out as a submodule (in case it's not, do `git checkout tags/3.2.0` in the Alamofire subfolder).
 
-## Embedded
+### Embedded
 
 The following GitHub projects are incorporated into PeyeDF (no additional download needed) and are listed here for reference. They were released under the MIT license.
 

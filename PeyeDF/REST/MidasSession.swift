@@ -71,7 +71,7 @@ class MidasSession {
         urlSession.dataTask(with: urlRequest) {
             data, response, error in
             if let data = data, error == nil {
-                callback(JSON(data: data), nil)
+                callback(try? JSON(data: data), nil)
             } else {
                 if #available(OSX 10.12, *) {
                     os_log("Failed to fetch Midas data for %@", type: .fault, fullAddress)

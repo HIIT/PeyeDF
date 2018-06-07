@@ -38,7 +38,7 @@ class CrossRefSession {
         urlSession.dataTask(with: urlRequest) {
             data, response, error in
             if let data = data, error == nil {
-                callback(JSON(data: data))
+                callback(try? JSON(data: data))
             } else {
                 callback(nil)
             }

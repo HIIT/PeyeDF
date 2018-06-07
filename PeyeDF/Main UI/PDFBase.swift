@@ -639,13 +639,19 @@ class PDFBase: PDFView {
     /// Remove all annotations which are a "square" and match the annotations colours
     /// (corresponding to low/medium/high marks) defined in PeyeConstants
     func removeAllParagraphAnnotations() {
-        for i in 0..<document!.pageCount {
-            let page = document!.page(at: i)
+        guard let document = self.document else {
+            return
+        }
+        
+        for i in 0..<document.pageCount {
+            guard let page = document.page(at: i) else {
+                continue
+            }
             for annColour in markAnnotationColours.values {
-                for annotation in page!.annotations {
+                for annotation in page.annotations {
                     if let annotation = annotation as? PDFAnnotationSquare {
                         if annotation.color.practicallyEqual(annColour) {
-                            removeAnnotation(annotation, onPage: page!)
+                            removeAnnotation(annotation, onPage: page)
                         }
                     }
                 }

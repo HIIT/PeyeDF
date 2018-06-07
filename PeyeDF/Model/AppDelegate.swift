@@ -23,7 +23,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 import Cocoa
-import Sparkle
 import Quartz
 import os.log
 
@@ -79,13 +78,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     /// Creates default preferences and sets up dime
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        
-        // Auto-update check
-        #if !QUESTIONS
-            if UserDefaults.standard.object(forKey: PeyeConstants.prefCheckForUpdatesOnStartup) as! Bool {
-                Sparkle.SUUpdater.shared().checkForUpdatesInBackground()
-            }
-        #endif
         
         // Dime/Eye tracker down/up observers
         NotificationCenter.default.addObserver(self, selector: #selector(dimeConnectionChanged(_:)), name: PeyeConstants.diMeConnectionNotification, object: nil)
@@ -358,11 +350,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     // MARK: - Callbacks
-    
-    /// Calls sparkle, asking to check for new version
-    @IBAction func checkForUpdates(_ sender: NSMenuItem) {
-        Sparkle.SUUpdater.shared().checkForUpdates(self)
-    }
 
     /// Handles PeyeDF's url type (with protocol peyedf://)
     @objc func handleURL(_ event: NSAppleEventDescriptor) {

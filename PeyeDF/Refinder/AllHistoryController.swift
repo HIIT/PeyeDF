@@ -277,10 +277,10 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
             panel.allowedFileTypes = ["json", "JSON"]
             panel.beginSheetModal(for: self.view.window!, completionHandler: {
                 result in
-                if result.rawValue == NSFileHandlingPanelOKButton {
-                    let inURL = panel.url!
-                    let data = try? Data(contentsOf: inURL)
-                    let json = JSON(data: data!)
+                if result.rawValue == NSFileHandlingPanelOKButton,
+                   let inURL = panel.url,
+                   let data = try? Data(contentsOf: inURL),
+                   let json = try? JSON(data: data) {
                     
                     // check that loaded session id matches selection
                     let fileSessionId = json["outData"]["sessionId"].stringValue

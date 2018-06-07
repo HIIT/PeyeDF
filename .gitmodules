@@ -1,9 +1,6 @@
 [submodule "SwiftyJSON"]
 	path = SwiftyJSON
 	url = https://github.com/SwiftyJSON/SwiftyJSON.git
-[submodule "Sparkle"]
-	path = Sparkle
-	url = https://github.com/sparkle-project/Sparkle.git
 [submodule "MessagePack.swift"]
 	path = MessagePack.swift
 	url = https://github.com/a2/MessagePack.swift.git
