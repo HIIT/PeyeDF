@@ -80,7 +80,7 @@ class TagViewController: NSViewController {
         self.representedTags = tags.map({$0.text})
         for tag in tags {
             var objs: NSArray? = NSArray() // temporary store for items in tagview
-            Bundle.main.loadNibNamed(NSNib.Name(rawValue: "TagView"), owner: nil, topLevelObjects: &objs)
+            Bundle.main.loadNibNamed(NSNib.Name("TagView"), owner: nil, topLevelObjects: &objs)
             if let objs = objs {
                 for obj in objs {
                     if let view = obj as? NSView {
@@ -153,7 +153,7 @@ class TagViewController: NSViewController {
             tagDelegate?.tagAdded(newTag)
             AppSingleton.updateRecentTags(newTag)
             var objs: NSArray? = NSArray() // temporary store for items in tagview
-            Bundle.main.loadNibNamed(NSNib.Name(rawValue: "TagView"), owner: nil, topLevelObjects: &objs)
+            Bundle.main.loadNibNamed(NSNib.Name("TagView"), owner: nil, topLevelObjects: &objs)
             if let objs = objs {
                 for obj in objs {
                     if let view = obj as? NSView {

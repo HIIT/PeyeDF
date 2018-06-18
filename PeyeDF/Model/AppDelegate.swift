@@ -260,7 +260,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// Show refinder window (creating it, if needed)
     @IBAction func showRefinderWindow(_ sender: AnyObject?) {
         if refinderWindow == nil {
-            refinderWindow = (AppSingleton.refinderStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "RefinderWindowController")) as! RefinderWindowController)
+            refinderWindow = (AppSingleton.refinderStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("RefinderWindowController")) as! RefinderWindowController)
         }
         refinderWindow!.showWindow(self)
         Multipeer.advertiser.start()

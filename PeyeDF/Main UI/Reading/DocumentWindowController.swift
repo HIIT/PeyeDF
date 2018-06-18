@@ -83,7 +83,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     lazy var popover: NSPopover = {
         let pop = NSPopover()
         pop.behavior = NSPopover.Behavior.transient
-        let tvc = AppSingleton.tagsStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "TagViewController"))
+        let tvc = AppSingleton.tagsStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("TagViewController"))
         pop.contentViewController = tvc as! TagViewController
         pop.delegate = self
         return pop
@@ -407,9 +407,9 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     func searchCollapseAction(_ wasCollapsed: Bool) {
         if wasCollapsed {
-            searchTB.image = NSImage(named: NSImage.Name(rawValue: PeyeConstants.searchButton_UP))
+            searchTB.image = NSImage(named: NSImage.Name(PeyeConstants.searchButton_UP))
         } else {
-            searchTB.image = NSImage(named: NSImage.Name(rawValue: PeyeConstants.searchButton_DOWN))
+            searchTB.image = NSImage(named: NSImage.Name(PeyeConstants.searchButton_DOWN))
         }
     }
     
@@ -422,9 +422,9 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     func sideCollapseAction(_ wasCollapsed: Bool) {
         if wasCollapsed {
-            thumbTB.image = NSImage(named: NSImage.Name(rawValue: PeyeConstants.thumbButton_UP))
+            thumbTB.image = NSImage(named: NSImage.Name(PeyeConstants.thumbButton_UP))
         } else {
-            thumbTB.image = NSImage(named: NSImage.Name(rawValue: PeyeConstants.thumbButton_DOWN))
+            thumbTB.image = NSImage(named: NSImage.Name(PeyeConstants.thumbButton_DOWN))
         }
     }
     
@@ -449,10 +449,10 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         if let annotateTB = tbAnnotate, let delegate = readerDelegate {
             if toState {
                 delegate.setRecognizersTo(true)
-                annotateTB.image = NSImage(named: NSImage.Name(rawValue: PeyeConstants.annotateButton_DOWN))
+                annotateTB.image = NSImage(named: NSImage.Name(PeyeConstants.annotateButton_DOWN))
             } else {
                 delegate.setRecognizersTo(false)
-                annotateTB.image = NSImage(named: NSImage.Name(rawValue: PeyeConstants.annotateButton_UP))
+                annotateTB.image = NSImage(named: NSImage.Name(PeyeConstants.annotateButton_UP))
             }
         }
     }
@@ -584,7 +584,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     @IBAction func thisDocMdata(_ sender: AnyObject?) {
         // create metadata window, if currently nil
         if metadataWindowController == nil {
-            metadataWindowController = AppSingleton.mainStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "MetadataWindow")) as? MetadataWindowController
+            metadataWindowController = AppSingleton.mainStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("MetadataWindow")) as? MetadataWindowController
         }
         
         // show window controller for metadata and send data
@@ -634,7 +634,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         
         // Set reference to pdfReader for convenience by using references to children of this window
         let splV: NSSplitViewController = self.window?.contentViewController as! NSSplitViewController
-        docSplitController = splV.childViewControllers[1] as? DocumentSplitController
+        docSplitController = splV.children[1] as? DocumentSplitController
         docSplitController?.sideCollapseDelegate = self
         pdfReader = docSplitController?.myPDFSideController?.pdfReader
         
@@ -838,7 +838,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         // otherwise call the callback right now
         if pdfr.status == .trackable && DiMeSession.dimeAvailable {
             let ww = NSWindow()
-            let wvc = AppSingleton.mainStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "WaitVC")) as! WaitViewController
+            let wvc = AppSingleton.mainStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("WaitVC")) as! WaitViewController
             ww.contentViewController = wvc
             wvc.someText = "Sending data to DiMe..."
             self.window!.beginSheet(ww, completionHandler: nil)

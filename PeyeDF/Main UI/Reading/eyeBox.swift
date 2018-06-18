@@ -82,7 +82,7 @@ class eyeBox: NSBox {
         let innerPath = NSBezierPath(rect: NSRect(origin: NSPoint(x: boxMargin, y: boxMargin), size: NSSize(width: innerPathSize, height: innerPathSize)))
         
         innerPath.lineWidth = 1
-        innerPath.lineJoinStyle = .roundLineJoinStyle
+        innerPath.lineJoinStyle = .round
         
         // only draw circle if all positions are != 0
         

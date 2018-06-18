@@ -2,13 +2,13 @@
 
 <p align="center">
   <a href="https://swift.org" target="_blank">
-    <img src="https://img.shields.io/badge/swift-4.1-brightgreen.svg" alt="Swift 4.1">
+    <img src="https://img.shields.io/badge/swift-4.2-brightgreen.svg" alt="Swift 4.2">
   </a>
   <a href="https://travis-ci.org/HIIT/PeyeDF" target="_blank">
     <img src="https://travis-ci.org/HIIT/PeyeDF.svg" alt="Build status">
   </a>
   <a href="https://developer.apple.com/swift/" target="_blank">
-    <img src="https://img.shields.io/badge/Platform-macOS-lightgray.svg" alt="For macOS">
+    <img src="https://img.shields.io/badge/platform-macOS-lightgray.svg" alt="For macOS">
   </a>
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT License">

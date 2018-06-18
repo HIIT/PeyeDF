@@ -117,7 +117,7 @@ class QuestionViewController: NSViewController {
             
             // Customize the animation parameters.
             context.duration = 1
-            context.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+            context.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
             
             self.topicFromTop.animator().constant = topicDist
             self.topicFromItsLabel.animator().constant = topicDist
@@ -159,7 +159,7 @@ class QuestionViewController: NSViewController {
             
             // Customize the animation parameters.
             context.duration = 1
-            context.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+            context.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
             
             self.topicFromTop.animator().constant = topicDist
             self.topicFromItsLabel.animator().constant = topicDist

@@ -124,7 +124,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
     }
     
     override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
-        if let segueId = segue.identifier , segueId.rawValue == "showThresholdEditor" {
+        if let segueId = segue.identifier , segueId == "showThresholdEditor" {
             let thresholdCont = segue.destinationController as! ThresholdEditor
             thresholdCont.detailDelegate = self.delegate
         }
@@ -300,7 +300,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
                         // normalize imported rects so attnVal_n ranges between 0 and 1
                         outRects = outRects.normalize()
                         
-                        self.performSegue(withIdentifier: NSStoryboardSegue.Identifier(rawValue: "showThresholdEditor"), sender: self)
+                        self.performSegue(withIdentifier: NSStoryboardSegue.Identifier("showThresholdEditor"), sender: self)
                         self.delegate?.setEyeRects(outRects)
                         
                         self.lastImportedIndex = row

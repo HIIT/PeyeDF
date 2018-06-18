@@ -92,7 +92,7 @@ class Multipeer: NSObject {
     
     /// Peer window, showing list of all peers we are connected to (normally, one)
     static let peerWindow: NSWindowController = {
-        let win = AppSingleton.collaborationStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "AllPeersWindowController"))
+        let win = AppSingleton.collaborationStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("AllPeersWindowController"))
         return win as! NSWindowController
     }()
     
@@ -158,7 +158,7 @@ class Multipeer: NSObject {
             return
         }
         
-        let newController = AppSingleton.collaborationStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "PeerOverviewController")) as! PeerOverviewController
+        let newController = AppSingleton.collaborationStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("PeerOverviewController")) as! PeerOverviewController
         overviewControllers[cHash] = newController
         
         DispatchQueue.main.async {

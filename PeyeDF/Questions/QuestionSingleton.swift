@@ -85,7 +85,7 @@ class QuestionSingleton {
     /// Participant number (defaults to infinity, should be changed on app start)
     static var pNo = Int.max
     
-    static let questionsStoryboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "Questions"), bundle: nil)
+    static let questionsStoryboard = NSStoryboard(name: NSStoryboard.Name("Questions"), bundle: nil)
     
     /// Seconds taken to read each apper
     static var timeTaken = [Double]()
@@ -119,7 +119,7 @@ class QuestionSingleton {
         // alert user if not, othewise load data and return true
         do {
             let inData = try Data(contentsOf: partJsonUrl)
-            let json = JSON(data: inData)
+            let json = try JSON(data: inData)
             
             guard json["pNo"].intValue == partNo else {
                 AppSingleton.alertUser("Participant number in json different than expected")
@@ -161,7 +161,7 @@ class QuestionSingleton {
             }
         }
         
-        questionWindow = (QuestionSingleton.questionsStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "QuestionWindowController")) as! NSWindowController)
+        questionWindow = (QuestionSingleton.questionsStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("QuestionWindowController")) as! NSWindowController)
         questionWindow.showWindow(nil)
         // put the question window always in front
         questionWindow.window?.level = NSWindow.Level(rawValue: Int(CGWindowLevelForKey(.floatingWindow)))

@@ -392,7 +392,7 @@ class SearchPanelController: NSViewController, NSTableViewDataSource, NSTableVie
             let rangeOfQuery = lineString.range(of: foundString!, options: NSString.CompareOptions.caseInsensitive)
             let boldFont = NSFont.boldSystemFont(ofSize: 12.0)
             attrString.beginEditing()
-            attrString.addAttribute(NSAttributedStringKey.font, value: boldFont, range: rangeOfQuery)
+            attrString.addAttribute(NSAttributedString.Key.font, value: boldFont, range: rangeOfQuery)
             attrString.endEditing()
             return attrString
         }
