@@ -50,10 +50,10 @@ import Quartz
 /// Used to share common instances across the whole application, including posting history notifications to the store, access to logs, storyboards, eye tracking data.
 class AppSingleton {
     
-    static let mainStoryboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "Main"), bundle: nil)
-    static let refinderStoryboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "Refinder"), bundle: nil)
-    static let tagsStoryboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "Tags"), bundle: nil)
-    static let collaborationStoryboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "Collaboration"), bundle: nil)
+    static let mainStoryboard = NSStoryboard(name: NSStoryboard.Name("Main"), bundle: nil)
+    static let refinderStoryboard = NSStoryboard(name: NSStoryboard.Name("Refinder"), bundle: nil)
+    static let tagsStoryboard = NSStoryboard(name: NSStoryboard.Name("Tags"), bundle: nil)
+    static let collaborationStoryboard = NSStoryboard(name: NSStoryboard.Name("Collaboration"), bundle: nil)
     static let appDelegate = NSApplication.shared.delegate! as! AppDelegate
     static let findPasteboard = NSPasteboard(name: NSPasteboard.Name.findPboard)
         
@@ -140,7 +140,7 @@ class AppSingleton {
     static func alertUser(_ message: String, infoText: String) {
         let myAl = NSAlert()
         myAl.alertStyle = .warning
-        myAl.icon = NSImage(named: NSImage.Name(rawValue: "NSCaution"))
+        myAl.icon = NSImage(named: NSImage.Name("NSCaution"))
         myAl.messageText = message
         myAl.informativeText = infoText
         DispatchQueue.main.async {
@@ -154,7 +154,7 @@ class AppSingleton {
     static func alertUser(_ message: String) {
         let myAl = NSAlert()
         myAl.alertStyle = .warning
-        myAl.icon = NSImage(named: NSImage.Name(rawValue: "NSCaution"))
+        myAl.icon = NSImage(named: NSImage.Name("NSCaution"))
         myAl.messageText = message
         DispatchQueue.main.async {
             myAl.runModal()

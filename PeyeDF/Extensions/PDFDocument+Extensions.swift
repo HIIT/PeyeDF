@@ -247,7 +247,7 @@ extension PDFDocument {
 
         var textInfo = [(size: CGFloat, range: NSRange)]()
 
-        astring!.enumerateAttribute(NSAttributedStringKey.font, in: fullRange, options: NSAttributedString.EnumerationOptions()) {
+        astring!.enumerateAttribute(NSAttributedString.Key.font, in: fullRange, options: NSAttributedString.EnumerationOptions()) {
             obj, range, stop in
             if let font = obj as? NSFont {
                 textInfo.append((size: font.pointSize, range: range))

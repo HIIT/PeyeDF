@@ -34,7 +34,7 @@ class AllPeersController: NSViewController {
     
     func addPeer(_ peer: MCPeerID) {
         DispatchQueue.main.async {
-            let vc = AppSingleton.collaborationStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "PeerViewController")) as! PeerViewController
+            let vc = AppSingleton.collaborationStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("PeerViewController")) as! PeerViewController
             self.stackView.animateViewIn(vc.view)
             vc.setPeer(peer)
             self.connectedPeers[peer.hash] = vc

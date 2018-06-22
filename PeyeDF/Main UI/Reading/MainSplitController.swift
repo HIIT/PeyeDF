@@ -42,7 +42,7 @@ class MainSplitController: NSSplitViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        searchPanelController = self.childViewControllers[0] as? SearchPanelController
+        searchPanelController = self.children[0] as? SearchPanelController
         searchProvider = searchPanelController
     }
     
