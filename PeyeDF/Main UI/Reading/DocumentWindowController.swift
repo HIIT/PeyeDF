@@ -778,7 +778,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         DocumentWindowController.timerQueue.sync {
             if self.regularTimer == nil {
                 self.regularTimer = Timer(timeInterval: PeyeConstants.regularSummaryEventInterval, target: self, selector: #selector(self.regularTimerFire(_:)), userInfo: nil, repeats: true)
-                RunLoop.current.add(self.regularTimer!, forMode: RunLoopMode.commonModes)
+                RunLoop.current.add(self.regularTimer!, forMode: RunLoop.Mode.common)
             }
         }
     }
@@ -943,7 +943,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         DocumentWindowController.timerQueue.sync {
             if self.regularTimer == nil {
                 self.regularTimer = Timer(timeInterval: PeyeConstants.regularSummaryEventInterval, target: self, selector: #selector(self.regularTimerFire(_:)), userInfo: nil, repeats: true)
-                RunLoop.current.add(self.regularTimer!, forMode: RunLoopMode.commonModes)
+                RunLoop.current.add(self.regularTimer!, forMode: RunLoop.Mode.common)
             }
         }
         

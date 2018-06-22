@@ -188,7 +188,7 @@ class HistoryManager: FixationDataDelegate {
             DispatchQueue.main.async {
                 [weak self] in
                 if let timer = self?.entryTimer {
-                    RunLoop.current.add(timer, forMode: RunLoopMode.commonModes)
+                    RunLoop.current.add(timer, forMode: RunLoop.Mode.common)
                 }
             }
         }
@@ -225,7 +225,7 @@ class HistoryManager: FixationDataDelegate {
                 self.currentSMIMarks = PDFMarkings(pdfBase: pdfReader)
         
                 self.exitTimer = Timer(timeInterval: PeyeConstants.maxReadTime, target: self, selector: #selector(self.exitEvent(_:)), userInfo: nil, repeats: false)
-                RunLoop.current.add(self.exitTimer!, forMode: RunLoopMode.commonModes)
+                RunLoop.current.add(self.exitTimer!, forMode: RunLoop.Mode.common)
             }
         }
     }
