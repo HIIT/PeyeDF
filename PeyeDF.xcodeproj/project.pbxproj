@@ -139,6 +139,8 @@
 		A9C3F9DE1D9176D900191363 /* AnnotationPreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C3F9DD1D9176D900191363 /* AnnotationPreferencesViewController.swift */; };
 		A9C8F0251BC2B309007ABE1A /* Fixation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C8F0241BC2B309007ABE1A /* Fixation.swift */; };
 		A9C8F0271BC2B31A007ABE1A /* Raw.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C8F0261BC2B31A007ABE1A /* Raw.swift */; };
+		A9CAE5DA20F12BAB00CC6954 /* ReadingClass+ClassSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CAE5D920F12BAB00CC6954 /* ReadingClass+ClassSource.swift */; };
+		A9CAE5DB20F12BAB00CC6954 /* ReadingClass+ClassSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CAE5D920F12BAB00CC6954 /* ReadingClass+ClassSource.swift */; };
 		A9CC31551C79FF5600AE7556 /* peyedoc.icns in Resources */ = {isa = PBXBuildFile; fileRef = A9CC31541C79FF5600AE7556 /* peyedoc.icns */; };
 		A9CDB2E91B3AC49800347398 /* PeyeConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CDB2E81B3AC49800347398 /* PeyeConstants.swift */; };
 		A9CDFD8B1CF7424C000C4282 /* Collaboration.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A9CDFD8A1CF7424C000C4282 /* Collaboration.storyboard */; };
@@ -442,6 +444,7 @@
 		A9C3F9DD1D9176D900191363 /* AnnotationPreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnotationPreferencesViewController.swift; sourceTree = "<group>"; };
 		A9C8F0241BC2B309007ABE1A /* Fixation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Fixation.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		A9C8F0261BC2B31A007ABE1A /* Raw.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Raw.swift; sourceTree = "<group>"; };
+		A9CAE5D920F12BAB00CC6954 /* ReadingClass+ClassSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReadingClass+ClassSource.swift"; sourceTree = "<group>"; };
 		A9CC31541C79FF5600AE7556 /* peyedoc.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = peyedoc.icns; sourceTree = "<group>"; };
 		A9CDB2E81B3AC49800347398 /* PeyeConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeyeConstants.swift; sourceTree = "<group>"; };
 		A9CDFD8A1CF7424C000C4282 /* Collaboration.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Collaboration.storyboard; sourceTree = "<group>"; };
@@ -556,6 +559,7 @@
 				A91CB96C1B332FB700671868 /* PeyeDocument.swift */,
 				A9CEAA7F1BE7793500E23964 /* Paragraphs.swift */,
 				A91DA4771C7A395200257FF0 /* FocusAreas.swift */,
+				A9CAE5D920F12BAB00CC6954 /* ReadingClass+ClassSource.swift */,
 			);
 			name = Model;
 			path = PeyeDF/Model;
@@ -1128,6 +1132,7 @@
 				A9794D8D1D0D9CE2003FBFD4 /* PDFPage+Extensions.swift in Sources */,
 				A9260F571BA4CD10005B1556 /* MyOverlay.swift in Sources */,
 				A933C06A1E522F4800CE94CF /* Context.swift in Sources */,
+				A9CAE5DA20F12BAB00CC6954 /* ReadingClass+ClassSource.swift in Sources */,
 				A933C06D1E522F4800CE94CF /* Message.swift in Sources */,
 				A91DC4E11C22E43800BBB612 /* SummaryReadingEvent.swift in Sources */,
 				A9B36CAB1BEA30BF00A27861 /* PDFOverview.swift in Sources */,
@@ -1262,6 +1267,7 @@
 				A9AA38421E6EBC7800FFAA33 /* OffsetController.swift in Sources */,
 				A9E8F77F1DA27E8C004FBA51 /* WaitViewController.swift in Sources */,
 				A9E8F7E61DA27EBD004FBA51 /* QuestionLoader.swift in Sources */,
+				A9CAE5DB20F12BAB00CC6954 /* ReadingClass+ClassSource.swift in Sources */,
 				A9E8F7801DA27E8C004FBA51 /* DocumentWindow.swift in Sources */,
 				A9E8F7811DA27E8C004FBA51 /* EyeFormulas.swift in Sources */,
 				A92E87781F585D2200D61C67 /* Subdata.swift in Sources */,

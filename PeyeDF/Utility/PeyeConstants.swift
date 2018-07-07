@@ -135,7 +135,7 @@ class PeyeConstants {
     static let colourFoundStrings = #colorLiteral(red: 0.9568627451, green: 0.8901960784, blue: 0, alpha: 0.85)
     
     /// Dictionary of annotation colours for smi
-    static let smiColours: [ReadingClass: NSColor] = [.paragraph: colourParagraph]
+    static let eyeColours: [ReadingClass: NSColor] = [.paragraph: colourParagraph]
     
     /// Colour for highlighted rect (PDFBase.highlightRect)
     static let highlightColour = #colorLiteral(red: 0.7882352941, green: 0.9882352941, blue: 0.8196078431, alpha: 0.25)

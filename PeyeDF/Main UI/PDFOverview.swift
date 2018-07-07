@@ -103,7 +103,7 @@ class PDFOverview: PDFBase {
                     if let av = rect.attnVal {
                         rectCol = PeyeConstants.colourAttnVal(av)
                     } else {
-                        rectCol = PeyeConstants.smiColours[.paragraph]!.withAlphaComponent(0.9)
+                        rectCol = PeyeConstants.eyeColours[.paragraph]!.withAlphaComponent(0.9)
                     }
                     let adjRect = rect.rect.offset(byPoint: pointDiff)
                     let rectPath: NSBezierPath = NSBezierPath(rect: adjRect)

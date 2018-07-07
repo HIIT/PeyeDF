@@ -464,7 +464,7 @@ class PDFReader: PDFBase {
                 
                 let pageIndex = document.index(for: page!)
                 
-                let newRect = ReadingRect(pageIndex: pageIndex, rect: seenRect, readingClass: .paragraph, classSource: .smi, pdfBase: self)
+                let newRect = ReadingRect(pageIndex: pageIndex, rect: seenRect, readingClass: .paragraph, classSource: .eye, pdfBase: self)
                 markings.addRect(newRect)
                 
             }
@@ -489,7 +489,7 @@ class PDFReader: PDFBase {
         let pointOnPage = NSPoint(x: triple.x, y: triple.y)
         let pdfPage = document!.page(at: triple.pageIndex)
         if let sr = pointToParagraphRect(pointOnPage, forPage: pdfPage!) {
-            return ReadingRect(pageIndex: triple.pageIndex, rect: sr, readingClass: .paragraph, classSource: .smi, pdfBase: self)
+            return ReadingRect(pageIndex: triple.pageIndex, rect: sr, readingClass: .paragraph, classSource: .eye, pdfBase: self)
         } else {
             return nil
         }

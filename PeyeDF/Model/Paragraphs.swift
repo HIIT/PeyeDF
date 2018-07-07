@@ -234,7 +234,7 @@ struct PDFMarkings {
     
     /// Unite all floating eye rectangles into bigger rectangles that enclose them
     mutating func flattenRectangles_eye() {
-        uniteRectangles(.paragraph, onlySource: .smi)
+        uniteRectangles(.paragraph, onlySource: .eye)
     }
     
     /// Unite all rectangles of the given class
@@ -478,32 +478,4 @@ class PDFMarkingsState: NSObject {
     init(oldState: [ReadingRect]) {
         self.rectState = oldState
     }
-}
-
-// MARK: - Rectangle reading classes
-
-/// How important is a paragraph
-public enum ReadingClass: Int {
-    case unset = 0
-    case tag = 1  // note: this is treated separately ("tags" are not "marks")
-    case viewport = 10
-    case paragraph = 15
-    case low = 20  // known as "read" in dime
-    case foundString = 25
-    case medium = 30  // known as "critical" in dime
-    case high = 40  // known as "high" in dime
-}
-
-/// What decided that a paragraph is important
-public enum ClassSource: Int {
-    case unset = 0
-    case viewport = 1
-    case click = 2  // "Quick-annotate" function: double click for important, triple for critical
-    case smi = 3
-    case ml = 4
-    case search = 5
-    case localPeer = 6
-    case networkPeer = 7
-    case manualSelection = 8 // Selected by dragging and then setting importance
-    case anyPeer = 9
 }

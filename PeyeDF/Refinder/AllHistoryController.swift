@@ -211,7 +211,7 @@ class AllHistoryController: NSViewController, DiMeReceiverDelegate, NSTableViewD
                 
                 // generate eye rectangles
                 for event in foundEvents {
-                    outEyeRects.append(contentsOf: EyeRectangle.allEyeRectangles(fromReadingEvent: event, forReadingClass: .paragraph, andSource: .smi, withPdfBase: self.delegate?.getPdfBase()))
+                    outEyeRects.append(contentsOf: EyeRectangle.allEyeRectangles(fromReadingEvent: event, forReadingClass: .paragraph, andSource: .eye, withPdfBase: self.delegate?.getPdfBase()))
                 }
                 
                 if outEyeRects.count > 0 {

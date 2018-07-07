@@ -119,7 +119,7 @@ class QuestionSingleton {
         // alert user if not, othewise load data and return true
         do {
             let inData = try Data(contentsOf: partJsonUrl)
-            let json = JSON(data: inData)
+            let json = try JSON(data: inData)
             
             guard json["pNo"].intValue == partNo else {
                 AppSingleton.alertUser("Participant number in json different than expected")

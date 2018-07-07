@@ -58,7 +58,7 @@ class QuestionLoader {
         
         do {
             let inData = try Data(contentsOf: questionsURL)
-            json = JSON(data: inData)
+            json = try JSON(data: inData)
             
             // verify that target topic in json matches selection
             if json["ttopic_group"].stringValue != paper.group.rawValue {
