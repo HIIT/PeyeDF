@@ -15,6 +15,10 @@
   </a>
 </p>
 
+# PeyeDF
+
+PeyeDF is especially useful for researchers in reading and eye tracking. It supports multiple eye tracking protocols and is suitable for short and long-term research. It provides an integrated means for data collection using the DiMe personal data storage system. It is designed to collect data in the background without interfering with the reading experience, behaving like a modern lightweight PDF reader. Moreover, it supports annotations, tagging and collaborative work. A modular design allows the application to be easily modied, so that additional eye tracking protocols can be supported and controlled experiment can be designed
+
 ## Usage
 
 PeyeDF track the user's reading history, at the paragraph level. Currently it support manual marking of paragraphs by double and triple clicking. To mark a paragraph as "Interesting", double click. To mark it as "Critical" (red), triple click. Make sure "annotate" is enabled on the toolbar for this to work (which normally is, by default).
@@ -25,9 +29,72 @@ To see what data is pushed to DiMe, see the [wiki](https://github.com/HIIT/PeyeD
 
 [latest release](https://github.com/HIIT/PeyeDF/releases/latest)
 
+## DiMe
+
+PeyeDF requires DiMe for data storage and retrieval. DiMe is an
+open-source Personal Data Storage (PDS) system that supports multiple
+applications and data types [@symbiotic2016]. DiMe itself requires the
+following software to be installed in order to be compiled.
+
+-   Xcode[^1] or Command Line Tools [^2]
+
+-   Java SE[^3] JDK version 8 or above
+
+-   Node.js, downloadable from the web[^4] or via Homebrew[^5], if
+    installed
+
+[^1]: <https://itunes.apple.com/app/xcode/id497799835>
+
+[^2]: `xcode-select --install`
+
+[^3]: <http://www.oracle.com/technetwork/java/javase/downloads>
+
+[^4]: <https://nodejs.org>
+
+[^5]: `brew install node`
+
+Once the required software is installed, DiMe should be compiled and
+run. PeyeDF must then be configured to utilise DiMe using a predefined
+user and password. The procedure to do so is detailed below and the
+related code can be pasted into a Terminal (note that individual
+commands are separated by '`;`' and otherwise each statement should be
+written in a single line).
+
+1.  Clone the open-source DiMe repository:
+    `git clone --recursive https://github.com/HIIT/dime-server`
+
+2.  Run DiMe:
+    `cd dime-server; make run`
+
+3.  DiMe is ready Once 'fi.hiit.dime.Application: Started' appears;
+    first-time compilation may take a few minutes.
+
+4.  Navigate to <http://localhost:8080> and create a user. For a test
+    run, use Test1 as user and 123456 for password as these are the
+    PeyeDF defaults.
+
+5.  PeyeDF can now be started and should be fully functional. If a
+    different user rather than the suggested Test1 was created during
+    the previous step, navigate to PeyeDF Preferences, select the 'DiMe'
+    tab and enter the chosen username and password.
+
+Dime creates a `.dime` directory under the user's home. This directory
+contains the full database; deleting this directory will reset DiMe. If
+the directory is copied or moved to another machine an installation of
+DiMe on that machine will be able to read the database (assuming that
+username and password match). DiMe can also be installed on a (local)
+network server so that it can be used by multiple users simultaneously.
+
+## Clone
+
+PeyeDF requires its submodules in order to be compiled correctly
+
+`git clone --recursive https://github.com/HIIT/PeyeDF.git`
+
+
 ### Sumobules update
 
-To update the submodules, use:
+To update the submodules after cloning, use:
 
 `git submodule init && git submodule update`
 
