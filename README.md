@@ -15,9 +15,7 @@
   </a>
 </p>
 
-# PeyeDF
-
-PeyeDF is especially useful for researchers in reading and eye tracking. It supports multiple eye tracking protocols and is suitable for short and long-term research. It provides an integrated means for data collection using the DiMe personal data storage system. It is designed to collect data in the background without interfering with the reading experience, behaving like a modern lightweight PDF reader. Moreover, it supports annotations, tagging and collaborative work. A modular design allows the application to be easily modied, so that additional eye tracking protocols can be supported and controlled experiment can be designed
+PeyeDF is especially useful for researchers in reading and eye tracking. It supports multiple eye tracking protocols and is suitable for short and long-term research. It provides an integrated means for data collection using the DiMe personal data storage system. It is designed to collect data in the background without interfering with the reading experience, behaving like a modern lightweight PDF reader. Moreover, it supports annotations, tagging and collaborative work. A modular design allows the application to be easily modified, so that additional eye tracking protocols can be supported and controlled experiment can be designed
 
 ## Usage
 
@@ -84,6 +82,10 @@ the directory is copied or moved to another machine an installation of
 DiMe on that machine will be able to read the database (assuming that
 username and password match). DiMe can also be installed on a (local)
 network server so that it can be used by multiple users simultaneously.
+
+## MIDAS
+
+[MIDAS](https://github.com/bwrc/MIDAS) is a python framework for real-time computation of physiological data, which PeyeDF supports.
 
 ## Clone
 
