@@ -1,0 +1,134 @@
+[
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 9.334956200000008,
+          "width" : 26.52841128
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 10,
+        "floating" : true,
+        "plainTextContent" : "6 days",
+        "origin" : {
+          "y" : 124.7050792,
+          "x" : 128.8076669800001
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237726951
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 1,
+    "text" : "q1",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 9.334956200000022,
+          "width" : 14.9239748
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 10,
+        "floating" : true,
+        "plainTextContent" : "less ",
+        "origin" : {
+          "y" : 324.0446792,
+          "x" : 529.2862222799996
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237741013
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 9.334956200000022,
+          "width" : 52.17214367999986
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 10,
+        "floating" : true,
+        "plainTextContent" : "than £30,000",
+        "origin" : {
+          "y" : 311.5725792,
+          "x" : 306.1459
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237741013
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 2,
+    "text" : "q2",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 9.334956200000022,
+          "width" : 30.32316562
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 11,
+        "floating" : true,
+        "plainTextContent" : "4 or 5",
+        "origin" : {
+          "y" : 498.3611792,
+          "x" : 143.99856824
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237749664
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 3,
+    "text" : "q3",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 9.334956199999993,
+          "width" : 105.2229886800001
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 10,
+        "floating" : true,
+        "plainTextContent" : "training of the facilitators",
+        "origin" : {
+          "y" : 149.6493792,
+          "x" : 135.49854914
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237712550
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 0,
+    "text" : "q0",
+    "@type" : "ReadingTag"
+  }
+]

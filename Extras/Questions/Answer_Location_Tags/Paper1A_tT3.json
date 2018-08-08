@@ -1,0 +1,181 @@
+[
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 10.84500000000003,
+          "width" : 9.005400000000009
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 6,
+        "floating" : true,
+        "plainTextContent" : "45",
+        "questionNo" : 1,
+        "origin" : {
+          "y" : 339.6759,
+          "x" : 294.1898000000002
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470235495447
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 1,
+    "text" : "q1",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 10.84500000000003,
+          "width" : 119.8187999999999
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 7,
+        "floating" : true,
+        "questionNo" : 2,
+        "plainTextContent" : "Girls were more absent from ",
+        "origin" : {
+          "y" : 294.0164,
+          "x" : 305.4864
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470235509138
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 10.84500000000003,
+          "width" : 368.5917000000001
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 7,
+        "floating" : true,
+        "questionNo" : 2,
+        "plainTextContent" : "asthma and allergic diseases during autumn (36% vs. 33%), and spring\/summer (47% vs. ",
+        "origin" : {
+          "y" : 282.2562,
+          "x" : 56.7
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470235509138
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 10.84500000000003,
+          "width" : 167.3514000000001
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 7,
+        "floating" : true,
+        "questionNo" : 2,
+        "plainTextContent" : "45%) when compared with boys. (Table 7",
+        "origin" : {
+          "y" : 270.4957,
+          "x" : 56.7
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470235509138
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 2,
+    "text" : "q2",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 10.84500000000003,
+          "width" : 79.64729999999986
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 8,
+        "floating" : true,
+        "questionNo" : 3,
+        "plainTextContent" : "the median absence ",
+        "origin" : {
+          "y" : 516.0152,
+          "x" : 345.6315
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470235534833
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 10.84500000000003,
+          "width" : 43.62930000000001
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 8,
+        "floating" : true,
+        "questionNo" : 3,
+        "plainTextContent" : "was 6 days",
+        "origin" : {
+          "y" : 504.3152,
+          "x" : 56.7
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470235534834
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 3,
+    "text" : "q3",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 10.84500000000003,
+          "width" : 16.57800000000003
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 6,
+        "floating" : true,
+        "plainTextContent" : "20%",
+        "questionNo" : 0,
+        "origin" : {
+          "y" : 406.7573,
+          "x" : 268.1014999999999
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470235473542
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 0,
+    "text" : "q0",
+    "@type" : "ReadingTag"
+  }
+]

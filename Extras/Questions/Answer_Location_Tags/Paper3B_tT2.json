@@ -1,0 +1,194 @@
+[
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 9.334956199999965,
+          "width" : 208.9844639400001
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 4,
+        "floating" : true,
+        "plainTextContent" : "Strategies to build autonomous motivation in those ",
+        "origin" : {
+          "y" : 710.0474792000001,
+          "x" : 80.10742412000002
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237602974
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 9.334956199999965,
+          "width" : 238.0862148
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 4,
+        "floating" : true,
+        "plainTextContent" : "ambivalent about change such as agenda setting, decisional\r",
+        "origin" : {
+          "y" : 697.6320792,
+          "x" : 51.0236
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237602974
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 9.334956199999965,
+          "width" : 30.57521940000001
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 4,
+        "floating" : true,
+        "plainTextContent" : "balance",
+        "origin" : {
+          "y" : 685.1599792000001,
+          "x" : 51.0236
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237602975
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 1,
+    "text" : "q1",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 9.334956199999965,
+          "width" : 126.4353566000001
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 4,
+        "floating" : true,
+        "plainTextContent" : "‘two possible futures’ strategy",
+        "origin" : {
+          "y" : 610.4404792,
+          "x" : 86.11586224000001
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237614213
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "text" : "q2",
+    "questionNo" : 2,
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 9.334956199999965,
+          "width" : 92.51369986
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 4,
+        "floating" : true,
+        "plainTextContent" : "change plan worksheet",
+        "origin" : {
+          "y" : 523.3055792,
+          "x" : 156.30138298
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237626431
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 9.334956199999965,
+          "width" : 83.51249075999999
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 4,
+        "floating" : true,
+        "plainTextContent" : "realistic goal setting\r",
+        "origin" : {
+          "y" : 535.7209792000001,
+          "x" : 205.5654437200001
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237629817
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 9.334956200000022,
+          "width" : 94.5062198600001
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 4,
+        "floating" : true,
+        "plainTextContent" : "enlisting social support",
+        "origin" : {
+          "y" : 485.9457792,
+          "x" : 142.29695616
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237633754
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 3,
+    "text" : "q3",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 9.334956200000022,
+          "width" : 65.09263961999994
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "plainTextContent" : "Transtheoretical",
+        "origin" : {
+          "y" : 311.5733792,
+          "x" : 346.04927186
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237584524
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 0,
+    "text" : "q0",
+    "@type" : "ReadingTag"
+  }
+]

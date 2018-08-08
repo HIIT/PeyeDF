@@ -1,0 +1,202 @@
+[
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.9,
+          "width" : 31
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "plainTextContent" : "Dillman",
+        "questionNo" : 1,
+        "origin" : {
+          "y" : 633.4,
+          "x" : 60.9
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470236428609
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 1,
+    "text" : "q1",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.954266417712233,
+          "width" : 34.01665607309315
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "plainTextContent" : "3 weeks",
+        "questionNo" : 2,
+        "origin" : {
+          "y" : 615.636958642637,
+          "x" : 177.5871727516269
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470236428609
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 2,
+    "text" : "q2",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.954266417712233,
+          "width" : 127.4401394521711
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "plainTextContent" : "February 2012. Data collection ",
+        "questionNo" : 3,
+        "origin" : {
+          "y" : 532.0010320795069,
+          "x" : 161.8727696595394
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470236451063
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 8.954266417712233,
+          "width" : 95.89665749743861
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "plainTextContent" : "concluded in April 2012",
+        "questionNo" : 3,
+        "origin" : {
+          "y" : 520.0374621149269,
+          "x" : 60.94280146604
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470236451064
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 8.954266417712233,
+          "width" : 39.37201455813675
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "plainTextContent" : "December\r",
+        "questionNo" : 3,
+        "origin" : {
+          "y" : 508.1283757838669,
+          "x" : 249.8596706213035
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470236468760
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 8.954266417712176,
+          "width" : 19.11262842628
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "plainTextContent" : "2011",
+        "questionNo" : 3,
+        "origin" : {
+          "y" : 496.1648058192869,
+          "x" : 60.94280146604
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470236472619
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 3,
+    "text" : "q3",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.954266417712233,
+          "width" : 80.34471174697453
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "plainTextContent" : "Patient demographic",
+        "questionNo" : 0,
+        "origin" : {
+          "y" : 735.0545319105769,
+          "x" : 191.5642379197655
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470236414231
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 8.954266417712233,
+          "width" : 50.57297044735821
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "plainTextContent" : "medical data",
+        "questionNo" : 0,
+        "origin" : {
+          "y" : 723.090961945997,
+          "x" : 60.94280146604
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470236420937
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 0,
+    "text" : "q0",
+    "@type" : "ReadingTag"
+  }
+]

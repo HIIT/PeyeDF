@@ -1,0 +1,160 @@
+[
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 10.84500000000003,
+          "width" : 15.68700000000001
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 1,
+        "floating" : true,
+        "plainTextContent" : "CO, ",
+        "questionNo" : 0,
+        "origin" : {
+          "y" : 598.2171000000001,
+          "x" : 409.5540000000003
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470234221754
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 11.01890000000003,
+          "width" : 33.41995
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 1,
+        "floating" : true,
+        "plainTextContent" : "NO2, O3",
+        "questionNo" : 0,
+        "origin" : {
+          "y" : 586.883,
+          "x" : 56.7
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470234221754
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 1,
+    "text" : "q1",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 10.84500000000003,
+          "width" : 76.73399999999997
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 1,
+        "floating" : true,
+        "plainTextContent" : "school absenteeism",
+        "questionNo" : 2,
+        "origin" : {
+          "y" : 506.7772,
+          "x" : 67.08645
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470234251623
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 2,
+    "text" : "q2",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 10.84500000000003,
+          "width" : 16.5762
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 1,
+        "floating" : true,
+        "plainTextContent" : "20%",
+        "questionNo" : 3,
+        "origin" : {
+          "y" : 484.3967,
+          "x" : 122.47695
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470234265662
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 3,
+    "text" : "q3",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 10.845,
+          "width" : 51.28199999999997
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 0,
+        "floating" : true,
+        "plainTextContent" : "air pollution",
+        "questionNo" : 1,
+        "origin" : {
+          "y" : 97.21230000000001,
+          "x" : 109.9373
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470234147302
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 10.845,
+          "width" : 50.8734
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 0,
+        "floating" : true,
+        "plainTextContent" : "air pollution",
+        "questionNo" : 1,
+        "origin" : {
+          "y" : 85.992,
+          "x" : 300.6794
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470234167901
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 0,
+    "text" : "q0",
+    "@type" : "ReadingTag"
+  }
+]

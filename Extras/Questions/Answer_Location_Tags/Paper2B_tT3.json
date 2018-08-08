@@ -1,0 +1,160 @@
+[
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.954266417712176,
+          "width" : 73.68491637183712
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 6,
+        "floating" : true,
+        "plainTextContent" : "10 sessions of care",
+        "questionNo" : 1,
+        "origin" : {
+          "y" : 359.0177977788668,
+          "x" : 323.4376635338109
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470236746684
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 1,
+    "text" : "q1",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.954266417712176,
+          "width" : 25.56314052014949
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 6,
+        "floating" : true,
+        "plainTextContent" : "stigma",
+        "questionNo" : 2,
+        "origin" : {
+          "y" : 191.8005242080169,
+          "x" : 462.2163697998724
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470236764774
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 8.954266417712176,
+          "width" : 82.25597458960237
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 6,
+        "floating" : true,
+        "plainTextContent" : "breaches of privacy",
+        "questionNo" : 2,
+        "origin" : {
+          "y" : 179.8369542434369,
+          "x" : 348.3978006271111
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470236768790
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 2,
+    "text" : "q2",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.954266417712176,
+          "width" : 40.9879872915788
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 8,
+        "floating" : true,
+        "plainTextContent" : "depression",
+        "questionNo" : 3,
+        "origin" : {
+          "y" : 354.4431869228769,
+          "x" : 105.4264884967854
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470236816333
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 8.954266417712176,
+          "width" : 53.32232204647858
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 8,
+        "floating" : true,
+        "plainTextContent" : "schizophrenia",
+        "questionNo" : 3,
+        "origin" : {
+          "y" : 342.4796169582969,
+          "x" : 122.1748847867346
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470236819956
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 3,
+    "text" : "q3",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.954266417712176,
+          "width" : 118.9417092224256
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 6,
+        "floating" : true,
+        "plainTextContent" : "formal treatment acceptability",
+        "questionNo" : 0,
+        "origin" : {
+          "y" : 442.6537243419968,
+          "x" : 380.2107706426543
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470236734140
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 0,
+    "text" : "q0",
+    "@type" : "ReadingTag"
+  }
+]

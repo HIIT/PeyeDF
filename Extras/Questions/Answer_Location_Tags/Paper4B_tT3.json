@@ -1,0 +1,174 @@
+[
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.966339999999946,
+          "width" : 83.94984889999989
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 5,
+        "floating" : true,
+        "plainTextContent" : "(see Petrovic et al., ",
+        "origin" : {
+          "y" : 660.1896071528399,
+          "x" : 460.2921907999997
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470239065060
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 8.966339999999946,
+          "width" : 106.1016900000001
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 5,
+        "floating" : true,
+        "plainTextContent" : "2005; Turner et al., 1994)",
+        "origin" : {
+          "y" : 647.7174282128399,
+          "x" : 306.1458623
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470239065060
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 1,
+    "text" : "q1",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.966339999999946,
+          "width" : 14.93393739999999
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 5,
+        "floating" : true,
+        "plainTextContent" : "two",
+        "origin" : {
+          "y" : 597.9422860928398,
+          "x" : 344.46899572
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470239145317
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 2,
+    "text" : "q2",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.966340000000002,
+          "width" : 67.66398667999982
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 5,
+        "floating" : true,
+        "plainTextContent" : "search processes",
+        "origin" : {
+          "y" : 485.8630360928397,
+          "x" : 370.60687308
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470239156984
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 8.966339999999946,
+          "width" : 31.70099319999997
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 5,
+        "floating" : true,
+        "plainTextContent" : "positive",
+        "origin" : {
+          "y" : 523.2227860928397,
+          "x" : 370.832027939626
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470239161935
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 3,
+    "text" : "q3",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.966340000000002,
+          "width" : 23.66217125999998
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 5,
+        "floating" : true,
+        "plainTextContent" : "act of ",
+        "origin" : {
+          "y" : 87.76248752000016,
+          "x" : 265.436686279626
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470239054564
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 8.966340000000002,
+          "width" : 63.99177232000002
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 5,
+        "floating" : true,
+        "plainTextContent" : "making choices",
+        "origin" : {
+          "y" : 75.29030858000016,
+          "x" : 51.02659027999991
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470239054564
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 0,
+    "text" : "q0",
+    "@type" : "ReadingTag"
+  }
+]

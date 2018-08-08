@@ -1,0 +1,114 @@
+[
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.966340000000002,
+          "width" : 149.4409926196257
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 1,
+        "floating" : true,
+        "plainTextContent" : "container of crushed ice and water",
+        "origin" : {
+          "y" : 236.6920577200002,
+          "x" : 360.2296558596258
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470238678708
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 1,
+    "text" : "q1",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.966340000000002,
+          "width" : 59.84733091925193
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 1,
+        "floating" : true,
+        "plainTextContent" : "two ointments",
+        "origin" : {
+          "y" : 174.4447366600002,
+          "x" : 306.1456891399999
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470238697125
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 2,
+    "text" : "q2",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.966340000000002,
+          "width" : 55.58732295999982
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 1,
+        "floating" : true,
+        "plainTextContent" : "hand-cleanser",
+        "origin" : {
+          "y" : 112.1974156000003,
+          "x" : 465.1099313985036
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470238708397
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 3,
+    "text" : "q3",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.966340000000002,
+          "width" : 71.4009579399999
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 1,
+        "floating" : true,
+        "plainTextContent" : "active ingredients",
+        "origin" : {
+          "y" : 423.4908077200001,
+          "x" : 391.9196900999997
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470238665074
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 0,
+    "text" : "q0",
+    "@type" : "ReadingTag"
+  }
+]

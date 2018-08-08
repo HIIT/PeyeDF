@@ -1,0 +1,134 @@
+[
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 9.275180599999999,
+          "width" : 31.84246211999999
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "plainTextContent" : "P [ .80",
+        "origin" : {
+          "y" : 224.2233227799998,
+          "x" : 126.7094737
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470238351398
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 1,
+    "text" : "q1",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.966339999999946,
+          "width" : 105.3774089799999
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "plainTextContent" : "perceived extent of choice ",
+        "origin" : {
+          "y" : 697.5424637399999,
+          "x" : 438.8007517599999
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470238376294
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 9.275180600000112,
+          "width" : 31.84246211999999
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "plainTextContent" : "P \\ .01",
+        "origin" : {
+          "y" : 635.2383558599997,
+          "x" : 467.0377489399999
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470238381413
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 2,
+    "text" : "q2",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.966340000000002,
+          "width" : 99.86609865999981
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "plainTextContent" : "mixed-model ANCOVA",
+        "origin" : {
+          "y" : 510.6859306599997,
+          "x" : 420.0939779392518
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470238392641
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 3,
+    "text" : "q3",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.966340000000002,
+          "width" : 17.49930690000002
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "plainTextContent" : "8.45",
+        "origin" : {
+          "y" : 311.4150017199997,
+          "x" : 120.70003338
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470238342083
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 0,
+    "text" : "q0",
+    "@type" : "ReadingTag"
+  }
+]

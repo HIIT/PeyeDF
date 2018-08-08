@@ -1,0 +1,160 @@
+[
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.954266417712176,
+          "width" : 89.45474608636081
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 2,
+        "floating" : true,
+        "plainTextContent" : "acceptability of mental ",
+        "questionNo" : 1,
+        "origin" : {
+          "y" : 185.6018598324369,
+          "x" : 199.8294988212516
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237168214
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 8.954266417712176,
+          "width" : 58.40532557644774
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 2,
+        "floating" : true,
+        "plainTextContent" : "health support",
+        "questionNo" : 1,
+        "origin" : {
+          "y" : 173.6382898678569,
+          "x" : 60.94280146604
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237168214
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 1,
+    "text" : "q1",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.954266417712233,
+          "width" : 23.56778211244585
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 2,
+        "floating" : true,
+        "plainTextContent" : "Likert",
+        "questionNo" : 2,
+        "origin" : {
+          "y" : 723.102472572797,
+          "x" : 455.3644001746396
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237184110
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 2,
+    "text" : "q2",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.954266417712233,
+          "width" : 57.39235626985493
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 2,
+        "floating" : true,
+        "plainTextContent" : "past history of ",
+        "questionNo" : 3,
+        "origin" : {
+          "y" : 675.3571599815169,
+          "x" : 476.6271656686616
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237221381
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 8.954266417712233,
+          "width" : 165.9129048428511
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 2,
+        "floating" : true,
+        "plainTextContent" : "access to various psychological supports",
+        "questionNo" : 3,
+        "origin" : {
+          "y" : 663.393590016937,
+          "x" : 305.65613734301
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237221381
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 3,
+    "text" : "q3",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.954266417712176,
+          "width" : 61.32191267429806
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 2,
+        "floating" : true,
+        "plainTextContent" : "six components",
+        "questionNo" : 0,
+        "origin" : {
+          "y" : 316.9830030649569,
+          "x" : 160.0790494817331
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237132720
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 0,
+    "text" : "q0",
+    "@type" : "ReadingTag"
+  }
+]

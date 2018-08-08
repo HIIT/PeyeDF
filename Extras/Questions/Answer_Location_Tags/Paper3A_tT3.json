@@ -1,0 +1,174 @@
+[
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 9.334956199999993,
+          "width" : 9.962600000000009
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 6,
+        "floating" : true,
+        "plainTextContent" : "60",
+        "origin" : {
+          "y" : 75.44085920000001,
+          "x" : 163.5601308200001
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470238056871
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 1,
+    "text" : "q1",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 9.334956199999965,
+          "width" : 64.22688967999994
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 6,
+        "floating" : true,
+        "plainTextContent" : "greater number",
+        "origin" : {
+          "y" : 647.8110792000001,
+          "x" : 465.7885874399997
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470238075242
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 9.334956199999965,
+          "width" : 48.21400269999992
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 6,
+        "floating" : true,
+        "plainTextContent" : "assessments",
+        "origin" : {
+          "y" : 647.8110792000001,
+          "x" : 306.1439
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470238077818
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 9.334956199999965,
+          "width" : 17.74339060000011
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 6,
+        "floating" : true,
+        "plainTextContent" : "both ",
+        "origin" : {
+          "y" : 660.2832792,
+          "x" : 526.4508588399999
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470238081441
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 2,
+    "text" : "q2",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 9.334956199999965,
+          "width" : 62.7315034199998
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 6,
+        "floating" : true,
+        "plainTextContent" : "average of 2.16",
+        "origin" : {
+          "y" : 560.6762792000001,
+          "x" : 379.3899314599999
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470238097337
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 3,
+    "text" : "q3",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 9.334956199999993,
+          "width" : 9.962600000000009
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 6,
+        "floating" : true,
+        "plainTextContent" : "29",
+        "origin" : {
+          "y" : 199.9354792,
+          "x" : 181.8703933600001
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470238038141
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 9.334956199999993,
+          "width" : 47.37913682000004
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 6,
+        "floating" : true,
+        "plainTextContent" : "£10–15,000",
+        "origin" : {
+          "y" : 187.5200792,
+          "x" : 141.28077218
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470238046554
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 0,
+    "text" : "q0",
+    "@type" : "ReadingTag"
+  }
+]

@@ -1,0 +1,222 @@
+[
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 10.84500000000003,
+          "width" : 85.49369999999999
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "questionNo" : 1,
+        "plainTextContent" : "prevalence of asthma ",
+        "origin" : {
+          "y" : 574.7566,
+          "x" : 339.7785
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470234914142
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 10.84500000000003,
+          "width" : 368.5530000000006
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "questionNo" : 1,
+        "plainTextContent" : "decreased with age, while the prevalence of pulmonary infection and throat infection ",
+        "origin" : {
+          "y" : 562.9964,
+          "x" : 56.7
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470234914142
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 10.84500000000003,
+          "width" : 74.68560000000004
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "questionNo" : 1,
+        "plainTextContent" : "increased with age",
+        "origin" : {
+          "y" : 551.2359,
+          "x" : 56.7
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470234914142
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 1,
+    "text" : "q1",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 10.84500000000003,
+          "width" : 114.3539999999998
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "questionNo" : 2,
+        "plainTextContent" : "significantly higher in males",
+        "origin" : {
+          "y" : 527.7757,
+          "x" : 181.2240000000001
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470234925414
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 2,
+    "text" : "q2",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 10.84500000000003,
+          "width" : 294.2097
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "questionNo" : 3,
+        "floating" : true,
+        "plainTextContent" : "Allergic rhinitis was significantly higher in boys of 6 – 8 years compared ",
+        "origin" : {
+          "y" : 516.0152,
+          "x" : 131.076
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470234959682
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 10.84500000000003,
+          "width" : 232.8282000000001
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "plainTextContent" : "to girls in the same age group (41.3% vs. 29.3%; p<0.001)",
+        "origin" : {
+          "y" : 504.3152,
+          "x" : 56.7
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470234959683
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 3,
+    "text" : "q3",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 10.845,
+          "width" : 37.86660000000006
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 2,
+        "floating" : true,
+        "plainTextContent" : "The most ",
+        "origin" : {
+          "y" : 142.5149,
+          "x" : 387.4803400000003
+        },
+        "scaleFactor" : -1,
+        "questionNo" : 0,
+        "unixt" : [
+          1470234896333
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 10.845,
+          "width" : 368.6222600000001
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 2,
+        "floating" : true,
+        "questionNo" : 0,
+        "plainTextContent" : "internationally accepted and validated methodology for measuring asthma prevalence in ",
+        "origin" : {
+          "y" : 131.3547,
+          "x" : 56.70064000000001
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470234896333
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 10.84500000000001,
+          "width" : 266.9096600000002
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 2,
+        "floating" : true,
+        "questionNo" : 0,
+        "plainTextContent" : "children is through school sampling using the International Study",
+        "origin" : {
+          "y" : 120.1344,
+          "x" : 56.70064000000001
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470234896333
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "text" : "q0",
+    "questionNo" : 0,
+    "@type" : "ReadingTag"
+  }
+]

@@ -1,0 +1,194 @@
+[
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 9.334956200000008,
+          "width" : 140.23056882
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "plainTextContent" : "probability (alpha level) set at 0.05",
+        "origin" : {
+          "y" : 87.6300992,
+          "x" : 51.02277
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237939195
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 9.334956200000008,
+          "width" : 40.5278568
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "plainTextContent" : "0.80 (beta",
+        "origin" : {
+          "y" : 100.0454792,
+          "x" : 205.1690985
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237952942
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 1,
+    "text" : "q1",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 9.334956199999965,
+          "width" : 70.34392607999996
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "plainTextContent" : "2 (time: baseline ",
+        "origin" : {
+          "y" : 710.0594792000001,
+          "x" : 473.8922513199997
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237964260
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 9.334956199999965,
+          "width" : 238.0493754600001
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "plainTextContent" : "vs. 6-month follow-up) 9 2 (socio-economic status: high ",
+        "origin" : {
+          "y" : 697.6440792000001,
+          "x" : 306.14
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237964260
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 9.334956199999965,
+          "width" : 197.3431203199998
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "plainTextContent" : "vs. low) 9 2 (attendance status: high vs. low)",
+        "origin" : {
+          "y" : 685.1718792,
+          "x" : 306.1391
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237964261
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "text" : "q2",
+    "questionNo" : 2,
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 9.334956200000022,
+          "width" : 9.962599999999952
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "plainTextContent" : "12",
+        "origin" : {
+          "y" : 485.9577792,
+          "x" : 306.1381
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237973811
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 3,
+    "text" : "q3",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 9.334956200000022,
+          "width" : 37.34082105999997
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "plainTextContent" : "less than ",
+        "origin" : {
+          "y" : 374.0358792,
+          "x" : 251.77310938
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237923343
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 9.334956200000022,
+          "width" : 48.21598936000002
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 3,
+        "floating" : true,
+        "plainTextContent" : "5 9 30 min",
+        "origin" : {
+          "y" : 361.5637792,
+          "x" : 51.02377000000001
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237923344
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 0,
+    "text" : "q0",
+    "@type" : "ReadingTag"
+  }
+]

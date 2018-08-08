@@ -1,0 +1,139 @@
+[
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 10.84500000000003,
+          "width" : 16.51859999999999
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 1,
+        "floating" : true,
+        "plainTextContent" : "6-12",
+        "questionNo" : 1,
+        "origin" : {
+          "y" : 283.6967,
+          "x" : 116.67845
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470234382608
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 1,
+    "text" : "q1",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 10.845,
+          "width" : 84.36664999999999
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 1,
+        "floating" : true,
+        "plainTextContent" : "multi-stage stratified",
+        "questionNo" : 2,
+        "origin" : {
+          "y" : 237.6768,
+          "x" : 158.78315
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470234398584
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "text" : "q2",
+    "questionNo" : 2,
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 10.845,
+          "width" : 174.618
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 1,
+        "floating" : true,
+        "plainTextContent" : "one school from each of these 5 districts",
+        "questionNo" : 3,
+        "origin" : {
+          "y" : 180.1374,
+          "x" : 193.9101500000001
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470234422513
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 3,
+    "text" : "q3",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 10.84500000000003,
+          "width" : 17.97120000000007
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 1,
+        "floating" : true,
+        "plainTextContent" : "3283 ",
+        "questionNo" : 0,
+        "origin" : {
+          "y" : 318.2564,
+          "x" : 407.3335000000001
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470234361987
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 10.84500000000003,
+          "width" : 24.65100000000007
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 1,
+        "floating" : true,
+        "plainTextContent" : "31,400",
+        "questionNo" : 0,
+        "origin" : {
+          "y" : 295.2166,
+          "x" : 340.7226499999997
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470234365913
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 0,
+    "text" : "q0",
+    "@type" : "ReadingTag"
+  }
+]

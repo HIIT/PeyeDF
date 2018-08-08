@@ -1,0 +1,181 @@
+[
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 10.84500000000003,
+          "width" : 270.1064999999999
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 0,
+        "questionNo" : 1,
+        "floating" : true,
+        "plainTextContent" : "genetic variations alone could not account for the risk in th",
+        "origin" : {
+          "y" : 285.675,
+          "x" : 155.1572
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470233588639
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 10.84500000000003,
+          "width" : 368.6285999999998
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 0,
+        "questionNo" : 1,
+        "floating" : true,
+        "plainTextContent" : "prevalence of disease over a few decades. Allergen exposure in early life appears to correlate ",
+        "origin" : {
+          "y" : 274.8148,
+          "x" : 56.7017
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470233588639
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 10.84500000000003,
+          "width" : 221.7972
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 0,
+        "floating" : true,
+        "plainTextContent" : "with sensitization and expression of asthma and atopy",
+        "origin" : {
+          "y" : 263.9546,
+          "x" : 56.7017
+        },
+        "scaleFactor" : -1,
+        "questionNo" : 1,
+        "unixt" : [
+          1470233588639
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 1,
+    "text" : "q1",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 10.84500000000003,
+          "width" : 63.92159999999996
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 0,
+        "floating" : true,
+        "plainTextContent" : "Lifestyle factors",
+        "origin" : {
+          "y" : 263.9546,
+          "x" : 283.7171
+        },
+        "scaleFactor" : -1,
+        "questionNo" : 2,
+        "unixt" : [
+          1470233617304
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 10.845,
+          "width" : 69.45150000000007
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 0,
+        "floating" : true,
+        "plainTextContent" : "disease modifiers",
+        "origin" : {
+          "y" : 253.0941,
+          "x" : 174.6224
+        },
+        "scaleFactor" : -1,
+        "questionNo" : 2,
+        "unixt" : [
+          1470233651246
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 2,
+    "text" : "q2",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 10.845,
+          "width" : 45.04500000000013
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 0,
+        "questionNo" : 3,
+        "floating" : true,
+        "plainTextContent" : "600 million",
+        "origin" : {
+          "y" : 198.7925,
+          "x" : 172.5821
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470233667063
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 3,
+    "text" : "q3",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 10.84500000000003,
+          "width" : 37.39140000000003
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 0,
+        "floating" : true,
+        "plainTextContent" : "one-third",
+        "origin" : {
+          "y" : 318.2559,
+          "x" : 356.9561
+        },
+        "scaleFactor" : -1,
+        "questionNo" : 0,
+        "unixt" : [
+          1470233390345
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 0,
+    "text" : "q0",
+    "@type" : "ReadingTag"
+  }
+]

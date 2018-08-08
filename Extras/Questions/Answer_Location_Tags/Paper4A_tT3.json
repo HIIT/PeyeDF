@@ -1,0 +1,174 @@
+[
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.966340000000002,
+          "width" : 53.90563607999997
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 6,
+        "floating" : true,
+        "plainTextContent" : "physiological ",
+        "origin" : {
+          "y" : 299.00060586,
+          "x" : 235.157356298878
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470238509080
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 8.966340000000002,
+          "width" : 132.43682684
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 6,
+        "floating" : true,
+        "plainTextContent" : "and\/or brain imaging techniques",
+        "origin" : {
+          "y" : 286.52842692,
+          "x" : 51.02160897999997
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470238509080
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 1,
+    "text" : "q1",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.966340000000002,
+          "width" : 26.12193719999993
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 6,
+        "floating" : true,
+        "plainTextContent" : "choice ",
+        "origin" : {
+          "y" : 124.6740348,
+          "x" : 262.936073679626
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470238555745
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 8.966340000000002,
+          "width" : 32.76699140000001
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 6,
+        "floating" : true,
+        "plainTextContent" : "removal",
+        "origin" : {
+          "y" : 112.20185586,
+          "x" : 51.02160897999997
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470238555745
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 2,
+    "text" : "q2",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.966339999999946,
+          "width" : 97.41430279999986
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 6,
+        "floating" : true,
+        "plainTextContent" : "choice is not beneficial",
+        "origin" : {
+          "y" : 722.4419650135,
+          "x" : 403.3091075799999
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470238567985
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 3,
+    "text" : "q3",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 8.966339999999946,
+          "width" : 96.13809373999999
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 6,
+        "floating" : true,
+        "plainTextContent" : "healthy college student ",
+        "origin" : {
+          "y" : 585.4064269199998,
+          "x" : 192.981685259626
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470238458927
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 8.966339999999946,
+          "width" : 46.76544066000001
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 6,
+        "floating" : true,
+        "plainTextContent" : "participants",
+        "origin" : {
+          "y" : 572.9910347999999,
+          "x" : 51.02360149999998
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470238458927
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 0,
+    "text" : "q0",
+    "@type" : "ReadingTag"
+  }
+]

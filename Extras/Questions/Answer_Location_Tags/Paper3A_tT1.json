@@ -1,0 +1,154 @@
+[
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 9.334956199999965,
+          "width" : 144.4776251999998
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 1,
+        "floating" : true,
+        "plainTextContent" : "87 % of studies with more than five",
+        "origin" : {
+          "y" : 523.3038792000001,
+          "x" : 306.1407
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237818808
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "ilomantsi.pc.hiit.fi",
+    "questionNo" : 1,
+    "text" : "q1",
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 9.334956200000022,
+          "width" : 73.89860706000002
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 1,
+        "floating" : true,
+        "plainTextContent" : "Burke et al., 2003",
+        "origin" : {
+          "y" : 373.8648792,
+          "x" : 397.21779294
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237829608
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "text" : "q2",
+    "questionNo" : 2,
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 9.334956200000022,
+          "width" : 153.1550497999997
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 1,
+        "floating" : true,
+        "plainTextContent" : "key components that support psycho-\r",
+        "origin" : {
+          "y" : 286.6731792,
+          "x" : 391.0658874399999
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237839777
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 9.334956200000022,
+          "width" : 53.77213723999989
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 1,
+        "floating" : true,
+        "plainTextContent" : "logical needs",
+        "origin" : {
+          "y" : 274.2009792,
+          "x" : 306.1407
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237839778
+        ],
+        "readingClass" : 1
+      },
+      {
+        "size" : {
+          "height" : 9.334956200000022,
+          "width" : 102.8040693999998
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 1,
+        "floating" : true,
+        "plainTextContent" : "self-determination theory",
+        "origin" : {
+          "y" : 274.2009792,
+          "x" : 403.9355741199998
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237851455
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "text" : "q3",
+    "questionNo" : 3,
+    "@type" : "ReadingTag"
+  },
+  {
+    "rects" : [
+      {
+        "size" : {
+          "height" : 9.334956199999965,
+          "width" : 9.962599999999952
+        },
+        "classSource" : 2,
+        "screenDistance" : 800,
+        "pageIndex" : 1,
+        "floating" : true,
+        "plainTextContent" : "80",
+        "origin" : {
+          "y" : 660.2852792000001,
+          "x" : 348.21298224
+        },
+        "scaleFactor" : -1,
+        "unixt" : [
+          1470237810583
+        ],
+        "readingClass" : 1
+      }
+    ],
+    "origin" : "marco.local",
+    "questionNo" : 0,
+    "text" : "q0",
+    "@type" : "ReadingTag"
+  }
+]
