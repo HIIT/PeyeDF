@@ -70,14 +70,16 @@ extension NSBezierPath {
         for i in 0 ..< self.elementCount {
             let type = self.element(at: i, associatedPoints: &points)
             switch type {
-            case .moveToBezierPathElement:
+            case .moveTo:
                 path.move(to: points[0])
-            case .lineToBezierPathElement:
+            case .lineTo:
                 path.addLine(to: points[0])
-            case .curveToBezierPathElement:
+            case .curveTo:
                 path.addCurve(to: points[2], control1: points[0], control2: points[1])
-            case .closePathBezierPathElement:
+            case .closePath:
                 path.closeSubpath()
+            @unknown default:
+                preconditionFailure("Unsupported bezier type, check NSBezierPath.ElementType cases")
             }
         }
         
@@ -116,9 +118,10 @@ extension NSSize {
 }
 
 extension NSSize: Hashable {
-    public var hashValue: Int { get {
-        return self.height.hashValue ^ self.width.hashValue
-    } }
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(width)
+        hasher.combine(height)
+    }
 }
 
 extension NSColor {
@@ -166,9 +169,10 @@ extension NSPoint {
 }
 
 extension NSPoint: Hashable {
-    public var hashValue: Int { get {
-        return x.hashValue ^ y.hashValue
-    } }
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(x)
+        hasher.combine(y)
+    }
 }
 
 extension NSPoint: CustomStringConvertible {

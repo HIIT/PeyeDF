@@ -253,9 +253,10 @@ extension NSRect {
 }
 
 extension NSRect: Hashable {
-    public var hashValue: Int { get {
-        return size.hashValue ^ origin.hashValue
-    } }
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(size)
+        hasher.combine(origin)
+    }
 }
 
 extension NSRect: CustomStringConvertible {

@@ -104,7 +104,7 @@ class TagAnnotation: Equatable {
     
     /// Removes a tag from this block of text. Returns count of remaining tags after removal. Also removes associated label.
     func removeTag(_ tag: ReadingTag) -> Int {
-        guard let i = self.tags.index(of: tag) else {
+        guard let i = self.tags.firstIndex(of: tag) else {
             if #available(OSX 10.12, *) {
                 os_log("Could not find requested tag", type: .error)
             }
@@ -131,7 +131,7 @@ class TagAnnotation: Equatable {
     
     /// Returns true if the given point on the given page overlaps with any markup or tag label
     func hitTest(_ point: NSPoint, page: PDFPage) -> Bool {
-        return labelHitTest(point, page: page) || markups.index() {
+        return labelHitTest(point, page: page) || markups.firstIndex() {
             markup in
             return NSPointInRect(point, markup.bounds)
         } != nil
@@ -143,7 +143,7 @@ class TagAnnotation: Equatable {
         guard pdfBase.document!.index(for: page) == self.pageIndex else {
             return false
         }
-        lastLabelHit = labelBacks.index(where: {NSPointInRect(point, $0.bounds)})
+        lastLabelHit = labelBacks.firstIndex(where: {NSPointInRect(point, $0.bounds)})
         return lastLabelHit != nil
     }
     

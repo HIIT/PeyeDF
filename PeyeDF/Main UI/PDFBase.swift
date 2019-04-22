@@ -304,7 +304,7 @@ class PDFBase: PDFView {
             return
         }
         let pointOnPage = self.convert(mouseInView, to: activePage)
-        if let i = tagAnnotations.index(where: {$0.labelHitTest(pointOnPage, page: activePage)}) {
+        if let i = tagAnnotations.firstIndex(where: {$0.labelHitTest(pointOnPage, page: activePage)}) {
             draggedTagAnnotation = i
         } else {
             super.mouseDown(with: theEvent)
@@ -368,7 +368,7 @@ class PDFBase: PDFView {
         let pagePoint = convert(forPoint, to: activePage!)
         
         // Find tuples for which this point falls in an annotation
-        let tupleI = tagAnnotations.index(where: {$0.hitTest(pagePoint, page: activePage!)})
+        let tupleI = tagAnnotations.firstIndex(where: {$0.hitTest(pagePoint, page: activePage!)})
         
         if let i = tupleI {
             
@@ -462,7 +462,7 @@ class PDFBase: PDFView {
         // make sure tag exists and get index
         // remove tag and if remaining 0 remove from collection
         
-        let _found = tagAnnotations.index(where: {$0.sameAnnotationsAs(tag)})
+        let _found = tagAnnotations.firstIndex(where: {$0.sameAnnotationsAs(tag)})
         
         guard let foundI = _found else {
             if #available(OSX 10.12, *) {

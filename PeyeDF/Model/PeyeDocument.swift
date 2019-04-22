@@ -107,7 +107,7 @@ class PeyeDocument: NSDocument {
     /// Creates window controllers and automatically calls loadDocument()
     override func makeWindowControllers() {
         let storyboard = AppSingleton.mainStoryboard
-        let windowController = storyboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "Document Window Controller")) as! DocumentWindowController
+        let windowController = storyboard.instantiateController(withIdentifier: "Document Window Controller") as! DocumentWindowController
         
         // if eye tracker is NOT active, cascade window, otherwise constrain to center of screen
         if !(AppSingleton.eyeTracker?.available ?? false) {

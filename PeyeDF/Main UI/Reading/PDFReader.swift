@@ -42,13 +42,13 @@ enum TrackingStatus: CustomStringConvertible {
     var image: NSImage { get {
         switch self {
         case .unknown:
-            return NSImage(named: NSImage.Name.statusNone)!
+            return NSImage(named: NSImage.statusNoneName)!
         case .trackable:
-            return NSImage(named: NSImage.Name.statusAvailable)!
+            return NSImage(named: NSImage.statusAvailableName)!
         case .blocked:
-            return NSImage(named: NSImage.Name.statusPartiallyAvailable)!
+            return NSImage(named: NSImage.statusPartiallyAvailableName)!
         case .impossible:
-            return NSImage(named: NSImage.Name.statusUnavailable)!
+            return NSImage(named: NSImage.statusUnavailableName)!
         }
     } }
     
@@ -254,7 +254,7 @@ class PDFReader: PDFBase {
             self.setCurrentSelection(selectedResult, animate: true)
         }
         let foundString = selectedResult.string!.lowercased()
-        if foundStrings.index(of: foundString) == nil {
+        if foundStrings.firstIndex(of: foundString) == nil {
             foundStrings.append(foundString)
         }
         let foundOnPage = selectedResult.pages[0] 

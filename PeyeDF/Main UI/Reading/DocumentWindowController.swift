@@ -83,7 +83,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     lazy var popover: NSPopover = {
         let pop = NSPopover()
         pop.behavior = NSPopover.Behavior.transient
-        let tvc = AppSingleton.tagsStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "TagViewController"))
+        let tvc = AppSingleton.tagsStoryboard.instantiateController(withIdentifier: "TagViewController")
         pop.contentViewController = tvc as! TagViewController
         pop.delegate = self
         return pop
@@ -349,7 +349,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     // MARK: - Menu validation
     
     /// Checks which menu items should be enabled (some logic used for find next and previous menu items).
-    @objc override func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+    @objc func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
         switch UInt(menuItem.tag) {
             
         // we always allow find
@@ -407,9 +407,9 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     func searchCollapseAction(_ wasCollapsed: Bool) {
         if wasCollapsed {
-            searchTB.image = NSImage(named: NSImage.Name(rawValue: PeyeConstants.searchButton_UP))
+            searchTB.image = NSImage(named: PeyeConstants.searchButton_UP)
         } else {
-            searchTB.image = NSImage(named: NSImage.Name(rawValue: PeyeConstants.searchButton_DOWN))
+            searchTB.image = NSImage(named: PeyeConstants.searchButton_DOWN)
         }
     }
     
@@ -422,9 +422,9 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     
     func sideCollapseAction(_ wasCollapsed: Bool) {
         if wasCollapsed {
-            thumbTB.image = NSImage(named: NSImage.Name(rawValue: PeyeConstants.thumbButton_UP))
+            thumbTB.image = NSImage(named: PeyeConstants.thumbButton_UP)
         } else {
-            thumbTB.image = NSImage(named: NSImage.Name(rawValue: PeyeConstants.thumbButton_DOWN))
+            thumbTB.image = NSImage(named: PeyeConstants.thumbButton_DOWN)
         }
     }
     
@@ -449,10 +449,10 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         if let annotateTB = tbAnnotate, let delegate = readerDelegate {
             if toState {
                 delegate.setRecognizersTo(true)
-                annotateTB.image = NSImage(named: NSImage.Name(rawValue: PeyeConstants.annotateButton_DOWN))
+                annotateTB.image = NSImage(named: PeyeConstants.annotateButton_DOWN)
             } else {
                 delegate.setRecognizersTo(false)
-                annotateTB.image = NSImage(named: NSImage.Name(rawValue: PeyeConstants.annotateButton_UP))
+                annotateTB.image = NSImage(named: PeyeConstants.annotateButton_UP)
             }
         }
     }
@@ -584,7 +584,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
     @IBAction func thisDocMdata(_ sender: AnyObject?) {
         // create metadata window, if currently nil
         if metadataWindowController == nil {
-            metadataWindowController = AppSingleton.mainStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "MetadataWindow")) as? MetadataWindowController
+            metadataWindowController = AppSingleton.mainStoryboard.instantiateController(withIdentifier: "MetadataWindow") as? MetadataWindowController
         }
         
         // show window controller for metadata and send data
@@ -634,7 +634,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         
         // Set reference to pdfReader for convenience by using references to children of this window
         let splV: NSSplitViewController = self.window?.contentViewController as! NSSplitViewController
-        docSplitController = splV.childViewControllers[1] as? DocumentSplitController
+        docSplitController = splV.children[1] as? DocumentSplitController
         docSplitController?.sideCollapseDelegate = self
         pdfReader = docSplitController?.myPDFSideController?.pdfReader
         
@@ -753,8 +753,8 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         NotificationCenter.default.addObserver(self, selector: #selector(autoAnnotateComplete(_:)), name: PeyeConstants.autoAnnotationComplete, object: self.pdfReader!)
         NotificationCenter.default.addObserver(self, selector: #selector(zoomChanged(_:)), name: NSNotification.Name.PDFViewScaleChanged, object: self.pdfReader!)
         NotificationCenter.default.addObserver(self, selector: #selector(frameChanged(_:)), name: NSView.frameDidChangeNotification, object: self.pdfReader!)
-        // Note: forced downcast below relies on "undocumented" view tree
-        NotificationCenter.default.addObserver(self, selector: #selector(scrollingChanged(_:)), name: NSView.boundsDidChangeNotification, object: self.pdfReader!.subviews[0].subviews[0] as! NSClipView)
+        // Note: cast below relies on undocumented view tree
+        NotificationCenter.default.addObserver(self, selector: #selector(scrollingChanged(_:)), name: NSView.boundsDidChangeNotification, object: self.pdfReader!.subviews[0].subviews.compactMap({$0 as? NSClipView})[0])
         
         // Get notifications from managed window
         
@@ -778,7 +778,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         DocumentWindowController.timerQueue.sync {
             if self.regularTimer == nil {
                 self.regularTimer = Timer(timeInterval: PeyeConstants.regularSummaryEventInterval, target: self, selector: #selector(self.regularTimerFire(_:)), userInfo: nil, repeats: true)
-                RunLoop.current.add(self.regularTimer!, forMode: RunLoopMode.commonModes)
+                RunLoop.current.add(self.regularTimer!, forMode: RunLoop.Mode.common)
             }
         }
     }
@@ -838,7 +838,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         // otherwise call the callback right now
         if pdfr.status == .trackable && DiMeSession.dimeAvailable {
             let ww = NSWindow()
-            let wvc = AppSingleton.mainStoryboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: "WaitVC")) as! WaitViewController
+            let wvc = AppSingleton.mainStoryboard.instantiateController(withIdentifier: "WaitVC") as! WaitViewController
             ww.contentViewController = wvc
             wvc.someText = "Sending data to DiMe..."
             self.window!.beginSheet(ww, completionHandler: nil)
@@ -943,7 +943,7 @@ class DocumentWindowController: NSWindowController, NSWindowDelegate, SideCollap
         DocumentWindowController.timerQueue.sync {
             if self.regularTimer == nil {
                 self.regularTimer = Timer(timeInterval: PeyeConstants.regularSummaryEventInterval, target: self, selector: #selector(self.regularTimerFire(_:)), userInfo: nil, repeats: true)
-                RunLoop.current.add(self.regularTimer!, forMode: RunLoopMode.commonModes)
+                RunLoop.current.add(self.regularTimer!, forMode: RunLoop.Mode.common)
             }
         }
         

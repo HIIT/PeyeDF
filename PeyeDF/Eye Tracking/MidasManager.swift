@@ -131,7 +131,7 @@ class MidasManager: EyeDataProvider {
                 } else if self.fetchTimer == nil {
                     MidasManager.sharedQueue.async {
                         self.fetchTimer = Timer(timeInterval: self.kFetchInterval, target: self, selector: #selector(self.fetchTimerHit(_:)), userInfo: nil, repeats: true)
-                        RunLoop.current.add(self.fetchTimer!, forMode: RunLoopMode.commonModes)
+                        RunLoop.current.add(self.fetchTimer!, forMode: RunLoop.Mode.common)
                     }
                 }
             }

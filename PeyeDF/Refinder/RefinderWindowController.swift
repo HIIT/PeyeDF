@@ -35,8 +35,8 @@ class RefinderWindowController: NSWindowController, NSWindowDelegate {
     override func windowDidLoad() {
         self.window!.delegate = self
         let svc = self.contentViewController as! NSSplitViewController
-        allHistoryController = (svc.childViewControllers[0] as! AllHistoryController)
-        historyDetailController = (svc.childViewControllers[1] as! HistoryDetailController)
+        allHistoryController = (svc.children[0] as! AllHistoryController)
+        historyDetailController = (svc.children[1] as! HistoryDetailController)
         allHistoryController?.delegate = historyDetailController
     }
     

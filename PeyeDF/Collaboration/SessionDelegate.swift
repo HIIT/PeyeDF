@@ -234,6 +234,8 @@ import os.log
             if let pHash = Multipeer.tracked.peer , pHash == peerID.hash {
                 Multipeer.tracked.peer = nil
             }
+        @unknown default:
+            break
         }
     }
     

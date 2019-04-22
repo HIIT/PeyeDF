@@ -85,8 +85,8 @@ class UtilsTest: XCTestCase {
     func testPerformanceExample() {
         // This is an example of a performance test case.
         self.measure() {
-            // repeats the testBinarySearch() 1000 times
-            for _ in 1..<100 {
+            // repeats the testBinarySearch() 10 times
+            for _ in 1..<10 {
                 self.testBinarySearch()
             }
         }

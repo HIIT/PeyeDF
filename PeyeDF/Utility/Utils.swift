@@ -185,7 +185,7 @@ func binaryGreaterOrEqOnSortedArray<T: Comparable>(_ ary: [T], target: T) -> Int
 /// most width, after which will be broken on multiple lines)
 public func sizeForText(_ str: String, font: NSFont) -> CGSize {
     
-    let dd = [NSAttributedStringKey.font: font]
+    let dd = [NSAttributedString.Key.font: font]
     
     let AS = NSAttributedString(string: str, attributes: dd)
     

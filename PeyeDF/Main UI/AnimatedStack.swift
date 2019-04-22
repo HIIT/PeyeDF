@@ -27,7 +27,7 @@ import Cocoa
 /// Implementation of a stack view that automates animations when adding / removing items
 class AnimatedStack: NSStackView {
     
-    static let timingFunc = CAMediaTimingFunction(name: kCAMediaTimingFunctionDefault)
+    static let timingFunc = CAMediaTimingFunction(name: CAMediaTimingFunctionName.default)
 
     func animateViewIn(_ theView: NSView) {
         theView.alphaValue = 0
